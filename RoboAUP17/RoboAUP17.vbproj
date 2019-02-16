@@ -47,6 +47,12 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ACLLexerParser">
+      <HintPath>..\..\ACLParserTest\ACLParserTest\ressources\ACLLexerParser.dll</HintPath>
+    </Reference>
+    <Reference Include="ScintillaNET">
+      <HintPath>..\..\ACLParserTest\ACLParserTest\ressources\ScintillaNET\ScintillaNET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
