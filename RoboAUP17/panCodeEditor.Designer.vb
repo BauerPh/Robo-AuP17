@@ -1,8 +1,6 @@
-﻿Imports WeifenLuo.WinFormsUI.Docking
-
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class panDok
-    Inherits DockContent
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class panCodeEditor
+    Inherits WeifenLuo.WinFormsUI.Docking.DockContent
 
     'Das Formular überschreibt den Löschvorgang, um die Komponentenliste zu bereinigen.
     <System.Diagnostics.DebuggerNonUserCode()> _
@@ -32,18 +30,18 @@ Partial Class panDok
         Me.Scintilla1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Scintilla1.Location = New System.Drawing.Point(0, 0)
         Me.Scintilla1.Name = "Scintilla1"
-        Me.Scintilla1.Size = New System.Drawing.Size(800, 450)
+        Me.Scintilla1.ScrollWidth = 23
+        Me.Scintilla1.Size = New System.Drawing.Size(520, 475)
         Me.Scintilla1.TabIndex = 0
-        Me.Scintilla1.Text = "Scintilla1"
+        Me.Scintilla1.Text = "IF..."
         '
-        'panDok
+        'panCodeEditor
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.ClientSize = New System.Drawing.Size(520, 475)
         Me.Controls.Add(Me.Scintilla1)
-        Me.DockAreas = CType((WeifenLuo.WinFormsUI.Docking.DockAreas.Float Or WeifenLuo.WinFormsUI.Docking.DockAreas.Document), WeifenLuo.WinFormsUI.Docking.DockAreas)
-        Me.Name = "panDok"
+        Me.Name = "panCodeEditor"
         Me.Text = "ACL Programm"
         Me.ResumeLayout(False)
 
