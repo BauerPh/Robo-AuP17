@@ -31,7 +31,7 @@ Partial Class panLog
         Me.sciLog.Location = New System.Drawing.Point(0, 0)
         Me.sciLog.Name = "sciLog"
         Me.sciLog.ScrollWidth = 82
-        Me.sciLog.Size = New System.Drawing.Size(800, 450)
+        Me.sciLog.Size = New System.Drawing.Size(984, 161)
         Me.sciLog.TabIndex = 0
         Me.sciLog.Text = "Logging usw..."
         '
@@ -39,8 +39,11 @@ Partial Class panLog
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.ClientSize = New System.Drawing.Size(984, 161)
         Me.Controls.Add(Me.sciLog)
+        Me.DockAreas = CType(((WeifenLuo.WinFormsUI.Docking.DockAreas.Float Or WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) _
+            Or WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom), WeifenLuo.WinFormsUI.Docking.DockAreas)
         Me.Name = "panLog"
         Me.Text = "Ausgabe"
         Me.ResumeLayout(False)

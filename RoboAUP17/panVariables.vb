@@ -7,4 +7,5 @@ Public Class panVariables
         dataGridView.DataSource = _priceDataArray.ToArray
         frmMain.dictTest.Add("var3", 27.5)
     End Sub
+
 End Class

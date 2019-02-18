@@ -22,30 +22,31 @@ Partial Class panCodeEditor
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.Scintilla1 = New ScintillaNET.Scintilla()
+        Me.sciCodeEditor = New ScintillaNET.Scintilla()
         Me.SuspendLayout()
         '
-        'Scintilla1
+        'sciCodeEditor
         '
-        Me.Scintilla1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Scintilla1.Location = New System.Drawing.Point(0, 0)
-        Me.Scintilla1.Name = "Scintilla1"
-        Me.Scintilla1.ScrollWidth = 23
-        Me.Scintilla1.Size = New System.Drawing.Size(520, 475)
-        Me.Scintilla1.TabIndex = 0
-        Me.Scintilla1.Text = "IF..."
+        Me.sciCodeEditor.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.sciCodeEditor.Location = New System.Drawing.Point(0, 0)
+        Me.sciCodeEditor.Name = "sciCodeEditor"
+        Me.sciCodeEditor.ScrollWidth = 23
+        Me.sciCodeEditor.Size = New System.Drawing.Size(884, 561)
+        Me.sciCodeEditor.TabIndex = 0
         '
         'panCodeEditor
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(520, 475)
-        Me.Controls.Add(Me.Scintilla1)
+        Me.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.ClientSize = New System.Drawing.Size(884, 561)
+        Me.Controls.Add(Me.sciCodeEditor)
+        Me.DockAreas = CType((WeifenLuo.WinFormsUI.Docking.DockAreas.Float Or WeifenLuo.WinFormsUI.Docking.DockAreas.Document), WeifenLuo.WinFormsUI.Docking.DockAreas)
         Me.Name = "panCodeEditor"
         Me.Text = "ACL Programm"
         Me.ResumeLayout(False)
 
     End Sub
 
-    Friend WithEvents Scintilla1 As ScintillaNET.Scintilla
+    Friend WithEvents sciCodeEditor As ScintillaNET.Scintilla
 End Class

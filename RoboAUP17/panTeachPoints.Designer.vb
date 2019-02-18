@@ -29,7 +29,8 @@ Partial Class panTeachPoints
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.ClientSize = New System.Drawing.Size(384, 361)
         Me.Name = "panTeachPoints"
         Me.Text = "Teachpunkte"
         Me.ResumeLayout(False)
