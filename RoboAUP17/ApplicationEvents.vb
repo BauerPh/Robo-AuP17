@@ -1,4 +1,6 @@
-﻿Imports Microsoft.VisualBasic.ApplicationServices
+﻿Option Strict On
+
+Imports Microsoft.VisualBasic.ApplicationServices
 Imports System.IO
 
 Namespace My

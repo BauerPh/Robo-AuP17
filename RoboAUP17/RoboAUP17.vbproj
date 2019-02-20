@@ -113,7 +113,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
-    <Compile Include="classKinematik.vb" />
+    <Compile Include="Calculations.vb" />
+    <Compile Include="Kinematics.vb" />
+    <Compile Include="MovementCalculations.vb" />
+    <Compile Include="RobotControl.vb" />
+    <Compile Include="SerialCommunication.vb" />
+    <Compile Include="dataStructs.vb" />
+    <Compile Include="globalVars.vb" />
+    <Compile Include="Logger.vb" />
     <Compile Include="Matrizen.vb" />
     <Compile Include="frmMain.vb">
       <SubType>Form</SubType>
@@ -179,6 +186,7 @@
     <Compile Include="panVariables.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Settings.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="frmMain.resx">
