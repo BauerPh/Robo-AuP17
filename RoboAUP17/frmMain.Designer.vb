@@ -24,7 +24,7 @@ Partial Class frmMain
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
         Me.StatusStrip = New System.Windows.Forms.StatusStrip()
-        Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ssLblStatus = New System.Windows.Forms.ToolStripStatusLabel()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
         Me.DateiToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.msNew = New System.Windows.Forms.ToolStripMenuItem()
@@ -48,13 +48,13 @@ Partial Class frmMain
         Me.msShowPanProgramTools = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowPanLog = New System.Windows.Forms.ToolStripMenuItem()
         Me.EinstellungenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DenavitHartenbergParameterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msDenavitHartPar = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
-        Me.TCPServerToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msTCPServer = New System.Windows.Forms.ToolStripMenuItem()
         Me.HilfeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.Aup17RoboAufGitHubToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msGitHub = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
-        Me.InfoÜberAup17RoboToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowInfo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStrip = New System.Windows.Forms.ToolStrip()
         Me.tsBtnOpen = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnSave = New System.Windows.Forms.ToolStripButton()
@@ -70,18 +70,18 @@ Partial Class frmMain
         '
         'StatusStrip
         '
-        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel1})
+        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ssLblStatus})
         Me.StatusStrip.Location = New System.Drawing.Point(0, 647)
         Me.StatusStrip.Name = "StatusStrip"
         Me.StatusStrip.Size = New System.Drawing.Size(1113, 22)
         Me.StatusStrip.TabIndex = 0
         Me.StatusStrip.Text = "StatusStrip"
         '
-        'ToolStripStatusLabel1
+        'ssLblStatus
         '
-        Me.ToolStripStatusLabel1.Name = "ToolStripStatusLabel1"
-        Me.ToolStripStatusLabel1.Size = New System.Drawing.Size(37, 17)
-        Me.ToolStripStatusLabel1.Text = "Info..."
+        Me.ssLblStatus.BackColor = System.Drawing.SystemColors.Control
+        Me.ssLblStatus.Name = "ssLblStatus"
+        Me.ssLblStatus.Size = New System.Drawing.Size(0, 17)
         '
         'MenuStrip
         '
@@ -228,51 +228,55 @@ Partial Class frmMain
         '
         'EinstellungenToolStripMenuItem1
         '
-        Me.EinstellungenToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DenavitHartenbergParameterToolStripMenuItem, Me.ToolStripSeparator5, Me.TCPServerToolStripMenuItem1})
+        Me.EinstellungenToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msDenavitHartPar, Me.ToolStripSeparator5, Me.msTCPServer})
         Me.EinstellungenToolStripMenuItem1.Name = "EinstellungenToolStripMenuItem1"
         Me.EinstellungenToolStripMenuItem1.Size = New System.Drawing.Size(90, 20)
         Me.EinstellungenToolStripMenuItem1.Text = "Einstellungen"
         '
-        'DenavitHartenbergParameterToolStripMenuItem
+        'msDenavitHartPar
         '
-        Me.DenavitHartenbergParameterToolStripMenuItem.Name = "DenavitHartenbergParameterToolStripMenuItem"
-        Me.DenavitHartenbergParameterToolStripMenuItem.Size = New System.Drawing.Size(247, 22)
-        Me.DenavitHartenbergParameterToolStripMenuItem.Text = "Denavit-Hartenberg-Parameter..."
+        Me.msDenavitHartPar.Image = CType(resources.GetObject("msDenavitHartPar.Image"), System.Drawing.Image)
+        Me.msDenavitHartPar.Name = "msDenavitHartPar"
+        Me.msDenavitHartPar.Size = New System.Drawing.Size(247, 22)
+        Me.msDenavitHartPar.Text = "Denavit-Hartenberg-Parameter..."
         '
         'ToolStripSeparator5
         '
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
         Me.ToolStripSeparator5.Size = New System.Drawing.Size(244, 6)
         '
-        'TCPServerToolStripMenuItem1
+        'msTCPServer
         '
-        Me.TCPServerToolStripMenuItem1.Name = "TCPServerToolStripMenuItem1"
-        Me.TCPServerToolStripMenuItem1.Size = New System.Drawing.Size(247, 22)
-        Me.TCPServerToolStripMenuItem1.Text = "TCP-Server..."
+        Me.msTCPServer.Image = CType(resources.GetObject("msTCPServer.Image"), System.Drawing.Image)
+        Me.msTCPServer.Name = "msTCPServer"
+        Me.msTCPServer.Size = New System.Drawing.Size(247, 22)
+        Me.msTCPServer.Text = "TCP-Server..."
         '
         'HilfeToolStripMenuItem
         '
-        Me.HilfeToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.Aup17RoboAufGitHubToolStripMenuItem, Me.ToolStripSeparator6, Me.InfoÜberAup17RoboToolStripMenuItem})
+        Me.HilfeToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msGitHub, Me.ToolStripSeparator6, Me.msShowInfo})
         Me.HilfeToolStripMenuItem.Name = "HilfeToolStripMenuItem"
         Me.HilfeToolStripMenuItem.Size = New System.Drawing.Size(44, 20)
         Me.HilfeToolStripMenuItem.Text = "Hilfe"
         '
-        'Aup17RoboAufGitHubToolStripMenuItem
+        'msGitHub
         '
-        Me.Aup17RoboAufGitHubToolStripMenuItem.Name = "Aup17RoboAufGitHubToolStripMenuItem"
-        Me.Aup17RoboAufGitHubToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
-        Me.Aup17RoboAufGitHubToolStripMenuItem.Text = "Aup17 Robo auf GitHub"
+        Me.msGitHub.Image = CType(resources.GetObject("msGitHub.Image"), System.Drawing.Image)
+        Me.msGitHub.Name = "msGitHub"
+        Me.msGitHub.Size = New System.Drawing.Size(200, 22)
+        Me.msGitHub.Text = "Aup17 Robo auf GitHub"
         '
         'ToolStripSeparator6
         '
         Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
         Me.ToolStripSeparator6.Size = New System.Drawing.Size(197, 6)
         '
-        'InfoÜberAup17RoboToolStripMenuItem
+        'msShowInfo
         '
-        Me.InfoÜberAup17RoboToolStripMenuItem.Name = "InfoÜberAup17RoboToolStripMenuItem"
-        Me.InfoÜberAup17RoboToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
-        Me.InfoÜberAup17RoboToolStripMenuItem.Text = "Informationen"
+        Me.msShowInfo.Image = CType(resources.GetObject("msShowInfo.Image"), System.Drawing.Image)
+        Me.msShowInfo.Name = "msShowInfo"
+        Me.msShowInfo.Size = New System.Drawing.Size(200, 22)
+        Me.msShowInfo.Text = "Informationen"
         '
         'ToolStrip
         '
@@ -363,9 +367,9 @@ Partial Class frmMain
     Friend WithEvents DateiToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BearbeitenToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStrip As ToolStrip
-    Friend WithEvents ToolStripStatusLabel1 As ToolStripStatusLabel
+    Friend WithEvents ssLblStatus As ToolStripStatusLabel
     Friend WithEvents HilfeToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents InfoÜberAup17RoboToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents msShowInfo As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents tsCbComPort As ToolStripComboBox
     Friend WithEvents tsBtnDisconnect As ToolStripButton
@@ -382,15 +386,15 @@ Partial Class frmMain
     Friend WithEvents msShowPanCodeEditor As ToolStripMenuItem
     Friend WithEvents msShowPanProgramTools As ToolStripMenuItem
     Friend WithEvents EinstellungenToolStripMenuItem1 As ToolStripMenuItem
-    Friend WithEvents DenavitHartenbergParameterToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents msDenavitHartPar As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
     Friend WithEvents msExit As ToolStripMenuItem
     Friend WithEvents msUndo As ToolStripMenuItem
     Friend WithEvents msRedo As ToolStripMenuItem
     Friend WithEvents msShowPanTeachBox As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
-    Friend WithEvents TCPServerToolStripMenuItem1 As ToolStripMenuItem
-    Friend WithEvents Aup17RoboAufGitHubToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents msTCPServer As ToolStripMenuItem
+    Friend WithEvents msGitHub As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator6 As ToolStripSeparator
     Friend WithEvents tsBtnOpen As ToolStripButton
     Friend WithEvents tsBtnSave As ToolStripButton
