@@ -27,6 +27,7 @@ Partial Class panCodeEditor
         '
         'sciCodeEditor
         '
+        Me.sciCodeEditor.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.sciCodeEditor.Dock = System.Windows.Forms.DockStyle.Fill
         Me.sciCodeEditor.Location = New System.Drawing.Point(0, 0)
         Me.sciCodeEditor.Name = "sciCodeEditor"
@@ -42,6 +43,7 @@ Partial Class panCodeEditor
         Me.ClientSize = New System.Drawing.Size(884, 561)
         Me.Controls.Add(Me.sciCodeEditor)
         Me.DockAreas = CType((WeifenLuo.WinFormsUI.Docking.DockAreas.Float Or WeifenLuo.WinFormsUI.Docking.DockAreas.Document), WeifenLuo.WinFormsUI.Docking.DockAreas)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panCodeEditor"
         Me.Text = "ACL Programm"
         Me.ResumeLayout(False)

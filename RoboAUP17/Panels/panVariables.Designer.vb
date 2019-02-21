@@ -32,6 +32,7 @@ Partial Class panVariables
         Me.dataGridView.AllowUserToDeleteRows = False
         Me.dataGridView.AllowUserToResizeRows = False
         Me.dataGridView.BackgroundColor = System.Drawing.SystemColors.ControlLightLight
+        Me.dataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dataGridView.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dataGridView.Location = New System.Drawing.Point(0, 0)
@@ -47,6 +48,7 @@ Partial Class panVariables
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.ClientSize = New System.Drawing.Size(384, 361)
         Me.Controls.Add(Me.dataGridView)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panVariables"
         Me.Text = "Variablen"
         CType(Me.dataGridView, System.ComponentModel.ISupportInitialize).EndInit()

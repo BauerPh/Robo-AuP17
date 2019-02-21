@@ -31,6 +31,7 @@ Partial Class panTeachPoints
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.ClientSize = New System.Drawing.Size(384, 361)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panTeachPoints"
         Me.Text = "Teachpunkte"
         Me.ResumeLayout(False)

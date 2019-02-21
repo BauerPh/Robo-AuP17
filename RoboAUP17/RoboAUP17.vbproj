@@ -41,7 +41,10 @@
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>RoboAUP17.xml</DocumentationFile>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <NoWarn>
+    </NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -51,7 +54,9 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DocumentationFile>RoboAUP17.xml</DocumentationFile>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <NoWarn>
+    </NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
     <OptionExplicit>On</OptionExplicit>
@@ -60,7 +65,7 @@
     <OptionCompare>Binary</OptionCompare>
   </PropertyGroup>
   <PropertyGroup>
-    <OptionStrict>Off</OptionStrict>
+    <OptionStrict>On</OptionStrict>
   </PropertyGroup>
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
@@ -76,6 +81,12 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -114,6 +125,9 @@
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Calculations.vb" />
+    <Compile Include="Klassen\CustomFloatWindow.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Klassen\Kinematics.vb" />
     <Compile Include="Klassen\MovementCalculations.vb" />
     <Compile Include="Klassen\RobotControl.vb" />
@@ -148,6 +162,12 @@
       <DependentUpon>panCodeEditor.vb</DependentUpon>
     </Compile>
     <Compile Include="Panels\panCodeEditor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Panels\panCtrl.Designer.vb">
+      <DependentUpon>panCtrl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Panels\panCtrl.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Panels\panLog.Designer.vb">
@@ -201,6 +221,9 @@
     <EmbeddedResource Include="Panels\panCodeEditor.resx">
       <DependentUpon>panCodeEditor.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Panels\panCtrl.resx">
+      <DependentUpon>panCtrl.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Panels\panLog.resx">
       <DependentUpon>panLog.vb</DependentUpon>
     </EmbeddedResource>
@@ -221,6 +244,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>

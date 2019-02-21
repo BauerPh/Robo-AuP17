@@ -43,6 +43,7 @@ Partial Class frmMain
         Me.msShowPanVariable = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowPanTeachPoints = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowPanCodeEditor = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowPanCtrl = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowPanTeachBox = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowPanRoboStatus = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowPanProgramTools = New System.Windows.Forms.ToolStripMenuItem()
@@ -162,7 +163,7 @@ Partial Class frmMain
         '
         'AnsichtToolStripMenuItem
         '
-        Me.AnsichtToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msSaveView, Me.msDefaulView, Me.ToolStripSeparator3, Me.msShowPanVariable, Me.msShowPanTeachPoints, Me.msShowPanCodeEditor, Me.msShowPanTeachBox, Me.msShowPanRoboStatus, Me.msShowPanProgramTools, Me.msShowPanLog})
+        Me.AnsichtToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msSaveView, Me.msDefaulView, Me.ToolStripSeparator3, Me.msShowPanVariable, Me.msShowPanTeachPoints, Me.msShowPanCodeEditor, Me.msShowPanCtrl, Me.msShowPanTeachBox, Me.msShowPanRoboStatus, Me.msShowPanProgramTools, Me.msShowPanLog})
         Me.AnsichtToolStripMenuItem.Name = "AnsichtToolStripMenuItem"
         Me.AnsichtToolStripMenuItem.Size = New System.Drawing.Size(59, 20)
         Me.AnsichtToolStripMenuItem.Text = "Ansicht"
@@ -201,6 +202,12 @@ Partial Class frmMain
         Me.msShowPanCodeEditor.Name = "msShowPanCodeEditor"
         Me.msShowPanCodeEditor.Size = New System.Drawing.Size(185, 22)
         Me.msShowPanCodeEditor.Text = "ACL-Editor"
+        '
+        'msShowPanCtrl
+        '
+        Me.msShowPanCtrl.Name = "msShowPanCtrl"
+        Me.msShowPanCtrl.Size = New System.Drawing.Size(185, 22)
+        Me.msShowPanCtrl.Text = "Steuerung"
         '
         'msShowPanTeachBox
         '
@@ -349,6 +356,7 @@ Partial Class frmMain
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.IsMdiContainer = True
         Me.MainMenuStrip = Me.MenuStrip
+        Me.MinimumSize = New System.Drawing.Size(300, 300)
         Me.Name = "frmMain"
         Me.Text = "Aup17 Robo v1.0"
         Me.StatusStrip.ResumeLayout(False)
@@ -402,4 +410,5 @@ Partial Class frmMain
     Friend WithEvents msShowPanRoboStatus As ToolStripMenuItem
     Friend WithEvents msDefaulView As ToolStripMenuItem
     Friend WithEvents msShowPanLog As ToolStripMenuItem
+    Friend WithEvents msShowPanCtrl As ToolStripMenuItem
 End Class

@@ -28,6 +28,7 @@ Public Class frmMain
     Private _dckPanRoboStatus As New panRoboStatus
     Private _dckPanProgramTools As New panProgramTools
     Private _dckPanTeachBox As New panTeachBox
+    Private _dckPanCtrl As New panCtrl
 
     ' -----------------------------------------------------------------------------
     ' Constructor
@@ -43,6 +44,8 @@ Public Class frmMain
             .Parent = Me
             .Dock = DockStyle.Fill
             .BringToFront()
+            'Extender.FloatWindowFactory = new CustomFloatWindowFactory();
+            .Theme.Extender.FloatWindowFactory = New CustomFloatWindowFactory
         End With
 
         _dckPanCodeEditor.HideOnClose = True
@@ -52,6 +55,7 @@ Public Class frmMain
         _dckPanRoboStatus.HideOnClose = True
         _dckPanProgramTools.HideOnClose = True
         _dckPanTeachBox.HideOnClose = True
+        _dckPanCtrl.HideOnClose = True
 
         If (File.Exists(_viewSettingsFilename)) Then
             dckPanel.LoadFromXml(_viewSettingsFilename, AddressOf GetContent)
@@ -63,8 +67,11 @@ Public Class frmMain
             _dckPanTeachpoints.Show(_dckPanVariables.Pane, DockAlignment.Bottom, 0.5)
             _dckPanRoboStatus.Show(dckPanel, DockState.DockLeft)
             _dckPanProgramTools.Show(_dckPanRoboStatus.Pane, DockAlignment.Bottom, 0.5)
+
             _dckPanTeachBox.Show(dckPanel, DockState.Float)
             _dckPanTeachBox.Hide()
+            _dckPanCtrl.Show(dckPanel, DockState.Float)
+            _dckPanCtrl.Hide()
         End If
 
         ShowStatusStripHint("Anwendung gestartet...")
@@ -91,11 +98,15 @@ Public Class frmMain
     ' -----------------------------------------------------------------------------
     Private Sub msSaveView_Click(sender As Object, e As EventArgs) Handles msSaveView.Click
         dckPanel.SaveAsXml(_viewSettingsFilename)
+        My.Settings.StartMaximized = (WindowState = FormWindowState.Maximized)
+        My.Settings.Save()
         ShowStatusStripHint("aktuelle Ansicht wurde gespeichert...")
     End Sub
 
     Private Sub msDefaulView_Click(sender As Object, e As EventArgs) Handles msDefaulView.Click
         File.Delete(_viewSettingsFilename)
+        My.Settings.StartMaximized = False
+        My.Settings.Save()
         MessageBox.Show("Standard wurde wiederhergestellt. Neustart erforderlich!", "Okay", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
@@ -127,6 +138,10 @@ Public Class frmMain
         _dckPanLog.Show()
     End Sub
 
+    Private Sub msShowPanCtrl_Click(sender As Object, e As EventArgs) Handles msShowPanCtrl.Click
+        _dckPanCtrl.Show()
+    End Sub
+
     ' -----------------------------------------------------------------------------
     ' Helper Functions
     ' -----------------------------------------------------------------------------
@@ -145,12 +160,26 @@ Public Class frmMain
             Return _dckPanVariables
         ElseIf persist.EndsWith("TeachBox") Then
             Return _dckPanTeachBox
+        ElseIf persist.EndsWith("Ctrl") Then
+            Return _dckPanCtrl
         End If
         Return New DockContent()
     End Function
 
     Private Sub _ssHintTimer_Elapsed(sender As Object, e As ElapsedEventArgs) Handles _ssHintTimer.Elapsed
+        If InvokeRequired Then
+            Invoke(Sub() _ssHintTimer_Elapsed(sender, e))
+            Return
+        End If
+
         _ssHintTimer.Stop()
         ssLblStatus.Text = ""
+    End Sub
+
+    Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'Maximiert starten wenn Ansicht so gespeichert wurde
+        If My.Settings.StartMaximized Then
+            WindowState = FormWindowState.Maximized
+        End If
     End Sub
 End Class

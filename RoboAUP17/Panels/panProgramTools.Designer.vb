@@ -30,6 +30,7 @@ Partial Class panProgramTools
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.ClientSize = New System.Drawing.Size(384, 361)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panProgramTools"
         Me.Text = "ACL Tools"
         Me.ResumeLayout(False)

@@ -27,6 +27,7 @@ Partial Class panLog
         '
         'sciLog
         '
+        Me.sciLog.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.sciLog.Dock = System.Windows.Forms.DockStyle.Fill
         Me.sciLog.Location = New System.Drawing.Point(0, 0)
         Me.sciLog.Name = "sciLog"
@@ -34,7 +35,6 @@ Partial Class panLog
         Me.sciLog.ScrollWidth = 82
         Me.sciLog.Size = New System.Drawing.Size(984, 161)
         Me.sciLog.TabIndex = 0
-        Me.sciLog.Text = "Logging usw..."
         '
         'panLog
         '
@@ -45,6 +45,7 @@ Partial Class panLog
         Me.Controls.Add(Me.sciLog)
         Me.DockAreas = CType(((WeifenLuo.WinFormsUI.Docking.DockAreas.Float Or WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) _
             Or WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom), WeifenLuo.WinFormsUI.Docking.DockAreas)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panLog"
         Me.Text = "Ausgabe"
         Me.ResumeLayout(False)

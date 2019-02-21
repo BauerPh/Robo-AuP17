@@ -30,6 +30,7 @@ Partial Class panRoboStatus
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.ClientSize = New System.Drawing.Size(384, 361)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panRoboStatus"
         Me.Text = "Roboter Status"
         Me.ResumeLayout(False)
