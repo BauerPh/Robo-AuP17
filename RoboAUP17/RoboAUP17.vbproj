@@ -114,14 +114,14 @@
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Calculations.vb" />
-    <Compile Include="Kinematics.vb" />
-    <Compile Include="MovementCalculations.vb" />
-    <Compile Include="RobotControl.vb" />
-    <Compile Include="SerialCommunication.vb" />
+    <Compile Include="Klassen\Kinematics.vb" />
+    <Compile Include="Klassen\MovementCalculations.vb" />
+    <Compile Include="Klassen\RobotControl.vb" />
+    <Compile Include="Klassen\SerialCommunication.vb" />
     <Compile Include="dataStructs.vb" />
     <Compile Include="globalVars.vb" />
-    <Compile Include="Logger.vb" />
-    <Compile Include="Matrizen.vb" />
+    <Compile Include="Klassen\Logger.vb" />
+    <Compile Include="Klassen\Matrizen.vb" />
     <Compile Include="frmMain.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -144,49 +144,49 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="panCodeEditor.Designer.vb">
+    <Compile Include="Panels\panCodeEditor.Designer.vb">
       <DependentUpon>panCodeEditor.vb</DependentUpon>
     </Compile>
-    <Compile Include="panCodeEditor.vb">
+    <Compile Include="Panels\panCodeEditor.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="panLog.Designer.vb">
+    <Compile Include="Panels\panLog.Designer.vb">
       <DependentUpon>panLog.vb</DependentUpon>
     </Compile>
-    <Compile Include="panLog.vb">
+    <Compile Include="Panels\panLog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="panProgramTools.Designer.vb">
+    <Compile Include="Panels\panProgramTools.Designer.vb">
       <DependentUpon>panProgramTools.vb</DependentUpon>
     </Compile>
-    <Compile Include="panProgramTools.vb">
+    <Compile Include="Panels\panProgramTools.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="panRoboStatus.Designer.vb">
+    <Compile Include="Panels\panRoboStatus.Designer.vb">
       <DependentUpon>panRoboStatus.vb</DependentUpon>
     </Compile>
-    <Compile Include="panRoboStatus.vb">
+    <Compile Include="Panels\panRoboStatus.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="panTeachBox.Designer.vb">
+    <Compile Include="Panels\panTeachBox.Designer.vb">
       <DependentUpon>panTeachBox.vb</DependentUpon>
     </Compile>
-    <Compile Include="panTeachBox.vb">
+    <Compile Include="Panels\panTeachBox.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="panTeachPoints.Designer.vb">
+    <Compile Include="Panels\panTeachPoints.Designer.vb">
       <DependentUpon>panTeachPoints.vb</DependentUpon>
     </Compile>
-    <Compile Include="panTeachPoints.vb">
+    <Compile Include="Panels\panTeachPoints.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="panVariables.Designer.vb">
+    <Compile Include="Panels\panVariables.Designer.vb">
       <DependentUpon>panVariables.vb</DependentUpon>
     </Compile>
-    <Compile Include="panVariables.vb">
+    <Compile Include="Panels\panVariables.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Settings.vb" />
+    <Compile Include="Klassen\Settings.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="frmMain.resx">
@@ -198,25 +198,25 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="panCodeEditor.resx">
+    <EmbeddedResource Include="Panels\panCodeEditor.resx">
       <DependentUpon>panCodeEditor.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="panLog.resx">
+    <EmbeddedResource Include="Panels\panLog.resx">
       <DependentUpon>panLog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="panProgramTools.resx">
+    <EmbeddedResource Include="Panels\panProgramTools.resx">
       <DependentUpon>panProgramTools.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="panRoboStatus.resx">
+    <EmbeddedResource Include="Panels\panRoboStatus.resx">
       <DependentUpon>panRoboStatus.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="panTeachBox.resx">
+    <EmbeddedResource Include="Panels\panTeachBox.resx">
       <DependentUpon>panTeachBox.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="panTeachPoints.resx">
+    <EmbeddedResource Include="Panels\panTeachPoints.resx">
       <DependentUpon>panTeachPoints.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="panVariables.resx">
+    <EmbeddedResource Include="Panels\panVariables.resx">
       <DependentUpon>panVariables.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
