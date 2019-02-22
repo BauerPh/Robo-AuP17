@@ -29,9 +29,9 @@ Partial Class panLog
         '
         Me.sciLog.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.sciLog.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.sciLog.Enabled = False
         Me.sciLog.Location = New System.Drawing.Point(0, 0)
         Me.sciLog.Name = "sciLog"
-        Me.sciLog.ReadOnly = True
         Me.sciLog.ScrollWidth = 82
         Me.sciLog.Size = New System.Drawing.Size(984, 161)
         Me.sciLog.TabIndex = 0

@@ -44,15 +44,15 @@ Friend Class RobotControl
             teachPoints.Sort()
             OnProgChanged(New ProgChangedEventArgs(False, False, True, teachPoints.Count - 1))
         End If
-        OnLog(New LogEventArgs($"Teachpunkt {nr} hinzugefügt!", Logger.ErrorLevel.INFO))
+        OnLog(New LogEventArgs($"Teachpunkt {nr} hinzugefügt!", Logger.LogLevel.INFO))
     End Sub
     Public Sub deleteTeachPoint(index As Int32)
         If teachPoints.Count > index And index >= 0 Then
             'Prüfen ob Teachpunkt benutzt wird
             If progList.Exists(Function(_seq As ProgramEntry) _seq.tpnr = teachPoints(index).nr) Then
-                OnLog(New LogEventArgs($"Teachpunkt {teachPoints(index).nr} wird verwendet und kann nicht gelöscht werden!", Logger.ErrorLevel.ERR))
+                OnLog(New LogEventArgs($"Teachpunkt {teachPoints(index).nr} wird verwendet und kann nicht gelöscht werden!", Logger.LogLevel.ERR))
             Else
-                OnLog(New LogEventArgs($"Teachpunkt {teachPoints(index).nr} wurde gelöscht!", Logger.ErrorLevel.INFO))
+                OnLog(New LogEventArgs($"Teachpunkt {teachPoints(index).nr} wurde gelöscht!", Logger.LogLevel.INFO))
                 teachPoints.RemoveAt(index)
             End If
             OnProgChanged(New ProgChangedEventArgs(False, False, True, index - 1))
@@ -177,7 +177,7 @@ Friend Class RobotControl
             If progList(index).func = "pos" Then
                 Dim tpI As Int32 = teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = progList(index).tpnr)
                 If tpI = -1 Then
-                    OnLog(New LogEventArgs($"Teachpunkt {progList(index).tpnr} existierte nicht!", Logger.ErrorLevel.ERR))
+                    OnLog(New LogEventArgs($"Teachpunkt {progList(index).tpnr} existierte nicht!", Logger.LogLevel.ERR))
                     Return False
                 End If
                 setSpeedAndAcc(progList(index).speed, progList(index).acc)
@@ -189,7 +189,7 @@ Friend Class RobotControl
             ElseIf progList(index).func = "wai" Then
                 If com.sendWAI(progList(index).waitTimeMS) Then
                     'Log
-                    OnLog(New LogEventArgs($"Waiting for {progList(index).waitTimeMS} milliseconds...", Logger.ErrorLevel.INFO))
+                    OnLog(New LogEventArgs($"Waiting for {progList(index).waitTimeMS} milliseconds...", Logger.LogLevel.INFO))
                     Return True
                 End If
             End If
@@ -325,7 +325,7 @@ Friend Class RobotControl
             End If
         End If
         'Log
-        OnLog(New LogEventArgs("Finish...", Logger.ErrorLevel.INFO))
+        OnLog(New LogEventArgs("Finish...", Logger.LogLevel.INFO))
     End Sub
     'ROBOT MOVEMENTS
     Public Sub setSpeedAndAcc(speed As Double, acc As Double)
@@ -344,7 +344,7 @@ Friend Class RobotControl
         'Telegramm senden
         If com.sendMOV() Then
             'Log
-            OnLog(New LogEventArgs($"Moving Axis...", Logger.ErrorLevel.INFO))
+            OnLog(New LogEventArgs($"Moving Axis...", Logger.LogLevel.INFO))
             Return True
         Else Return False
         End If
@@ -366,7 +366,7 @@ Friend Class RobotControl
         'Telegram senden
         If com.sendREF() Then
             'Log
-            OnLog(New LogEventArgs($"Referenz läuft...", Logger.ErrorLevel.INFO))
+            OnLog(New LogEventArgs($"Referenz läuft...", Logger.LogLevel.INFO))
             Return True
         Else Return False
         End If
@@ -394,7 +394,7 @@ Friend Class RobotControl
                 oSyncMov.s(i) = If(enabled(i), Math.Abs(target(i) - pos(i)), 0)
             Next
             If Not oSyncMov.calculate() Then
-                OnLog(New LogEventArgs("Berechnung für synchrone Bewegung fehlgeschlagen!", Logger.ErrorLevel.ERR))
+                OnLog(New LogEventArgs("Berechnung für synchrone Bewegung fehlgeschlagen!", Logger.LogLevel.ERR))
                 Array.Copy(pos, target, pos.Length()) ' Ziel auf aktuelle Position setzen
             Else
                 'Geschwindigkeit und Beschleunigung zuweisen
@@ -410,7 +410,7 @@ Friend Class RobotControl
         'Telegram senden
         If com.sendMOV() Then
             'Log
-            OnLog(New LogEventArgs($"Moving Axis...", Logger.ErrorLevel.INFO))
+            OnLog(New LogEventArgs($"Moving Axis...", Logger.LogLevel.INFO))
             Return True
         Else Return False
         End If
@@ -424,7 +424,7 @@ Friend Class RobotControl
     Public Function movServo(srvNr As Int32, angle As Int32) As Boolean
         If com.sendSRV(srvNr, angle) Then
             'Log
-            OnLog(New LogEventArgs($"Moving Servo {srvNr} to {angle}...", Logger.ErrorLevel.INFO))
+            OnLog(New LogEventArgs($"Moving Servo {srvNr} to {angle}...", Logger.LogLevel.INFO))
             Return True
         Else Return False
         End If
@@ -433,7 +433,7 @@ Friend Class RobotControl
         stopProgram() 'Sequenz stoppen
         com.sendStop()
         'Log
-        OnLog(New LogEventArgs("Programm gestoppt!", Logger.ErrorLevel.INFO))
+        OnLog(New LogEventArgs("Programm gestoppt!", Logger.LogLevel.INFO))
     End Sub
     Private Sub ePOS_Received(sender As Object, e As POS_ReceivedEventArgs)
         For i = 0 To 5

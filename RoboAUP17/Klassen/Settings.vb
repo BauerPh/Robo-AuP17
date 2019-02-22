@@ -11,9 +11,9 @@
         JointParameter = New JointParameter(5) {} '6 Joints
         ServoParameter = New ServoParameter(2) {} '3 Servos
         'Lade letzte geöffnete Datei, wenn vorhanden!
-        If System.IO.File.Exists(My.Settings.lastConfigFile) Then
-            XMLReader(My.Settings.lastConfigFile)
-            _actFilename = My.Settings.lastConfigFile
+        If System.IO.File.Exists(My.Settings.LastConfigFile) Then
+            XMLReader(My.Settings.LastConfigFile)
+            _actFilename = My.Settings.LastConfigFile
             configFileLoaded = True
         Else
             If Not loadDefaulSettings() Then
@@ -47,7 +47,7 @@
         If openFileDialog.ShowDialog() = DialogResult.OK Then
             Try
                 XMLReader(openFileDialog.FileName)
-                My.Settings.lastConfigFile = openFileDialog.FileName
+                My.Settings.LastConfigFile = openFileDialog.FileName
                 My.Settings.Save()
                 _actFilename = openFileDialog.FileName
                 Return True
@@ -65,7 +65,7 @@
         If saveFileDialog.ShowDialog() = DialogResult.OK Then
             Try
                 XMLWriter(saveFileDialog.FileName)
-                My.Settings.lastConfigFile = saveFileDialog.FileName
+                My.Settings.LastConfigFile = saveFileDialog.FileName
                 My.Settings.Save()
                 _actFilename = saveFileDialog.FileName
                 Return True

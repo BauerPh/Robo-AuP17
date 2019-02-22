@@ -57,7 +57,7 @@ Friend Class SerialCommunication
         Try
             _SerialPort1.Open()
         Catch ex As Exception
-            OnLog(New LogEventArgs("Verbindungsfehler!", Logger.ErrorLevel.ERR))
+            OnLog(New LogEventArgs("Verbindungsfehler!", Logger.LogLevel.ERR))
             disconnect()
             Return
         End Try
@@ -71,7 +71,7 @@ Friend Class SerialCommunication
         If _SerialPort1.IsOpen Then _SerialPort1.Close()
         _connected = False
         OnSerialDisconnected(New EventArgs())
-        OnLog(New LogEventArgs("Verbindung getrennt!", Logger.ErrorLevel.INFO))
+        OnLog(New LogEventArgs("Verbindung getrennt!", Logger.LogLevel.INFO))
     End Sub
     Public Sub resetDataSets()
         _msgDataSend.cnt = 0
@@ -175,7 +175,7 @@ Friend Class SerialCommunication
             _tConWaitACK.Stop()
             disconnect()
             _conWaitACK = False
-            OnLog(New LogEventArgs("Falsches Gerät angeschlossen!", Logger.ErrorLevel.ERR))
+            OnLog(New LogEventArgs("Falsches Gerät angeschlossen!", Logger.LogLevel.ERR))
         Else
             sendCON()
         End If
@@ -187,7 +187,7 @@ Friend Class SerialCommunication
             _tWaitACK.Stop()
             _movWaitACK = False
             _refWaitACK = False
-            OnLog(New LogEventArgs("keine Antwort!", Logger.ErrorLevel.ERR))
+            OnLog(New LogEventArgs("keine Antwort!", Logger.LogLevel.ERR))
         Else
             If _movWaitACK Then
                 sendMOV()
@@ -197,7 +197,7 @@ Friend Class SerialCommunication
         End If
     End Sub
     Private Sub rcvMsg(msg As String)
-        OnLog(New LogEventArgs(msg, Logger.ErrorLevel.COMIN))
+        OnLog(New LogEventArgs(msg, Logger.LogLevel.COMIN))
 
         If msg.Length < 3 Then
             Return
@@ -232,7 +232,7 @@ Friend Class SerialCommunication
             _tConWaitACK.Stop()
             _connected = True
             OnSerialConnected(New EventArgs())
-            OnLog(New LogEventArgs("Verbunden!", Logger.ErrorLevel.INFO))
+            OnLog(New LogEventArgs("Verbunden!", Logger.LogLevel.INFO))
         ElseIf _movWaitACK Or _refWaitACK Then
             _movWaitACK = False
             _refWaitACK = False
@@ -271,13 +271,13 @@ Friend Class SerialCommunication
         _refWaitACK = False
         _tWaitACK.Stop()
         If errnum = 1 Then
-            OnLog(New LogEventArgs("Error!", Logger.ErrorLevel.ERR))
+            OnLog(New LogEventArgs("Error!", Logger.LogLevel.ERR))
         ElseIf errnum = 2 Then
-            OnLog(New LogEventArgs("Parameter Error!", Logger.ErrorLevel.ERR))
+            OnLog(New LogEventArgs("Parameter Error!", Logger.LogLevel.ERR))
         ElseIf errnum = 3 Then
-            OnLog(New LogEventArgs("Referenz fehlt!", Logger.ErrorLevel.ERR))
+            OnLog(New LogEventArgs("Referenz fehlt!", Logger.LogLevel.ERR))
         ElseIf errnum = 4 Then
-            OnLog(New LogEventArgs("Referenz fehlgeschlagen!", Logger.ErrorLevel.ERR))
+            OnLog(New LogEventArgs("Referenz fehlgeschlagen!", Logger.LogLevel.ERR))
         End If
         OnERR_Received(New ERR_ReceivedEventArgs(errnum))
     End Sub
@@ -381,7 +381,7 @@ Friend Class SerialCommunication
     End Sub
     Private Sub sendMsg(msg As String)
         _SerialPort1.Write(msg)
-        OnLog(New LogEventArgs(msg, Logger.ErrorLevel.COMOUT))
+        OnLog(New LogEventArgs(msg, Logger.LogLevel.COMOUT))
     End Sub
     Private Sub _SerialPort1_DataReceived(sender As Object, e As SerialDataReceivedEventArgs) Handles _SerialPort1.DataReceived
         While (_SerialPort1.BytesToRead > 0)
@@ -436,9 +436,9 @@ End Class
 'Event Parameter
 Friend Class LogEventArgs : Inherits EventArgs
     Private _LogMsg As String
-    Private _LogLvl As Logger.ErrorLevel
+    Private _LogLvl As Logger.LogLevel
 
-    Public Sub New(LogMsg As String, LogLvl As Logger.ErrorLevel)
+    Public Sub New(LogMsg As String, LogLvl As Logger.LogLevel)
         _LogMsg = LogMsg
         _LogLvl = LogLvl
     End Sub
@@ -447,7 +447,7 @@ Friend Class LogEventArgs : Inherits EventArgs
             Return _LogMsg
         End Get
     End Property
-    Public ReadOnly Property LogLvl As Logger.ErrorLevel
+    Public ReadOnly Property LogLvl As Logger.LogLevel
         Get
             Return _LogLvl
         End Get

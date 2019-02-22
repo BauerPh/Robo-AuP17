@@ -40,12 +40,31 @@ Partial Class frmMain
         Me.msSaveView = New System.Windows.Forms.ToolStripMenuItem()
         Me.msDefaulView = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.RoboterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowVars = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowTeachpoints = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowACLEditor = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowACLToolbox = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RoboterToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowRoboStatus = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowRoboReference = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowRoboCtrl = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowTeachbox = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowLog = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowComLogSerial = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowComLogTCPIP = New System.Windows.Forms.ToolStripMenuItem()
         Me.EinstellungenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.msDenavitHartPar = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.msTCPServer = New System.Windows.Forms.ToolStripMenuItem()
         Me.HilfeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.msGitHub = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
+        Me.LoggingLevelToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msSetLogLvlDebug = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msSetLogLvlInfo = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msSetLogLvlWarning = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msSetLogLvlError = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.msShowInfo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
@@ -56,19 +75,6 @@ Partial Class frmMain
         Me.tsBtnConnect = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnDisconnect = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
-        Me.RoboterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowVars = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowTeachpoints = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowACLEditor = New System.Windows.Forms.ToolStripMenuItem()
-        Me.RoboterToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowRoboCtrl = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowRoboReference = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowRoboStatus = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowTeachbox = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowLog = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowComLogSerial = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowACLToolbox = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowComLogTCPIP = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
@@ -190,6 +196,86 @@ Partial Class frmMain
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
         Me.ToolStripSeparator3.Size = New System.Drawing.Size(182, 6)
         '
+        'RoboterToolStripMenuItem
+        '
+        Me.RoboterToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowVars, Me.msShowTeachpoints, Me.msShowACLEditor, Me.msShowACLToolbox, Me.RoboterToolStripMenuItem1, Me.msShowTeachbox, Me.msShowLog, Me.msShowComLogSerial, Me.msShowComLogTCPIP})
+        Me.RoboterToolStripMenuItem.Name = "RoboterToolStripMenuItem"
+        Me.RoboterToolStripMenuItem.Size = New System.Drawing.Size(185, 22)
+        Me.RoboterToolStripMenuItem.Text = "Anzeigen"
+        '
+        'msShowVars
+        '
+        Me.msShowVars.Name = "msShowVars"
+        Me.msShowVars.Size = New System.Drawing.Size(169, 22)
+        Me.msShowVars.Text = "Variablen"
+        '
+        'msShowTeachpoints
+        '
+        Me.msShowTeachpoints.Name = "msShowTeachpoints"
+        Me.msShowTeachpoints.Size = New System.Drawing.Size(169, 22)
+        Me.msShowTeachpoints.Text = "Teachpunkte"
+        '
+        'msShowACLEditor
+        '
+        Me.msShowACLEditor.Name = "msShowACLEditor"
+        Me.msShowACLEditor.Size = New System.Drawing.Size(169, 22)
+        Me.msShowACLEditor.Text = "ACL-Editor"
+        '
+        'msShowACLToolbox
+        '
+        Me.msShowACLToolbox.Name = "msShowACLToolbox"
+        Me.msShowACLToolbox.Size = New System.Drawing.Size(169, 22)
+        Me.msShowACLToolbox.Text = "ACL-Toolbox"
+        '
+        'RoboterToolStripMenuItem1
+        '
+        Me.RoboterToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowRoboStatus, Me.msShowRoboReference, Me.msShowRoboCtrl})
+        Me.RoboterToolStripMenuItem1.Name = "RoboterToolStripMenuItem1"
+        Me.RoboterToolStripMenuItem1.Size = New System.Drawing.Size(169, 22)
+        Me.RoboterToolStripMenuItem1.Text = "Robotersteuerung"
+        '
+        'msShowRoboStatus
+        '
+        Me.msShowRoboStatus.Name = "msShowRoboStatus"
+        Me.msShowRoboStatus.Size = New System.Drawing.Size(128, 22)
+        Me.msShowRoboStatus.Text = "Status"
+        '
+        'msShowRoboReference
+        '
+        Me.msShowRoboReference.Name = "msShowRoboReference"
+        Me.msShowRoboReference.Size = New System.Drawing.Size(128, 22)
+        Me.msShowRoboReference.Text = "Referenz"
+        '
+        'msShowRoboCtrl
+        '
+        Me.msShowRoboCtrl.Name = "msShowRoboCtrl"
+        Me.msShowRoboCtrl.Size = New System.Drawing.Size(128, 22)
+        Me.msShowRoboCtrl.Text = "Steuerung"
+        '
+        'msShowTeachbox
+        '
+        Me.msShowTeachbox.Name = "msShowTeachbox"
+        Me.msShowTeachbox.Size = New System.Drawing.Size(169, 22)
+        Me.msShowTeachbox.Text = "Teachbox"
+        '
+        'msShowLog
+        '
+        Me.msShowLog.Name = "msShowLog"
+        Me.msShowLog.Size = New System.Drawing.Size(169, 22)
+        Me.msShowLog.Text = "Logausgabe"
+        '
+        'msShowComLogSerial
+        '
+        Me.msShowComLogSerial.Name = "msShowComLogSerial"
+        Me.msShowComLogSerial.Size = New System.Drawing.Size(169, 22)
+        Me.msShowComLogSerial.Text = "Comlog (Serial)"
+        '
+        'msShowComLogTCPIP
+        '
+        Me.msShowComLogTCPIP.Name = "msShowComLogTCPIP"
+        Me.msShowComLogTCPIP.Size = New System.Drawing.Size(169, 22)
+        Me.msShowComLogTCPIP.Text = "Comlog (TCP/IP)"
+        '
         'EinstellungenToolStripMenuItem1
         '
         Me.EinstellungenToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msDenavitHartPar, Me.ToolStripSeparator5, Me.msTCPServer})
@@ -218,7 +304,7 @@ Partial Class frmMain
         '
         'HilfeToolStripMenuItem
         '
-        Me.HilfeToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msGitHub, Me.ToolStripSeparator6, Me.msShowInfo})
+        Me.HilfeToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msGitHub, Me.ToolStripSeparator7, Me.LoggingLevelToolStripMenuItem, Me.ToolStripSeparator6, Me.msShowInfo})
         Me.HilfeToolStripMenuItem.Name = "HilfeToolStripMenuItem"
         Me.HilfeToolStripMenuItem.Size = New System.Drawing.Size(44, 20)
         Me.HilfeToolStripMenuItem.Text = "Hilfe"
@@ -229,6 +315,42 @@ Partial Class frmMain
         Me.msGitHub.Name = "msGitHub"
         Me.msGitHub.Size = New System.Drawing.Size(200, 22)
         Me.msGitHub.Text = "Aup17 Robo auf GitHub"
+        '
+        'ToolStripSeparator7
+        '
+        Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
+        Me.ToolStripSeparator7.Size = New System.Drawing.Size(197, 6)
+        '
+        'LoggingLevelToolStripMenuItem
+        '
+        Me.LoggingLevelToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msSetLogLvlDebug, Me.msSetLogLvlInfo, Me.msSetLogLvlWarning, Me.msSetLogLvlError})
+        Me.LoggingLevelToolStripMenuItem.Name = "LoggingLevelToolStripMenuItem"
+        Me.LoggingLevelToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
+        Me.LoggingLevelToolStripMenuItem.Text = "Logging Level"
+        '
+        'msSetLogLvlDebug
+        '
+        Me.msSetLogLvlDebug.Name = "msSetLogLvlDebug"
+        Me.msSetLogLvlDebug.Size = New System.Drawing.Size(137, 22)
+        Me.msSetLogLvlDebug.Text = "Debug"
+        '
+        'msSetLogLvlInfo
+        '
+        Me.msSetLogLvlInfo.Name = "msSetLogLvlInfo"
+        Me.msSetLogLvlInfo.Size = New System.Drawing.Size(137, 22)
+        Me.msSetLogLvlInfo.Text = "Information"
+        '
+        'msSetLogLvlWarning
+        '
+        Me.msSetLogLvlWarning.Name = "msSetLogLvlWarning"
+        Me.msSetLogLvlWarning.Size = New System.Drawing.Size(137, 22)
+        Me.msSetLogLvlWarning.Text = "Warnung"
+        '
+        'msSetLogLvlError
+        '
+        Me.msSetLogLvlError.Name = "msSetLogLvlError"
+        Me.msSetLogLvlError.Size = New System.Drawing.Size(137, 22)
+        Me.msSetLogLvlError.Text = "Fehler"
         '
         'ToolStripSeparator6
         '
@@ -300,86 +422,6 @@ Partial Class frmMain
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
         Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 25)
-        '
-        'RoboterToolStripMenuItem
-        '
-        Me.RoboterToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowVars, Me.msShowTeachpoints, Me.msShowACLEditor, Me.msShowACLToolbox, Me.RoboterToolStripMenuItem1, Me.msShowTeachbox, Me.msShowLog, Me.msShowComLogSerial, Me.msShowComLogTCPIP})
-        Me.RoboterToolStripMenuItem.Name = "RoboterToolStripMenuItem"
-        Me.RoboterToolStripMenuItem.Size = New System.Drawing.Size(185, 22)
-        Me.RoboterToolStripMenuItem.Text = "Anzeigen"
-        '
-        'msShowVars
-        '
-        Me.msShowVars.Name = "msShowVars"
-        Me.msShowVars.Size = New System.Drawing.Size(180, 22)
-        Me.msShowVars.Text = "Variablen"
-        '
-        'msShowTeachpoints
-        '
-        Me.msShowTeachpoints.Name = "msShowTeachpoints"
-        Me.msShowTeachpoints.Size = New System.Drawing.Size(180, 22)
-        Me.msShowTeachpoints.Text = "Teachpunkte"
-        '
-        'msShowACLEditor
-        '
-        Me.msShowACLEditor.Name = "msShowACLEditor"
-        Me.msShowACLEditor.Size = New System.Drawing.Size(180, 22)
-        Me.msShowACLEditor.Text = "ACL-Editor"
-        '
-        'RoboterToolStripMenuItem1
-        '
-        Me.RoboterToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowRoboStatus, Me.msShowRoboReference, Me.msShowRoboCtrl})
-        Me.RoboterToolStripMenuItem1.Name = "RoboterToolStripMenuItem1"
-        Me.RoboterToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
-        Me.RoboterToolStripMenuItem1.Text = "Robotersteuerung"
-        '
-        'msShowRoboCtrl
-        '
-        Me.msShowRoboCtrl.Name = "msShowRoboCtrl"
-        Me.msShowRoboCtrl.Size = New System.Drawing.Size(180, 22)
-        Me.msShowRoboCtrl.Text = "Steuerung"
-        '
-        'msShowRoboReference
-        '
-        Me.msShowRoboReference.Name = "msShowRoboReference"
-        Me.msShowRoboReference.Size = New System.Drawing.Size(180, 22)
-        Me.msShowRoboReference.Text = "Referenz"
-        '
-        'msShowRoboStatus
-        '
-        Me.msShowRoboStatus.Name = "msShowRoboStatus"
-        Me.msShowRoboStatus.Size = New System.Drawing.Size(180, 22)
-        Me.msShowRoboStatus.Text = "Status"
-        '
-        'msShowTeachbox
-        '
-        Me.msShowTeachbox.Name = "msShowTeachbox"
-        Me.msShowTeachbox.Size = New System.Drawing.Size(180, 22)
-        Me.msShowTeachbox.Text = "Teachbox"
-        '
-        'msShowLog
-        '
-        Me.msShowLog.Name = "msShowLog"
-        Me.msShowLog.Size = New System.Drawing.Size(180, 22)
-        Me.msShowLog.Text = "Logausgabe"
-        '
-        'msShowComLogSerial
-        '
-        Me.msShowComLogSerial.Name = "msShowComLogSerial"
-        Me.msShowComLogSerial.Size = New System.Drawing.Size(180, 22)
-        Me.msShowComLogSerial.Text = "Comlog (Serial)"
-        '
-        'msShowACLToolbox
-        '
-        Me.msShowACLToolbox.Name = "msShowACLToolbox"
-        Me.msShowACLToolbox.Size = New System.Drawing.Size(180, 22)
-        Me.msShowACLToolbox.Text = "ACL-Toolbox"
-        '
-        'msShowComLogTCPIP
-        '
-        Me.msShowComLogTCPIP.Name = "msShowComLogTCPIP"
-        Me.msShowComLogTCPIP.Size = New System.Drawing.Size(180, 22)
-        Me.msShowComLogTCPIP.Text = "Comlog (TCP/IP)"
         '
         'frmMain
         '
@@ -453,4 +495,10 @@ Partial Class frmMain
     Friend WithEvents msShowLog As ToolStripMenuItem
     Friend WithEvents msShowComLogSerial As ToolStripMenuItem
     Friend WithEvents msShowComLogTCPIP As ToolStripMenuItem
+    Friend WithEvents LoggingLevelToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents msSetLogLvlDebug As ToolStripMenuItem
+    Friend WithEvents msSetLogLvlInfo As ToolStripMenuItem
+    Friend WithEvents msSetLogLvlWarning As ToolStripMenuItem
+    Friend WithEvents msSetLogLvlError As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
 End Class

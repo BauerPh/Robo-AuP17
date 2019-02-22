@@ -57,12 +57,12 @@ Namespace My
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("")>  _
-        Public Property lastConfigFile() As String
+        Public Property LastConfigFile() As String
             Get
-                Return CType(Me("lastConfigFile"),String)
+                Return CType(Me("LastConfigFile"),String)
             End Get
             Set
-                Me("lastConfigFile") = value
+                Me("LastConfigFile") = value
             End Set
         End Property
         
@@ -75,6 +75,18 @@ Namespace My
             End Get
             Set
                 Me("StartMaximized") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
+        Public Property LogLvl() As Integer
+            Get
+                Return CType(Me("LogLvl"),Integer)
+            End Get
+            Set
+                Me("LogLvl") = value
             End Set
         End Property
     End Class
