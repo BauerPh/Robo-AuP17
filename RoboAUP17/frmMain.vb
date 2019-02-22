@@ -39,6 +39,7 @@ Public Class frmMain
         _logger = New Logger(_dckPanLog.sciLog)
         SetLogLevel(My.Settings.LogLvl)
 
+        'Configure Dock Panel
         Me.SuspendLayout()
         ConfigureDockPanel()
         Me.ResumeLayout()
@@ -74,6 +75,12 @@ Public Class frmMain
         My.Settings.Save()
     End Sub
 
+    'MenuStrip Datei
+    Private Sub msExit_Click(sender As Object, e As EventArgs) Handles msExit.Click
+        Application.Exit()
+    End Sub
+
+    'MenuStrip Ansicht
     Private Sub msSaveView_Click(sender As Object, e As EventArgs) Handles msSaveView.Click
         dckPanel.SaveAsXml(_viewSettingsFilename)
         My.Settings.StartMaximized = (WindowState = FormWindowState.Maximized)
@@ -86,6 +93,7 @@ Public Class frmMain
         MessageBox.Show("Standard wurde wiederhergestellt. Neustart erforderlich!", "Okay", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
+    'MenuStrip Hilfe
     Private Sub msGitHub_Click(sender As Object, e As EventArgs) Handles msGitHub.Click
         Process.Start("https://github.com/BauerPh/RoboAUP17")
     End Sub
@@ -268,6 +276,7 @@ Public Class frmMain
         Return New DockContent()
     End Function
 
+    'Timer to clear statusStrip hint message
     Private Sub _ssHintTimer_Elapsed(sender As Object, e As ElapsedEventArgs) Handles _ssHintTimer.Elapsed
         If InvokeRequired Then
             Invoke(Sub() _ssHintTimer_Elapsed(sender, e))
@@ -277,5 +286,4 @@ Public Class frmMain
         _ssHintTimer.Stop()
         ssLblStatus.Text = ""
     End Sub
-
 End Class

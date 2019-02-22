@@ -115,7 +115,7 @@ Partial Class frmMain
         '
         Me.msNew.Image = CType(resources.GetObject("msNew.Image"), System.Drawing.Image)
         Me.msNew.Name = "msNew"
-        Me.msNew.Size = New System.Drawing.Size(166, 22)
+        Me.msNew.Size = New System.Drawing.Size(180, 22)
         Me.msNew.Text = "Neu"
         '
         'msOpen
@@ -148,7 +148,7 @@ Partial Class frmMain
         '
         Me.msExit.Image = CType(resources.GetObject("msExit.Image"), System.Drawing.Image)
         Me.msExit.Name = "msExit"
-        Me.msExit.Size = New System.Drawing.Size(166, 22)
+        Me.msExit.Size = New System.Drawing.Size(180, 22)
         Me.msExit.Text = "Beenden"
         '
         'BearbeitenToolStripMenuItem
