@@ -40,14 +40,6 @@ Partial Class frmMain
         Me.msSaveView = New System.Windows.Forms.ToolStripMenuItem()
         Me.msDefaulView = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
-        Me.msShowPanVariable = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowPanTeachPoints = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowPanCodeEditor = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowPanCtrl = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowPanTeachBox = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowPanRoboStatus = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowPanProgramTools = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowPanLog = New System.Windows.Forms.ToolStripMenuItem()
         Me.EinstellungenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.msDenavitHartPar = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
@@ -56,7 +48,7 @@ Partial Class frmMain
         Me.msGitHub = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.msShowInfo = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStrip = New System.Windows.Forms.ToolStrip()
+        Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.tsBtnOpen = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnSave = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
@@ -64,9 +56,22 @@ Partial Class frmMain
         Me.tsBtnConnect = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnDisconnect = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.RoboterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowVars = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowTeachpoints = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowACLEditor = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RoboterToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowRoboCtrl = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowRoboReference = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowRoboStatus = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowTeachbox = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowLog = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowComLogSerial = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowACLToolbox = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowComLogTCPIP = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
-        Me.ToolStrip.SuspendLayout()
+        Me.ToolStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'StatusStrip
@@ -163,7 +168,7 @@ Partial Class frmMain
         '
         'AnsichtToolStripMenuItem
         '
-        Me.AnsichtToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msSaveView, Me.msDefaulView, Me.ToolStripSeparator3, Me.msShowPanVariable, Me.msShowPanTeachPoints, Me.msShowPanCodeEditor, Me.msShowPanCtrl, Me.msShowPanTeachBox, Me.msShowPanRoboStatus, Me.msShowPanProgramTools, Me.msShowPanLog})
+        Me.AnsichtToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msSaveView, Me.msDefaulView, Me.ToolStripSeparator3, Me.RoboterToolStripMenuItem})
         Me.AnsichtToolStripMenuItem.Name = "AnsichtToolStripMenuItem"
         Me.AnsichtToolStripMenuItem.Size = New System.Drawing.Size(59, 20)
         Me.AnsichtToolStripMenuItem.Text = "Ansicht"
@@ -184,54 +189,6 @@ Partial Class frmMain
         '
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
         Me.ToolStripSeparator3.Size = New System.Drawing.Size(182, 6)
-        '
-        'msShowPanVariable
-        '
-        Me.msShowPanVariable.Name = "msShowPanVariable"
-        Me.msShowPanVariable.Size = New System.Drawing.Size(185, 22)
-        Me.msShowPanVariable.Text = "Variablen"
-        '
-        'msShowPanTeachPoints
-        '
-        Me.msShowPanTeachPoints.Name = "msShowPanTeachPoints"
-        Me.msShowPanTeachPoints.Size = New System.Drawing.Size(185, 22)
-        Me.msShowPanTeachPoints.Text = "Teachpunkte"
-        '
-        'msShowPanCodeEditor
-        '
-        Me.msShowPanCodeEditor.Name = "msShowPanCodeEditor"
-        Me.msShowPanCodeEditor.Size = New System.Drawing.Size(185, 22)
-        Me.msShowPanCodeEditor.Text = "ACL-Editor"
-        '
-        'msShowPanCtrl
-        '
-        Me.msShowPanCtrl.Name = "msShowPanCtrl"
-        Me.msShowPanCtrl.Size = New System.Drawing.Size(185, 22)
-        Me.msShowPanCtrl.Text = "Steuerung"
-        '
-        'msShowPanTeachBox
-        '
-        Me.msShowPanTeachBox.Name = "msShowPanTeachBox"
-        Me.msShowPanTeachBox.Size = New System.Drawing.Size(185, 22)
-        Me.msShowPanTeachBox.Text = "Teachbox"
-        '
-        'msShowPanRoboStatus
-        '
-        Me.msShowPanRoboStatus.Name = "msShowPanRoboStatus"
-        Me.msShowPanRoboStatus.Size = New System.Drawing.Size(185, 22)
-        Me.msShowPanRoboStatus.Text = "Roboter Status"
-        '
-        'msShowPanProgramTools
-        '
-        Me.msShowPanProgramTools.Name = "msShowPanProgramTools"
-        Me.msShowPanProgramTools.Size = New System.Drawing.Size(185, 22)
-        Me.msShowPanProgramTools.Text = "Tools"
-        '
-        'msShowPanLog
-        '
-        Me.msShowPanLog.Name = "msShowPanLog"
-        Me.msShowPanLog.Size = New System.Drawing.Size(185, 22)
-        Me.msShowPanLog.Text = "Ausgabe (Log)"
         '
         'EinstellungenToolStripMenuItem1
         '
@@ -285,14 +242,14 @@ Partial Class frmMain
         Me.msShowInfo.Size = New System.Drawing.Size(200, 22)
         Me.msShowInfo.Text = "Informationen"
         '
-        'ToolStrip
+        'ToolStrip1
         '
-        Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsBtnOpen, Me.tsBtnSave, Me.ToolStripSeparator1, Me.tsCbComPort, Me.tsBtnConnect, Me.tsBtnDisconnect, Me.ToolStripSeparator2})
-        Me.ToolStrip.Location = New System.Drawing.Point(0, 24)
-        Me.ToolStrip.Name = "ToolStrip"
-        Me.ToolStrip.Size = New System.Drawing.Size(1113, 25)
-        Me.ToolStrip.TabIndex = 2
-        Me.ToolStrip.Text = "ToolStrip"
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsBtnOpen, Me.tsBtnSave, Me.ToolStripSeparator1, Me.tsCbComPort, Me.tsBtnConnect, Me.tsBtnDisconnect, Me.ToolStripSeparator2})
+        Me.ToolStrip1.Location = New System.Drawing.Point(0, 24)
+        Me.ToolStrip1.Name = "ToolStrip1"
+        Me.ToolStrip1.Size = New System.Drawing.Size(1113, 25)
+        Me.ToolStrip1.TabIndex = 2
+        Me.ToolStrip1.Text = "ToolStrip"
         '
         'tsBtnOpen
         '
@@ -344,13 +301,93 @@ Partial Class frmMain
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
         Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 25)
         '
+        'RoboterToolStripMenuItem
+        '
+        Me.RoboterToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowVars, Me.msShowTeachpoints, Me.msShowACLEditor, Me.msShowACLToolbox, Me.RoboterToolStripMenuItem1, Me.msShowTeachbox, Me.msShowLog, Me.msShowComLogSerial, Me.msShowComLogTCPIP})
+        Me.RoboterToolStripMenuItem.Name = "RoboterToolStripMenuItem"
+        Me.RoboterToolStripMenuItem.Size = New System.Drawing.Size(185, 22)
+        Me.RoboterToolStripMenuItem.Text = "Anzeigen"
+        '
+        'msShowVars
+        '
+        Me.msShowVars.Name = "msShowVars"
+        Me.msShowVars.Size = New System.Drawing.Size(180, 22)
+        Me.msShowVars.Text = "Variablen"
+        '
+        'msShowTeachpoints
+        '
+        Me.msShowTeachpoints.Name = "msShowTeachpoints"
+        Me.msShowTeachpoints.Size = New System.Drawing.Size(180, 22)
+        Me.msShowTeachpoints.Text = "Teachpunkte"
+        '
+        'msShowACLEditor
+        '
+        Me.msShowACLEditor.Name = "msShowACLEditor"
+        Me.msShowACLEditor.Size = New System.Drawing.Size(180, 22)
+        Me.msShowACLEditor.Text = "ACL-Editor"
+        '
+        'RoboterToolStripMenuItem1
+        '
+        Me.RoboterToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowRoboStatus, Me.msShowRoboReference, Me.msShowRoboCtrl})
+        Me.RoboterToolStripMenuItem1.Name = "RoboterToolStripMenuItem1"
+        Me.RoboterToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.RoboterToolStripMenuItem1.Text = "Robotersteuerung"
+        '
+        'msShowRoboCtrl
+        '
+        Me.msShowRoboCtrl.Name = "msShowRoboCtrl"
+        Me.msShowRoboCtrl.Size = New System.Drawing.Size(180, 22)
+        Me.msShowRoboCtrl.Text = "Steuerung"
+        '
+        'msShowRoboReference
+        '
+        Me.msShowRoboReference.Name = "msShowRoboReference"
+        Me.msShowRoboReference.Size = New System.Drawing.Size(180, 22)
+        Me.msShowRoboReference.Text = "Referenz"
+        '
+        'msShowRoboStatus
+        '
+        Me.msShowRoboStatus.Name = "msShowRoboStatus"
+        Me.msShowRoboStatus.Size = New System.Drawing.Size(180, 22)
+        Me.msShowRoboStatus.Text = "Status"
+        '
+        'msShowTeachbox
+        '
+        Me.msShowTeachbox.Name = "msShowTeachbox"
+        Me.msShowTeachbox.Size = New System.Drawing.Size(180, 22)
+        Me.msShowTeachbox.Text = "Teachbox"
+        '
+        'msShowLog
+        '
+        Me.msShowLog.Name = "msShowLog"
+        Me.msShowLog.Size = New System.Drawing.Size(180, 22)
+        Me.msShowLog.Text = "Logausgabe"
+        '
+        'msShowComLogSerial
+        '
+        Me.msShowComLogSerial.Name = "msShowComLogSerial"
+        Me.msShowComLogSerial.Size = New System.Drawing.Size(180, 22)
+        Me.msShowComLogSerial.Text = "Comlog (Serial)"
+        '
+        'msShowACLToolbox
+        '
+        Me.msShowACLToolbox.Name = "msShowACLToolbox"
+        Me.msShowACLToolbox.Size = New System.Drawing.Size(180, 22)
+        Me.msShowACLToolbox.Text = "ACL-Toolbox"
+        '
+        'msShowComLogTCPIP
+        '
+        Me.msShowComLogTCPIP.Name = "msShowComLogTCPIP"
+        Me.msShowComLogTCPIP.Size = New System.Drawing.Size(180, 22)
+        Me.msShowComLogTCPIP.Text = "Comlog (TCP/IP)"
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.ClientSize = New System.Drawing.Size(1113, 669)
-        Me.Controls.Add(Me.ToolStrip)
+        Me.Controls.Add(Me.ToolStrip1)
         Me.Controls.Add(Me.StatusStrip)
         Me.Controls.Add(Me.MenuStrip)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -363,8 +400,8 @@ Partial Class frmMain
         Me.StatusStrip.PerformLayout()
         Me.MenuStrip.ResumeLayout(False)
         Me.MenuStrip.PerformLayout()
-        Me.ToolStrip.ResumeLayout(False)
-        Me.ToolStrip.PerformLayout()
+        Me.ToolStrip1.ResumeLayout(False)
+        Me.ToolStrip1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -374,7 +411,7 @@ Partial Class frmMain
     Friend WithEvents MenuStrip As MenuStrip
     Friend WithEvents DateiToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BearbeitenToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ToolStrip As ToolStrip
+    Friend WithEvents ToolStrip1 As ToolStrip
     Friend WithEvents ssLblStatus As ToolStripStatusLabel
     Friend WithEvents HilfeToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents msShowInfo As ToolStripMenuItem
@@ -389,17 +426,12 @@ Partial Class frmMain
     Friend WithEvents AnsichtToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents msSaveView As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
-    Friend WithEvents msShowPanVariable As ToolStripMenuItem
-    Friend WithEvents msShowPanTeachPoints As ToolStripMenuItem
-    Friend WithEvents msShowPanCodeEditor As ToolStripMenuItem
-    Friend WithEvents msShowPanProgramTools As ToolStripMenuItem
     Friend WithEvents EinstellungenToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents msDenavitHartPar As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
     Friend WithEvents msExit As ToolStripMenuItem
     Friend WithEvents msUndo As ToolStripMenuItem
     Friend WithEvents msRedo As ToolStripMenuItem
-    Friend WithEvents msShowPanTeachBox As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
     Friend WithEvents msTCPServer As ToolStripMenuItem
     Friend WithEvents msGitHub As ToolStripMenuItem
@@ -407,8 +439,18 @@ Partial Class frmMain
     Friend WithEvents tsBtnOpen As ToolStripButton
     Friend WithEvents tsBtnSave As ToolStripButton
     Friend WithEvents tsBtnConnect As ToolStripButton
-    Friend WithEvents msShowPanRoboStatus As ToolStripMenuItem
     Friend WithEvents msDefaulView As ToolStripMenuItem
-    Friend WithEvents msShowPanLog As ToolStripMenuItem
-    Friend WithEvents msShowPanCtrl As ToolStripMenuItem
+    Friend WithEvents RoboterToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents msShowVars As ToolStripMenuItem
+    Friend WithEvents msShowTeachpoints As ToolStripMenuItem
+    Friend WithEvents msShowACLEditor As ToolStripMenuItem
+    Friend WithEvents msShowACLToolbox As ToolStripMenuItem
+    Friend WithEvents RoboterToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents msShowRoboStatus As ToolStripMenuItem
+    Friend WithEvents msShowRoboReference As ToolStripMenuItem
+    Friend WithEvents msShowRoboCtrl As ToolStripMenuItem
+    Friend WithEvents msShowTeachbox As ToolStripMenuItem
+    Friend WithEvents msShowLog As ToolStripMenuItem
+    Friend WithEvents msShowComLogSerial As ToolStripMenuItem
+    Friend WithEvents msShowComLogTCPIP As ToolStripMenuItem
 End Class

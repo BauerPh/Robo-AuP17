@@ -1,6 +1,4 @@
-﻿Option Strict On
-
-Imports WeifenLuo.WinFormsUI.Docking
+﻿Imports WeifenLuo.WinFormsUI.Docking
 Public Class CustomFloatWindow
     Inherits FloatWindow
 

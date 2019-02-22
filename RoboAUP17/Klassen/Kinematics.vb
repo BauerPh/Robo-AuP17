@@ -1,6 +1,4 @@
-﻿Option Strict On
-
-Imports RoboAUP17.Matrizen
+﻿Imports RoboAUP17.Matrizen
 
 Friend Class Kinematics
     Private _DHParameter(5) As DHParams

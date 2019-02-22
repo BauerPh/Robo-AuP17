@@ -1,6 +1,4 @@
-﻿Option Strict On
-
-Imports System.IO
+﻿Imports System.IO
 
 Friend Class RobotControl
     Private Const refMaxAngleBack As Int32 = 10

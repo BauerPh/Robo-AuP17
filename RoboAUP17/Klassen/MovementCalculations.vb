@@ -1,6 +1,4 @@
-﻿Option Strict On
-
-Public Class MovementCalculations
+﻿Public Class MovementCalculations
     Public v_max(5) As Double
     Public a_max(5) As Double
     Public s(5) As Double

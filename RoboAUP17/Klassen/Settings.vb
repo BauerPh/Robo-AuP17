@@ -1,6 +1,4 @@
-﻿Option Strict On
-
-Friend Class Settings
+﻿Friend Class Settings
     Private Const cDefaultConfigFile As String = "RoboSettingsDefault.xml"
     Private _actFilename As String
 

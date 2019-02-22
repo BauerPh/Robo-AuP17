@@ -125,7 +125,13 @@
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Calculations.vb" />
-    <Compile Include="Klassen\CustomFloatWindow.vb">
+    <Compile Include="Panels\panReference.Designer.vb">
+      <DependentUpon>panReference.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Panels\panReference.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Steuerelemente\CustomFloatWindow.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Klassen\Kinematics.vb" />
@@ -207,6 +213,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Klassen\Settings.vb" />
+    <Compile Include="Steuerelemente\ToolStripNumericUpDown.Designer.vb">
+      <DependentUpon>ToolStripNumericUpDown.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Steuerelemente\ToolStripNumericUpDown.vb">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="frmMain.resx">
@@ -229,6 +241,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Panels\panProgramTools.resx">
       <DependentUpon>panProgramTools.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Panels\panReference.resx">
+      <DependentUpon>panReference.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Panels\panRoboStatus.resx">
       <DependentUpon>panRoboStatus.vb</DependentUpon>

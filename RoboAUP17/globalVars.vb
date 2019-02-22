@@ -1,5 +1,3 @@
-﻿Option Strict On
-
-Module globalVars
+﻿Module globalVars
 
 End Module

@@ -1,6 +1,4 @@
-﻿Option Strict On
-
-Namespace Matrizen
+﻿Namespace Matrizen
     Public Class Matrix4x4
         Implements ICloneable
         Public val(3, 3) As Double

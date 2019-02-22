@@ -1,6 +1,4 @@
-﻿Option Strict On
-
-Imports System.IO.Ports
+﻿Imports System.IO.Ports
 Imports System.Timers
 
 Friend Class SerialCommunication

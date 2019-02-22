@@ -1,6 +1,4 @@
-﻿Option Strict On
-
-Public Class panCodeEditor
+﻿Public Class panCodeEditor
     Private maxLineNumberCharLength As Int32
     Private Sub panCodeEditor_Load(sender As Object, e As EventArgs) Handles Me.Load
         sciCodeEditor.Margins(0).Width = sciCodeEditor.TextWidth(ScintillaNET.Style.LineNumber, "99")

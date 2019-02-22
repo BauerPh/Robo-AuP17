@@ -1,6 +1,4 @@
-﻿Option Strict On
-
-Module Calculations
+﻿Module Calculations
     Public Function AngleToSteps(angle As Double, motGear As Double, mechGear As Double, stepsPerRot As Int32, angleZeroOff As Double) As Int32
         Return CInt(Math.Truncate(stepsPerRot * motGear * mechGear * (angle + angleZeroOff) / 360.0))
     End Function

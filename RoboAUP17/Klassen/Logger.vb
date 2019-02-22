@@ -1,6 +1,4 @@
-﻿Option Strict On
-
-Friend Class Logger
+﻿Friend Class Logger
     Private _logBox As RichTextBox
 
     Public Class ErrorLevel

@@ -117,30 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="ToolStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>123, 23</value>
-  </metadata>
-  <metadata name="ToolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>16, 23</value>
-  </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnMoveStart.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMLSURBVHhe7Z29b9NAGIfDX8LXH8LHQuyqAxMLRTAjNlC7
-        sfQDHIEYkBBMiKmsiIEBhBKnH4AEUgZgKEslxFIGBEhUVXPcNRcF8DWt29zdS/081aMOduzz+5OTO8fx
-        1QAAAAAAAAAAAKrG7XzsWKOVTmR5elX/n6yC9lgnzLHbMsSn0UxON/LkVSNPVaVtJYuNfOykLUt4lKod
-        0o2Yczauol6fT7v6rJkxtbFlCgdhbG/WSmdtmcLQe5tyNwZ7Z8rNdnrKlss/WTNdcjUEB5oa2XL5JWvX
-        j7sagA6b40dt2fyR5ckF586xqO4S27L5o9FMrzl3jkX1WMWWzR+6Wzfl3DkW1T1RWzZ/EEgJCUSYBCJM
-        AhEmgQiTQIRJIMIkEGESiDAJRJgEIsyDGsijd1fUgzeXnMtEe1ADefoxU782fqgnH+acy8V6kAPp0/ny
-        TN1ZOOtcT5xVCMSw9nNVPXx72bmuKKsSiGFjc129+HRPLx8rrC/GKgXSZ+Xrsrq7dM75uuhWMRDD9/U1
-        9bgz5XxtVKsaiKGr/5ZW59Wt9rhzG1GsciB9Pn97r+6/vujcTnAJpEdvzDLr3FZQCeRvoo9ZCKRI1DEL
-        gbgxY5bnKxHGLAQynOBjFgLZGTNmme9MOvczcglkd3S7m2HGLARSDu9jFgIpB4HsUd6yhsCHegkJZDh0
-        e0fkfgNhYDhi9xMIl048uNdAuLjoybKBcPnds2UC4QuqAO4mEL7CDehOgXCTg2vnHh0WCLcBCQmEG+Us
-        EgLhVtI/iB0IN1v/Q6xA+DnCNsQIhB/sDCFGIP+tBCJMAhEmgQiTQIRJIMIkEGESiDAJRJgEIkwCESaB
-        CDNEIDxqvIRhHjXOw/h3bYiH8W9N/uXaORace3nmiC2bX/R746KrATgwy+sLtlz+MdP5mGl9XA1BO+VR
-        q37ClisMurc142oMGpNpW6ZwmKnhzGxknCkDe7VIpqNMm9fHTKbIJGFbtk0tbFniYybA0mfMedP31l3j
-        G1Vw61jNMS+kh20ZAAAAAAAAAAAAKkKt9hsEEU4CAgvKBAAAAABJRU5ErkJggg==
-</value>
-  </data>
 </root>
