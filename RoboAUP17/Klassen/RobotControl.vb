@@ -319,26 +319,6 @@ Friend Class RobotControl
         Return tmpErg
     End Function
 
-    Public Sub eFIN_Received() Handles com.FINReceived
-        If _programRunning Then
-            _progIndex += 1
-            If _loopSeq And _progIndex >= progList.Count Then
-                _progIndex = 0
-            End If
-            If _progIndex < progList.Count Then
-                If Not executeProgItem(_progIndex) Then
-                    _programRunning = False
-                End If
-                RaiseEvent ProgChanged(New ProgChangedEventArgs(True, True, False, _progIndex))
-            Else
-                _programRunning = False
-                RaiseEvent ProgChanged(New ProgChangedEventArgs(False))
-            End If
-        End If
-        'Log
-        RaiseEvent Log("Finish...", Logger.LogLevel.INFO)
-    End Sub
-
     'ROBOT MOVEMENTS
     Public Sub setSpeedAndAcc(speed As Double, acc As Double)
         _actV = speed
@@ -478,12 +458,37 @@ Friend Class RobotControl
         Next
     End Sub
 
-    'EVENT
-    Private Sub ePOS_Received(refOkay As Boolean(), posSteps As Int32()) Handles com.POSReceived
+    'EVENTS
+    Private Sub eFINReceived() Handles com.FINReceived
+        If _programRunning Then
+            _progIndex += 1
+            If _loopSeq And _progIndex >= progList.Count Then
+                _progIndex = 0
+            End If
+            If _progIndex < progList.Count Then
+                If Not executeProgItem(_progIndex) Then
+                    _programRunning = False
+                End If
+                RaiseEvent ProgChanged(New ProgChangedEventArgs(True, True, False, _progIndex))
+            Else
+                _programRunning = False
+                RaiseEvent ProgChanged(New ProgChangedEventArgs(False))
+            End If
+        End If
+        'Log
+        RaiseEvent Log("Finish...", Logger.LogLevel.INFO)
+    End Sub
+
+    Private Sub ePOSReceived(refOkay As Boolean(), posSteps As Int32()) Handles com.POSReceived
         For i = 0 To 5
             pos(i) = StepsToAngle(posSteps(i), pref.JointParameter(i).motGear, pref.JointParameter(i).mechGear, pref.JointParameter(i).motStepsPerRot << pref.JointParameter(i).motMode, If(pref.JointParameter(i).calDir = 0, pref.JointParameter(i).mechMinAngle * -1, pref.JointParameter(i).mechMaxAngle * -1))
         Next
         RaiseEvent NewPos(refOkay, pos)
+    End Sub
+
+    Private Sub eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles com.Log
+        'Log Event durchleiten
+        RaiseEvent Log(LogMsg, LogLvl)
     End Sub
 
     'CALCULATIONS
@@ -547,6 +552,19 @@ Public Class ProgramEntry
     Public waitTimeMS As Int32
 End Class
 
+Public Class classPos
+    Public Property func As String
+    Public Property cnt As Int32
+    Public Property parset As Int32()()
+
+    Public Sub New()
+        parset = New Int32(5)() {}
+        For i = 0 To 5
+            parset(i) = New Int32(7) {}
+        Next
+    End Sub
+End Class
+
 Public Class ProgChangedEventArgs : Inherits EventArgs
     Private _actProgIndex As Int32
     Private _actTpIndex As Int32
@@ -601,17 +619,4 @@ Public Class ProgChangedEventArgs : Inherits EventArgs
             Return _actTpIndex
         End Get
     End Property
-End Class
-
-Public Class classPos
-    Public Property func As String
-    Public Property cnt As Int32
-    Public Property parset As Int32()()
-
-    Public Sub New()
-        parset = New Int32(5)() {}
-        For i = 0 To 5
-            parset(i) = New Int32(7) {}
-        Next
-    End Sub
 End Class
