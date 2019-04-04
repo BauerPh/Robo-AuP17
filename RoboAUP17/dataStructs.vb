@@ -63,7 +63,7 @@ Module dataStructs
     Public Structure JointParameter
         <Category("Motor"),
             DisplayName("Schritte pro Umdrehung"),
-            Description("Anzahl Schritte pro Motorumdrehung. Diese Angabe finden Sie im Datenblatt des Motors.")>
+            Description("Anzahl Vollschritte pro Motorumdrehung. Diese Angabe finden Sie im Datenblatt des Motors.")>
         Public Property motStepsPerRot As Int32
         <Category("Motor"),
             DisplayName("Getriebeübersetzung"),

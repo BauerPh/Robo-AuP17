@@ -71,24 +71,3 @@
         End Function
     End Class
 End Class
-
-' Log Event Parameter
-Friend Class LogEventArgs : Inherits EventArgs
-    Private _LogMsg As String
-    Private _LogLvl As Logger.LogLevel
-
-    Public Sub New(LogMsg As String, LogLvl As Logger.LogLevel)
-        _LogMsg = LogMsg
-        _LogLvl = LogLvl
-    End Sub
-    Public ReadOnly Property LogMsg As String
-        Get
-            Return _LogMsg
-        End Get
-    End Property
-    Public ReadOnly Property LogLvl As Logger.LogLevel
-        Get
-            Return _LogLvl
-        End Get
-    End Property
-End Class

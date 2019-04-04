@@ -33,9 +33,9 @@ Friend Class RobotControl
     Public pos(5) As Double
     Public target(5) As Double
 
-    Public Event Log(ByVal sender As Object, ByVal e As LogEventArgs)
-    Public Event NewPos(ByVal sender As Object, ByVal e As NewPosEventArgs)
-    Public Event SeqListChanged(ByVal sender As Object, ByVal e As ProgChangedEventArgs)
+    Public Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
+    Public Event NewPos(ByVal refOkay As Boolean(), ByVal pos As Double())
+    Public Event ProgChanged(ByVal e As ProgChangedEventArgs)
 
     ' -----------------------------------------------------------------------------
     ' Public
@@ -49,26 +49,26 @@ Friend Class RobotControl
                 Return
             End If
             teachPoints(i) = tp
-            OnProgChanged(New ProgChangedEventArgs(False, True, True, -1))
+            RaiseEvent ProgChanged(New ProgChangedEventArgs(False, True, True, -1))
         Else
             teachPoints.Add(tp)
             'Liste Sortieren
             teachPoints.Sort()
-            OnProgChanged(New ProgChangedEventArgs(False, False, True, teachPoints.Count - 1))
+            RaiseEvent ProgChanged(New ProgChangedEventArgs(False, False, True, teachPoints.Count - 1))
         End If
-        OnLog(New LogEventArgs($"Teachpunkt {nr} hinzugefügt!", Logger.LogLevel.INFO))
+        RaiseEvent Log($"Teachpunkt {nr} hinzugefügt!", Logger.LogLevel.INFO)
     End Sub
 
     Public Sub deleteTeachPoint(index As Int32)
         If teachPoints.Count > index And index >= 0 Then
             'Prüfen ob Teachpunkt benutzt wird
             If progList.Exists(Function(_seq As ProgramEntry) _seq.tpnr = teachPoints(index).nr) Then
-                OnLog(New LogEventArgs($"Teachpunkt {teachPoints(index).nr} wird verwendet und kann nicht gelöscht werden!", Logger.LogLevel.ERR))
+                RaiseEvent Log($"Teachpunkt {teachPoints(index).nr} wird verwendet und kann nicht gelöscht werden!", Logger.LogLevel.ERR)
             Else
-                OnLog(New LogEventArgs($"Teachpunkt {teachPoints(index).nr} wurde gelöscht!", Logger.LogLevel.INFO))
+                RaiseEvent Log($"Teachpunkt {teachPoints(index).nr} wurde gelöscht!", Logger.LogLevel.INFO)
                 teachPoints.RemoveAt(index)
             End If
-            OnProgChanged(New ProgChangedEventArgs(False, False, True, index - 1))
+            RaiseEvent ProgChanged(New ProgChangedEventArgs(False, False, True, index - 1))
         End If
     End Sub
 
@@ -128,27 +128,27 @@ Friend Class RobotControl
             'Liste neu sortieren
             teachPoints.Sort()
             'TPs Updaten
-            OnProgChanged(New ProgChangedEventArgs(False, False, True, tmpNewIndex))
+            RaiseEvent ProgChanged(New ProgChangedEventArgs(False, False, True, tmpNewIndex))
         End If
     End Sub
 
     'PROGRAMM
     Public Sub addProgItem(item As ProgramEntry, index As Int32)
         progList.Insert(index + 1, item)
-        OnProgChanged(New ProgChangedEventArgs(False, True, False, index + 1))
+        RaiseEvent ProgChanged(New ProgChangedEventArgs(False, True, False, index + 1))
     End Sub
 
     Public Sub delProgItem(index As Int32)
         If index >= 0 And index < progList.Count Then
             progList.RemoveAt(index)
-            OnProgChanged(New ProgChangedEventArgs(False, True, False, progList.Count - 1))
+            RaiseEvent ProgChanged(New ProgChangedEventArgs(False, True, False, progList.Count - 1))
         End If
     End Sub
 
     Public Sub replaceProgItem(item As ProgramEntry, index As Int32)
         If index >= 0 And index < progList.Count Then
             progList(index) = item
-            OnProgChanged(New ProgChangedEventArgs(False, True, False, index))
+            RaiseEvent ProgChanged(New ProgChangedEventArgs(False, True, False, index))
         End If
     End Sub
 
@@ -175,7 +175,7 @@ Friend Class RobotControl
             If Not executeProgItem(0) Then
                 _programRunning = False
             End If
-            OnProgChanged(New ProgChangedEventArgs(True, True, False, _progIndex))
+            RaiseEvent ProgChanged(New ProgChangedEventArgs(True, True, False, _progIndex))
         End If
     End Sub
 
@@ -184,7 +184,7 @@ Friend Class RobotControl
             If progList(index).func = "pos" Then
                 Dim tpI As Int32 = teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = progList(index).tpnr)
                 If tpI = -1 Then
-                    OnLog(New LogEventArgs($"Teachpunkt {progList(index).tpnr} existierte nicht!", Logger.LogLevel.ERR))
+                    RaiseEvent Log($"Teachpunkt {progList(index).tpnr} existierte nicht!", Logger.LogLevel.ERR)
                     Return False
                 End If
                 setSpeedAndAcc(progList(index).speed, progList(index).acc)
@@ -196,7 +196,7 @@ Friend Class RobotControl
             ElseIf progList(index).func = "wai" Then
                 If com.sendWAI(progList(index).waitTimeMS) Then
                     'Log
-                    OnLog(New LogEventArgs($"Waiting for {progList(index).waitTimeMS} milliseconds...", Logger.LogLevel.INFO))
+                    RaiseEvent Log($"Waiting for {progList(index).waitTimeMS} milliseconds...", Logger.LogLevel.INFO)
                     Return True
                 End If
             End If
@@ -304,7 +304,7 @@ Friend Class RobotControl
                     progList.Add(x)
                 Next
                 'und Changed Event auslösen
-                OnProgChanged(New ProgChangedEventArgs(False, True, True, progList.Count - 1))
+                RaiseEvent ProgChanged(New ProgChangedEventArgs(False, True, True, progList.Count - 1))
             Catch ex As Exception
                 teachPoints.Clear()
                 progList.Clear()
@@ -319,7 +319,7 @@ Friend Class RobotControl
         Return tmpErg
     End Function
 
-    Public Sub eFIN_Received(sender As Object, e As EventArgs) Handles com.FIN_Received
+    Public Sub eFIN_Received() Handles com.FINReceived
         If _programRunning Then
             _progIndex += 1
             If _loopSeq And _progIndex >= progList.Count Then
@@ -329,14 +329,14 @@ Friend Class RobotControl
                 If Not executeProgItem(_progIndex) Then
                     _programRunning = False
                 End If
-                OnProgChanged(New ProgChangedEventArgs(True, True, False, _progIndex))
+                RaiseEvent ProgChanged(New ProgChangedEventArgs(True, True, False, _progIndex))
             Else
                 _programRunning = False
-                OnProgChanged(New ProgChangedEventArgs(False))
+                RaiseEvent ProgChanged(New ProgChangedEventArgs(False))
             End If
         End If
         'Log
-        OnLog(New LogEventArgs("Finish...", Logger.LogLevel.INFO))
+        RaiseEvent Log("Finish...", Logger.LogLevel.INFO)
     End Sub
 
     'ROBOT MOVEMENTS
@@ -357,7 +357,7 @@ Friend Class RobotControl
         'Telegramm senden
         If com.sendMOV() Then
             'Log
-            OnLog(New LogEventArgs($"Moving Axis...", Logger.LogLevel.INFO))
+            RaiseEvent Log($"Moving Axis...", Logger.LogLevel.INFO)
             Return True
         Else Return False
         End If
@@ -381,7 +381,7 @@ Friend Class RobotControl
         'Telegram senden
         If com.sendREF() Then
             'Log
-            OnLog(New LogEventArgs($"Referenz läuft...", Logger.LogLevel.INFO))
+            RaiseEvent Log($"Referenz läuft...", Logger.LogLevel.INFO)
             Return True
         Else Return False
         End If
@@ -410,7 +410,7 @@ Friend Class RobotControl
                 _oSyncMov.s(i) = If(enabled(i), Math.Abs(target(i) - pos(i)), 0)
             Next
             If Not _oSyncMov.calculate() Then
-                OnLog(New LogEventArgs("Berechnung für synchrone Bewegung fehlgeschlagen!", Logger.LogLevel.ERR))
+                RaiseEvent Log("Berechnung für synchrone Bewegung fehlgeschlagen!", Logger.LogLevel.ERR)
                 Array.Copy(pos, target, pos.Length()) ' Ziel auf aktuelle Position setzen
             Else
                 'Geschwindigkeit und Beschleunigung zuweisen
@@ -426,7 +426,7 @@ Friend Class RobotControl
         'Telegram senden
         If com.sendMOV() Then
             'Log
-            OnLog(New LogEventArgs($"Moving Axis...", Logger.LogLevel.INFO))
+            RaiseEvent Log($"Moving Axis...", Logger.LogLevel.INFO)
             Return True
         Else Return False
         End If
@@ -440,7 +440,7 @@ Friend Class RobotControl
     Public Function movServo(srvNr As Int32, angle As Int32) As Boolean
         If com.sendSRV(srvNr, angle) Then
             'Log
-            OnLog(New LogEventArgs($"Moving Servo {srvNr} to {angle}...", Logger.LogLevel.INFO))
+            RaiseEvent Log($"Moving Servo {srvNr} to {angle}...", Logger.LogLevel.INFO)
             Return True
         Else Return False
         End If
@@ -449,7 +449,7 @@ Friend Class RobotControl
         stopProgram() 'Sequenz stoppen
         com.sendStop()
         'Log
-        OnLog(New LogEventArgs("Programm gestoppt!", Logger.LogLevel.INFO))
+        RaiseEvent Log("Programm gestoppt!", Logger.LogLevel.INFO)
     End Sub
 
     'CALCULATIONS
@@ -479,11 +479,11 @@ Friend Class RobotControl
     End Sub
 
     'EVENT
-    Private Sub ePOS_Received(sender As Object, e As POSReceivedEventArgs) Handles com.POS_Received
+    Private Sub ePOS_Received(refOkay As Boolean(), posSteps As Int32()) Handles com.POSReceived
         For i = 0 To 5
-            pos(i) = StepsToAngle(e.posSteps(i), pref.JointParameter(i).motGear, pref.JointParameter(i).mechGear, pref.JointParameter(i).motStepsPerRot << pref.JointParameter(i).motMode, If(pref.JointParameter(i).calDir = 0, pref.JointParameter(i).mechMinAngle * -1, pref.JointParameter(i).mechMaxAngle * -1))
+            pos(i) = StepsToAngle(posSteps(i), pref.JointParameter(i).motGear, pref.JointParameter(i).mechGear, pref.JointParameter(i).motStepsPerRot << pref.JointParameter(i).motMode, If(pref.JointParameter(i).calDir = 0, pref.JointParameter(i).mechMinAngle * -1, pref.JointParameter(i).mechMaxAngle * -1))
         Next
-        OnNewPos(New NewPosEventArgs(e.refOkay, pos))
+        RaiseEvent NewPos(refOkay, pos)
     End Sub
 
     'CALCULATIONS
@@ -512,18 +512,6 @@ Friend Class RobotControl
         Return AngleToSteps(speedAcc, pref.JointParameter(nr - 1).motGear, pref.JointParameter(nr - 1).mechGear, pref.JointParameter(nr - 1).motStepsPerRot, 0)
     End Function
 
-    'EVENTS
-    Protected Sub OnNewPos(e As NewPosEventArgs)
-        RaiseEvent NewPos(Me, e)
-    End Sub
-
-    Protected Sub OnLog(e As LogEventArgs)
-        RaiseEvent Log(Me, e)
-    End Sub
-
-    Protected Sub OnProgChanged(e As ProgChangedEventArgs)
-        RaiseEvent SeqListChanged(Me, e)
-    End Sub
 End Class
 
 Public Class TeachPoint
@@ -611,25 +599,6 @@ Public Class ProgChangedEventArgs : Inherits EventArgs
     Public ReadOnly Property actTpIndex As Int32
         Get
             Return _actTpIndex
-        End Get
-    End Property
-End Class
-
-Public Class NewPosEventArgs : Inherits EventArgs
-    Private _refOkay(5) As Boolean
-    Private _pos(5) As Double
-    Public Sub New(refOkay As Boolean(), pos As Double())
-        _refOkay = refOkay
-        _pos = pos
-    End Sub
-    Public ReadOnly Property refOkay As Boolean()
-        Get
-            Return _refOkay
-        End Get
-    End Property
-    Public ReadOnly Property posDeg As Double()
-        Get
-            Return _pos
         End Get
     End Property
 End Class

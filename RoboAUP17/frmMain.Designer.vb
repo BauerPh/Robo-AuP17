@@ -76,6 +76,8 @@ Partial Class frmMain
         Me.tsBtnConnect = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnDisconnect = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.tsBtnRun = New System.Windows.Forms.ToolStripButton()
+        Me.tsBtnStop = New System.Windows.Forms.ToolStripButton()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
@@ -374,7 +376,7 @@ Partial Class frmMain
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsBtnOpen, Me.tsBtnSave, Me.ToolStripSeparator1, Me.tsCbComPort, Me.tsBtnConnect, Me.tsBtnDisconnect, Me.ToolStripSeparator2})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsBtnOpen, Me.tsBtnSave, Me.ToolStripSeparator1, Me.tsCbComPort, Me.tsBtnConnect, Me.tsBtnDisconnect, Me.ToolStripSeparator2, Me.tsBtnRun, Me.tsBtnStop})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 24)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(1113, 25)
@@ -406,9 +408,9 @@ Partial Class frmMain
         '
         'tsCbComPort
         '
+        Me.tsCbComPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.tsCbComPort.Name = "tsCbComPort"
         Me.tsCbComPort.Size = New System.Drawing.Size(121, 25)
-        Me.tsCbComPort.Text = "COM-Port"
         '
         'tsBtnConnect
         '
@@ -430,6 +432,22 @@ Partial Class frmMain
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
         Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 25)
+        '
+        'tsBtnRun
+        '
+        Me.tsBtnRun.Image = CType(resources.GetObject("tsBtnRun.Image"), System.Drawing.Image)
+        Me.tsBtnRun.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsBtnRun.Name = "tsBtnRun"
+        Me.tsBtnRun.Size = New System.Drawing.Size(123, 22)
+        Me.tsBtnRun.Text = "Programm starten"
+        '
+        'tsBtnStop
+        '
+        Me.tsBtnStop.Image = CType(resources.GetObject("tsBtnStop.Image"), System.Drawing.Image)
+        Me.tsBtnStop.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsBtnStop.Name = "tsBtnStop"
+        Me.tsBtnStop.Size = New System.Drawing.Size(169, 22)
+        Me.tsBtnStop.Text = "Programm Stop (Leertaste)"
         '
         'frmMain
         '
@@ -510,4 +528,6 @@ Partial Class frmMain
     Friend WithEvents msSetLogLvlError As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
     Friend WithEvents msRoboParameter As ToolStripMenuItem
+    Friend WithEvents tsBtnRun As ToolStripButton
+    Friend WithEvents tsBtnStop As ToolStripButton
 End Class

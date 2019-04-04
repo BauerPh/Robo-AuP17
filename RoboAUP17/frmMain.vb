@@ -5,9 +5,11 @@ Imports WeifenLuo.WinFormsUI.Docking
 Public Class frmMain
 #Region "Definitions"
     'Test
-    Friend WithEvents roboControl As New RobotControl
     Public dictTest As New Dictionary(Of String, Double)
     Friend settingsTest As New DHParams
+
+    'Robotersteuerung
+    Friend WithEvents roboControl As New RobotControl
 
     ' Konstanten
     Private Const _ssHintTimerInterval As Int32 = 4000
@@ -56,6 +58,8 @@ Public Class frmMain
         'Welcome Log
         ShowStatusStripHint("Anwendung gestartet...")
         _logger.Log("Hi!", Logger.LogLevel.INFO)
+
+        AddHandler roboControl.com.ComPortChange, AddressOf eComPortChanged
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -74,10 +78,33 @@ Public Class frmMain
 #End Region
 
     ' -----------------------------------------------------------------------------
+    ' Events
+    ' -----------------------------------------------------------------------------
+    Private Sub eComPortChanged(ports As List(Of String))
+        If InvokeRequired Then
+            Invoke(Sub() eComPortChanged(ports))
+            Return
+        End If
+
+        tsCbComPort.Items.Clear()
+        If ports.Count > 0 Then
+            For i = 0 To ports.Count - 1
+                tsCbComPort.Items.Add(ports(i))
+            Next
+            tsCbComPort.SelectedIndex = 0
+            tsBtnConnect.Enabled = True
+        Else
+            tsBtnConnect.Enabled = False
+        End If
+    End Sub
+
+    ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
 #Region "Private"
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        _initForm()
+
         'Maximiert starten wenn Ansicht so gespeichert wurde
         If My.Settings.StartMaximized Then
             WindowState = FormWindowState.Maximized
@@ -329,4 +356,11 @@ Public Class frmMain
         _ssHintTimer.Stop()
         ssLblStatus.Text = ""
     End Sub
+
+    Private Sub _initForm()
+        tsBtnConnect.Enabled = False
+        tsBtnRun.Enabled = False
+        tsBtnStop.Enabled = False
+    End Sub
+
 End Class

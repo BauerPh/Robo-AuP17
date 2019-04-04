@@ -25,16 +25,16 @@ Friend Class SerialCommunication
     Private _connected As Boolean
 
     'Events
-    Public Event SerialConnected(ByVal sender As Object, ByVal e As EventArgs)
-    Public Event SerialDisconnected(ByVal sender As Object, ByVal e As EventArgs)
-    Public Event Log(ByVal sender As Object, ByVal e As LogEventArgs)
-    Public Event ComPortChange(ByVal sender As Object, ByVal e As ComPortChangeEventArgs)
-    Public Event FIN_Received(ByVal sender As Object, ByVal e As EventArgs)
-    Public Event POS_Received(ByVal sender As Object, ByVal e As POSReceivedEventArgs)
-    Public Event LSS_Received(ByVal sender As Object, ByVal e As LSSReceivedEventArgs)
-    Public Event ESS_Received(ByVal sender As Object, ByVal e As ESSReceivedEventArgs)
-    Public Event RES_Received(ByVal sender As Object, ByVal e As EventArgs)
-    Public Event ERR_Received(ByVal sender As Object, ByVal e As ERRReceivedEventArgs)
+    Public Event SerialConnected()
+    Public Event SerialDisconnected()
+    Public Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
+    Public Event ComPortChange(ByVal ports As List(Of String))
+    Public Event FINReceived()
+    Public Event POSReceived(ByVal refOkay As Boolean(), ByVal posSteps As Int32())
+    Public Event LSSReceived(ByVal lssState As Boolean())
+    Public Event ESSReceived(ByVal essState As Boolean)
+    Public Event RESReceived()
+    Public Event ERRReceived(ByVal errnum As Int32)
 
     Public Sub New()
         'Init Serial Port
@@ -57,21 +57,21 @@ Friend Class SerialCommunication
         Try
             _SerialPort1.Open()
         Catch ex As Exception
-            OnLog(New LogEventArgs("Verbindungsfehler!", Logger.LogLevel.ERR))
+            RaiseEvent Log("Verbindungsfehler!", Logger.LogLevel.ERR)
             disconnect()
             Return
         End Try
 
         'Check device
         _SerialPort1.DiscardInBuffer()
-        sendCON()
+        _sendCON()
     End Sub
     Public Sub disconnect()
         'Close Port
         If _SerialPort1.IsOpen Then _SerialPort1.Close()
         _connected = False
-        OnSerialDisconnected(New EventArgs())
-        OnLog(New LogEventArgs("Verbindung getrennt!", Logger.LogLevel.INFO))
+        RaiseEvent SerialDisconnected()
+        RaiseEvent Log("Verbindung getrennt!", Logger.LogLevel.INFO)
     End Sub
     Public Sub resetDataSets()
         _msgDataSend.cnt = 0
@@ -163,7 +163,7 @@ Friend Class SerialCommunication
     End Sub
 
     '++++++++++++++++++++++++++++++ PRIVATE ++++++++++++++++++++++++++++++
-    Private Sub sendCON()
+    Private Sub _sendCON()
         sendMsg("<con>")
         _conWaitACK = True
         _tConWaitACK.Start()
@@ -175,9 +175,9 @@ Friend Class SerialCommunication
             _tConWaitACK.Stop()
             disconnect()
             _conWaitACK = False
-            OnLog(New LogEventArgs("Falsches Gerät angeschlossen!", Logger.LogLevel.ERR))
+            RaiseEvent Log("Falsches Gerät angeschlossen!", Logger.LogLevel.ERR)
         Else
-            sendCON()
+            _sendCON()
         End If
     End Sub
     Private Sub _tMovWaitACK_Elapsed(sender As Object, e As ElapsedEventArgs) Handles _tWaitACK.Elapsed
@@ -187,7 +187,7 @@ Friend Class SerialCommunication
             _tWaitACK.Stop()
             _movWaitACK = False
             _refWaitACK = False
-            OnLog(New LogEventArgs("keine Antwort!", Logger.LogLevel.ERR))
+            RaiseEvent Log("keine Antwort!", Logger.LogLevel.ERR)
         Else
             If _movWaitACK Then
                 sendMOV()
@@ -197,7 +197,7 @@ Friend Class SerialCommunication
         End If
     End Sub
     Private Sub rcvMsg(msg As String)
-        OnLog(New LogEventArgs(msg, Logger.LogLevel.COMIN))
+        RaiseEvent Log(msg, Logger.LogLevel.COMIN)
 
         If msg.Length < 3 Then
             Return
@@ -210,7 +210,7 @@ Friend Class SerialCommunication
             Case "ack"
                 rcvACK()
             Case "fin"
-                OnFIN_Received(New EventArgs())
+                RaiseEvent FINReceived()
             Case "pos"
                 rcvPOS()
             Case "ess"
@@ -231,8 +231,8 @@ Friend Class SerialCommunication
             _conWaitACK = False
             _tConWaitACK.Stop()
             _connected = True
-            OnSerialConnected(New EventArgs())
-            OnLog(New LogEventArgs("Verbunden!", Logger.LogLevel.INFO))
+            RaiseEvent SerialConnected()
+            RaiseEvent Log("Verbunden!", Logger.LogLevel.INFO)
         ElseIf _movWaitACK Or _refWaitACK Then
             _movWaitACK = False
             _refWaitACK = False
@@ -248,7 +248,7 @@ Friend Class SerialCommunication
             tmpRefOkay(nr - 1) = If(_msgDataRcv.parset(i)(1) = 1, True, False)
             tmpPosSteps(nr - 1) = _msgDataRcv.parset(i)(2)
         Next
-        OnPOS_Received(New POSReceivedEventArgs(tmpRefOkay, tmpPosSteps))
+        RaiseEvent POSReceived(tmpRefOkay, tmpPosSteps)
     End Sub
     Private Sub rcvLSS()
         Dim tmpState(5) As Boolean
@@ -256,14 +256,14 @@ Friend Class SerialCommunication
             Dim nr As Int32 = _msgDataRcv.parset(i)(0)
             tmpState(nr - 1) = If(_msgDataRcv.parset(i)(1) = 1, True, False)
         Next
-        OnLSS_Received(New LSSReceivedEventArgs(tmpState))
+        RaiseEvent LSSReceived(tmpState)
     End Sub
     Private Sub rcvESS()
         Dim tmpState As Boolean = If(_msgDataRcv.parset(0)(0) = 1, True, False)
-        OnESS_Received(New ESSReceivedEventArgs(tmpState))
+        RaiseEvent ESSReceived(tmpState)
     End Sub
     Private Sub rcvRES()
-        OnRES_Received(New EventArgs())
+        RaiseEvent RESReceived()
     End Sub
     Private Sub rcvERR()
         Dim errnum As Int32 = _msgDataRcv.parset(0)(0)
@@ -271,15 +271,15 @@ Friend Class SerialCommunication
         _refWaitACK = False
         _tWaitACK.Stop()
         If errnum = 1 Then
-            OnLog(New LogEventArgs("Error!", Logger.LogLevel.ERR))
+            RaiseEvent Log("Error!", Logger.LogLevel.ERR)
         ElseIf errnum = 2 Then
-            OnLog(New LogEventArgs("Parameter Error!", Logger.LogLevel.ERR))
+            RaiseEvent Log("Parameter Error!", Logger.LogLevel.ERR)
         ElseIf errnum = 3 Then
-            OnLog(New LogEventArgs("Referenz fehlt!", Logger.LogLevel.ERR))
+            RaiseEvent Log("Referenz fehlt!", Logger.LogLevel.ERR)
         ElseIf errnum = 4 Then
-            OnLog(New LogEventArgs("Referenz fehlgeschlagen!", Logger.LogLevel.ERR))
+            RaiseEvent Log("Referenz fehlgeschlagen!", Logger.LogLevel.ERR)
         End If
-        OnERR_Received(New ERRReceivedEventArgs(errnum))
+        RaiseEvent ERRReceived(errnum)
     End Sub
     Private Sub parseMsg(ByRef _msg As String, ByRef _msgData As classMsgData, ByRef functionList As String())
         _msgData.cnt = 0
@@ -367,7 +367,7 @@ Friend Class SerialCommunication
                         End If
                     Next
                 End If
-                OnComPortChange(New ComPortChangeEventArgs(listSerialPort))
+                RaiseEvent ComPortChange(listSerialPort)
             End If
         End If
     End Sub
@@ -381,42 +381,12 @@ Friend Class SerialCommunication
     End Sub
     Private Sub sendMsg(msg As String)
         _SerialPort1.Write(msg)
-        OnLog(New LogEventArgs(msg, Logger.LogLevel.COMOUT))
+        RaiseEvent Log(msg, Logger.LogLevel.COMOUT)
     End Sub
     Private Sub _SerialPort1_DataReceived(sender As Object, e As SerialDataReceivedEventArgs) Handles _SerialPort1.DataReceived
         While (_SerialPort1.BytesToRead > 0)
             rcvMsg(_SerialPort1.ReadLine)
         End While
-    End Sub
-    Protected Sub OnSerialConnected(e As EventArgs)
-        RaiseEvent SerialConnected(Me, e)
-    End Sub
-    Protected Sub OnSerialDisconnected(e As EventArgs)
-        RaiseEvent SerialDisconnected(Me, e)
-    End Sub
-    Protected Sub OnLog(e As LogEventArgs)
-        RaiseEvent Log(Me, e)
-    End Sub
-    Protected Sub OnComPortChange(e As ComPortChangeEventArgs)
-        RaiseEvent ComPortChange(Me, e)
-    End Sub
-    Protected Sub OnFIN_Received(e As EventArgs)
-        RaiseEvent FIN_Received(Me, e)
-    End Sub
-    Protected Sub OnPOS_Received(e As POSReceivedEventArgs)
-        RaiseEvent POS_Received(Me, e)
-    End Sub
-    Protected Sub OnLSS_Received(e As LSSReceivedEventArgs)
-        RaiseEvent LSS_Received(Me, e)
-    End Sub
-    Protected Sub OnESS_Received(e As ESSReceivedEventArgs)
-        RaiseEvent ESS_Received(Me, e)
-    End Sub
-    Protected Sub OnRES_Received(e As EventArgs)
-        RaiseEvent RES_Received(Me, e)
-    End Sub
-    Protected Sub OnERR_Received(e As ERRReceivedEventArgs)
-        RaiseEvent ERR_Received(Me, e)
     End Sub
 End Class
 
@@ -431,72 +401,4 @@ Public Class classMsgData
             parset(i) = New Int32(7) {}
         Next
     End Sub
-End Class
-
-'Event Parameter
-Public Class ComPortChangeEventArgs : Inherits EventArgs
-    Private _Ports As List(Of String)
-    Public Sub New(Ports As List(Of String))
-        _Ports = Ports
-    End Sub
-    Public ReadOnly Property Ports As List(Of String)
-        Get
-            Return _Ports
-        End Get
-    End Property
-End Class
-
-Public Class POSReceivedEventArgs : Inherits EventArgs
-    Private _refOkay(5) As Boolean
-    Private _posSteps(5) As Int32
-    Public Sub New(refOkay As Boolean(), posSteps As Int32())
-        _refOkay = refOkay
-        _posSteps = posSteps
-    End Sub
-    Public ReadOnly Property refOkay As Boolean()
-        Get
-            Return _refOkay
-        End Get
-    End Property
-    Public ReadOnly Property posSteps As Int32()
-        Get
-            Return _posSteps
-        End Get
-    End Property
-End Class
-
-Public Class LSSReceivedEventArgs : Inherits EventArgs
-    Private _lssState(5) As Boolean
-    Public Sub New(lssState As Boolean())
-        _lssState = lssState
-    End Sub
-    Public ReadOnly Property lssState As Boolean()
-        Get
-            Return _lssState
-        End Get
-    End Property
-End Class
-
-Public Class ESSReceivedEventArgs : Inherits EventArgs
-    Private _essState As Boolean
-    Public Sub New(essState As Boolean)
-        _essState = essState
-    End Sub
-    Public ReadOnly Property essState As Boolean
-        Get
-            Return _essState
-        End Get
-    End Property
-End Class
-
-Public Class ERRReceivedEventArgs : Inherits EventArgs
-    Private _errnum As Int32
-    Public Sub New(errnum As Int32)
-        _errnum = errnum
-    End Sub
-    Public ReadOnly Property errnum As Int32
-        Get
-            Return _errnum
-        End Get
-    End Property
 End Class
