@@ -117,30 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="ToolStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>123, 23</value>
-  </metadata>
-  <metadata name="ToolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>16, 23</value>
-  </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnMoveStart.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMMSURBVHhe7Z29b9NAGIfDX8LXH8LHQuOoAxMLRTAjNlC7
-        sbQN2AIxICGYKqayIgYGEEqctHxIIHUAhrJUQixlQIBEVTXHXXNRgVzTuM3dvcTPUz3qYMc+vz85uXMc
-        XwUAAAAAAAAAAKBs3M5rx7JmMpXmyVX9f7oM2mOdMsduyxCfrFE9neXVV1meqFLbrC5lee2kLUt4lKoc
-        0o2oOxtXUq8vJB191syZ2tgyhYMwdjdtJvO2TGHovk25G4PdM+VmKzlly+WftJEsuxqCO5oa2XL5JW1N
-        HHc1AB02Jo/asvkjzasXnDvHfnWX2JbNH1kjuebcOfarxyq2bP7Q3boZ586xX90TtWXzB4EUkECESSDC
-        JBBhEogwCUSYBCJMAhEmgQiTQIRJIMIc10AevruiHry55Fwm2nEN5MnHVP3a/KEef6g7l4t1nAPpsfLl
-        qbrTPutcT5xlCMSw/nNNLby97FxXlGUJxLC5taGef7qnl9f61hdjmQLpsfr1pbq7fM75uuiWMRDD9411
-        9WhlxvnaqJY1EENH/y2vLapbrUnnNqJY5kB6fP72Xt1/fdG5neASSJfumGXeua2gEsjfRB+zEEg/Uccs
-        BOLGjFmerUYYsxDIYIKPWQhkb8yYZXFl2rmfkUsgw9HpbIUZsxBIMbyPWQikGASyT3nLGgAf6gUkkMHQ
-        7R2RBw2EgeGIPUggXDrx4H4D4eKiJ4sGwuV3zxYJhC+oAjhMIHyFG9C9AuEmB9fOPTooEG4DEhIIN8pZ
-        JATCraR/EDsQbrb+h1iB8HOEXYgRCD/YGUCMQP5bCUSYBCJMAhEmgQiTQIRJIMIkEGESiDAJRJgEIkwC
-        EWaIQHjUeAHDPGqch/EPbYiH8W9P/uXaOfZZf3HmiC2bX/R745KrAbhjmk+0bbn8Y6bzMdP6uBqCdsqj
-        5sQJW64w6N7WnKsxaKzO2jKFw0wNZ2Yj40zZsVuL6myUafN6mMkUmSRs25aphS1LfMwEWPqMOW/63rpr
-        fKMMbh+rOeZ2ctiWAQAAAAAAAAAAoCRUKr8BvS1N0hOznyMAAAAASUVORK5CYII=
-</value>
-  </data>
 </root>

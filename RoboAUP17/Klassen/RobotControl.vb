@@ -1,7 +1,7 @@
 ﻿Imports System.IO
 
 Friend Class RobotControl
-    Private Const refMaxAngleBack As Int32 = 10
+    Private Const refMaxAngleBack As Int32 = 10 'Bei Referenzfahrt
 
     Private oSyncMov As New MovementCalculations
     Private actV As Double

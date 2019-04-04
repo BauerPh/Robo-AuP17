@@ -3,6 +3,9 @@ Imports System.Timers
 Imports WeifenLuo.WinFormsUI.Docking
 
 Public Class frmMain
+#Region "Definitions"
+    Dim WithEvents roboControl As New RobotControl
+
     'Test
     Public dictTest As New Dictionary(Of String, Double)
 
@@ -26,8 +29,13 @@ Public Class frmMain
     Private _dckPanRoboStatus As New panRoboStatus
     Private _dckPanProgramTools As New panProgramTools
     Private _dckPanTeachBox As New panTeachBox
-    Private _dckPanCtrl As New panCtrl
+    Private _dckPanJointCtrl As New panCtrl
     Private _dckPanReference As New panReference
+
+    Private _dckPanRoboParameter As New panRoboParameter
+    Private _dckPanDenavitHartPar As New panDenavitHartPar
+    Private _dckPanTCPServer As New panTCPServer
+#End Region
 
     ' -----------------------------------------------------------------------------
     ' Constructor
@@ -53,6 +61,7 @@ Public Class frmMain
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
+#Region "Public"
     Public Sub ShowStatusStripHint(msg As String)
         ssLblStatus.Text = msg
         ' Timer starten bzw. neustarten
@@ -62,10 +71,12 @@ Public Class frmMain
         _ssHintTimer.Interval = _ssHintTimerInterval
         _ssHintTimer.Start()
     End Sub
+#End Region
 
     ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
+#Region "Private"
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'Maximiert starten wenn Ansicht so gespeichert wurde
         If My.Settings.StartMaximized Then
@@ -75,13 +86,15 @@ Public Class frmMain
     Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         My.Settings.Save()
     End Sub
+#End Region
 
-    'MenuStrip Datei
+#Region "MenuStrip Datei"
     Private Sub msExit_Click(sender As Object, e As EventArgs) Handles msExit.Click
         Application.Exit()
     End Sub
+#End Region
 
-    'MenuStrip Ansicht
+#Region "MenuStrip Ansicht"
     Private Sub msSaveView_Click(sender As Object, e As EventArgs) Handles msSaveView.Click
         dckPanel.SaveAsXml(_viewSettingsFilename)
         My.Settings.StartMaximized = (WindowState = FormWindowState.Maximized)
@@ -93,11 +106,13 @@ Public Class frmMain
         My.Settings.StartMaximized = False
         MessageBox.Show("Standard wurde wiederhergestellt. Neustart erforderlich!", "Okay", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
+#End Region
 
-    'MenuStrip Hilfe
+#Region "MenuStrip Hilfe"
     Private Sub msGitHub_Click(sender As Object, e As EventArgs) Handles msGitHub.Click
         Process.Start(_gitHubUrl)
     End Sub
+#End Region
 
 #Region "Show Panels"
     Private Sub msShowVars_Click(sender As Object, e As EventArgs) Handles msShowVars.Click
@@ -141,7 +156,19 @@ Public Class frmMain
     End Sub
 
     Private Sub msShowRoboCtrl_Click(sender As Object, e As EventArgs) Handles msShowRoboCtrl.Click
-        _dckPanCtrl.Show()
+        _dckPanJointCtrl.Show()
+    End Sub
+
+    Private Sub msDenavitHartPar_Click(sender As Object, e As EventArgs) Handles msDenavitHartPar.Click
+        _dckPanDenavitHartPar.Show()
+    End Sub
+
+    Private Sub msRoboParameter_Click(sender As Object, e As EventArgs) Handles msRoboParameter.Click
+        _dckPanRoboParameter.Show()
+    End Sub
+
+    Private Sub msTCPServer_Click(sender As Object, e As EventArgs) Handles msTCPServer.Click
+        _dckPanTCPServer.Show()
     End Sub
 #End Region
 
@@ -209,8 +236,12 @@ Public Class frmMain
         _dckPanRoboStatus.HideOnClose = True
         _dckPanProgramTools.HideOnClose = True
         _dckPanTeachBox.HideOnClose = True
-        _dckPanCtrl.HideOnClose = True
+        _dckPanJointCtrl.HideOnClose = True
         _dckPanReference.HideOnClose = True
+
+        _dckPanRoboParameter.HideOnClose = True
+        _dckPanDenavitHartPar.HideOnClose = True
+        _dckPanTCPServer.HideOnClose = True
 
         'Edit Names
         _dckPanLog.Text = "Robo Log"
@@ -234,10 +265,17 @@ Public Class frmMain
 
             _dckPanTeachBox.Show(dckPanel, DockState.Float)
             _dckPanTeachBox.Hide()
-            _dckPanCtrl.Show(dckPanel, DockState.Float)
-            _dckPanCtrl.Hide()
+            _dckPanJointCtrl.Show(dckPanel, DockState.Float)
+            _dckPanJointCtrl.Hide()
             _dckPanReference.Show(dckPanel, DockState.Float)
             _dckPanReference.Hide()
+
+            _dckPanRoboParameter.Show(dckPanel, DockState.Float)
+            _dckPanRoboParameter.Hide()
+            _dckPanDenavitHartPar.Show(dckPanel, DockState.Float)
+            _dckPanDenavitHartPar.Hide()
+            _dckPanTCPServer.Show(dckPanel, DockState.Float)
+            _dckPanTCPServer.Hide()
 
             _logger.Log("Standardansicht geladen", Logger.LogLevel.DEBUG)
         End If
@@ -249,30 +287,32 @@ Public Class frmMain
     Private Function GetContent(persist As String) As IDockContent
         If persist.EndsWith("CodeEditor") Then
             Return _dckPanCodeEditor
+        ElseIf persist.EndsWith("Ctrl") Then
+            Return _dckPanJointCtrl
+        ElseIf persist.EndsWith("DenavitHartPar") Then
+            Return _dckPanDenavitHartPar
         ElseIf persist.EndsWith("Robo Log") Then
             Return _dckPanLog
         ElseIf persist.EndsWith("Serial Log") Then
             Return _dckPanComLogSerial
         ElseIf persist.EndsWith("TCP/IP Log") Then
             Return _dckPanComLogTCPIP
-        ElseIf persist.EndsWith("ComLogSerial") Then
-            Return _dckPanComLogSerial
-        ElseIf persist.EndsWith("ComLogTCPIP") Then
-            Return _dckPanComLogTCPIP
         ElseIf persist.EndsWith("ProgramTools") Then
             Return _dckPanProgramTools
+        ElseIf persist.EndsWith("Reference") Then
+            Return _dckPanReference
+        ElseIf persist.EndsWith("RoboParameter") Then
+            Return _dckPanRoboParameter
         ElseIf persist.EndsWith("RoboStatus") Then
             Return _dckPanRoboStatus
+        ElseIf persist.EndsWith("TCPServer") Then
+            Return _dckPanTCPServer
+        ElseIf persist.EndsWith("TeachBox") Then
+            Return _dckPanTeachBox
         ElseIf persist.EndsWith("TeachPoints") Then
             Return _dckPanTeachpoints
         ElseIf persist.EndsWith("Variables") Then
             Return _dckPanVariables
-        ElseIf persist.EndsWith("TeachBox") Then
-            Return _dckPanTeachBox
-        ElseIf persist.EndsWith("Ctrl") Then
-            Return _dckPanCtrl
-        ElseIf persist.EndsWith("Reference") Then
-            Return _dckPanReference
         End If
         Return New DockContent()
     End Function

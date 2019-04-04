@@ -51,11 +51,11 @@
         Public cal As CalibrationParameter
         Public profile As ProfileParameter
     End Structure
+
     Public Structure ServoParameter
         Public minAngle As Double
         Public maxAngle As Double
     End Structure
-
 
     Public Structure MotorParameter
         Public stepsPerRot As Int32

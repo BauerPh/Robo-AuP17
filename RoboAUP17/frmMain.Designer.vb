@@ -55,6 +55,7 @@ Partial Class frmMain
         Me.msShowComLogTCPIP = New System.Windows.Forms.ToolStripMenuItem()
         Me.EinstellungenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.msDenavitHartPar = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msRoboParameter = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.msTCPServer = New System.Windows.Forms.ToolStripMenuItem()
         Me.HilfeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -115,7 +116,7 @@ Partial Class frmMain
         '
         Me.msNew.Image = CType(resources.GetObject("msNew.Image"), System.Drawing.Image)
         Me.msNew.Name = "msNew"
-        Me.msNew.Size = New System.Drawing.Size(180, 22)
+        Me.msNew.Size = New System.Drawing.Size(166, 22)
         Me.msNew.Text = "Neu"
         '
         'msOpen
@@ -148,7 +149,7 @@ Partial Class frmMain
         '
         Me.msExit.Image = CType(resources.GetObject("msExit.Image"), System.Drawing.Image)
         Me.msExit.Name = "msExit"
-        Me.msExit.Size = New System.Drawing.Size(180, 22)
+        Me.msExit.Size = New System.Drawing.Size(166, 22)
         Me.msExit.Text = "Beenden"
         '
         'BearbeitenToolStripMenuItem
@@ -237,20 +238,20 @@ Partial Class frmMain
         'msShowRoboStatus
         '
         Me.msShowRoboStatus.Name = "msShowRoboStatus"
-        Me.msShowRoboStatus.Size = New System.Drawing.Size(128, 22)
+        Me.msShowRoboStatus.Size = New System.Drawing.Size(159, 22)
         Me.msShowRoboStatus.Text = "Status"
         '
         'msShowRoboReference
         '
         Me.msShowRoboReference.Name = "msShowRoboReference"
-        Me.msShowRoboReference.Size = New System.Drawing.Size(128, 22)
+        Me.msShowRoboReference.Size = New System.Drawing.Size(159, 22)
         Me.msShowRoboReference.Text = "Referenz"
         '
         'msShowRoboCtrl
         '
         Me.msShowRoboCtrl.Name = "msShowRoboCtrl"
-        Me.msShowRoboCtrl.Size = New System.Drawing.Size(128, 22)
-        Me.msShowRoboCtrl.Text = "Steuerung"
+        Me.msShowRoboCtrl.Size = New System.Drawing.Size(159, 22)
+        Me.msShowRoboCtrl.Text = "Robo Steuerung"
         '
         'msShowTeachbox
         '
@@ -278,7 +279,7 @@ Partial Class frmMain
         '
         'EinstellungenToolStripMenuItem1
         '
-        Me.EinstellungenToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msDenavitHartPar, Me.ToolStripSeparator5, Me.msTCPServer})
+        Me.EinstellungenToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msDenavitHartPar, Me.msRoboParameter, Me.ToolStripSeparator5, Me.msTCPServer})
         Me.EinstellungenToolStripMenuItem1.Name = "EinstellungenToolStripMenuItem1"
         Me.EinstellungenToolStripMenuItem1.Size = New System.Drawing.Size(90, 20)
         Me.EinstellungenToolStripMenuItem1.Text = "Einstellungen"
@@ -289,6 +290,13 @@ Partial Class frmMain
         Me.msDenavitHartPar.Name = "msDenavitHartPar"
         Me.msDenavitHartPar.Size = New System.Drawing.Size(247, 22)
         Me.msDenavitHartPar.Text = "Denavit-Hartenberg-Parameter..."
+        '
+        'msRoboParameter
+        '
+        Me.msRoboParameter.Image = CType(resources.GetObject("msRoboParameter.Image"), System.Drawing.Image)
+        Me.msRoboParameter.Name = "msRoboParameter"
+        Me.msRoboParameter.Size = New System.Drawing.Size(247, 22)
+        Me.msRoboParameter.Text = "Robo Parameter..."
         '
         'ToolStripSeparator5
         '
@@ -501,4 +509,5 @@ Partial Class frmMain
     Friend WithEvents msSetLogLvlWarning As ToolStripMenuItem
     Friend WithEvents msSetLogLvlError As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
+    Friend WithEvents msRoboParameter As ToolStripMenuItem
 End Class

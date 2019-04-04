@@ -1,5 +1,5 @@
 ﻿Friend Class Settings
-    Private Const cDefaultConfigFile As String = "RoboSettingsDefault.xml"
+    Private Const cDefaultConfigFile As String = "RoboParameterDefault.xml"
     Private _actFilename As String
 
     Public Property configFileLoaded As Boolean = False
