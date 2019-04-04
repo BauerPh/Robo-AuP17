@@ -1,5 +1,5 @@
 ﻿Friend Class Settings
-    Private Const cDefaultConfigFile As String = "RoboParameterDefault.xml"
+    Private Const cDefaultConfigFile As String = "settings/RoboParameterDefault.xml"
     Private _actFilename As String
 
     Public Property configFileLoaded As Boolean = False
@@ -42,7 +42,7 @@
     End Function
     Public Function loadSettings() As Boolean
         Dim openFileDialog As New OpenFileDialog With {
-            .Filter = "Konfig-Dateien (*.conf)|*.conf"
+            .Filter = "Konfig-Dateien (*.xml)|*.xml"
         }
         If openFileDialog.ShowDialog() = DialogResult.OK Then
             Try
@@ -60,7 +60,7 @@
 
     Public Function saveSettings() As Boolean
         Dim saveFileDialog As New SaveFileDialog With {
-            .Filter = "Konfig-Dateien (*.conf)|*.conf"
+            .Filter = "Konfig-Dateien (*.xml)|*.xml"
         }
         If saveFileDialog.ShowDialog() = DialogResult.OK Then
             Try
@@ -86,9 +86,9 @@
 
     Private Sub XMLWriter(filename As String)
         Dim enc As New System.Text.UnicodeEncoding
-        Dim XMLobj As Xml.XmlTextWriter = New Xml.XmlTextWriter(filename, enc)
+        Dim XMLTextWriter As Xml.XmlTextWriter = New Xml.XmlTextWriter(filename, enc)
 
-        With XMLobj
+        With XMLTextWriter
             .Formatting = Xml.Formatting.Indented
             .Indentation = 4
             .WriteStartDocument()
@@ -97,31 +97,31 @@
                 .WriteStartElement("J" & (i + 1).ToString())
 
                 .WriteStartElement("mot")
-                .WriteAttributeString("stepsPerRot", JointParameter(i).mot.stepsPerRot.ToString)
-                .WriteAttributeString("gear", JointParameter(i).mot.gear.ToString)
-                .WriteAttributeString("mode", JointParameter(i).mot.mode.ToString)
-                .WriteAttributeString("dir", JointParameter(i).mot.dir.ToString)
+                .WriteAttributeString("stepsPerRot", JointParameter(i).motStepsPerRot.ToString)
+                .WriteAttributeString("gear", JointParameter(i).motGear.ToString)
+                .WriteAttributeString("mode", JointParameter(i).motMode.ToString)
+                .WriteAttributeString("dir", JointParameter(i).motDir.ToString)
                 .WriteEndElement()
 
                 .WriteStartElement("mech")
-                .WriteAttributeString("gear", JointParameter(i).mech.gear.ToString)
-                .WriteAttributeString("minAngle", JointParameter(i).mech.minAngle.ToString)
-                .WriteAttributeString("maxAngle", JointParameter(i).mech.maxAngle.ToString)
-                .WriteAttributeString("homePosAngle", JointParameter(i).mech.homePosAngle.ToString)
-                .WriteAttributeString("parkPosAngle", JointParameter(i).mech.parkPosAngle.ToString)
+                .WriteAttributeString("gear", JointParameter(i).mechGear.ToString)
+                .WriteAttributeString("minAngle", JointParameter(i).mechMinAngle.ToString)
+                .WriteAttributeString("maxAngle", JointParameter(i).mechMaxAngle.ToString)
+                .WriteAttributeString("homePosAngle", JointParameter(i).mechHomePosAngle.ToString)
+                .WriteAttributeString("parkPosAngle", JointParameter(i).mechParkPosAngle.ToString)
                 .WriteEndElement()
 
                 .WriteStartElement("cal")
-                .WriteAttributeString("dir", JointParameter(i).cal.dir.ToString)
-                .WriteAttributeString("speedFast", JointParameter(i).cal.speedFast.ToString)
-                .WriteAttributeString("speedSlow", JointParameter(i).cal.speedSlow.ToString)
-                .WriteAttributeString("acc", JointParameter(i).cal.acc.ToString)
+                .WriteAttributeString("dir", JointParameter(i).calDir.ToString)
+                .WriteAttributeString("speedFast", JointParameter(i).calSpeedFast.ToString)
+                .WriteAttributeString("speedSlow", JointParameter(i).calSpeedSlow.ToString)
+                .WriteAttributeString("acc", JointParameter(i).calAcc.ToString)
                 .WriteEndElement()
 
                 .WriteStartElement("profile")
-                .WriteAttributeString("maxSpeed", JointParameter(i).profile.maxSpeed.ToString)
-                .WriteAttributeString("maxAcc", JointParameter(i).profile.maxAcc.ToString)
-                .WriteAttributeString("stopAcc", JointParameter(i).profile.stopAcc.ToString)
+                .WriteAttributeString("maxSpeed", JointParameter(i).profileMaxSpeed.ToString)
+                .WriteAttributeString("maxAcc", JointParameter(i).profileMaxAcc.ToString)
+                .WriteAttributeString("stopAcc", JointParameter(i).profileStopAcc.ToString)
                 .WriteEndElement()
 
                 .WriteEndElement()
@@ -165,46 +165,46 @@
                                     Case "mot"
                                         Select Case .Name
                                             Case "stepsPerRot"
-                                                JointParameter(i).mot.stepsPerRot = CInt(.Value)
+                                                JointParameter(i).motStepsPerRot = CInt(.Value)
                                             Case "gear"
-                                                JointParameter(i).mot.gear = CDec(.Value)
+                                                JointParameter(i).motGear = CDec(.Value)
                                             Case "mode"
-                                                JointParameter(i).mot.mode = CInt(.Value)
+                                                JointParameter(i).motMode = CType(CInt(.Value), motMode)
                                             Case "dir"
-                                                JointParameter(i).mot.dir = CInt(.Value)
+                                                JointParameter(i).motDir = CType(CInt(.Value), motDir)
                                         End Select
                                     Case "mech"
                                         Select Case .Name
                                             Case "gear"
-                                                JointParameter(i).mech.gear = CDec(.Value)
+                                                JointParameter(i).mechGear = CDec(.Value)
                                             Case "minAngle"
-                                                JointParameter(i).mech.minAngle = CDec(.Value)
+                                                JointParameter(i).mechMinAngle = CDec(.Value)
                                             Case "maxAngle"
-                                                JointParameter(i).mech.maxAngle = CDec(.Value)
+                                                JointParameter(i).mechMaxAngle = CDec(.Value)
                                             Case "homePosAngle"
-                                                JointParameter(i).mech.homePosAngle = CDec(.Value)
+                                                JointParameter(i).mechHomePosAngle = CDec(.Value)
                                             Case "parkPosAngle"
-                                                JointParameter(i).mech.parkPosAngle = CDec(.Value)
+                                                JointParameter(i).mechParkPosAngle = CDec(.Value)
                                         End Select
                                     Case "cal"
                                         Select Case .Name
                                             Case "dir"
-                                                JointParameter(i).cal.dir = CInt(.Value)
+                                                JointParameter(i).calDir = CType(CInt(.Value), calDir)
                                             Case "speedFast"
-                                                JointParameter(i).cal.speedFast = CDec(.Value)
+                                                JointParameter(i).calSpeedFast = CDec(.Value)
                                             Case "speedSlow"
-                                                JointParameter(i).cal.speedSlow = CDec(.Value)
+                                                JointParameter(i).calSpeedSlow = CDec(.Value)
                                             Case "acc"
-                                                JointParameter(i).cal.acc = CDec(.Value)
+                                                JointParameter(i).calAcc = CDec(.Value)
                                         End Select
                                     Case "profile"
                                         Select Case .Name
                                             Case "maxSpeed"
-                                                JointParameter(i).profile.maxSpeed = CDec(.Value)
+                                                JointParameter(i).profileMaxSpeed = CDec(.Value)
                                             Case "maxAcc"
-                                                JointParameter(i).profile.maxAcc = CDec(.Value)
+                                                JointParameter(i).profileMaxAcc = CDec(.Value)
                                             Case "stopAcc"
-                                                JointParameter(i).profile.stopAcc = CDec(.Value)
+                                                JointParameter(i).profileStopAcc = CDec(.Value)
                                         End Select
                                 End Select
                             Else

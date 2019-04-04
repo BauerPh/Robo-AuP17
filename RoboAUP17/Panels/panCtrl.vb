@@ -1,6 +1,13 @@
 ﻿Public Class panCtrl
     ' -----------------------------------------------------------------------------
+    ' TODO
+    ' -----------------------------------------------------------------------------
     ' Formsteuerung
+    ' Slider, Buttons, Bewegungsbefehle an RoboControl senden
+    ' Slider, Nums updaten wenn RoboControl sich ändert (Ereignisse, Callbacks??)
+
+    ' -----------------------------------------------------------------------------
+    ' Init Panel
     ' -----------------------------------------------------------------------------
     Private Sub panCtrl_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         cbJointOrTCP.SelectedIndex = 0
@@ -8,6 +15,9 @@
         cbMoveMode.SelectedIndex = 0
     End Sub
 
+    ' -----------------------------------------------------------------------------
+    ' Form Control
+    ' -----------------------------------------------------------------------------
     Private Sub cbMoveMode_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbMoveMode.SelectedIndexChanged
         If cbMoveMode.SelectedIndex = 0 Then
             ' getriggert

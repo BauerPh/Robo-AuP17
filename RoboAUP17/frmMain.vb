@@ -4,14 +4,14 @@ Imports WeifenLuo.WinFormsUI.Docking
 
 Public Class frmMain
 #Region "Definitions"
-    Dim WithEvents roboControl As New RobotControl
-
     'Test
+    Friend WithEvents roboControl As New RobotControl
     Public dictTest As New Dictionary(Of String, Double)
+    Friend settingsTest As New DHParams
 
     ' Konstanten
     Private Const _ssHintTimerInterval As Int32 = 4000
-    Private Const _viewSettingsFilename As String = "ViewSettings.xml"
+    Private Const _viewSettingsFilename As String = "settings/ViewSettings.xml"
     Private Const _gitHubUrl As String = "https://github.com/BauerPh/RoboAUP17"
 
     ' Objekte
@@ -99,12 +99,14 @@ Public Class frmMain
         dckPanel.SaveAsXml(_viewSettingsFilename)
         My.Settings.StartMaximized = (WindowState = FormWindowState.Maximized)
         ShowStatusStripHint("aktuelle Ansicht wurde gespeichert...")
+        _logger.Log("aktuelle Ansicht wurde gespeichert...", Logger.LogLevel.INFO)
     End Sub
 
     Private Sub msDefaulView_Click(sender As Object, e As EventArgs) Handles msDefaulView.Click
         File.Delete(_viewSettingsFilename)
         My.Settings.StartMaximized = False
-        MessageBox.Show("Standard wurde wiederhergestellt. Neustart erforderlich!", "Okay", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Standardansicht wurde wiederhergestellt. Neustart erforderlich!", "Okay", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        _logger.Log("Standardansicht wurde wiederhergestellt. Neustart erforderlich!", Logger.LogLevel.INFO)
     End Sub
 #End Region
 

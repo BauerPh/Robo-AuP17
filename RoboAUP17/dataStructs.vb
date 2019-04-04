@@ -1,4 +1,5 @@
-﻿Module dataStructs
+﻿Imports System.ComponentModel
+Module dataStructs
     ' -----------------------------------------------------------------------------
     ' Kinematics and Coordinates
     ' -----------------------------------------------------------------------------
@@ -13,9 +14,9 @@
 
     Public Structure CartCoords
         Public X, Y, Z, yaw, pitch, roll As Double
-        Public Sub New(X As Double, y As Double, Z As Double, yaw As Double, pitch As Double, roll As Double)
+        Public Sub New(X As Double, Y As Double, Z As Double, yaw As Double, pitch As Double, roll As Double)
             Me.X = X
-            Me.Y = y
+            Me.Y = Y
             Me.Z = Z
             Me.yaw = yaw
             Me.pitch = pitch
@@ -44,44 +45,89 @@
     ' -----------------------------------------------------------------------------
     ' Settings
     ' -----------------------------------------------------------------------------
+    Public Enum motMode
+        FULL = 0
+        HALF
+        MIC_4
+        MIC_8
+        MIC_16
+    End Enum
+    Public Enum motDir
+        normal = 0
+        invertiert
+    End Enum
+    Public Enum calDir
+        min = 0
+        max
+    End Enum
     Public Structure JointParameter
-        Public nr As Int32
-        Public mot As MotorParameter
-        Public mech As MechanicalParameter
-        Public cal As CalibrationParameter
-        Public profile As ProfileParameter
+        <Category("Motor"),
+            DisplayName("Schritte pro Umdrehung"),
+            Description("Anzahl Schritte pro Motorumdrehung. Diese Angabe finden Sie im Datenblatt des Motors.")>
+        Public Property motStepsPerRot As Int32
+        <Category("Motor"),
+            DisplayName("Getriebeübersetzung"),
+            Description("Diese Angabe finden Sie im Datenblatt des Motors oder des Getriebes.")>
+        Public Property motGear As Double
+        <Category("Motor"),
+            DisplayName("Betriebsart"),
+            Description("Vollschritt, Halbschritt, ...")>
+        Public Property motMode As motMode
+        <Category("Motor"),
+            DisplayName("Drehrichtung")>
+        Public Property motDir As motDir
+        <Category("Mechanik"),
+            DisplayName("Getriebeübersetzung")>
+        Public Property mechGear As Double
+        <Category("Mechanik"),
+            DisplayName("minimaler Winkel"),
+            Description("der kleinste mögliche Winkel dieser Achse")>
+        Public Property mechMinAngle As Double
+        <Category("Mechanik"),
+            DisplayName("maximaler Winkel"),
+            Description("der größte mögliche Winkel dieser Achse")>
+        Public Property mechMaxAngle As Double
+        <Category("Mechanik"),
+            DisplayName("Homeposition"),
+            Description("Winkel der für die Homeposition angefahren werden soll.")>
+        Public Property mechHomePosAngle As Double
+        <Category("Mechanik"),
+            DisplayName("Parkposition"),
+            Description("Winkel der für die Parkposition angefahren werden soll.")>
+        Public Property mechParkPosAngle As Double
+        <Category("Referenzfahrt"),
+            DisplayName("Richtung"),
+            Description("In welcher Richtung der Endschalter sitzt.")>
+        Public Property calDir As calDir
+        <Category("Referenzfahrt"),
+            DisplayName("Suchgeschwindigkeit"),
+            Description("Geschwindigkeit mit welcher der Endschalter gesucht wird (schnell).")>
+        Public Property calSpeedFast As Double
+        <Category("Referenzfahrt"),
+            DisplayName("Referenziergeschwindigkeit"),
+            Description("Geschwindigkeit mit welcher der Endschalter für den Referenzpunkt angefahren wird (langsam).")>
+        Public Property calSpeedSlow As Double
+        <Category("Referenzfahrt"),
+            DisplayName("Beschleunigung"),
+            Description("Beschleunigung während einer Referenzfahrt")>
+        Public Property calAcc As Double
+        <Category("Fahrprofil"),
+            DisplayName("maximale Geschwindigkeit"),
+            Description("die maximal mögliche Geschwindigkeit dieser Achse")>
+        Public Property profileMaxSpeed As Double
+        <Category("Fahrprofil"),
+            DisplayName("maximale Beschleunigung"),
+            Description("die maximal mögliche Beschleunigung dieser Achse")>
+        Public Property profileMaxAcc As Double
+        <Category("Fahrprofil"),
+            DisplayName("Notstop Beschleunigung"),
+            Description("Beschleunigung welche bei einem Notstopp zum Anhalten verwendet werden soll.")>
+        Public Property profileStopAcc As Double
     End Structure
 
     Public Structure ServoParameter
-        Public minAngle As Double
-        Public maxAngle As Double
+        Public Property minAngle As Double
+        Public Property maxAngle As Double
     End Structure
 
-    Public Structure MotorParameter
-        Public stepsPerRot As Int32
-        Public gear As Double
-        Public mode As Int32
-        Public dir As Int32
-    End Structure
-
-    Public Structure MechanicalParameter
-        Public gear As Double
-        Public minAngle As Double
-        Public maxAngle As Double
-        Public homePosAngle As Double
-        Public parkPosAngle As Double
-    End Structure
-
-    Public Structure CalibrationParameter
-        Public dir As Int32
-        Public speedFast As Double
-        Public speedSlow As Double
-        Public acc As Double
-    End Structure
-
-    Public Structure ProfileParameter
-        Public maxSpeed As Double
-        Public maxAcc As Double
-        Public stopAcc As Double
-    End Structure
 End Module

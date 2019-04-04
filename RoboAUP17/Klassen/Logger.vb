@@ -1,11 +1,25 @@
 ﻿Friend Class Logger
+    ' -----------------------------------------------------------------------------
+    ' TODO
+    ' -----------------------------------------------------------------------------
+    ' fertig
+
+    ' -----------------------------------------------------------------------------
+    ' Definitions
+    ' -----------------------------------------------------------------------------
     Private _logBox As ScintillaNET.Scintilla
     Private _logLvl As Integer = 0
 
+    ' -----------------------------------------------------------------------------
+    ' Constructor
+    ' -----------------------------------------------------------------------------
     Public Sub New(ByRef LoggingBox As ScintillaNET.Scintilla)
         _logBox = LoggingBox
     End Sub
 
+    ' -----------------------------------------------------------------------------
+    ' Public
+    ' -----------------------------------------------------------------------------
     Public Sub Log(msg As String, lvl As LogLevel)
         'Check if we have to Log the Message
         If _logLvl <= lvl.ToInteger() Then
@@ -56,4 +70,25 @@
             Return Me._lvl
         End Function
     End Class
+End Class
+
+' Log Event Parameter
+Friend Class LogEventArgs : Inherits EventArgs
+    Private _LogMsg As String
+    Private _LogLvl As Logger.LogLevel
+
+    Public Sub New(LogMsg As String, LogLvl As Logger.LogLevel)
+        _LogMsg = LogMsg
+        _LogLvl = LogLvl
+    End Sub
+    Public ReadOnly Property LogMsg As String
+        Get
+            Return _LogMsg
+        End Get
+    End Property
+    Public ReadOnly Property LogLvl As Logger.LogLevel
+        Get
+            Return _LogLvl
+        End Get
+    End Property
 End Class

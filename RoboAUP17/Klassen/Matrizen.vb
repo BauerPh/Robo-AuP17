@@ -1,4 +1,9 @@
 ﻿Namespace Matrizen
+    ' -----------------------------------------------------------------------------
+    ' TODO
+    ' -----------------------------------------------------------------------------
+    ' fertig
+
     Public Class Matrix4x4
         Implements ICloneable
         Public val(3, 3) As Double

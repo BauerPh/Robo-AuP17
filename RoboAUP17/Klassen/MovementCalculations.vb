@@ -1,20 +1,21 @@
 ﻿Public Class MovementCalculations
+    ' -----------------------------------------------------------------------------
+    ' TODO
+    ' -----------------------------------------------------------------------------
+    ' ???
+
+    ' -----------------------------------------------------------------------------
+    ' Definitions
+    ' -----------------------------------------------------------------------------
     Public v_max(5) As Double
     Public a_max(5) As Double
     Public s(5) As Double
     Public a(5) As Double
     Public v(5) As Double
 
-    Private Structure times_t
-        Public t_ac As Double
-        Public t_const As Double
-        Public v_max_reached As Boolean
-    End Structure
-    Private Structure profile_t
-        Public a As Double()
-        Public v As Double()
-    End Structure
-
+    ' -----------------------------------------------------------------------------
+    ' Public
+    ' -----------------------------------------------------------------------------
     'Gibt True zurück wenn Berechnung erfolgreich war
     Public Function calculate() As Boolean
         Dim t As times_t
@@ -50,6 +51,20 @@
         a = p.a
         Return True
     End Function
+
+    ' -----------------------------------------------------------------------------
+    ' Private
+    ' -----------------------------------------------------------------------------
+    Private Structure times_t
+        Public t_ac As Double
+        Public t_const As Double
+        Public v_max_reached As Boolean
+    End Structure
+
+    Private Structure profile_t
+        Public a As Double()
+        Public v As Double()
+    End Structure
 
     Private Sub calcMaxTimes(ByRef _t As times_t, ByRef _v_max As Double(), ByRef _a_max As Double())
         Dim t As times_t

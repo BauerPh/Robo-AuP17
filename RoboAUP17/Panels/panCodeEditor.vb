@@ -1,9 +1,21 @@
 ﻿Public Class panCodeEditor
+    ' -----------------------------------------------------------------------------
+    ' TODO
+    ' -----------------------------------------------------------------------------
+    ' Syntax Highlighting
+    ' ...
+
+    ' -----------------------------------------------------------------------------
+    ' Init Panel
+    ' -----------------------------------------------------------------------------
     Private maxLineNumberCharLength As Int32
     Private Sub panCodeEditor_Load(sender As Object, e As EventArgs) Handles Me.Load
         sciCodeEditor.Margins(0).Width = sciCodeEditor.TextWidth(ScintillaNET.Style.LineNumber, "99")
     End Sub
 
+    ' -----------------------------------------------------------------------------
+    ' Form Control
+    ' -----------------------------------------------------------------------------
     Private Sub sciCodeEditor_TextChanged(sender As Object, e As EventArgs) Handles sciCodeEditor.TextChanged
         'Calculate Line Number Width
         Dim maxLineNumberCharLength = sciCodeEditor.Lines.Count.ToString().Length

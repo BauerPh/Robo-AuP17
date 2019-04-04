@@ -30,11 +30,11 @@ Friend Class SerialCommunication
     Public Event Log(ByVal sender As Object, ByVal e As LogEventArgs)
     Public Event ComPortChange(ByVal sender As Object, ByVal e As ComPortChangeEventArgs)
     Public Event FIN_Received(ByVal sender As Object, ByVal e As EventArgs)
-    Public Event POS_Received(ByVal sender As Object, ByVal e As POS_ReceivedEventArgs)
-    Public Event LSS_Received(ByVal sender As Object, ByVal e As LSS_ReceivedEventArgs)
-    Public Event ESS_Received(ByVal sender As Object, ByVal e As ESS_ReceivedEventArgs)
+    Public Event POS_Received(ByVal sender As Object, ByVal e As POSReceivedEventArgs)
+    Public Event LSS_Received(ByVal sender As Object, ByVal e As LSSReceivedEventArgs)
+    Public Event ESS_Received(ByVal sender As Object, ByVal e As ESSReceivedEventArgs)
     Public Event RES_Received(ByVal sender As Object, ByVal e As EventArgs)
-    Public Event ERR_Received(ByVal sender As Object, ByVal e As ERR_ReceivedEventArgs)
+    Public Event ERR_Received(ByVal sender As Object, ByVal e As ERRReceivedEventArgs)
 
     Public Sub New()
         'Init Serial Port
@@ -248,7 +248,7 @@ Friend Class SerialCommunication
             tmpRefOkay(nr - 1) = If(_msgDataRcv.parset(i)(1) = 1, True, False)
             tmpPosSteps(nr - 1) = _msgDataRcv.parset(i)(2)
         Next
-        OnPOS_Received(New POS_ReceivedEventArgs(tmpRefOkay, tmpPosSteps))
+        OnPOS_Received(New POSReceivedEventArgs(tmpRefOkay, tmpPosSteps))
     End Sub
     Private Sub rcvLSS()
         Dim tmpState(5) As Boolean
@@ -256,11 +256,11 @@ Friend Class SerialCommunication
             Dim nr As Int32 = _msgDataRcv.parset(i)(0)
             tmpState(nr - 1) = If(_msgDataRcv.parset(i)(1) = 1, True, False)
         Next
-        OnLSS_Received(New LSS_ReceivedEventArgs(tmpState))
+        OnLSS_Received(New LSSReceivedEventArgs(tmpState))
     End Sub
     Private Sub rcvESS()
         Dim tmpState As Boolean = If(_msgDataRcv.parset(0)(0) = 1, True, False)
-        OnESS_Received(New ESS_ReceivedEventArgs(tmpState))
+        OnESS_Received(New ESSReceivedEventArgs(tmpState))
     End Sub
     Private Sub rcvRES()
         OnRES_Received(New EventArgs())
@@ -279,7 +279,7 @@ Friend Class SerialCommunication
         ElseIf errnum = 4 Then
             OnLog(New LogEventArgs("Referenz fehlgeschlagen!", Logger.LogLevel.ERR))
         End If
-        OnERR_Received(New ERR_ReceivedEventArgs(errnum))
+        OnERR_Received(New ERRReceivedEventArgs(errnum))
     End Sub
     Private Sub parseMsg(ByRef _msg As String, ByRef _msgData As classMsgData, ByRef functionList As String())
         _msgData.cnt = 0
@@ -403,19 +403,19 @@ Friend Class SerialCommunication
     Protected Sub OnFIN_Received(e As EventArgs)
         RaiseEvent FIN_Received(Me, e)
     End Sub
-    Protected Sub OnPOS_Received(e As POS_ReceivedEventArgs)
+    Protected Sub OnPOS_Received(e As POSReceivedEventArgs)
         RaiseEvent POS_Received(Me, e)
     End Sub
-    Protected Sub OnLSS_Received(e As LSS_ReceivedEventArgs)
+    Protected Sub OnLSS_Received(e As LSSReceivedEventArgs)
         RaiseEvent LSS_Received(Me, e)
     End Sub
-    Protected Sub OnESS_Received(e As ESS_ReceivedEventArgs)
+    Protected Sub OnESS_Received(e As ESSReceivedEventArgs)
         RaiseEvent ESS_Received(Me, e)
     End Sub
     Protected Sub OnRES_Received(e As EventArgs)
         RaiseEvent RES_Received(Me, e)
     End Sub
-    Protected Sub OnERR_Received(e As ERR_ReceivedEventArgs)
+    Protected Sub OnERR_Received(e As ERRReceivedEventArgs)
         RaiseEvent ERR_Received(Me, e)
     End Sub
 End Class
@@ -434,25 +434,6 @@ Public Class classMsgData
 End Class
 
 'Event Parameter
-Friend Class LogEventArgs : Inherits EventArgs
-    Private _LogMsg As String
-    Private _LogLvl As Logger.LogLevel
-
-    Public Sub New(LogMsg As String, LogLvl As Logger.LogLevel)
-        _LogMsg = LogMsg
-        _LogLvl = LogLvl
-    End Sub
-    Public ReadOnly Property LogMsg As String
-        Get
-            Return _LogMsg
-        End Get
-    End Property
-    Public ReadOnly Property LogLvl As Logger.LogLevel
-        Get
-            Return _LogLvl
-        End Get
-    End Property
-End Class
 Public Class ComPortChangeEventArgs : Inherits EventArgs
     Private _Ports As List(Of String)
     Public Sub New(Ports As List(Of String))
@@ -465,7 +446,7 @@ Public Class ComPortChangeEventArgs : Inherits EventArgs
     End Property
 End Class
 
-Public Class POS_ReceivedEventArgs : Inherits EventArgs
+Public Class POSReceivedEventArgs : Inherits EventArgs
     Private _refOkay(5) As Boolean
     Private _posSteps(5) As Int32
     Public Sub New(refOkay As Boolean(), posSteps As Int32())
@@ -484,7 +465,7 @@ Public Class POS_ReceivedEventArgs : Inherits EventArgs
     End Property
 End Class
 
-Public Class LSS_ReceivedEventArgs : Inherits EventArgs
+Public Class LSSReceivedEventArgs : Inherits EventArgs
     Private _lssState(5) As Boolean
     Public Sub New(lssState As Boolean())
         _lssState = lssState
@@ -496,7 +477,7 @@ Public Class LSS_ReceivedEventArgs : Inherits EventArgs
     End Property
 End Class
 
-Public Class ESS_ReceivedEventArgs : Inherits EventArgs
+Public Class ESSReceivedEventArgs : Inherits EventArgs
     Private _essState As Boolean
     Public Sub New(essState As Boolean)
         _essState = essState
@@ -508,7 +489,7 @@ Public Class ESS_ReceivedEventArgs : Inherits EventArgs
     End Property
 End Class
 
-Public Class ERR_ReceivedEventArgs : Inherits EventArgs
+Public Class ERRReceivedEventArgs : Inherits EventArgs
     Private _errnum As Int32
     Public Sub New(errnum As Int32)
         _errnum = errnum

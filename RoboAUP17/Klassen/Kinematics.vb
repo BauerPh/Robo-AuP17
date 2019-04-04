@@ -1,5 +1,8 @@
 ﻿Imports RoboAUP17.Matrizen
-
+' -----------------------------------------------------------------------------
+' TODO
+' -----------------------------------------------------------------------------
+' Testen
 Friend Class Kinematics
     Private _DHParameter(5) As DHParams
     Private _workframe, _toolframe As CartCoords
