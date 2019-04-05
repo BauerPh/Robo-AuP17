@@ -76,8 +76,11 @@ Partial Class frmMain
         Me.tsBtnConnect = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnDisconnect = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
-        Me.tsBtnRun = New System.Windows.Forms.ToolStripButton()
-        Me.tsBtnStop = New System.Windows.Forms.ToolStripButton()
+        Me.tsBtnProgRun = New System.Windows.Forms.ToolStripButton()
+        Me.tsBtnProgStop = New System.Windows.Forms.ToolStripButton()
+        Me.tsBtnProgCheck = New System.Windows.Forms.ToolStripButton()
+        Me.tsBtnEStop = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
@@ -376,7 +379,7 @@ Partial Class frmMain
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsBtnOpen, Me.tsBtnSave, Me.ToolStripSeparator1, Me.tsCbComPort, Me.tsBtnConnect, Me.tsBtnDisconnect, Me.ToolStripSeparator2, Me.tsBtnRun, Me.tsBtnStop})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsBtnOpen, Me.tsBtnSave, Me.ToolStripSeparator1, Me.tsCbComPort, Me.tsBtnConnect, Me.tsBtnDisconnect, Me.ToolStripSeparator2, Me.tsBtnProgCheck, Me.tsBtnProgRun, Me.tsBtnProgStop, Me.ToolStripSeparator8, Me.tsBtnEStop})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 24)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(1113, 25)
@@ -433,21 +436,42 @@ Partial Class frmMain
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
         Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 25)
         '
-        'tsBtnRun
+        'tsBtnProgRun
         '
-        Me.tsBtnRun.Image = CType(resources.GetObject("tsBtnRun.Image"), System.Drawing.Image)
-        Me.tsBtnRun.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.tsBtnRun.Name = "tsBtnRun"
-        Me.tsBtnRun.Size = New System.Drawing.Size(123, 22)
-        Me.tsBtnRun.Text = "Programm starten"
+        Me.tsBtnProgRun.Image = CType(resources.GetObject("tsBtnProgRun.Image"), System.Drawing.Image)
+        Me.tsBtnProgRun.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsBtnProgRun.Name = "tsBtnProgRun"
+        Me.tsBtnProgRun.Size = New System.Drawing.Size(123, 22)
+        Me.tsBtnProgRun.Text = "Programm starten"
         '
-        'tsBtnStop
+        'tsBtnProgStop
         '
-        Me.tsBtnStop.Image = CType(resources.GetObject("tsBtnStop.Image"), System.Drawing.Image)
-        Me.tsBtnStop.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.tsBtnStop.Name = "tsBtnStop"
-        Me.tsBtnStop.Size = New System.Drawing.Size(169, 22)
-        Me.tsBtnStop.Text = "Programm Stop (Leertaste)"
+        Me.tsBtnProgStop.Image = CType(resources.GetObject("tsBtnProgStop.Image"), System.Drawing.Image)
+        Me.tsBtnProgStop.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsBtnProgStop.Name = "tsBtnProgStop"
+        Me.tsBtnProgStop.Size = New System.Drawing.Size(130, 22)
+        Me.tsBtnProgStop.Text = "Programm stoppen"
+        '
+        'tsBtnProgCheck
+        '
+        Me.tsBtnProgCheck.Image = CType(resources.GetObject("tsBtnProgCheck.Image"), System.Drawing.Image)
+        Me.tsBtnProgCheck.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsBtnProgCheck.Name = "tsBtnProgCheck"
+        Me.tsBtnProgCheck.Size = New System.Drawing.Size(122, 22)
+        Me.tsBtnProgCheck.Text = "Programm prüfen"
+        '
+        'tsBtnEStop
+        '
+        Me.tsBtnEStop.Image = CType(resources.GetObject("tsBtnEStop.Image"), System.Drawing.Image)
+        Me.tsBtnEStop.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsBtnEStop.Name = "tsBtnEStop"
+        Me.tsBtnEStop.Size = New System.Drawing.Size(132, 22)
+        Me.tsBtnEStop.Text = "Not-Halt (Leertaste)"
+        '
+        'ToolStripSeparator8
+        '
+        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
+        Me.ToolStripSeparator8.Size = New System.Drawing.Size(6, 25)
         '
         'frmMain
         '
@@ -528,6 +552,9 @@ Partial Class frmMain
     Friend WithEvents msSetLogLvlError As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
     Friend WithEvents msRoboParameter As ToolStripMenuItem
-    Friend WithEvents tsBtnRun As ToolStripButton
-    Friend WithEvents tsBtnStop As ToolStripButton
+    Friend WithEvents tsBtnProgRun As ToolStripButton
+    Friend WithEvents tsBtnProgStop As ToolStripButton
+    Friend WithEvents tsBtnProgCheck As ToolStripButton
+    Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
+    Friend WithEvents tsBtnEStop As ToolStripButton
 End Class

@@ -19,6 +19,8 @@ Public Class frmMain
     ' Objekte
     Private WithEvents _ssHintTimer As New Timer
     Private _logger As Logger
+    Private _loggerComSerial As Logger
+    Private _loggerComTCPIP As Logger
 
     ' DockPanel
     Public dckPanel As New DockPanel
@@ -48,6 +50,8 @@ Public Class frmMain
 
         'create objects
         _logger = New Logger(_dckPanLog.sciLog)
+        _loggerComSerial = New Logger(_dckPanComLogSerial.sciLog)
+        _loggerComTCPIP = New Logger(_dckPanComLogTCPIP.sciLog)
         SetLogLevel(My.Settings.LogLvl)
 
         'Configure Dock Panel
@@ -57,9 +61,11 @@ Public Class frmMain
 
         'Welcome Log
         ShowStatusStripHint("Anwendung gestartet...")
-        _logger.Log("Hi!", Logger.LogLevel.INFO)
+        _logger.Log("[MAIN] Hi!", Logger.LogLevel.INFO)
 
         AddHandler roboControl.com.ComPortChange, AddressOf eComPortChanged
+        AddHandler roboControl.com.SerialConnected, AddressOf eComSerialConnected
+        AddHandler roboControl.com.SerialDisconnected, AddressOf eComSerialDisconnected
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -80,6 +86,13 @@ Public Class frmMain
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
+    Private Sub eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles roboControl.Log
+        If LogLvl = Logger.LogLevel.COMIN Or LogLvl = Logger.LogLevel.COMOUT Then
+            _loggerComSerial.Log(LogMsg, LogLvl)
+        Else
+            _logger.Log(LogMsg, LogLvl)
+        End If
+    End Sub
     Private Sub eComPortChanged(ports As List(Of String))
         If InvokeRequired Then
             Invoke(Sub() eComPortChanged(ports))
@@ -97,6 +110,23 @@ Public Class frmMain
             tsBtnConnect.Enabled = False
         End If
     End Sub
+    Private Sub eComSerialConnected()
+        If InvokeRequired Then
+            Invoke(Sub() eComSerialConnected())
+            Return
+        End If
+        tsBtnConnect.Enabled = False
+        tsBtnProgRun.Enabled = True
+    End Sub
+    Private Sub eComSerialDisconnected()
+        If InvokeRequired Then
+            Invoke(Sub() eComSerialDisconnected())
+            Return
+        End If
+        tsBtnConnect.Enabled = True
+        tsBtnProgRun.Enabled = False
+        tsBtnProgStop.Enabled = False
+    End Sub
 
     ' -----------------------------------------------------------------------------
     ' Private
@@ -113,6 +143,12 @@ Public Class frmMain
     Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         My.Settings.Save()
     End Sub
+    Private Sub tsBtnConnect_Click(sender As Object, e As EventArgs) Handles tsBtnConnect.Click
+        roboControl.com.connect(tsCbComPort.Text)
+    End Sub
+    Private Sub tsBtnDisconnect_Click(sender As Object, e As EventArgs) Handles tsBtnDisconnect.Click
+        roboControl.com.disconnect()
+    End Sub
 #End Region
 
 #Region "MenuStrip Datei"
@@ -126,14 +162,14 @@ Public Class frmMain
         dckPanel.SaveAsXml(_viewSettingsFilename)
         My.Settings.StartMaximized = (WindowState = FormWindowState.Maximized)
         ShowStatusStripHint("aktuelle Ansicht wurde gespeichert...")
-        _logger.Log("aktuelle Ansicht wurde gespeichert...", Logger.LogLevel.INFO)
+        _logger.Log("[MAIN] aktuelle Ansicht wurde gespeichert...", Logger.LogLevel.INFO)
     End Sub
 
     Private Sub msDefaulView_Click(sender As Object, e As EventArgs) Handles msDefaulView.Click
         File.Delete(_viewSettingsFilename)
         My.Settings.StartMaximized = False
         MessageBox.Show("Standardansicht wurde wiederhergestellt. Neustart erforderlich!", "Okay", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        _logger.Log("Standardansicht wurde wiederhergestellt. Neustart erforderlich!", Logger.LogLevel.INFO)
+        _logger.Log("[MAIN] Standardansicht wurde wiederhergestellt. Neustart erforderlich!", Logger.LogLevel.INFO)
     End Sub
 #End Region
 
@@ -280,7 +316,7 @@ Public Class frmMain
         'Check for saved View Settings
         If (File.Exists(_viewSettingsFilename)) Then
             dckPanel.LoadFromXml(_viewSettingsFilename, AddressOf GetContent)
-            _logger.Log("""" + _viewSettingsFilename + """ geladen", Logger.LogLevel.DEBUG)
+            _logger.Log($"[MAIN] ""{_viewSettingsFilename}"" geladen", Logger.LogLevel.DEBUG)
         Else
             ' Add Panels
             _dckPanCodeEditor.Show(dckPanel, DockState.Document)
@@ -306,7 +342,7 @@ Public Class frmMain
             _dckPanTCPServer.Show(dckPanel, DockState.Float)
             _dckPanTCPServer.Hide()
 
-            _logger.Log("Standardansicht geladen", Logger.LogLevel.DEBUG)
+            _logger.Log("[MAIN] Standardansicht geladen", Logger.LogLevel.DEBUG)
         End If
 
         'activate default panels
@@ -359,8 +395,7 @@ Public Class frmMain
 
     Private Sub _initForm()
         tsBtnConnect.Enabled = False
-        tsBtnRun.Enabled = False
-        tsBtnStop.Enabled = False
+        tsBtnProgRun.Enabled = False
+        tsBtnProgStop.Enabled = False
     End Sub
-
 End Class

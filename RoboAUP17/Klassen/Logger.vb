@@ -29,7 +29,12 @@
                 Return
             End If
             'Log
-            _logBox.AddText(Now().ToString("HH:mm:ss.fff") & " [" & lvl.ToString() & "] " & msg & vbCrLf)
+            _logBox.ReadOnly = False
+            _logBox.AppendText($"{Now().ToString("HH:mm:ss.fff")} [{lvl.ToString()}]{"".PadLeft(8 - lvl.ToString().Length())}{msg}{vbCrLf}")
+            _logBox.ReadOnly = True
+            ' Scroll Logbox
+            _logBox.SelectionStart = _logBox.Text.Length
+            _logBox.ScrollCaret()
         End If
     End Sub
     Public Sub ShowErrMsg(msg As String)
@@ -69,5 +74,12 @@
         Public Function ToInteger() As Integer
             Return Me._lvl
         End Function
+
+        Public Shared Operator =(ByVal val1 As LogLevel, ByVal val2 As LogLevel) As Boolean
+            Return val1._key = val2._key
+        End Operator
+        Public Shared Operator <>(ByVal val1 As LogLevel, ByVal val2 As LogLevel) As Boolean
+            Return val1._key <> val2._key
+        End Operator
     End Class
 End Class

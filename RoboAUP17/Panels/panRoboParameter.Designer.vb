@@ -27,22 +27,22 @@ Partial Class panRoboParameter
         Me.ToolStripContainer = New System.Windows.Forms.ToolStripContainer()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.btnJ1 = New System.Windows.Forms.ToolStripButton()
-        Me.btnJ2 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
-        Me.btnJ3 = New System.Windows.Forms.ToolStripButton()
-        Me.btnJ4 = New System.Windows.Forms.ToolStripButton()
-        Me.btnJ5 = New System.Windows.Forms.ToolStripButton()
-        Me.btnJ6 = New System.Windows.Forms.ToolStripButton()
-        Me.btnServo1 = New System.Windows.Forms.ToolStripButton()
-        Me.btnServo2 = New System.Windows.Forms.ToolStripButton()
-        Me.btnServo3 = New System.Windows.Forms.ToolStripButton()
+        Me.btnJ2 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnJ3 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnJ4 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnJ5 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnJ6 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnServo1 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnServo2 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnServo3 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
         Me.ToolStripContainer.SuspendLayout()
@@ -83,6 +83,7 @@ Partial Class panRoboParameter
         Me.ToolStrip1.Location = New System.Drawing.Point(3, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(367, 25)
+        Me.ToolStrip1.Stretch = True
         Me.ToolStrip1.TabIndex = 0
         '
         'btnJ1
@@ -94,6 +95,11 @@ Partial Class panRoboParameter
         Me.btnJ1.Size = New System.Drawing.Size(23, 22)
         Me.btnJ1.Text = "J1"
         '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 25)
+        '
         'btnJ2
         '
         Me.btnJ2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
@@ -103,10 +109,10 @@ Partial Class panRoboParameter
         Me.btnJ2.Size = New System.Drawing.Size(23, 22)
         Me.btnJ2.Text = "J2"
         '
-        'ToolStripSeparator1
+        'ToolStripSeparator2
         '
-        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 25)
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 25)
         '
         'btnJ3
         '
@@ -117,6 +123,11 @@ Partial Class panRoboParameter
         Me.btnJ3.Size = New System.Drawing.Size(23, 22)
         Me.btnJ3.Text = "J3"
         '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 25)
+        '
         'btnJ4
         '
         Me.btnJ4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
@@ -125,6 +136,11 @@ Partial Class panRoboParameter
         Me.btnJ4.Name = "btnJ4"
         Me.btnJ4.Size = New System.Drawing.Size(23, 22)
         Me.btnJ4.Text = "J4"
+        '
+        'ToolStripSeparator4
+        '
+        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(6, 25)
         '
         'btnJ5
         '
@@ -135,6 +151,11 @@ Partial Class panRoboParameter
         Me.btnJ5.Size = New System.Drawing.Size(23, 22)
         Me.btnJ5.Text = "J5"
         '
+        'ToolStripSeparator5
+        '
+        Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
+        Me.ToolStripSeparator5.Size = New System.Drawing.Size(6, 25)
+        '
         'btnJ6
         '
         Me.btnJ6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
@@ -143,6 +164,11 @@ Partial Class panRoboParameter
         Me.btnJ6.Name = "btnJ6"
         Me.btnJ6.Size = New System.Drawing.Size(23, 22)
         Me.btnJ6.Text = "J6"
+        '
+        'ToolStripSeparator6
+        '
+        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
+        Me.ToolStripSeparator6.Size = New System.Drawing.Size(6, 25)
         '
         'btnServo1
         '
@@ -153,6 +179,11 @@ Partial Class panRoboParameter
         Me.btnServo1.Size = New System.Drawing.Size(49, 22)
         Me.btnServo1.Text = "Servo 1"
         '
+        'ToolStripSeparator7
+        '
+        Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
+        Me.ToolStripSeparator7.Size = New System.Drawing.Size(6, 25)
+        '
         'btnServo2
         '
         Me.btnServo2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
@@ -162,6 +193,11 @@ Partial Class panRoboParameter
         Me.btnServo2.Size = New System.Drawing.Size(49, 22)
         Me.btnServo2.Text = "Servo 2"
         '
+        'ToolStripSeparator8
+        '
+        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
+        Me.ToolStripSeparator8.Size = New System.Drawing.Size(6, 25)
+        '
         'btnServo3
         '
         Me.btnServo3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
@@ -170,41 +206,6 @@ Partial Class panRoboParameter
         Me.btnServo3.Name = "btnServo3"
         Me.btnServo3.Size = New System.Drawing.Size(49, 22)
         Me.btnServo3.Text = "Servo 3"
-        '
-        'ToolStripSeparator2
-        '
-        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 25)
-        '
-        'ToolStripSeparator3
-        '
-        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
-        Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 25)
-        '
-        'ToolStripSeparator4
-        '
-        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(6, 25)
-        '
-        'ToolStripSeparator5
-        '
-        Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
-        Me.ToolStripSeparator5.Size = New System.Drawing.Size(6, 25)
-        '
-        'ToolStripSeparator6
-        '
-        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
-        Me.ToolStripSeparator6.Size = New System.Drawing.Size(6, 25)
-        '
-        'ToolStripSeparator7
-        '
-        Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
-        Me.ToolStripSeparator7.Size = New System.Drawing.Size(6, 25)
-        '
-        'ToolStripSeparator8
-        '
-        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
-        Me.ToolStripSeparator8.Size = New System.Drawing.Size(6, 25)
         '
         'panRoboParameter
         '

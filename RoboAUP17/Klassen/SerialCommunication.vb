@@ -6,7 +6,7 @@ Friend Class SerialCommunication
     Private Const _cSendRepeats As Int16 = 3S
     Private WithEvents _tCheckConnection As New Timer
 
-    Private WithEvents _SerialPort1 As New SerialPort()
+    Private WithEvents _SerialPort As New SerialPort()
     Private _repeatCounter As Int16 = 0S
     'CON
     Private _conWaitACK As Boolean = False
@@ -38,12 +38,12 @@ Friend Class SerialCommunication
 
     Public Sub New()
         'Init Serial Port
-        _SerialPort1.DataBits = 8
-        _SerialPort1.StopBits = StopBits.One
-        _SerialPort1.Parity = Parity.None
-        _SerialPort1.BaudRate = 2000000
-        _SerialPort1.ReceivedBytesThreshold = 3
-        _SerialPort1.ReadTimeout = 1000
+        _SerialPort.DataBits = 8
+        _SerialPort.StopBits = StopBits.One
+        _SerialPort.Parity = Parity.None
+        _SerialPort.BaudRate = 115200
+        _SerialPort.ReceivedBytesThreshold = 3
+        _SerialPort.ReadTimeout = 1000
         'Timers
         _tConWaitACK.Interval = _cSendTimeoutMS
         _tWaitACK.Interval = _cSendTimeoutMS
@@ -52,26 +52,34 @@ Friend Class SerialCommunication
         _tCheckConnection.Start()
     End Sub
     Public Sub connect(comPort As String)
+        If _connected Then
+            RaiseEvent Log($"[Serial] Bereits über {comPort} verbunden", Logger.LogLevel.WARN)
+            Return
+        End If
         'Open Port
-        _SerialPort1.PortName = comPort
+        _SerialPort.PortName = comPort
         Try
-            _SerialPort1.Open()
+            _SerialPort.Open()
         Catch ex As Exception
-            RaiseEvent Log("Verbindungsfehler!", Logger.LogLevel.ERR)
+            RaiseEvent Log($"[Serial] Fehler beim öffnen von {comPort}: {ex.Message}", Logger.LogLevel.ERR)
             disconnect()
             Return
         End Try
 
         'Check device
-        _SerialPort1.DiscardInBuffer()
+        _SerialPort.DiscardInBuffer()
         _sendCON()
     End Sub
     Public Sub disconnect()
+        If Not _SerialPort.IsOpen And Not _connected Then
+            RaiseEvent Log($"[Serial] COM-Port ist nicht verbunden", Logger.LogLevel.INFO)
+            Return
+        End If
         'Close Port
-        If _SerialPort1.IsOpen Then _SerialPort1.Close()
+        If _SerialPort.IsOpen Then _SerialPort.Close()
         _connected = False
         RaiseEvent SerialDisconnected()
-        RaiseEvent Log("Verbindung getrennt!", Logger.LogLevel.INFO)
+        RaiseEvent Log($"[Serial] Verbindung über {_SerialPort.PortName} getrennt", Logger.LogLevel.INFO)
     End Sub
     Public Sub resetDataSets()
         _msgDataSend.cnt = 0
@@ -175,7 +183,7 @@ Friend Class SerialCommunication
             _tConWaitACK.Stop()
             disconnect()
             _conWaitACK = False
-            RaiseEvent Log("Falsches Gerät angeschlossen!", Logger.LogLevel.ERR)
+            RaiseEvent Log("[Serial] Timeout beim Verbindungsaufbau (keine Antwort vom Arduino erhalten)", Logger.LogLevel.ERR)
         Else
             _sendCON()
         End If
@@ -187,7 +195,7 @@ Friend Class SerialCommunication
             _tWaitACK.Stop()
             _movWaitACK = False
             _refWaitACK = False
-            RaiseEvent Log("keine Antwort!", Logger.LogLevel.ERR)
+            RaiseEvent Log("[Serial] Timeout beim Verbindungsaufbau (keine Antwort vom Arduino erhalten)", Logger.LogLevel.ERR)
         Else
             If _movWaitACK Then
                 sendMOV()
@@ -232,7 +240,7 @@ Friend Class SerialCommunication
             _tConWaitACK.Stop()
             _connected = True
             RaiseEvent SerialConnected()
-            RaiseEvent Log("Verbunden!", Logger.LogLevel.INFO)
+            RaiseEvent Log($"[Serial] Verbindung über {_SerialPort.PortName} erfolgreich hergestellt", Logger.LogLevel.INFO)
         ElseIf _movWaitACK Or _refWaitACK Then
             _movWaitACK = False
             _refWaitACK = False
@@ -271,13 +279,13 @@ Friend Class SerialCommunication
         _refWaitACK = False
         _tWaitACK.Stop()
         If errnum = 1 Then
-            RaiseEvent Log("Error!", Logger.LogLevel.ERR)
+            RaiseEvent Log("[Serial] Fehler", Logger.LogLevel.ERR)
         ElseIf errnum = 2 Then
-            RaiseEvent Log("Parameter Error!", Logger.LogLevel.ERR)
+            RaiseEvent Log("[Serial] Parameter fehlerhaft", Logger.LogLevel.ERR)
         ElseIf errnum = 3 Then
-            RaiseEvent Log("Referenz fehlt!", Logger.LogLevel.ERR)
+            RaiseEvent Log("[Serial] Roboter nicht in Referenz", Logger.LogLevel.ERR)
         ElseIf errnum = 4 Then
-            RaiseEvent Log("Referenz fehlgeschlagen!", Logger.LogLevel.ERR)
+            RaiseEvent Log("[Serial] Referenzfahrt fehlgeschlagen", Logger.LogLevel.ERR)
         End If
         RaiseEvent ERRReceived(errnum)
     End Sub
@@ -374,18 +382,18 @@ Friend Class SerialCommunication
 
     Private Sub timerCheckConnection_Tick(sender As Object, e As EventArgs) Handles _tCheckConnection.Elapsed
         'Check Connecion
-        If _connected And Not _SerialPort1.IsOpen Then
+        If _connected And Not _SerialPort.IsOpen Then
             disconnect()
         End If
         checkAvailablePorts()
     End Sub
     Private Sub sendMsg(msg As String)
-        _SerialPort1.Write(msg)
+        _SerialPort.Write(msg)
         RaiseEvent Log(msg, Logger.LogLevel.COMOUT)
     End Sub
-    Private Sub _SerialPort1_DataReceived(sender As Object, e As SerialDataReceivedEventArgs) Handles _SerialPort1.DataReceived
-        While (_SerialPort1.BytesToRead > 0)
-            rcvMsg(_SerialPort1.ReadLine)
+    Private Sub _SerialPort1_DataReceived(sender As Object, e As SerialDataReceivedEventArgs) Handles _SerialPort.DataReceived
+        While (_SerialPort.BytesToRead > 0)
+            rcvMsg(_SerialPort.ReadLine)
         End While
     End Sub
 End Class
