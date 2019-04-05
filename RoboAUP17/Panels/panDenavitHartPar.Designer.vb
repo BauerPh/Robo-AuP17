@@ -31,7 +31,7 @@ Partial Class panDenavitHartPar
         Me.ClientSize = New System.Drawing.Size(511, 310)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panDenavitHartPar"
-        Me.Text = "Denavit-Hartenberg-Parameter"
+        Me.Text = "Denavit-Hartenberg Parameter"
         Me.ResumeLayout(False)
 
     End Sub

@@ -30,8 +30,9 @@ Partial Class panReference
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.ClientSize = New System.Drawing.Size(384, 361)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panReference"
-        Me.Text = "panReference"
+        Me.Text = "Referenzfahrt"
         Me.ResumeLayout(False)
 
     End Sub

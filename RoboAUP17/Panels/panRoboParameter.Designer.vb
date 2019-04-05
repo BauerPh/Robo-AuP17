@@ -80,9 +80,9 @@ Partial Class panRoboParameter
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnJ1, Me.ToolStripSeparator1, Me.btnJ2, Me.ToolStripSeparator2, Me.btnJ3, Me.ToolStripSeparator3, Me.btnJ4, Me.ToolStripSeparator4, Me.btnJ5, Me.ToolStripSeparator5, Me.btnJ6, Me.ToolStripSeparator6, Me.btnServo1, Me.ToolStripSeparator7, Me.btnServo2, Me.ToolStripSeparator8, Me.btnServo3})
-        Me.ToolStrip1.Location = New System.Drawing.Point(3, 0)
+        Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(367, 25)
+        Me.ToolStrip1.Size = New System.Drawing.Size(613, 25)
         Me.ToolStrip1.Stretch = True
         Me.ToolStrip1.TabIndex = 0
         '
@@ -215,7 +215,7 @@ Partial Class panRoboParameter
         Me.Controls.Add(Me.ToolStripContainer)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panRoboParameter"
-        Me.Text = "Robo Parameter"
+        Me.Text = "Roboter Parameter"
         Me.ToolStripContainer.ContentPanel.ResumeLayout(False)
         Me.ToolStripContainer.TopToolStripPanel.ResumeLayout(False)
         Me.ToolStripContainer.TopToolStripPanel.PerformLayout()
