@@ -11,7 +11,7 @@
     Private Sub panRoboParameter_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         If Not _initialized Then
             _initialized = True
-            propGridRoboPar.SelectedObject = frmMain.roboControl.pref.JointParameter(0)
+            propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(0)
             checkButton(btnNr.J1)
         End If
     End Sub
@@ -20,47 +20,47 @@
     ' Form Control
     ' -----------------------------------------------------------------------------
     Private Sub btnJ1_Click(sender As Object, e As EventArgs) Handles btnJ1.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.pref.JointParameter(0)
+        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(0)
         checkButton(btnNr.J1)
     End Sub
 
     Private Sub btnJ2_Click(sender As Object, e As EventArgs) Handles btnJ2.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.pref.JointParameter(1)
+        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(1)
         checkButton(btnNr.J2)
     End Sub
 
     Private Sub btnJ3_Click(sender As Object, e As EventArgs) Handles btnJ3.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.pref.JointParameter(2)
+        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(2)
         checkButton(btnNr.J3)
     End Sub
 
     Private Sub btnJ4_Click(sender As Object, e As EventArgs) Handles btnJ4.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.pref.JointParameter(3)
+        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(3)
         checkButton(btnNr.J4)
     End Sub
 
     Private Sub btnJ5_Click(sender As Object, e As EventArgs) Handles btnJ5.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.pref.JointParameter(4)
+        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(4)
         checkButton(btnNr.J5)
     End Sub
 
     Private Sub btnJ6_Click(sender As Object, e As EventArgs) Handles btnJ6.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.pref.JointParameter(5)
+        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(5)
         checkButton(btnNr.J6)
     End Sub
 
     Private Sub btnServo1_Click(sender As Object, e As EventArgs) Handles btnServo1.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.pref.ServoParameter(0)
+        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.ServoParameter(0)
         checkButton(btnNr.Servo1)
     End Sub
 
     Private Sub btnServo2_Click(sender As Object, e As EventArgs) Handles btnServo2.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.pref.ServoParameter(1)
+        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.ServoParameter(1)
         checkButton(btnNr.Servo2)
     End Sub
 
     Private Sub btnServo3_Click(sender As Object, e As EventArgs) Handles btnServo3.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.pref.ServoParameter(2)
+        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.ServoParameter(2)
         checkButton(btnNr.Servo3)
     End Sub
 

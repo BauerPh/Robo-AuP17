@@ -1,4 +1,4 @@
-﻿Friend Class Settings
+﻿Friend Class RoboParameter
     Private Const cDefaultConfigFile As String = "settings/RoboParameterDefault.xml"
     Private _actFilename As String
 

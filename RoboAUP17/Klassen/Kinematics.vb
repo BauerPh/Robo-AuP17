@@ -53,7 +53,7 @@ Friend Class Kinematics
         transForwMatr(0) = CalcFrameMatrix(_workframe)
         'Transformationsmatrizen jeder Achse
         For i As Short = 1 To 6
-            transForwMatr(i) = CalcDHTransMatrix(i, joints.ToArray(i - 1))
+            transForwMatr(i) = CalcDHTransMatrix(i, joints.items(i - 1))
         Next
         'Tool Frame
         transForwMatr(7) = CalcFrameMatrix(_toolframe)

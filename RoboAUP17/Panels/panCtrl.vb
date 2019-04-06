@@ -32,21 +32,21 @@
         If cbJointOrTCP.SelectedIndex = 0 Then
             ' Joint Mode
             cbJogMode.Visible = True
-            lblCtrl1.Text = "J1"
-            lblCtrl2.Text = "J2"
-            lblCtrl3.Text = "J3"
-            lblCtrl4.Text = "J4"
-            lblCtrl5.Text = "J5"
-            lblCtrl6.Text = "J6"
+            lblCtrl1.Text = "J1:"
+            lblCtrl2.Text = "J2:"
+            lblCtrl3.Text = "J3:"
+            lblCtrl4.Text = "J4:"
+            lblCtrl5.Text = "J5:"
+            lblCtrl6.Text = "J6:"
         Else
             ' TCP Mode
             cbJogMode.Visible = False
-            lblCtrl1.Text = "X"
-            lblCtrl2.Text = "Y"
-            lblCtrl3.Text = "Z"
-            lblCtrl4.Text = "yaw"
-            lblCtrl5.Text = "pitch"
-            lblCtrl6.Text = "roll"
+            lblCtrl1.Text = "X:"
+            lblCtrl2.Text = "Y:"
+            lblCtrl3.Text = "Z:"
+            lblCtrl4.Text = "yaw:"
+            lblCtrl5.Text = "pitch:"
+            lblCtrl6.Text = "roll:"
         End If
     End Sub
 

@@ -4,7 +4,7 @@
     End Function
 
     Public Function StepsToAngle(steps As Int32, motGear As Double, mechGear As Double, stepsPerRot As Int32, angleZeroOff As Double) As Double
-        Return Math.Round((CDec(steps) / stepsPerRot * 360.0 / motGear / mechGear - angleZeroOff) * 100.0) / 100.0
+        Return Math.Round(CDec(steps) / stepsPerRot * 360.0 / motGear / mechGear - angleZeroOff, 2)
     End Function
 
     Public Function RoundUp(ByVal d As Double, ByVal digits As UInt16) As Double

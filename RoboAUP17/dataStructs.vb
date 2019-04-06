@@ -22,12 +22,10 @@ Module dataStructs
             Me.pitch = pitch
             Me.roll = roll
         End Sub
-        Public Function ToArray() As Double()
-            Return New Double(5) {X, Y, Z, yaw, pitch, roll}
-        End Function
     End Structure
 
     Public Structure JointAngles
+        Implements ICloneable
         Public J1, J2, J3, J4, J5, J6 As Double
         Public Sub New(J1 As Double, J2 As Double, J3 As Double, J4 As Double, J5 As Double, J6 As Double)
             Me.J1 = J1
@@ -37,8 +35,44 @@ Module dataStructs
             Me.J5 = J5
             Me.J6 = J6
         End Sub
-        Public Function ToArray() As Double()
-            Return New Double(5) {J1, J2, J3, J4, J5, J6}
+        Public Function items(index As Int32) As Double
+            Select Case index
+                Case 0
+                    Return J1
+                Case 1
+                    Return J2
+                Case 2
+                    Return J3
+                Case 3
+                    Return J4
+                Case 4
+                    Return J5
+                Case 5
+                    Return J6
+                Case Else
+                    Throw New Exception("Index out of range")
+            End Select
+        End Function
+        Public Sub setByIndex(index As Integer, value As Double)
+            Select Case index
+                Case 0
+                    J1 = value
+                Case 1
+                    J2 = value
+                Case 2
+                    J3 = value
+                Case 3
+                    J4 = value
+                Case 4
+                    J5 = value
+                Case 5
+                    J6 = value
+                Case Else
+                    Throw New Exception("Index out of range")
+            End Select
+        End Sub
+        Public Function Clone() As Object Implements ICloneable.Clone
+            Return New JointAngles(J1, J2, J3, J4, J5, J6)
         End Function
     End Structure
 

@@ -15,6 +15,7 @@ Public Class frmMain
     Private Const _ssHintTimerInterval As Int32 = 4000
     Private Const _viewSettingsFilename As String = "settings/ViewSettings.xml"
     Private Const _gitHubUrl As String = "https://github.com/BauerPh/RoboAUP17"
+    Private Const _gitHubUrlArduinoFirmware As String = "https://github.com/BauerPh/RoboAUP17_Arduino"
 
     ' Objekte
     Private WithEvents _ssHintTimer As New Timer
@@ -63,9 +64,6 @@ Public Class frmMain
         ShowStatusStripHint("Anwendung gestartet...")
         _logger.Log("[MAIN] Hi!", Logger.LogLevel.INFO)
 
-        AddHandler roboControl.com.ComPortChange, AddressOf eComPortChanged
-        AddHandler roboControl.com.SerialConnected, AddressOf eComSerialConnected
-        AddHandler roboControl.com.SerialDisconnected, AddressOf eComSerialDisconnected
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -84,57 +82,10 @@ Public Class frmMain
 #End Region
 
     ' -----------------------------------------------------------------------------
-    ' Events
-    ' -----------------------------------------------------------------------------
-    Private Sub eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles roboControl.Log
-        If LogLvl = Logger.LogLevel.COMIN Or LogLvl = Logger.LogLevel.COMOUT Then
-            _loggerComSerial.Log(LogMsg, LogLvl)
-        Else
-            _logger.Log(LogMsg, LogLvl)
-        End If
-    End Sub
-    Private Sub eComPortChanged(ports As List(Of String))
-        If InvokeRequired Then
-            Invoke(Sub() eComPortChanged(ports))
-            Return
-        End If
-
-        tsCbComPort.Items.Clear()
-        If ports.Count > 0 Then
-            For i = 0 To ports.Count - 1
-                tsCbComPort.Items.Add(ports(i))
-            Next
-            tsCbComPort.SelectedIndex = 0
-            tsBtnConnect.Enabled = True
-        Else
-            tsBtnConnect.Enabled = False
-        End If
-    End Sub
-    Private Sub eComSerialConnected()
-        If InvokeRequired Then
-            Invoke(Sub() eComSerialConnected())
-            Return
-        End If
-        tsBtnConnect.Enabled = False
-        tsBtnProgRun.Enabled = True
-    End Sub
-    Private Sub eComSerialDisconnected()
-        If InvokeRequired Then
-            Invoke(Sub() eComSerialDisconnected())
-            Return
-        End If
-        tsBtnConnect.Enabled = True
-        tsBtnProgRun.Enabled = False
-        tsBtnProgStop.Enabled = False
-    End Sub
-
-    ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
 #Region "Private"
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        _initForm()
-
         'Maximiert starten wenn Ansicht so gespeichert wurde
         If My.Settings.StartMaximized Then
             WindowState = FormWindowState.Maximized
@@ -144,10 +95,10 @@ Public Class frmMain
         My.Settings.Save()
     End Sub
     Private Sub tsBtnConnect_Click(sender As Object, e As EventArgs) Handles tsBtnConnect.Click
-        roboControl.com.connect(tsCbComPort.Text)
+        roboControl.SerialConnect(tsCbComPort.Text)
     End Sub
     Private Sub tsBtnDisconnect_Click(sender As Object, e As EventArgs) Handles tsBtnDisconnect.Click
-        roboControl.com.disconnect()
+        roboControl.SerialDisconnect()
     End Sub
 #End Region
 
@@ -161,7 +112,6 @@ Public Class frmMain
     Private Sub msSaveView_Click(sender As Object, e As EventArgs) Handles msSaveView.Click
         dckPanel.SaveAsXml(_viewSettingsFilename)
         My.Settings.StartMaximized = (WindowState = FormWindowState.Maximized)
-        ShowStatusStripHint("aktuelle Ansicht wurde gespeichert...")
         _logger.Log("[MAIN] aktuelle Ansicht wurde gespeichert...", Logger.LogLevel.INFO)
     End Sub
 
@@ -176,6 +126,9 @@ Public Class frmMain
 #Region "MenuStrip Hilfe"
     Private Sub msGitHub_Click(sender As Object, e As EventArgs) Handles msGitHub.Click
         Process.Start(_gitHubUrl)
+    End Sub
+    Private Sub msArduinoFirmware_Click(sender As Object, e As EventArgs) Handles msArduinoFirmware.Click
+        Process.Start(_gitHubUrlArduinoFirmware)
     End Sub
 #End Region
 
@@ -393,8 +346,47 @@ Public Class frmMain
         ssLblStatus.Text = ""
     End Sub
 
-    Private Sub _initForm()
+    ' -----------------------------------------------------------------------------
+    ' Events
+    ' -----------------------------------------------------------------------------
+    Private Sub eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles roboControl.Log
+        If LogLvl = Logger.LogLevel.COMIN Or LogLvl = Logger.LogLevel.COMOUT Then
+            _loggerComSerial.Log(LogMsg, LogLvl)
+        Else
+            _logger.Log(LogMsg, LogLvl)
+        End If
+    End Sub
+    Private Sub eSerialComPortChanged(ports As List(Of String)) Handles roboControl.SerialComPortChanged
+        If InvokeRequired Then
+            Invoke(Sub() eSerialComPortChanged(ports))
+            Return
+        End If
+
+        tsCbComPort.Items.Clear()
+        If ports.Count > 0 Then
+            For i = 0 To ports.Count - 1
+                tsCbComPort.Items.Add(ports(i))
+            Next
+            tsCbComPort.SelectedIndex = 0
+            tsBtnConnect.Enabled = True
+        Else
+            tsBtnConnect.Enabled = False
+        End If
+    End Sub
+    Private Sub eComSerialConnected() Handles roboControl.SerialConnected
+        If InvokeRequired Then
+            Invoke(Sub() eComSerialConnected())
+            Return
+        End If
         tsBtnConnect.Enabled = False
+        tsBtnProgRun.Enabled = True
+    End Sub
+    Private Sub eComSerialDisconnected() Handles roboControl.SerialDisconnected
+        If InvokeRequired Then
+            Invoke(Sub() eComSerialDisconnected())
+            Return
+        End If
+        tsBtnConnect.Enabled = True
         tsBtnProgRun.Enabled = False
         tsBtnProgStop.Enabled = False
     End Sub

@@ -60,6 +60,7 @@ Partial Class frmMain
         Me.msTCPServer = New System.Windows.Forms.ToolStripMenuItem()
         Me.HilfeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.msGitHub = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msArduinoFirmware = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.LoggingLevelToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.msSetLogLvlDebug = New System.Windows.Forms.ToolStripMenuItem()
@@ -76,11 +77,11 @@ Partial Class frmMain
         Me.tsBtnConnect = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnDisconnect = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.tsBtnProgCheck = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnProgRun = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnProgStop = New System.Windows.Forms.ToolStripButton()
-        Me.tsBtnProgCheck = New System.Windows.Forms.ToolStripButton()
-        Me.tsBtnEStop = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
+        Me.tsBtnEStop = New System.Windows.Forms.ToolStripButton()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
@@ -317,7 +318,7 @@ Partial Class frmMain
         '
         'HilfeToolStripMenuItem
         '
-        Me.HilfeToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msGitHub, Me.ToolStripSeparator7, Me.LoggingLevelToolStripMenuItem, Me.ToolStripSeparator6, Me.msShowInfo})
+        Me.HilfeToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msGitHub, Me.msArduinoFirmware, Me.ToolStripSeparator7, Me.LoggingLevelToolStripMenuItem, Me.ToolStripSeparator6, Me.msShowInfo})
         Me.HilfeToolStripMenuItem.Name = "HilfeToolStripMenuItem"
         Me.HilfeToolStripMenuItem.Size = New System.Drawing.Size(44, 20)
         Me.HilfeToolStripMenuItem.Text = "Hilfe"
@@ -328,6 +329,13 @@ Partial Class frmMain
         Me.msGitHub.Name = "msGitHub"
         Me.msGitHub.Size = New System.Drawing.Size(200, 22)
         Me.msGitHub.Text = "Aup17 Robo auf GitHub"
+        '
+        'msArduinoFirmware
+        '
+        Me.msArduinoFirmware.Image = CType(resources.GetObject("msArduinoFirmware.Image"), System.Drawing.Image)
+        Me.msArduinoFirmware.Name = "msArduinoFirmware"
+        Me.msArduinoFirmware.Size = New System.Drawing.Size(200, 22)
+        Me.msArduinoFirmware.Text = "Arduino Firmware"
         '
         'ToolStripSeparator7
         '
@@ -417,6 +425,7 @@ Partial Class frmMain
         '
         'tsBtnConnect
         '
+        Me.tsBtnConnect.Enabled = False
         Me.tsBtnConnect.Image = CType(resources.GetObject("tsBtnConnect.Image"), System.Drawing.Image)
         Me.tsBtnConnect.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsBtnConnect.Name = "tsBtnConnect"
@@ -436,22 +445,6 @@ Partial Class frmMain
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
         Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 25)
         '
-        'tsBtnProgRun
-        '
-        Me.tsBtnProgRun.Image = CType(resources.GetObject("tsBtnProgRun.Image"), System.Drawing.Image)
-        Me.tsBtnProgRun.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.tsBtnProgRun.Name = "tsBtnProgRun"
-        Me.tsBtnProgRun.Size = New System.Drawing.Size(123, 22)
-        Me.tsBtnProgRun.Text = "Programm starten"
-        '
-        'tsBtnProgStop
-        '
-        Me.tsBtnProgStop.Image = CType(resources.GetObject("tsBtnProgStop.Image"), System.Drawing.Image)
-        Me.tsBtnProgStop.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.tsBtnProgStop.Name = "tsBtnProgStop"
-        Me.tsBtnProgStop.Size = New System.Drawing.Size(130, 22)
-        Me.tsBtnProgStop.Text = "Programm stoppen"
-        '
         'tsBtnProgCheck
         '
         Me.tsBtnProgCheck.Image = CType(resources.GetObject("tsBtnProgCheck.Image"), System.Drawing.Image)
@@ -460,6 +453,29 @@ Partial Class frmMain
         Me.tsBtnProgCheck.Size = New System.Drawing.Size(122, 22)
         Me.tsBtnProgCheck.Text = "Programm prüfen"
         '
+        'tsBtnProgRun
+        '
+        Me.tsBtnProgRun.Enabled = False
+        Me.tsBtnProgRun.Image = CType(resources.GetObject("tsBtnProgRun.Image"), System.Drawing.Image)
+        Me.tsBtnProgRun.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsBtnProgRun.Name = "tsBtnProgRun"
+        Me.tsBtnProgRun.Size = New System.Drawing.Size(123, 22)
+        Me.tsBtnProgRun.Text = "Programm starten"
+        '
+        'tsBtnProgStop
+        '
+        Me.tsBtnProgStop.Enabled = False
+        Me.tsBtnProgStop.Image = CType(resources.GetObject("tsBtnProgStop.Image"), System.Drawing.Image)
+        Me.tsBtnProgStop.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsBtnProgStop.Name = "tsBtnProgStop"
+        Me.tsBtnProgStop.Size = New System.Drawing.Size(130, 22)
+        Me.tsBtnProgStop.Text = "Programm stoppen"
+        '
+        'ToolStripSeparator8
+        '
+        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
+        Me.ToolStripSeparator8.Size = New System.Drawing.Size(6, 25)
+        '
         'tsBtnEStop
         '
         Me.tsBtnEStop.Image = CType(resources.GetObject("tsBtnEStop.Image"), System.Drawing.Image)
@@ -467,11 +483,6 @@ Partial Class frmMain
         Me.tsBtnEStop.Name = "tsBtnEStop"
         Me.tsBtnEStop.Size = New System.Drawing.Size(132, 22)
         Me.tsBtnEStop.Text = "Not-Halt (Leertaste)"
-        '
-        'ToolStripSeparator8
-        '
-        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
-        Me.ToolStripSeparator8.Size = New System.Drawing.Size(6, 25)
         '
         'frmMain
         '
@@ -557,4 +568,5 @@ Partial Class frmMain
     Friend WithEvents tsBtnProgCheck As ToolStripButton
     Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
     Friend WithEvents tsBtnEStop As ToolStripButton
+    Friend WithEvents msArduinoFirmware As ToolStripMenuItem
 End Class

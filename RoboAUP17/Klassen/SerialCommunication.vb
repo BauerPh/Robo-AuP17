@@ -33,21 +33,21 @@ Friend Class SerialCommunication
     Private _connected As Boolean
 
     'Events
-    Public Event SerialConnected()
-    Public Event SerialDisconnected()
-    Public Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
-    Public Event ComPortChange(ByVal ports As List(Of String))
-    Public Event FINReceived()
-    Public Event POSReceived(ByVal refOkay As Boolean(), ByVal posSteps As Int32())
-    Public Event LSSReceived(ByVal lssState As Boolean())
-    Public Event ESSReceived(ByVal essState As Boolean)
-    Public Event RESReceived()
-    Public Event ERRReceived(ByVal errnum As Int32)
+    Friend Event ComPortChange(ByVal ports As List(Of String))
+    Friend Event SerialConnected()
+    Friend Event SerialDisconnected()
+    Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
+    Friend Event FINReceived()
+    Friend Event POSReceived(ByVal refOkay As Boolean(), ByVal posSteps As Int32())
+    Friend Event LSSReceived(ByVal lssState As Boolean())
+    Friend Event ESSReceived(ByVal essState As Boolean)
+    Friend Event RESReceived()
+    Friend Event ERRReceived(ByVal errnum As Int32)
 
     ' -----------------------------------------------------------------------------
     ' Constructor
     ' -----------------------------------------------------------------------------
-    Public Sub New()
+    Friend Sub New()
         'Init Serial Port
         _SerialPort.DataBits = 8
         _SerialPort.StopBits = StopBits.One
@@ -66,7 +66,7 @@ Friend Class SerialCommunication
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
-    Public Sub connect(comPort As String)
+    Friend Sub Connect(comPort As String)
         If _connected Then
             RaiseEvent Log($"[Serial] Bereits über {comPort} verbunden", Logger.LogLevel.WARN)
             Return
@@ -77,7 +77,7 @@ Friend Class SerialCommunication
             _SerialPort.Open()
         Catch ex As Exception
             RaiseEvent Log($"[Serial] Fehler beim öffnen von {comPort}: {ex.Message}", Logger.LogLevel.ERR)
-            disconnect()
+            Disconnect()
             Return
         End Try
 
@@ -85,7 +85,7 @@ Friend Class SerialCommunication
         _SerialPort.DiscardInBuffer()
         _sendCON()
     End Sub
-    Public Sub disconnect()
+    Friend Sub Disconnect()
         If Not _SerialPort.IsOpen And Not _connected Then
             RaiseEvent Log($"[Serial] COM-Port ist nicht verbunden", Logger.LogLevel.INFO)
             Return
@@ -96,10 +96,10 @@ Friend Class SerialCommunication
         RaiseEvent SerialDisconnected()
         RaiseEvent Log($"[Serial] Verbindung über {_SerialPort.PortName} getrennt", Logger.LogLevel.INFO)
     End Sub
-    Public Sub clearMsgDataSend()
+    Friend Sub ClearMsgDataSend()
         _clearMsgData(_msgDataSend)
     End Sub
-    Public Sub addMOVDataSet(add As Boolean, nr As Int32, target As Int32, speed As Int32, accel As Int32, stopAccel As Int32)
+    Friend Sub AddMOVDataSet(add As Boolean, nr As Int32, target As Int32, speed As Int32, accel As Int32, stopAccel As Int32)
         If speed = 0 Then speed = 1
         If accel = 0 Then accel = 1
         If add Then
@@ -116,7 +116,7 @@ Friend Class SerialCommunication
             _msgDataSend.cnt += 1S
         End If
     End Sub
-    Public Function sendMOV() As Boolean
+    Friend Function SendMOV() As Boolean
         If _connected Then
             _sendDataSets("mov", 4)
             _movWaitACK = True
@@ -125,7 +125,7 @@ Friend Class SerialCommunication
         End If
         Return False
     End Function
-    Public Sub addREFDataSet(add As Boolean, nr As Int32, dir As Int32, speedFast As Int32, speedSlow As Int32, accel As Int32, maxStepsBack As Int32, stopAccel As Int32)
+    Friend Sub AddREFDataSet(add As Boolean, nr As Int32, dir As Int32, speedFast As Int32, speedSlow As Int32, accel As Int32, maxStepsBack As Int32, stopAccel As Int32)
         If add Then
             'Achs-Nr
             _msgDataSend.parset(_msgDataSend.cnt)(0) = nr
@@ -144,7 +144,7 @@ Friend Class SerialCommunication
             _msgDataSend.cnt += 1S
         End If
     End Sub
-    Public Function sendREF() As Boolean
+    Friend Function SendREF() As Boolean
         If _connected Then
             _sendDataSets("ref", 6)
             _refWaitACK = True
@@ -153,21 +153,21 @@ Friend Class SerialCommunication
         End If
         Return False
     End Function
-    Public Function sendSRV(srvNr As Int32, angle As Int32) As Boolean
+    Friend Function SendSRV(srvNr As Int32, angle As Int32) As Boolean
         If _connected Then
             _sendMsg($"<srv#{srvNr},{angle}>")
             Return True
         End If
         Return False
     End Function
-    Public Function sendWAI(time As Int32) As Boolean
+    Friend Function SendWAI(time As Int32) As Boolean
         If _connected Then
             _sendMsg($"<wai#{time}>")
             Return True
         End If
         Return False
     End Function
-    Public Sub sendStop()
+    Friend Sub SendStop()
         If _connected Then
             _sendMsg("!!!")
         End If
@@ -176,7 +176,7 @@ Friend Class SerialCommunication
     ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
-    Public Sub _clearMsgData(ByRef msgData As classMsgData)
+    Private Sub _clearMsgData(ByRef msgData As classMsgData)
         msgData.cnt = 0
         msgData.func = ""
         For i = 0 To 5
@@ -190,7 +190,7 @@ Friend Class SerialCommunication
         _conWaitACK = True
         _tConWaitACK.Start()
     End Sub
-    Private Sub _sendDataSets(func As String, parMaxIndex As Integer)
+    Private Sub _sendDataSets(func As String, parMaxIndex As Int32)
         Dim tmpMsg As String = $"<{func}"
         For i = 0 To _msgDataSend.cnt - 1
             tmpMsg &= "#"
@@ -209,7 +209,7 @@ Friend Class SerialCommunication
         If _repeatCounter >= _cSendRepeats Then
             _repeatCounter = 0S
             _tConWaitACK.Stop()
-            disconnect()
+            Disconnect()
             _conWaitACK = False
             RaiseEvent Log("[Serial] Timeout beim Verbindungsaufbau (keine Antwort vom Arduino erhalten)", Logger.LogLevel.ERR)
         Else
@@ -226,9 +226,9 @@ Friend Class SerialCommunication
             RaiseEvent Log("[Serial] Timeout beim Senden (keine Antwort vom Arduino erhalten)", Logger.LogLevel.ERR)
         Else
             If _movWaitACK Then
-                sendMOV()
+                SendMOV()
             ElseIf _refWaitACK Then
-                sendREF()
+                SendREF()
             End If
         End If
     End Sub
@@ -259,7 +259,6 @@ Friend Class SerialCommunication
 
         End Select
     End Sub
-
     Private Sub _rcvACK()
         If _conWaitACK Then
             _conWaitACK = False
@@ -391,7 +390,7 @@ Friend Class SerialCommunication
     Private Sub _timerCheckConnection_Tick(sender As Object, e As EventArgs) Handles _tCheckConnection.Elapsed
         'Check Connecion
         If _connected And Not _SerialPort.IsOpen Then
-            disconnect()
+            Disconnect()
         End If
         _checkAvailablePorts()
     End Sub
