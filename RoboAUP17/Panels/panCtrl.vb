@@ -3,7 +3,10 @@ Public Class panCtrl
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' Formsteuerung
+    ' Slider Bewegung ändert numUpDown und umgekehrt!
+    ' Min, Max-Werte für Slider aus Parameter holen, 
+    '   dazu auch ein ParameterChangedEvent (in RobotParamter, Property Setter Funktion!) implementieren!
+    '   Auch eine Setter/Getter Funktion in RoboControl.vb nötig, damit RoboParameter nicht Publich sein müssen
     ' Slider, Buttons, Bewegungsbefehle an RoboControl senden
     ' Slider, Nums updaten wenn RoboControl sich ändert (Ereignisse, Callbacks??)
 
