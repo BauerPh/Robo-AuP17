@@ -2,6 +2,14 @@
 Imports System.Timers
 
 Friend Class SerialCommunication
+    ' -----------------------------------------------------------------------------
+    ' TODO
+    ' -----------------------------------------------------------------------------
+    ' ???
+
+    ' -----------------------------------------------------------------------------
+    ' Definitions
+    ' -----------------------------------------------------------------------------
     Private Const _cSendTimeoutMS As Int16 = 100S
     Private Const _cSendRepeats As Int16 = 3S
     Private WithEvents _tCheckConnection As New Timer
@@ -36,6 +44,9 @@ Friend Class SerialCommunication
     Public Event RESReceived()
     Public Event ERRReceived(ByVal errnum As Int32)
 
+    ' -----------------------------------------------------------------------------
+    ' Constructor
+    ' -----------------------------------------------------------------------------
     Public Sub New()
         'Init Serial Port
         _SerialPort.DataBits = 8
@@ -51,6 +62,10 @@ Friend Class SerialCommunication
         _tCheckConnection.Interval = 1000
         _tCheckConnection.Start()
     End Sub
+
+    ' -----------------------------------------------------------------------------
+    ' Public
+    ' -----------------------------------------------------------------------------
     Public Sub connect(comPort As String)
         If _connected Then
             RaiseEvent Log($"[Serial] Bereits über {comPort} verbunden", Logger.LogLevel.WARN)
@@ -81,8 +96,8 @@ Friend Class SerialCommunication
         RaiseEvent SerialDisconnected()
         RaiseEvent Log($"[Serial] Verbindung über {_SerialPort.PortName} getrennt", Logger.LogLevel.INFO)
     End Sub
-    Public Sub resetDataSets()
-        _msgDataSend.cnt = 0
+    Public Sub clearMsgDataSend()
+        _clearMsgData(_msgDataSend)
     End Sub
     Public Sub addMOVDataSet(add As Boolean, nr As Int32, target As Int32, speed As Int32, accel As Int32, stopAccel As Int32)
         If speed = 0 Then speed = 1
@@ -103,13 +118,7 @@ Friend Class SerialCommunication
     End Sub
     Public Function sendMOV() As Boolean
         If _connected Then
-            Dim tmpMsg As String = "<mov"
-            For i = 0 To _msgDataSend.cnt - 1
-                tmpMsg &= "#" & CStr(_msgDataSend.parset(i)(0)) & "," & CStr(_msgDataSend.parset(i)(1)) & "," &
-                    CStr(_msgDataSend.parset(i)(2)) & "," & CStr(_msgDataSend.parset(i)(3)) & "," & CStr(_msgDataSend.parset(i)(4))
-            Next
-            tmpMsg &= ">"
-            sendMsg(tmpMsg)
+            _sendDataSets("mov", 4)
             _movWaitACK = True
             _tWaitACK.Start()
             Return True
@@ -137,13 +146,7 @@ Friend Class SerialCommunication
     End Sub
     Public Function sendREF() As Boolean
         If _connected Then
-            Dim tmpMsg As String = "<ref"
-            For i = 0 To _msgDataSend.cnt - 1
-                tmpMsg &= "#" & CStr(_msgDataSend.parset(i)(0)) & "," & CStr(_msgDataSend.parset(i)(1)) & "," &
-                    CStr(_msgDataSend.parset(i)(2)) & "," & CStr(_msgDataSend.parset(i)(3)) & "," & CStr(_msgDataSend.parset(i)(4)) & "," & CStr(_msgDataSend.parset(i)(5)) & "," & CStr(_msgDataSend.parset(i)(6))
-            Next
-            tmpMsg &= ">"
-            sendMsg(tmpMsg)
+            _sendDataSets("ref", 6)
             _refWaitACK = True
             _tWaitACK.Start()
             Return True
@@ -152,29 +155,54 @@ Friend Class SerialCommunication
     End Function
     Public Function sendSRV(srvNr As Int32, angle As Int32) As Boolean
         If _connected Then
-            sendMsg("<srv#" & CStr(srvNr) & "," & CStr(angle) & ">")
+            _sendMsg($"<srv#{srvNr},{angle}>")
             Return True
         End If
         Return False
     End Function
     Public Function sendWAI(time As Int32) As Boolean
         If _connected Then
-            sendMsg("<wai#" & CStr(time) & ">")
+            _sendMsg($"<wai#{time}>")
             Return True
         End If
         Return False
     End Function
     Public Sub sendStop()
         If _connected Then
-            sendMsg("!!!")
+            _sendMsg("!!!")
         End If
     End Sub
 
-    '++++++++++++++++++++++++++++++ PRIVATE ++++++++++++++++++++++++++++++
+    ' -----------------------------------------------------------------------------
+    ' Private
+    ' -----------------------------------------------------------------------------
+    Public Sub _clearMsgData(ByRef msgData As classMsgData)
+        msgData.cnt = 0
+        msgData.func = ""
+        For i = 0 To 5
+            For j = 0 To 7
+                msgData.parset(i)(j) = 0
+            Next
+        Next
+    End Sub
     Private Sub _sendCON()
-        sendMsg("<con>")
+        _sendMsg("<con>")
         _conWaitACK = True
         _tConWaitACK.Start()
+    End Sub
+    Private Sub _sendDataSets(func As String, parMaxIndex As Integer)
+        Dim tmpMsg As String = $"<{func}"
+        For i = 0 To _msgDataSend.cnt - 1
+            tmpMsg &= "#"
+            For j = 0 To parMaxIndex
+                tmpMsg &= $"{_msgDataSend.parset(i)(j)}"
+                If j < parMaxIndex Then
+                    tmpMsg &= ","
+                End If
+            Next
+        Next
+        tmpMsg &= ">"
+        _sendMsg(tmpMsg)
     End Sub
     Private Sub _tConWaitACK_Elapsed(sender As Object, e As ElapsedEventArgs) Handles _tConWaitACK.Elapsed
         _repeatCounter = _repeatCounter + 1S
@@ -195,7 +223,7 @@ Friend Class SerialCommunication
             _tWaitACK.Stop()
             _movWaitACK = False
             _refWaitACK = False
-            RaiseEvent Log("[Serial] Timeout beim Verbindungsaufbau (keine Antwort vom Arduino erhalten)", Logger.LogLevel.ERR)
+            RaiseEvent Log("[Serial] Timeout beim Senden (keine Antwort vom Arduino erhalten)", Logger.LogLevel.ERR)
         Else
             If _movWaitACK Then
                 sendMOV()
@@ -204,37 +232,35 @@ Friend Class SerialCommunication
             End If
         End If
     End Sub
-    Private Sub rcvMsg(msg As String)
+    Private Sub _rcvMsg(msg As String)
         RaiseEvent Log(msg, Logger.LogLevel.COMIN)
 
-        If msg.Length < 3 Then
+        Dim funcList() As String = {"ack", "fin", "pos", "ess", "lss", "res", "err"}
+        If Not _parseMsg(msg, _msgDataRcv, funcList) Then
             Return
         End If
 
-        Dim funcList() As String = {"ack", "fin", "pos", "ess", "lss", "res", "err"}
-        parseMsg(msg, _msgDataRcv, funcList)
-
         Select Case _msgDataRcv.func
             Case "ack"
-                rcvACK()
+                _rcvACK()
             Case "fin"
                 RaiseEvent FINReceived()
             Case "pos"
-                rcvPOS()
+                _rcvPOS()
             Case "ess"
-                rcvESS()
+                _rcvESS()
             Case "lss"
-                rcvLSS()
+                _rcvLSS()
             Case "res"
-                rcvRES()
+                _rcvRES()
             Case "err"
-                rcvERR()
+                _rcvERR()
             Case Else
 
         End Select
     End Sub
 
-    Private Sub rcvACK()
+    Private Sub _rcvACK()
         If _conWaitACK Then
             _conWaitACK = False
             _tConWaitACK.Stop()
@@ -247,39 +273,39 @@ Friend Class SerialCommunication
             _tWaitACK.Stop()
         End If
     End Sub
-    Private Sub rcvPOS()
+    Private Sub _rcvPOS()
         Dim tmpRefOkay(5) As Boolean
         Dim tmpPosSteps(5) As Int32
 
         For i = 0 To _msgDataRcv.cnt - 1
-            Dim nr As Int32 = _msgDataRcv.parset(i)(0)
-            tmpRefOkay(nr - 1) = If(_msgDataRcv.parset(i)(1) = 1, True, False)
-            tmpPosSteps(nr - 1) = _msgDataRcv.parset(i)(2)
+            Dim nr As Int32 = _msgDataRcv.parset(i)(0) - 1
+            tmpRefOkay(nr) = If(_msgDataRcv.parset(i)(1) = 1, True, False)
+            tmpPosSteps(nr) = _msgDataRcv.parset(i)(2)
         Next
         RaiseEvent POSReceived(tmpRefOkay, tmpPosSteps)
     End Sub
-    Private Sub rcvLSS()
+    Private Sub _rcvLSS()
         Dim tmpState(5) As Boolean
         For i = 0 To 5
-            Dim nr As Int32 = _msgDataRcv.parset(i)(0)
-            tmpState(nr - 1) = If(_msgDataRcv.parset(i)(1) = 1, True, False)
+            Dim nr As Int32 = _msgDataRcv.parset(i)(0) - 1
+            tmpState(nr) = If(_msgDataRcv.parset(i)(1) = 1, True, False)
         Next
         RaiseEvent LSSReceived(tmpState)
     End Sub
-    Private Sub rcvESS()
+    Private Sub _rcvESS()
         Dim tmpState As Boolean = If(_msgDataRcv.parset(0)(0) = 1, True, False)
         RaiseEvent ESSReceived(tmpState)
     End Sub
-    Private Sub rcvRES()
+    Private Sub _rcvRES()
         RaiseEvent RESReceived()
     End Sub
-    Private Sub rcvERR()
+    Private Sub _rcvERR()
         Dim errnum As Int32 = _msgDataRcv.parset(0)(0)
         _movWaitACK = False
         _refWaitACK = False
         _tWaitACK.Stop()
         If errnum = 1 Then
-            RaiseEvent Log("[Serial] Fehler", Logger.LogLevel.ERR)
+            RaiseEvent Log("[Serial] Unbekannter Befehl", Logger.LogLevel.ERR)
         ElseIf errnum = 2 Then
             RaiseEvent Log("[Serial] Parameter fehlerhaft", Logger.LogLevel.ERR)
         ElseIf errnum = 3 Then
@@ -289,72 +315,55 @@ Friend Class SerialCommunication
         End If
         RaiseEvent ERRReceived(errnum)
     End Sub
-    Private Sub parseMsg(ByRef _msg As String, ByRef _msgData As classMsgData, ByRef functionList As String())
-        _msgData.cnt = 0
-        _msg.Trim()
-        _msg.ToLower()
-        If _msg.Length < 3 Then Return
+    Private Function _parseMsg(ByRef msg As String, ByRef msgData As classMsgData, ByRef functionList As String()) As Boolean
+
+        msg.Trim()
+        msg.ToLower()
+
+        _clearMsgData(msgData)
+
+        'Länge prüfen
+        If msg.Length < 3 Then Return False
         'auszuführende Funktion / Aktion
-        _msgData.func = _msg.Substring(0, 3)
-
+        msgData.func = msg.Substring(0, 3)
         'Prüfen ob sich das parsen lohnt
-        If Array.IndexOf(functionList, _msgData.func) < 0 Then
-            Return
-        End If
+        If Array.IndexOf(functionList, msgData.func) < 0 Then Return False
+        'Prüfen ob Parameter folgen
+        If msg.Length < 5 Then Return True 'keine Parameter
+        Dim tmpMsg As String = msg.Substring(4)
 
-        If _msg.Length < 4 Then Return
-        Dim tmpCommand As String = _msg.Substring(4)
-        'Parametersatz splitten
         Dim iParSet As Int32 = 0
-        Dim lastParSetIndex As Int32 = 0
-        While tmpCommand.IndexOf("#"c, lastParSetIndex) > 0 'es gibt noch ein '#' Zeichen
-            Dim ParSetIndex As Int32 = tmpCommand.IndexOf("#"c, lastParSetIndex)
-            Dim tmpParSet As String = tmpCommand.Substring(lastParSetIndex, ParSetIndex - lastParSetIndex)
-            'Parameter splitten
-            Dim iPar As Int32 = 0
-            Dim lastParIndex = 0
-            While tmpParSet.IndexOf(","c, lastParIndex) > 0 'es gibt noch ein ',' Zeichen
-                Dim ParIndex As Int32 = tmpParSet.IndexOf(","c, lastParIndex)
-                _msgData.parset(iParSet)(iPar) = CInt(tmpParSet.Substring(lastParIndex, ParIndex - lastParIndex))
-                iPar += 1
-                lastParIndex = ParIndex + 1
-            End While
-            'letzten Parameter berücksichtigen
-            _msgData.parset(iParSet)(iPar) = CInt(tmpParSet.Substring(lastParIndex))
+        Dim iPar As Int32 = 0
+        Dim tmpValue As String = ""
+        For i = 0 To tmpMsg.Length - 1
+            Dim c As Char = tmpMsg(i)
+            If c = "#"c Or c = ","c Then
+                'Wert speichern
+                msgData.parset(iParSet)(iPar) = CInt(tmpValue)
+                tmpValue = ""
+                'Zähler anpassen
+                If c = "#"c Then
+                    iParSet += 1
+                    iPar = 0
+                Else
+                    iPar += 1
+                End If
+            Else
+                'Prüfen ob Zahl (erstes Zeichen darf auch ein '-'-Zeichen sein.)
+                If (c >= "0"c And c <= "9"c) Or (tmpValue.Length = 0 And c = "-"c) Then
+                    tmpValue += c
+                Else Return False
+                End If
+            End If
+        Next
+        'Letzten Wert speichern
+        msgData.parset(iParSet)(iPar) = CInt(tmpValue)
 
-            'restliche Parameter mit 0 befüllen
-            For i = iPar + 1 To 7
-                _msgData.parset(iParSet)(i) = 0
-            Next
-            iParSet += 1
-            lastParSetIndex = ParSetIndex + 1
-            tmpParSet = ""
-        End While
-        'letzten Parametersatz berücksichtigen, wenn es einen gibt!
-        If tmpCommand.Length() > 0 Then
-            Dim tmpParSet As String = tmpCommand.Substring(lastParSetIndex)
-            'Parameter splitten
-            Dim iPar As Int32 = 0
-            Dim lastParIndex = 0
-            While tmpParSet.IndexOf(","c, lastParIndex) > 0 'es gibt noch ein ',' Zeichen
-                Dim ParIndex As Int32 = tmpParSet.IndexOf(","c, lastParIndex)
-                _msgData.parset(iParSet)(iPar) = CInt(tmpParSet.Substring(lastParIndex, ParIndex - lastParIndex))
-                iPar += 1
-                lastParIndex = ParIndex + 1
-            End While
-            'letzten Parameter berücksichtigen
-            _msgData.parset(iParSet)(iPar) = CInt(tmpParSet.Substring(lastParIndex))
-            'restliche Parameter mit 0 befüllen
-            For i = iPar + 1 To 7
-                _msgData.parset(iParSet)(i) = 0
-            Next
+        msgData.cnt = iParSet + 1
 
-            iParSet += 1
-        End If
-        _msgData.cnt = iParSet
-        tmpCommand = ""
-    End Sub
-    Private Sub checkAvailablePorts()
+        Return True
+    End Function
+    Private Sub _checkAvailablePorts()
         'Check Port changes
         If Not _connected Then
             If IO.Ports.SerialPort.GetPortNames.Length <> listSerialPort.Count Then
@@ -379,21 +388,20 @@ Friend Class SerialCommunication
             End If
         End If
     End Sub
-
-    Private Sub timerCheckConnection_Tick(sender As Object, e As EventArgs) Handles _tCheckConnection.Elapsed
+    Private Sub _timerCheckConnection_Tick(sender As Object, e As EventArgs) Handles _tCheckConnection.Elapsed
         'Check Connecion
         If _connected And Not _SerialPort.IsOpen Then
             disconnect()
         End If
-        checkAvailablePorts()
+        _checkAvailablePorts()
     End Sub
-    Private Sub sendMsg(msg As String)
+    Private Sub _sendMsg(msg As String)
         _SerialPort.Write(msg)
         RaiseEvent Log(msg, Logger.LogLevel.COMOUT)
     End Sub
     Private Sub _SerialPort1_DataReceived(sender As Object, e As SerialDataReceivedEventArgs) Handles _SerialPort.DataReceived
         While (_SerialPort.BytesToRead > 0)
-            rcvMsg(_SerialPort.ReadLine)
+            _rcvMsg(_SerialPort.ReadLine)
         End While
     End Sub
 End Class

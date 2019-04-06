@@ -331,7 +331,7 @@ Friend Class RobotControl
         'aktuelle Geschwindigkeit und Beschleunigung berechnen
         calcSpeedAcc(tmpV, tmpA)
         'Datensatz zusammenstellen
-        com.resetDataSets()
+        com.clearMsgDataSend()
         target(nr - 1) = Constrain(pos(nr - 1) + jogval, pref.JointParameter(nr - 1).mechMinAngle, pref.JointParameter(nr - 1).mechMaxAngle)
         com.addMOVDataSet(True, nr, calcTargetToSteps(target(nr - 1), nr), calcSpeedAccToSteps(tmpV(nr - 1), nr), calcSpeedAccToSteps(tmpA(nr - 1), nr), calcSpeedAccToSteps(pref.JointParameter(nr - 1).profileStopAcc, nr))
         'Telegramm senden
@@ -352,7 +352,7 @@ Friend Class RobotControl
 
     Public Function doRef(J1 As Boolean, J2 As Boolean, J3 As Boolean, J4 As Boolean, J5 As Boolean, J6 As Boolean) As Boolean
         'Datensätze sammeln
-        com.resetDataSets()
+        com.clearMsgDataSend()
         Dim enabled() As Boolean = {J1, J2, J3, J4, J5, J6}
         For i = 0 To 5
             Dim tmpMaxStepsBack As Int32 = AngleToSteps(_constRefMaxAngleBack, pref.JointParameter(i).motGear, pref.JointParameter(i).mechGear, pref.JointParameter(i).motStepsPerRot << pref.JointParameter(i).motMode, 0)
@@ -399,7 +399,7 @@ Friend Class RobotControl
             End If
         End If
         'Datensätze sammeln
-        com.resetDataSets()
+        com.clearMsgDataSend()
         For i = 0 To 5
             com.addMOVDataSet(enabled(i), i + 1, calcTargetToSteps(target(i), i + 1), calcSpeedAccToSteps(tmpV(i), i + 1), calcSpeedAccToSteps(tmpA(i), i + 1), calcSpeedAccToSteps(pref.JointParameter(i).profileStopAcc, i + 1))
         Next
