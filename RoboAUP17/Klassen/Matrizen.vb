@@ -4,9 +4,9 @@
     ' -----------------------------------------------------------------------------
     ' fertig
 
-    Public Class Matrix4x4
+    Friend Class Matrix4x4
         Implements ICloneable
-        Public val(3, 3) As Double
+        Friend val(3, 3) As Double
 
         Public Shared Operator +(M1 As Matrix4x4, M2 As Matrix4x4) As Matrix4x4
             Dim erg As New Matrix4x4
@@ -30,7 +30,7 @@
             Return erg
         End Operator
 
-        Public Overridable Function Clone() As Object Implements ICloneable.Clone
+        Friend Overridable Function Clone() As Object Implements ICloneable.Clone
             Dim temp As New Matrix4x4
             temp.val = CType(val.Clone, Double(,))
             Return temp

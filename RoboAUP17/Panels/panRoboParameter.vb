@@ -1,83 +1,87 @@
-﻿Public Class panRoboParameter
+﻿Friend Class PanRoboParameter
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' ...
+    ' Speichern und Laden der Parameter
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
     Private _initialized As Boolean = False
-    Private _actBtnNr As btnNr
-    Private Sub panRoboParameter_Shown(sender As Object, e As EventArgs) Handles Me.Shown
-        If Not _initialized Then
-            _initialized = True
-            propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(0)
-            checkButton(btnNr.J1)
-        End If
-    End Sub
-
-    Private Sub propGridRoboPar_PropertyValueChanged(sender As Object, e As EventArgs) Handles propGridRoboPar.PropertyValueChanged
-        'Objekt aktualisieren
-        If _actBtnNr > 5 Then
-            frmMain.roboControl.Par.ServoParameter(_actBtnNr - 6) = CType(propGridRoboPar.SelectedObject, ServoParameter)
-        Else
-            frmMain.roboControl.Par.JointParameter(_actBtnNr) = CType(propGridRoboPar.SelectedObject, JointParameter)
-        End If
+    Private _actPropView As PropView
+    Private Sub PanRoboParameter_Load(sender As Object, e As EventArgs) Handles Me.Load
+        _refreshFilename()
+        _setPropView(PropView.J1)
     End Sub
 
     ' -----------------------------------------------------------------------------
     ' Form Control
     ' -----------------------------------------------------------------------------
+    Private Sub propGridRoboPar_PropertyValueChanged(sender As Object, e As EventArgs) Handles propGridRoboPar.PropertyValueChanged
+        'Objekt aktualisieren
+        If _actPropView > 5 Then
+            frmMain.RoboControl.Par.SetServoParameter(_actPropView - 6, CType(propGridRoboPar.SelectedObject, ServoParameter))
+        Else
+            frmMain.RoboControl.Par.SetJointParameter(_actPropView, CType(propGridRoboPar.SelectedObject, JointParameter))
+        End If
+    End Sub
     Private Sub btnJ1_Click(sender As Object, e As EventArgs) Handles btnJ1.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(0)
-        checkButton(btnNr.J1)
+        _setPropView(PropView.J1)
     End Sub
 
     Private Sub btnJ2_Click(sender As Object, e As EventArgs) Handles btnJ2.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(1)
-        checkButton(btnNr.J2)
+        _setPropView(PropView.J2)
     End Sub
 
     Private Sub btnJ3_Click(sender As Object, e As EventArgs) Handles btnJ3.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(2)
-        checkButton(btnNr.J3)
+        _setPropView(PropView.J3)
     End Sub
 
     Private Sub btnJ4_Click(sender As Object, e As EventArgs) Handles btnJ4.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(3)
-        checkButton(btnNr.J4)
+        _setPropView(PropView.J4)
     End Sub
 
     Private Sub btnJ5_Click(sender As Object, e As EventArgs) Handles btnJ5.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(4)
-        checkButton(btnNr.J5)
+        _setPropView(PropView.J5)
     End Sub
 
     Private Sub btnJ6_Click(sender As Object, e As EventArgs) Handles btnJ6.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(5)
-        checkButton(btnNr.J6)
+        _setPropView(PropView.J6)
     End Sub
 
     Private Sub btnServo1_Click(sender As Object, e As EventArgs) Handles btnServo1.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.ServoParameter(0)
-        checkButton(btnNr.Servo1)
+        _setPropView(PropView.Servo1)
     End Sub
 
     Private Sub btnServo2_Click(sender As Object, e As EventArgs) Handles btnServo2.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.ServoParameter(1)
-        checkButton(btnNr.Servo2)
+        _setPropView(PropView.Servo2)
     End Sub
 
     Private Sub btnServo3_Click(sender As Object, e As EventArgs) Handles btnServo3.Click
-        propGridRoboPar.SelectedObject = frmMain.roboControl.Par.ServoParameter(2)
-        checkButton(btnNr.Servo3)
+        _setPropView(PropView.Servo3)
+    End Sub
+    Private Sub btnLoad_Click(sender As Object, e As EventArgs) Handles btnLoad.Click
+        If frmMain.RoboControl.Par.LoadSettings() Then
+            _refreshPropGrid()
+            _refreshFilename()
+        End If
+    End Sub
+    Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
+        If frmMain.RoboControl.Par.SaveSettings() Then
+            _refreshFilename()
+        End If
+    End Sub
+    Private Sub BtnDefaultConfig_Click(sender As Object, e As EventArgs) Handles btnDefaultConfig.Click
+        If frmMain.RoboControl.Par.LoadDefaulSettings() Then
+            _refreshPropGrid()
+            _refreshFilename()
+        End If
     End Sub
 
     ' -----------------------------------------------------------------------------
     ' Help Functions
     ' -----------------------------------------------------------------------------
-    Private Enum btnNr
+    Private Enum PropView
         J1
         J2
         J3
@@ -88,8 +92,9 @@
         Servo2
         Servo3
     End Enum
-    Private Sub checkButton(nr As btnNr)
-        _actBtnNr = nr
+    Private Sub _setPropView(nr As PropView)
+        _actPropView = nr
+        ' Check Button
         btnJ1.Checked = False
         btnJ2.Checked = False
         btnJ3.Checked = False
@@ -100,24 +105,36 @@
         btnServo2.Checked = False
         btnServo3.Checked = False
         Select Case nr
-            Case btnNr.J1
+            Case PropView.J1
                 btnJ1.Checked = True
-            Case btnNr.J2
+            Case PropView.J2
                 btnJ2.Checked = True
-            Case btnNr.J3
+            Case PropView.J3
                 btnJ3.Checked = True
-            Case btnNr.J4
+            Case PropView.J4
                 btnJ4.Checked = True
-            Case btnNr.J5
+            Case PropView.J5
                 btnJ5.Checked = True
-            Case btnNr.J6
+            Case PropView.J6
                 btnJ6.Checked = True
-            Case btnNr.Servo1
+            Case PropView.Servo1
                 btnServo1.Checked = True
-            Case btnNr.Servo2
+            Case PropView.Servo2
                 btnServo2.Checked = True
-            Case btnNr.Servo3
+            Case PropView.Servo3
                 btnServo3.Checked = True
         End Select
+        _refreshPropGrid()
+    End Sub
+    Private Sub _refreshPropGrid()
+        If _actPropView > 5 Then
+            propGridRoboPar.SelectedObject = frmMain.RoboControl.Par.ServoParameter(_actPropView - 6)
+        Else
+            propGridRoboPar.SelectedObject = frmMain.RoboControl.Par.JointParameter(_actPropView)
+        End If
+    End Sub
+    Private Sub _refreshFilename()
+        Dim filenameSplit As String() = frmMain.RoboControl.Par.GetActFilename.Split("\"c)
+        lblFilename.Text = $"Geöffnete Parameterdatei: {filenameSplit(filenameSplit.Length - 1)}"
     End Sub
 End Class

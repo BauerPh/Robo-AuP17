@@ -1,82 +1,119 @@
 ﻿Friend Class RoboParameter
-    Private Const cDefaultConfigFile As String = "settings/RoboParameterDefault.xml"
+    ' -----------------------------------------------------------------------------
+    ' TODO
+    ' -----------------------------------------------------------------------------
+    ' ???
+
+    ' -----------------------------------------------------------------------------
+    ' Definitions
+    ' -----------------------------------------------------------------------------
+    Private Const cDefaultConfigFile As String = "settings\RoboParameterDefault.xml"
+
     Private _actFilename As String
+    Private _jointParameter(5) As JointParameter
+    Private _servoParameter(2) As ServoParameter
 
-    Public Property configFileLoaded As Boolean = False
-    Public Property JointParameter As JointParameter()
-    Public Property ServoParameter As ServoParameter()
+    ' Properties
+    Friend ReadOnly Property JointParameter As JointParameter()
+        Get
+            Return _jointParameter
+        End Get
+    End Property
+    Friend ReadOnly Property ServoParameter As ServoParameter()
+        Get
+            Return _servoParameter
+        End Get
+    End Property
 
-    Public Sub New()
-        'Datensätze erzeugen
-        JointParameter = New JointParameter(5) {} '6 Joints
-        ServoParameter = New ServoParameter(2) {} '3 Servos
+    ' Events
+    Friend Event ParameterChanged(ByVal joint As Boolean, ByVal servo As Boolean)
+    Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
+
+    ' -----------------------------------------------------------------------------
+    ' Constructor
+    ' -----------------------------------------------------------------------------
+    Friend Sub New()
         'Lade letzte geöffnete Datei, wenn vorhanden!
-        If System.IO.File.Exists(My.Settings.LastConfigFile) Then
-            XMLReader(My.Settings.LastConfigFile)
+        If _XMLReader(My.Settings.LastConfigFile) Then
             _actFilename = My.Settings.LastConfigFile
-            configFileLoaded = True
         Else
-            If Not loadDefaulSettings() Then
+            RaiseEvent Log($"[Parameter] Die vorherige Parameterdatei konnte nicht geladen werden. Es wurden die Standardparameter geladen.", Logger.LogLevel.WARN)
+            If Not LoadDefaulSettings() Then
                 If MessageBox.Show($"Die Konfigurationsdatei ""{cDefaultConfigFile}"" konnte nicht gefunden werden oder ist fehlerhaft. Soll sie gesucht werden?", "Konfigurationsdatei nicht gefunden!",
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Error) = DialogResult.Yes Then
-                    If loadSettings() Then
-                        configFileLoaded = True
-                    End If
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Error) = DialogResult.Yes Then
+                    LoadSettings()
                 End If
-            Else
-                configFileLoaded = True
             End If
         End If
     End Sub
-    Public Function getDefaulConfigFilename() As String
+
+    ' -----------------------------------------------------------------------------
+    ' Public
+    ' -----------------------------------------------------------------------------
+    Friend Sub SetJointParameter(index As Integer, jointParameter As JointParameter)
+        _jointParameter(index) = jointParameter
+        RaiseEvent ParameterChanged(True, False)
+    End Sub
+    Friend Sub SetServoParameter(index As Integer, servoParameter As ServoParameter)
+        _servoParameter(index) = servoParameter
+        RaiseEvent ParameterChanged(False, True)
+    End Sub
+    Friend Function GetDefaulConfigFilename() As String
         Return cDefaultConfigFile
     End Function
-    Public Function loadDefaulSettings() As Boolean
+    Friend Function LoadDefaulSettings() As Boolean
         If System.IO.File.Exists(cDefaultConfigFile) Then
-            XMLReader(cDefaultConfigFile)
+            _XMLReader(cDefaultConfigFile)
             _actFilename = cDefaultConfigFile
+            RaiseEvent ParameterChanged(True, True)
+            RaiseEvent Log($"[Parameter] Standardparameter geladen", Logger.LogLevel.ERR)
             Return True
         Else
             Return False
         End If
     End Function
-    Public Function loadSettings() As Boolean
+    Friend Function LoadSettings() As Boolean
         Dim openFileDialog As New OpenFileDialog With {
-            .Filter = "Konfig-Dateien (*.xml)|*.xml"
+            .Filter = "Parameter-Dateien (*.xml)|*.xml"
         }
         If openFileDialog.ShowDialog() = DialogResult.OK Then
             Try
-                XMLReader(openFileDialog.FileName)
+                If Not _XMLReader(openFileDialog.FileName) Then Return False
                 My.Settings.LastConfigFile = openFileDialog.FileName
                 My.Settings.Save()
                 _actFilename = openFileDialog.FileName
+                RaiseEvent ParameterChanged(True, True)
+                RaiseEvent Log("[Parameter] Parameterdatei geladen", Logger.LogLevel.INFO)
                 Return True
             Catch e As Exception
+                RaiseEvent Log($"[Parameter] Laden fehlgeschlagen, Fehler: {e.Message}", Logger.LogLevel.ERR)
                 Return False
             End Try
         End If
         Return False
     End Function
 
-    Public Function saveSettings() As Boolean
+    Friend Function SaveSettings() As Boolean
         Dim saveFileDialog As New SaveFileDialog With {
-            .Filter = "Konfig-Dateien (*.xml)|*.xml"
+            .Filter = "Parameter-Dateien (*.xml)|*.xml"
         }
         If saveFileDialog.ShowDialog() = DialogResult.OK Then
             Try
-                XMLWriter(saveFileDialog.FileName)
+                _XMLWriter(saveFileDialog.FileName)
                 My.Settings.LastConfigFile = saveFileDialog.FileName
                 My.Settings.Save()
                 _actFilename = saveFileDialog.FileName
+                RaiseEvent Log("[Parameter] Parameterdatei gespeichert", Logger.LogLevel.INFO)
                 Return True
             Catch e As Exception
+                RaiseEvent Log($"[Parameter] Speichern fehlgeschlagen, Fehler: {e.Message}", Logger.LogLevel.ERR)
                 Return False
             End Try
         End If
         Return False
     End Function
 
-    Public Function getActFilename() As String
+    Friend Function GetActFilename() As String
         If _actFilename <> Nothing Then
             Return _actFilename
         Else
@@ -84,7 +121,10 @@
         End If
     End Function
 
-    Private Sub XMLWriter(filename As String)
+    ' -----------------------------------------------------------------------------
+    ' Private
+    ' -----------------------------------------------------------------------------
+    Private Sub _XMLWriter(filename As String)
         Dim enc As New System.Text.UnicodeEncoding
         Dim XMLTextWriter As Xml.XmlTextWriter = New Xml.XmlTextWriter(filename, enc)
 
@@ -97,31 +137,31 @@
                 .WriteStartElement("J" & (i + 1).ToString())
 
                 .WriteStartElement("mot")
-                .WriteAttributeString("stepsPerRot", JointParameter(i).motStepsPerRot.ToString)
-                .WriteAttributeString("gear", JointParameter(i).motGear.ToString)
-                .WriteAttributeString("mode", JointParameter(i).motMode.ToString)
-                .WriteAttributeString("dir", JointParameter(i).motDir.ToString)
+                .WriteAttributeString("stepsPerRot", _jointParameter(i).MotStepsPerRot.ToString)
+                .WriteAttributeString("gear", _jointParameter(i).MotGear.ToString)
+                .WriteAttributeString("mode", _jointParameter(i).MotMode.ToString)
+                .WriteAttributeString("dir", _jointParameter(i).MotDir.ToString)
                 .WriteEndElement()
 
                 .WriteStartElement("mech")
-                .WriteAttributeString("gear", JointParameter(i).mechGear.ToString)
-                .WriteAttributeString("minAngle", JointParameter(i).mechMinAngle.ToString)
-                .WriteAttributeString("maxAngle", JointParameter(i).mechMaxAngle.ToString)
-                .WriteAttributeString("homePosAngle", JointParameter(i).mechHomePosAngle.ToString)
-                .WriteAttributeString("parkPosAngle", JointParameter(i).mechParkPosAngle.ToString)
+                .WriteAttributeString("gear", _jointParameter(i).MechGear.ToString)
+                .WriteAttributeString("minAngle", _jointParameter(i).MechMinAngle.ToString)
+                .WriteAttributeString("maxAngle", _jointParameter(i).MechMaxAngle.ToString)
+                .WriteAttributeString("homePosAngle", _jointParameter(i).MechHomePosAngle.ToString)
+                .WriteAttributeString("parkPosAngle", _jointParameter(i).MechParkPosAngle.ToString)
                 .WriteEndElement()
 
                 .WriteStartElement("cal")
-                .WriteAttributeString("dir", JointParameter(i).calDir.ToString)
-                .WriteAttributeString("speedFast", JointParameter(i).calSpeedFast.ToString)
-                .WriteAttributeString("speedSlow", JointParameter(i).calSpeedSlow.ToString)
-                .WriteAttributeString("acc", JointParameter(i).calAcc.ToString)
+                .WriteAttributeString("dir", _jointParameter(i).CalDir.ToString)
+                .WriteAttributeString("speedFast", _jointParameter(i).CalSpeedFast.ToString)
+                .WriteAttributeString("speedSlow", _jointParameter(i).CalSpeedSlow.ToString)
+                .WriteAttributeString("acc", _jointParameter(i).CalAcc.ToString)
                 .WriteEndElement()
 
                 .WriteStartElement("profile")
-                .WriteAttributeString("maxSpeed", JointParameter(i).profileMaxSpeed.ToString)
-                .WriteAttributeString("maxAcc", JointParameter(i).profileMaxAcc.ToString)
-                .WriteAttributeString("stopAcc", JointParameter(i).profileStopAcc.ToString)
+                .WriteAttributeString("maxSpeed", _jointParameter(i).ProfileMaxSpeed.ToString)
+                .WriteAttributeString("maxAcc", _jointParameter(i).ProfileMaxAcc.ToString)
+                .WriteAttributeString("stopAcc", _jointParameter(i).ProfileStopAcc.ToString)
                 .WriteEndElement()
 
                 .WriteEndElement()
@@ -130,8 +170,8 @@
                 .WriteStartElement("SRV" & (i + 1).ToString())
 
                 .WriteStartElement("angles")
-                .WriteAttributeString("minAngle", ServoParameter(i).minAngle.ToString)
-                .WriteAttributeString("maxAngle", ServoParameter(i).maxAngle.ToString)
+                .WriteAttributeString("minAngle", _servoParameter(i).MinAngle.ToString)
+                .WriteAttributeString("maxAngle", _servoParameter(i).MaxAngle.ToString)
                 .WriteEndElement()
 
                 .WriteEndElement()
@@ -141,15 +181,25 @@
         End With
     End Sub
 
-    Public Sub XMLReader(filename As String)
+    Private Function _XMLReader(filename As String) As Boolean
+        'Prüfe ob Datei existiert
+        If Not System.IO.File.Exists(filename) Then Return False
+
         Dim XMLReader As Xml.XmlReader = New Xml.XmlTextReader(filename)
         Dim i As Int32 'Index
         Dim joints As Boolean = False
+        Dim valid As Boolean = False
 
         With XMLReader
             Do While .Read ' Es sind noch Daten vorhanden 
                 If .NodeType = Xml.XmlNodeType.Element Then
                     Dim e As String = .Name 'Elementname
+                    If e = "Settings" And Not valid Then valid = True
+                    If Not valid Then
+                        .Close()
+                        RaiseEvent Log($"[Parameter] Dies ist keine korrekte Parameterdatei oder die Datei ist beschädigt", Logger.LogLevel.ERR)
+                        Return False
+                    End If
                     If e.Substring(0, 1) = "J" Then
                         i = CInt(e.Substring(1)) - 1 'Joint Nr
                         joints = True
@@ -165,46 +215,46 @@
                                     Case "mot"
                                         Select Case .Name
                                             Case "stepsPerRot"
-                                                JointParameter(i).motStepsPerRot = CInt(.Value)
+                                                _jointParameter(i).MotStepsPerRot = CInt(.Value)
                                             Case "gear"
-                                                JointParameter(i).motGear = CDec(.Value)
+                                                _jointParameter(i).MotGear = CDec(.Value)
                                             Case "mode"
-                                                JointParameter(i).motMode = CType(CInt(.Value), motMode)
+                                                _jointParameter(i).MotMode = CType([Enum].Parse(GetType(MotMode), .Value), MotMode)  'CType(CInt(.Value), motMode)
                                             Case "dir"
-                                                JointParameter(i).motDir = CType(CInt(.Value), motDir)
+                                                _jointParameter(i).MotDir = CType([Enum].Parse(GetType(MotDir), .Value), MotDir)
                                         End Select
                                     Case "mech"
                                         Select Case .Name
                                             Case "gear"
-                                                JointParameter(i).mechGear = CDec(.Value)
+                                                _jointParameter(i).MechGear = CDec(.Value)
                                             Case "minAngle"
-                                                JointParameter(i).mechMinAngle = CDec(.Value)
+                                                _jointParameter(i).MechMinAngle = CDec(.Value)
                                             Case "maxAngle"
-                                                JointParameter(i).mechMaxAngle = CDec(.Value)
+                                                _jointParameter(i).MechMaxAngle = CDec(.Value)
                                             Case "homePosAngle"
-                                                JointParameter(i).mechHomePosAngle = CDec(.Value)
+                                                _jointParameter(i).MechHomePosAngle = CDec(.Value)
                                             Case "parkPosAngle"
-                                                JointParameter(i).mechParkPosAngle = CDec(.Value)
+                                                _jointParameter(i).MechParkPosAngle = CDec(.Value)
                                         End Select
                                     Case "cal"
                                         Select Case .Name
                                             Case "dir"
-                                                JointParameter(i).calDir = CType(CInt(.Value), calDir)
+                                                _jointParameter(i).CalDir = CType([Enum].Parse(GetType(CalDir), .Value), CalDir)
                                             Case "speedFast"
-                                                JointParameter(i).calSpeedFast = CDec(.Value)
+                                                _jointParameter(i).CalSpeedFast = CDec(.Value)
                                             Case "speedSlow"
-                                                JointParameter(i).calSpeedSlow = CDec(.Value)
+                                                _jointParameter(i).CalSpeedSlow = CDec(.Value)
                                             Case "acc"
-                                                JointParameter(i).calAcc = CDec(.Value)
+                                                _jointParameter(i).CalAcc = CDec(.Value)
                                         End Select
                                     Case "profile"
                                         Select Case .Name
                                             Case "maxSpeed"
-                                                JointParameter(i).profileMaxSpeed = CDec(.Value)
+                                                _jointParameter(i).ProfileMaxSpeed = CDec(.Value)
                                             Case "maxAcc"
-                                                JointParameter(i).profileMaxAcc = CDec(.Value)
+                                                _jointParameter(i).ProfileMaxAcc = CDec(.Value)
                                             Case "stopAcc"
-                                                JointParameter(i).profileStopAcc = CDec(.Value)
+                                                _jointParameter(i).ProfileStopAcc = CDec(.Value)
                                         End Select
                                 End Select
                             Else
@@ -213,9 +263,9 @@
                                     Case "angles"
                                         Select Case .Name
                                             Case "minAngle"
-                                                ServoParameter(i).minAngle = CDec(.Value)
+                                                _servoParameter(i).MinAngle = CDec(.Value)
                                             Case "maxAngle"
-                                                ServoParameter(i).maxAngle = CDec(.Value)
+                                                _servoParameter(i).MaxAngle = CDec(.Value)
                                         End Select
                                 End Select
                             End If
@@ -225,5 +275,6 @@
             Loop
             .Close()
         End With
-    End Sub
+        Return True
+    End Function
 End Class

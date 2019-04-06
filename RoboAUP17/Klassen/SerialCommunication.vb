@@ -25,8 +25,8 @@ Friend Class SerialCommunication
     Private WithEvents _tWaitACK As New Timer
 
     'Message Data
-    Private _msgDataRcv As New classMsgData
-    Private _msgDataSend As New classMsgData
+    Private _msgDataRcv As New ClassMsgData
+    Private _msgDataSend As New ClassMsgData
 
     'Vars
     Private listSerialPort As New List(Of String)
@@ -104,16 +104,16 @@ Friend Class SerialCommunication
         If accel = 0 Then accel = 1
         If add Then
             'Achs-Nr
-            _msgDataSend.parset(_msgDataSend.cnt)(0) = nr
+            _msgDataSend.Parset(_msgDataSend.Cnt)(0) = nr
             'Ziel
-            _msgDataSend.parset(_msgDataSend.cnt)(1) = target
+            _msgDataSend.Parset(_msgDataSend.Cnt)(1) = target
             'Geschwindigkeit
-            _msgDataSend.parset(_msgDataSend.cnt)(2) = speed
+            _msgDataSend.Parset(_msgDataSend.Cnt)(2) = speed
             'Beschleunigung
-            _msgDataSend.parset(_msgDataSend.cnt)(3) = accel
+            _msgDataSend.Parset(_msgDataSend.Cnt)(3) = accel
             'Beschleunigung für Stop
-            _msgDataSend.parset(_msgDataSend.cnt)(4) = stopAccel
-            _msgDataSend.cnt += 1S
+            _msgDataSend.Parset(_msgDataSend.Cnt)(4) = stopAccel
+            _msgDataSend.Cnt += 1S
         End If
     End Sub
     Friend Function SendMOV() As Boolean
@@ -128,20 +128,20 @@ Friend Class SerialCommunication
     Friend Sub AddREFDataSet(add As Boolean, nr As Int32, dir As Int32, speedFast As Int32, speedSlow As Int32, accel As Int32, maxStepsBack As Int32, stopAccel As Int32)
         If add Then
             'Achs-Nr
-            _msgDataSend.parset(_msgDataSend.cnt)(0) = nr
+            _msgDataSend.Parset(_msgDataSend.Cnt)(0) = nr
             'Richtung
-            _msgDataSend.parset(_msgDataSend.cnt)(1) = dir
+            _msgDataSend.Parset(_msgDataSend.Cnt)(1) = dir
             'Geschwindigkeit schnell
-            _msgDataSend.parset(_msgDataSend.cnt)(2) = speedFast
+            _msgDataSend.Parset(_msgDataSend.Cnt)(2) = speedFast
             'Geschwindigkeit langsam
-            _msgDataSend.parset(_msgDataSend.cnt)(3) = speedSlow
+            _msgDataSend.Parset(_msgDataSend.Cnt)(3) = speedSlow
             'Beschleunigung
-            _msgDataSend.parset(_msgDataSend.cnt)(4) = accel
+            _msgDataSend.Parset(_msgDataSend.Cnt)(4) = accel
             'Maximale Schritte bei Referenz für zurück
-            _msgDataSend.parset(_msgDataSend.cnt)(5) = maxStepsBack
+            _msgDataSend.Parset(_msgDataSend.Cnt)(5) = maxStepsBack
             'Beschleunigung für Stop
-            _msgDataSend.parset(_msgDataSend.cnt)(6) = stopAccel
-            _msgDataSend.cnt += 1S
+            _msgDataSend.Parset(_msgDataSend.Cnt)(6) = stopAccel
+            _msgDataSend.Cnt += 1S
         End If
     End Sub
     Friend Function SendREF() As Boolean
@@ -176,12 +176,12 @@ Friend Class SerialCommunication
     ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
-    Private Sub _clearMsgData(ByRef msgData As classMsgData)
-        msgData.cnt = 0
-        msgData.func = ""
+    Private Sub _clearMsgData(ByRef msgData As ClassMsgData)
+        msgData.Cnt = 0
+        msgData.Func = ""
         For i = 0 To 5
             For j = 0 To 7
-                msgData.parset(i)(j) = 0
+                msgData.Parset(i)(j) = 0
             Next
         Next
     End Sub
@@ -192,10 +192,10 @@ Friend Class SerialCommunication
     End Sub
     Private Sub _sendDataSets(func As String, parMaxIndex As Int32)
         Dim tmpMsg As String = $"<{func}"
-        For i = 0 To _msgDataSend.cnt - 1
+        For i = 0 To _msgDataSend.Cnt - 1
             tmpMsg &= "#"
             For j = 0 To parMaxIndex
-                tmpMsg &= $"{_msgDataSend.parset(i)(j)}"
+                tmpMsg &= $"{_msgDataSend.Parset(i)(j)}"
                 If j < parMaxIndex Then
                     tmpMsg &= ","
                 End If
@@ -240,7 +240,7 @@ Friend Class SerialCommunication
             Return
         End If
 
-        Select Case _msgDataRcv.func
+        Select Case _msgDataRcv.Func
             Case "ack"
                 _rcvACK()
             Case "fin"
@@ -276,30 +276,30 @@ Friend Class SerialCommunication
         Dim tmpRefOkay(5) As Boolean
         Dim tmpPosSteps(5) As Int32
 
-        For i = 0 To _msgDataRcv.cnt - 1
-            Dim nr As Int32 = _msgDataRcv.parset(i)(0) - 1
-            tmpRefOkay(nr) = If(_msgDataRcv.parset(i)(1) = 1, True, False)
-            tmpPosSteps(nr) = _msgDataRcv.parset(i)(2)
+        For i = 0 To _msgDataRcv.Cnt - 1
+            Dim nr As Int32 = _msgDataRcv.Parset(i)(0) - 1
+            tmpRefOkay(nr) = If(_msgDataRcv.Parset(i)(1) = 1, True, False)
+            tmpPosSteps(nr) = _msgDataRcv.Parset(i)(2)
         Next
         RaiseEvent POSReceived(tmpRefOkay, tmpPosSteps)
     End Sub
     Private Sub _rcvLSS()
         Dim tmpState(5) As Boolean
         For i = 0 To 5
-            Dim nr As Int32 = _msgDataRcv.parset(i)(0) - 1
-            tmpState(nr) = If(_msgDataRcv.parset(i)(1) = 1, True, False)
+            Dim nr As Int32 = _msgDataRcv.Parset(i)(0) - 1
+            tmpState(nr) = If(_msgDataRcv.Parset(i)(1) = 1, True, False)
         Next
         RaiseEvent LSSReceived(tmpState)
     End Sub
     Private Sub _rcvESS()
-        Dim tmpState As Boolean = If(_msgDataRcv.parset(0)(0) = 1, True, False)
+        Dim tmpState As Boolean = If(_msgDataRcv.Parset(0)(0) = 1, True, False)
         RaiseEvent ESSReceived(tmpState)
     End Sub
     Private Sub _rcvRES()
         RaiseEvent RESReceived()
     End Sub
     Private Sub _rcvERR()
-        Dim errnum As Int32 = _msgDataRcv.parset(0)(0)
+        Dim errnum As Int32 = _msgDataRcv.Parset(0)(0)
         _movWaitACK = False
         _refWaitACK = False
         _tWaitACK.Stop()
@@ -314,7 +314,7 @@ Friend Class SerialCommunication
         End If
         RaiseEvent ERRReceived(errnum)
     End Sub
-    Private Function _parseMsg(ByRef msg As String, ByRef msgData As classMsgData, ByRef functionList As String()) As Boolean
+    Private Function _parseMsg(ByRef msg As String, ByRef msgData As ClassMsgData, ByRef functionList As String()) As Boolean
 
         msg.Trim()
         msg.ToLower()
@@ -324,9 +324,9 @@ Friend Class SerialCommunication
         'Länge prüfen
         If msg.Length < 3 Then Return False
         'auszuführende Funktion / Aktion
-        msgData.func = msg.Substring(0, 3)
+        msgData.Func = msg.Substring(0, 3)
         'Prüfen ob sich das parsen lohnt
-        If Array.IndexOf(functionList, msgData.func) < 0 Then Return False
+        If Array.IndexOf(functionList, msgData.Func) < 0 Then Return False
         'Prüfen ob Parameter folgen
         If msg.Length < 5 Then Return True 'keine Parameter
         Dim tmpMsg As String = msg.Substring(4)
@@ -338,7 +338,7 @@ Friend Class SerialCommunication
             Dim c As Char = tmpMsg(i)
             If c = "#"c Or c = ","c Then
                 'Wert speichern
-                msgData.parset(iParSet)(iPar) = CInt(tmpValue)
+                msgData.Parset(iParSet)(iPar) = CInt(tmpValue)
                 tmpValue = ""
                 'Zähler anpassen
                 If c = "#"c Then
@@ -356,9 +356,9 @@ Friend Class SerialCommunication
             End If
         Next
         'Letzten Wert speichern
-        msgData.parset(iParSet)(iPar) = CInt(tmpValue)
+        msgData.Parset(iParSet)(iPar) = CInt(tmpValue)
 
-        msgData.cnt = iParSet + 1
+        msgData.Cnt = iParSet + 1
 
         Return True
     End Function
@@ -405,15 +405,15 @@ Friend Class SerialCommunication
     End Sub
 End Class
 
-Public Class classMsgData
-    Public Property func As String
-    Public Property cnt As Int32
-    Public Property parset As Int32()()
+Friend Class ClassMsgData
+    Friend Property Func As String
+    Friend Property Cnt As Int32
+    Friend Property Parset As Int32()()
 
-    Public Sub New()
-        parset = New Int32(5)() {}
+    Friend Sub New()
+        Parset = New Int32(5)() {}
         For i = 0 To 5
-            parset(i) = New Int32(7) {}
+            Parset(i) = New Int32(7) {}
         Next
     End Sub
 End Class

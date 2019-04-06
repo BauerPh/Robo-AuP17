@@ -1,4 +1,4 @@
-﻿Public Class MovementCalculations
+﻿Friend Class MovementCalculations
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
@@ -7,17 +7,17 @@
     ' -----------------------------------------------------------------------------
     ' Definitions
     ' -----------------------------------------------------------------------------
-    Public v_max(5) As Double
-    Public a_max(5) As Double
-    Public s(5) As Double
-    Public a(5) As Double
-    Public v(5) As Double
+    Friend v_max(5) As Double
+    Friend a_max(5) As Double
+    Friend s(5) As Double
+    Friend a(5) As Double
+    Friend v(5) As Double
 
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
     'Gibt True zurück wenn Berechnung erfolgreich war
-    Public Function calculate() As Boolean
+    Friend Function calculate() As Boolean
         Dim t As times_t
         Dim p As profile_t
         p.a = New Double(5) {}
@@ -56,14 +56,14 @@
     ' Private
     ' -----------------------------------------------------------------------------
     Private Structure times_t
-        Public t_ac As Double
-        Public t_const As Double
-        Public v_max_reached As Boolean
+        Friend t_ac As Double
+        Friend t_const As Double
+        Friend v_max_reached As Boolean
     End Structure
 
     Private Structure profile_t
-        Public a As Double()
-        Public v As Double()
+        Friend a As Double()
+        Friend v As Double()
     End Structure
 
     Private Sub calcMaxTimes(ByRef _t As times_t, ByRef _v_max As Double(), ByRef _a_max As Double())

@@ -5,11 +5,11 @@ Imports WeifenLuo.WinFormsUI.Docking
 Public Class frmMain
 #Region "Definitions"
     'Test
-    Public dictTest As New Dictionary(Of String, Double)
+    Friend dictTest As New Dictionary(Of String, Double)
     Friend settingsTest As New DHParams
 
     'Robotersteuerung
-    Friend WithEvents roboControl As New RobotControl
+    Private WithEvents _roboControl As New RobotControl
 
     ' Konstanten
     Private Const _ssHintTimerInterval As Int32 = 4000
@@ -24,7 +24,7 @@ Public Class frmMain
     Private _loggerComTCPIP As Logger
 
     ' DockPanel
-    Public dckPanel As New DockPanel
+    Friend dckPanel As New DockPanel
     Private _dckPanCodeEditor As New panCodeEditor
     Private _dckPanLog As New panLog
     Private _dckPanComLogSerial As New panLog
@@ -34,13 +34,19 @@ Public Class frmMain
     Private _dckPanRoboStatus As New panRoboStatus
     Private _dckPanProgramTools As New panProgramTools
     Private _dckPanTeachBox As New panTeachBox
-    Private _dckPanJointCtrl As New panCtrl
+    Private _dckPanJointCtrl As New PanCtrl
     Private _dckPanReference As New panReference
 
-    Private _dckPanRoboParameter As New panRoboParameter
+    Private _dckPanRoboParameter As New PanRoboParameter
     Private _dckPanDenavitHartPar As New panDenavitHartPar
     Private _dckPanTCPServer As New panTCPServer
 #End Region
+    ' Properties
+    Friend ReadOnly Property RoboControl As RobotControl
+        Get
+            Return _roboControl
+        End Get
+    End Property
 
     ' -----------------------------------------------------------------------------
     ' Constructor
@@ -70,7 +76,7 @@ Public Class frmMain
     ' Public
     ' -----------------------------------------------------------------------------
 #Region "Public"
-    Public Sub ShowStatusStripHint(msg As String)
+    Friend Sub ShowStatusStripHint(msg As String)
         ssLblStatus.Text = msg
         ' Timer starten bzw. neustarten
         If _ssHintTimer.Enabled Then
@@ -78,6 +84,10 @@ Public Class frmMain
         End If
         _ssHintTimer.Interval = _ssHintTimerInterval
         _ssHintTimer.Start()
+    End Sub
+
+    Friend Sub DoLog(msg As String, logLvl As Logger.LogLevel)
+        _logger.Log(msg, logLvl)
     End Sub
 #End Region
 
@@ -95,10 +105,10 @@ Public Class frmMain
         My.Settings.Save()
     End Sub
     Private Sub tsBtnConnect_Click(sender As Object, e As EventArgs) Handles tsBtnConnect.Click
-        roboControl.SerialConnect(tsCbComPort.Text)
+        _roboControl.SerialConnect(tsCbComPort.Text)
     End Sub
     Private Sub tsBtnDisconnect_Click(sender As Object, e As EventArgs) Handles tsBtnDisconnect.Click
-        roboControl.SerialDisconnect()
+        _roboControl.SerialDisconnect()
     End Sub
 #End Region
 
@@ -349,14 +359,14 @@ Public Class frmMain
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
-    Private Sub eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles roboControl.Log
+    Private Sub eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles _roboControl.Log
         If LogLvl = Logger.LogLevel.COMIN Or LogLvl = Logger.LogLevel.COMOUT Then
             _loggerComSerial.Log(LogMsg, LogLvl)
         Else
             _logger.Log(LogMsg, LogLvl)
         End If
     End Sub
-    Private Sub eSerialComPortChanged(ports As List(Of String)) Handles roboControl.SerialComPortChanged
+    Private Sub eSerialComPortChanged(ports As List(Of String)) Handles _roboControl.SerialComPortChanged
         If InvokeRequired Then
             Invoke(Sub() eSerialComPortChanged(ports))
             Return
@@ -373,7 +383,7 @@ Public Class frmMain
             tsBtnConnect.Enabled = False
         End If
     End Sub
-    Private Sub eComSerialConnected() Handles roboControl.SerialConnected
+    Private Sub eComSerialConnected() Handles _roboControl.SerialConnected
         If InvokeRequired Then
             Invoke(Sub() eComSerialConnected())
             Return
@@ -381,7 +391,7 @@ Public Class frmMain
         tsBtnConnect.Enabled = False
         tsBtnProgRun.Enabled = True
     End Sub
-    Private Sub eComSerialDisconnected() Handles roboControl.SerialDisconnected
+    Private Sub eComSerialDisconnected() Handles _roboControl.SerialDisconnected
         If InvokeRequired Then
             Invoke(Sub() eComSerialDisconnected())
             Return

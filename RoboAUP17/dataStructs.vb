@@ -3,18 +3,18 @@ Module dataStructs
     ' -----------------------------------------------------------------------------
     ' Kinematics and Coordinates
     ' -----------------------------------------------------------------------------
-    Public Structure DHParams
-        Public alpha, d, a As Double
-        Public Sub New(alpha As Double, d As Double, a As Double)
+    Friend Structure DHParams
+        Friend alpha, d, a As Double
+        Friend Sub New(alpha As Double, d As Double, a As Double)
             Me.alpha = alpha
             Me.d = d
             Me.a = a
         End Sub
     End Structure
 
-    Public Structure CartCoords
-        Public X, Y, Z, yaw, pitch, roll As Double
-        Public Sub New(X As Double, Y As Double, Z As Double, yaw As Double, pitch As Double, roll As Double)
+    Friend Structure CartCoords
+        Friend X, Y, Z, yaw, pitch, roll As Double
+        Friend Sub New(X As Double, Y As Double, Z As Double, yaw As Double, pitch As Double, roll As Double)
             Me.X = X
             Me.Y = Y
             Me.Z = Z
@@ -24,10 +24,10 @@ Module dataStructs
         End Sub
     End Structure
 
-    Public Structure JointAngles
+    Friend Structure JointAngles
         Implements ICloneable
-        Public J1, J2, J3, J4, J5, J6 As Double
-        Public Sub New(J1 As Double, J2 As Double, J3 As Double, J4 As Double, J5 As Double, J6 As Double)
+        Friend J1, J2, J3, J4, J5, J6 As Double
+        Friend Sub New(J1 As Double, J2 As Double, J3 As Double, J4 As Double, J5 As Double, J6 As Double)
             Me.J1 = J1
             Me.J2 = J2
             Me.J3 = J3
@@ -35,7 +35,7 @@ Module dataStructs
             Me.J5 = J5
             Me.J6 = J6
         End Sub
-        Public Function items(index As Int32) As Double
+        Friend Function Items(index As Int32) As Double
             Select Case index
                 Case 0
                     Return J1
@@ -53,7 +53,7 @@ Module dataStructs
                     Throw New Exception("Index out of range")
             End Select
         End Function
-        Public Sub setByIndex(index As Integer, value As Double)
+        Friend Sub SetByIndex(index As Integer, value As Double)
             Select Case index
                 Case 0
                     J1 = value
@@ -71,7 +71,7 @@ Module dataStructs
                     Throw New Exception("Index out of range")
             End Select
         End Sub
-        Public Function Clone() As Object Implements ICloneable.Clone
+        Friend Function Clone() As Object Implements ICloneable.Clone
             Return New JointAngles(J1, J2, J3, J4, J5, J6)
         End Function
     End Structure
@@ -79,89 +79,93 @@ Module dataStructs
     ' -----------------------------------------------------------------------------
     ' Settings
     ' -----------------------------------------------------------------------------
-    Public Enum motMode
+    Friend Enum MotMode
         FULL = 0
         HALF
         MIC_4
         MIC_8
         MIC_16
     End Enum
-    Public Enum motDir
+    Friend Enum MotDir
         normal = 0
         invertiert
     End Enum
-    Public Enum calDir
+    Friend Enum CalDir
         min = 0
         max
     End Enum
-    Public Structure JointParameter
+    Friend Structure JointParameter
         <Category("Motor"),
             DisplayName("Schritte pro Umdrehung"),
             Description("Anzahl Vollschritte pro Motorumdrehung. Diese Angabe finden Sie im Datenblatt des Motors.")>
-        Public Property motStepsPerRot As Int32
+        Public Property MotStepsPerRot As Int32
         <Category("Motor"),
             DisplayName("Getriebeübersetzung"),
             Description("Diese Angabe finden Sie im Datenblatt des Motors oder des Getriebes.")>
-        Public Property motGear As Double
+        Public Property MotGear As Double
         <Category("Motor"),
             DisplayName("Betriebsart"),
             Description("Vollschritt, Halbschritt, ...")>
-        Public Property motMode As motMode
+        Public Property MotMode As MotMode
         <Category("Motor"),
             DisplayName("Drehrichtung")>
-        Public Property motDir As motDir
+        Public Property MotDir As MotDir
         <Category("Mechanik"),
             DisplayName("Getriebeübersetzung")>
-        Public Property mechGear As Double
+        Public Property MechGear As Double
         <Category("Mechanik"),
             DisplayName("minimaler Winkel"),
             Description("der kleinste mögliche Winkel dieser Achse")>
-        Public Property mechMinAngle As Double
+        Public Property MechMinAngle As Double
         <Category("Mechanik"),
             DisplayName("maximaler Winkel"),
             Description("der größte mögliche Winkel dieser Achse")>
-        Public Property mechMaxAngle As Double
+        Public Property MechMaxAngle As Double
         <Category("Mechanik"),
             DisplayName("Homeposition"),
             Description("Winkel der für die Homeposition angefahren werden soll.")>
-        Public Property mechHomePosAngle As Double
+        Public Property MechHomePosAngle As Double
         <Category("Mechanik"),
             DisplayName("Parkposition"),
             Description("Winkel der für die Parkposition angefahren werden soll.")>
-        Public Property mechParkPosAngle As Double
+        Public Property MechParkPosAngle As Double
         <Category("Referenzfahrt"),
             DisplayName("Richtung"),
             Description("In welcher Richtung der Endschalter sitzt.")>
-        Public Property calDir As calDir
+        Public Property CalDir As CalDir
         <Category("Referenzfahrt"),
             DisplayName("Suchgeschwindigkeit"),
             Description("Geschwindigkeit mit welcher der Endschalter gesucht wird (schnell).")>
-        Public Property calSpeedFast As Double
+        Public Property CalSpeedFast As Double
         <Category("Referenzfahrt"),
             DisplayName("Referenziergeschwindigkeit"),
             Description("Geschwindigkeit mit welcher der Endschalter für den Referenzpunkt angefahren wird (langsam).")>
-        Public Property calSpeedSlow As Double
+        Public Property CalSpeedSlow As Double
         <Category("Referenzfahrt"),
             DisplayName("Beschleunigung"),
             Description("Beschleunigung während einer Referenzfahrt")>
-        Public Property calAcc As Double
+        Public Property CalAcc As Double
         <Category("Fahrprofil"),
             DisplayName("maximale Geschwindigkeit"),
             Description("die maximal mögliche Geschwindigkeit dieser Achse")>
-        Public Property profileMaxSpeed As Double
+        Public Property ProfileMaxSpeed As Double
         <Category("Fahrprofil"),
             DisplayName("maximale Beschleunigung"),
             Description("die maximal mögliche Beschleunigung dieser Achse")>
-        Public Property profileMaxAcc As Double
+        Public Property ProfileMaxAcc As Double
         <Category("Fahrprofil"),
             DisplayName("Notstop Beschleunigung"),
             Description("Beschleunigung welche bei einem Notstopp zum Anhalten verwendet werden soll.")>
-        Public Property profileStopAcc As Double
+        Public Property ProfileStopAcc As Double
     End Structure
 
-    Public Structure ServoParameter
-        Public Property minAngle As Double
-        Public Property maxAngle As Double
+    Friend Structure ServoParameter
+        <Category("Winkel"),
+            DisplayName("Minimaler Winkel")>
+        Public Property MinAngle As Double
+        <Category("Winkel"),
+            DisplayName("Maximaler Winkel")>
+        Public Property MaxAngle As Double
     End Structure
 
 End Module

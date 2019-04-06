@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class panCtrl
+Partial Class PanCtrl
     Inherits WeifenLuo.WinFormsUI.Docking.DockContent
 
     'Das Formular überschreibt den Löschvorgang, um die Komponentenliste zu bereinigen.
@@ -22,7 +22,7 @@ Partial Class panCtrl
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(panCtrl))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(PanCtrl))
         Me.ToolStripContainer = New System.Windows.Forms.ToolStripContainer()
         Me.TableLayoutPanel = New System.Windows.Forms.TableLayoutPanel()
         Me.btnCtrl1Inc = New System.Windows.Forms.Button()
@@ -57,14 +57,6 @@ Partial Class panCtrl
         Me.btnCtrl6Inc = New System.Windows.Forms.Button()
         Me.lblTargetAngle = New System.Windows.Forms.Label()
         Me.lblJog = New System.Windows.Forms.Label()
-        Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
-        Me.lblMove = New System.Windows.Forms.ToolStripLabel()
-        Me.cbMoveMode = New System.Windows.Forms.ToolStripComboBox()
-        Me.btnMoveStart = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
-        Me.lblJogInterval = New System.Windows.Forms.ToolStripLabel()
-        Me.numJogInterval = New RoboAUP17.ToolStripNumericUpDown()
-        Me.cbJogMode = New System.Windows.Forms.ToolStripComboBox()
         Me.ToolStrip2 = New System.Windows.Forms.ToolStrip()
         Me.lblMode = New System.Windows.Forms.ToolStripLabel()
         Me.cbJointOrTCP = New System.Windows.Forms.ToolStripComboBox()
@@ -74,6 +66,14 @@ Partial Class panCtrl
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.lblAcc = New System.Windows.Forms.ToolStripLabel()
         Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
+        Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
+        Me.lblMove = New System.Windows.Forms.ToolStripLabel()
+        Me.cbMoveMode = New System.Windows.Forms.ToolStripComboBox()
+        Me.btnMoveStart = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.lblJogInterval = New System.Windows.Forms.ToolStripLabel()
+        Me.numJogInterval = New RoboAUP17.ToolStripNumericUpDown()
+        Me.cbJogMode = New System.Windows.Forms.ToolStripComboBox()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
         Me.ToolStripContainer.SuspendLayout()
@@ -90,8 +90,8 @@ Partial Class panCtrl
         CType(Me.tbCtrl4, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbCtrl5, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbCtrl6, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.ToolStrip1.SuspendLayout()
         Me.ToolStrip2.SuspendLayout()
+        Me.ToolStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'ToolStripContainer
@@ -113,8 +113,8 @@ Partial Class panCtrl
         '
         'ToolStripContainer.TopToolStripPanel
         '
-        Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip2)
         Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip1)
+        Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip2)
         '
         'TableLayoutPanel
         '
@@ -215,7 +215,7 @@ Partial Class panCtrl
         '
         Me.tbCtrl1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl1.AutoSize = False
-        Me.tbCtrl1.LargeChange = 100
+        Me.tbCtrl1.LargeChange = 10
         Me.tbCtrl1.Location = New System.Drawing.Point(168, 28)
         Me.tbCtrl1.Maximum = 36000
         Me.tbCtrl1.Minimum = -36000
@@ -263,7 +263,7 @@ Partial Class panCtrl
         '
         Me.tbCtrl2.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl2.AutoSize = False
-        Me.tbCtrl2.LargeChange = 100
+        Me.tbCtrl2.LargeChange = 10
         Me.tbCtrl2.Location = New System.Drawing.Point(168, 58)
         Me.tbCtrl2.Maximum = 36000
         Me.tbCtrl2.Minimum = -36000
@@ -401,7 +401,7 @@ Partial Class panCtrl
         '
         Me.tbCtrl3.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl3.AutoSize = False
-        Me.tbCtrl3.LargeChange = 100
+        Me.tbCtrl3.LargeChange = 10
         Me.tbCtrl3.Location = New System.Drawing.Point(168, 88)
         Me.tbCtrl3.Maximum = 36000
         Me.tbCtrl3.Minimum = -36000
@@ -414,7 +414,7 @@ Partial Class panCtrl
         '
         Me.tbCtrl4.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl4.AutoSize = False
-        Me.tbCtrl4.LargeChange = 100
+        Me.tbCtrl4.LargeChange = 10
         Me.tbCtrl4.Location = New System.Drawing.Point(168, 118)
         Me.tbCtrl4.Maximum = 36000
         Me.tbCtrl4.Minimum = -36000
@@ -427,7 +427,7 @@ Partial Class panCtrl
         '
         Me.tbCtrl5.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl5.AutoSize = False
-        Me.tbCtrl5.LargeChange = 100
+        Me.tbCtrl5.LargeChange = 10
         Me.tbCtrl5.Location = New System.Drawing.Point(168, 148)
         Me.tbCtrl5.Maximum = 36000
         Me.tbCtrl5.Minimum = -36000
@@ -440,7 +440,7 @@ Partial Class panCtrl
         '
         Me.tbCtrl6.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl6.AutoSize = False
-        Me.tbCtrl6.LargeChange = 100
+        Me.tbCtrl6.LargeChange = 10
         Me.tbCtrl6.Location = New System.Drawing.Point(168, 178)
         Me.tbCtrl6.Maximum = 36000
         Me.tbCtrl6.Minimum = -36000
@@ -575,75 +575,12 @@ Partial Class panCtrl
         Me.lblJog.Text = "Jog"
         Me.lblJog.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
-        'ToolStrip1
-        '
-        Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
-        Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblMove, Me.cbMoveMode, Me.btnMoveStart, Me.ToolStripSeparator2, Me.lblJogInterval, Me.numJogInterval, Me.cbJogMode})
-        Me.ToolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow
-        Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
-        Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(511, 26)
-        Me.ToolStrip1.Stretch = True
-        Me.ToolStrip1.TabIndex = 0
-        '
-        'lblMove
-        '
-        Me.lblMove.Name = "lblMove"
-        Me.lblMove.Size = New System.Drawing.Size(66, 23)
-        Me.lblMove.Text = "Bewegung:"
-        '
-        'cbMoveMode
-        '
-        Me.cbMoveMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbMoveMode.Items.AddRange(New Object() {"getriggert", "direkt"})
-        Me.cbMoveMode.Name = "cbMoveMode"
-        Me.cbMoveMode.Size = New System.Drawing.Size(75, 26)
-        '
-        'btnMoveStart
-        '
-        Me.btnMoveStart.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnMoveStart.Enabled = False
-        Me.btnMoveStart.Image = CType(resources.GetObject("btnMoveStart.Image"), System.Drawing.Image)
-        Me.btnMoveStart.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnMoveStart.Name = "btnMoveStart"
-        Me.btnMoveStart.Size = New System.Drawing.Size(23, 23)
-        Me.btnMoveStart.Text = "Start"
-        '
-        'ToolStripSeparator2
-        '
-        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 26)
-        '
-        'lblJogInterval
-        '
-        Me.lblJogInterval.Name = "lblJogInterval"
-        Me.lblJogInterval.Size = New System.Drawing.Size(67, 23)
-        Me.lblJogInterval.Text = "Joginterval:"
-        '
-        'numJogInterval
-        '
-        Me.numJogInterval.DecimalPlaces = 1
-        Me.numJogInterval.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.numJogInterval.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.numJogInterval.Name = "numJogInterval"
-        Me.numJogInterval.Size = New System.Drawing.Size(50, 23)
-        Me.numJogInterval.Text = "0,0"
-        Me.numJogInterval.Value = New Decimal(New Integer() {0, 0, 0, 0})
-        '
-        'cbJogMode
-        '
-        Me.cbJogMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbJogMode.Items.AddRange(New Object() {"Grad", "Steps"})
-        Me.cbJogMode.Name = "cbJogMode"
-        Me.cbJogMode.Size = New System.Drawing.Size(75, 26)
-        '
         'ToolStrip2
         '
         Me.ToolStrip2.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblMode, Me.cbJointOrTCP, Me.ToolStripSeparator3, Me.lblSpeed, Me.numSpeed, Me.ToolStripSeparator1, Me.lblAcc, Me.numAcc})
-        Me.ToolStrip2.Location = New System.Drawing.Point(0, 26)
+        Me.ToolStrip2.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip2.Name = "ToolStrip2"
         Me.ToolStrip2.Size = New System.Drawing.Size(511, 26)
         Me.ToolStrip2.Stretch = True
@@ -704,6 +641,69 @@ Partial Class panCtrl
         Me.numAcc.Text = "25,00"
         Me.numAcc.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
         '
+        'ToolStrip1
+        '
+        Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
+        Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblMove, Me.cbMoveMode, Me.btnMoveStart, Me.ToolStripSeparator2, Me.lblJogInterval, Me.numJogInterval, Me.cbJogMode})
+        Me.ToolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow
+        Me.ToolStrip1.Location = New System.Drawing.Point(0, 26)
+        Me.ToolStrip1.Name = "ToolStrip1"
+        Me.ToolStrip1.Size = New System.Drawing.Size(511, 26)
+        Me.ToolStrip1.Stretch = True
+        Me.ToolStrip1.TabIndex = 0
+        '
+        'lblMove
+        '
+        Me.lblMove.Name = "lblMove"
+        Me.lblMove.Size = New System.Drawing.Size(66, 23)
+        Me.lblMove.Text = "Bewegung:"
+        '
+        'cbMoveMode
+        '
+        Me.cbMoveMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbMoveMode.Items.AddRange(New Object() {"getriggert", "direkt"})
+        Me.cbMoveMode.Name = "cbMoveMode"
+        Me.cbMoveMode.Size = New System.Drawing.Size(75, 26)
+        '
+        'btnMoveStart
+        '
+        Me.btnMoveStart.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnMoveStart.Enabled = False
+        Me.btnMoveStart.Image = CType(resources.GetObject("btnMoveStart.Image"), System.Drawing.Image)
+        Me.btnMoveStart.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnMoveStart.Name = "btnMoveStart"
+        Me.btnMoveStart.Size = New System.Drawing.Size(23, 23)
+        Me.btnMoveStart.Text = "Start"
+        '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 26)
+        '
+        'lblJogInterval
+        '
+        Me.lblJogInterval.Name = "lblJogInterval"
+        Me.lblJogInterval.Size = New System.Drawing.Size(67, 23)
+        Me.lblJogInterval.Text = "Joginterval:"
+        '
+        'numJogInterval
+        '
+        Me.numJogInterval.DecimalPlaces = 1
+        Me.numJogInterval.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.numJogInterval.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
+        Me.numJogInterval.Name = "numJogInterval"
+        Me.numJogInterval.Size = New System.Drawing.Size(50, 23)
+        Me.numJogInterval.Text = "0,0"
+        Me.numJogInterval.Value = New Decimal(New Integer() {0, 0, 0, 0})
+        '
+        'cbJogMode
+        '
+        Me.cbJogMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbJogMode.Items.AddRange(New Object() {"Grad", "Steps"})
+        Me.cbJogMode.Name = "cbJogMode"
+        Me.cbJogMode.Size = New System.Drawing.Size(75, 26)
+        '
         'panCtrl
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -732,10 +732,10 @@ Partial Class panCtrl
         CType(Me.tbCtrl4, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbCtrl5, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbCtrl6, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ToolStrip1.ResumeLayout(False)
-        Me.ToolStrip1.PerformLayout()
         Me.ToolStrip2.ResumeLayout(False)
         Me.ToolStrip2.PerformLayout()
+        Me.ToolStrip1.ResumeLayout(False)
+        Me.ToolStrip1.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub

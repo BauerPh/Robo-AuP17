@@ -17,7 +17,7 @@ Friend Class RobotControl
     Private _actA As Double
 
     ' Parameter
-    Public Par As New RoboParameter
+    Private WithEvents _par As New RoboParameter
     ' Serial Communication
     Private WithEvents _com As New SerialCommunication
 
@@ -27,13 +27,19 @@ Friend Class RobotControl
     Private _posCart As CartCoords
     Private _targetJoint As JointAngles
 
-    Public ReadOnly Property RefOkay As Boolean()
+    ' Properties
+    Friend ReadOnly Property Par As RoboParameter
+        Get
+            Return _par
+        End Get
+    End Property
+    Friend ReadOnly Property RefOkay As Boolean()
         Get
             Return _refOkay
         End Get
     End Property
 
-    Public ReadOnly Property PosSteps As Integer()
+    Friend ReadOnly Property PosSteps As Integer()
         Get
             Return _posSteps
         End Get
@@ -67,6 +73,7 @@ Friend Class RobotControl
     Friend Event LimitSwitchStateChanged(ByVal lssState As Boolean())
     Friend Event EmergencyStopStateChanged(ByVal essState As Boolean)
     Friend Event RoboRefStateChanged(ByVal refState As Boolean())
+    Friend Event RoboParameterChanged(ByVal joint As Boolean, ByVal servo As Boolean)
 
     ' -----------------------------------------------------------------------------
     ' Public
@@ -92,8 +99,8 @@ Friend Class RobotControl
         'Datensatz zusammenstellen
         _com.ClearMsgDataSend()
         Dim tmpNr As Int32 = nr - 1
-        _targetJoint.setByIndex(tmpNr, Constrain(_posJoint.items(tmpNr) + jogval, Par.JointParameter(tmpNr).mechMinAngle, Par.JointParameter(tmpNr).mechMaxAngle))
-        _com.AddMOVDataSet(True, nr, _calcTargetToSteps(_targetJoint.items(tmpNr), nr), _calcSpeedAccToSteps(tmpV(tmpNr), nr), _calcSpeedAccToSteps(tmpA(tmpNr), nr), _calcSpeedAccToSteps(Par.JointParameter(tmpNr).profileStopAcc, nr))
+        _targetJoint.SetByIndex(tmpNr, Constrain(_posJoint.Items(tmpNr) + jogval, _par.JointParameter(tmpNr).MechMinAngle, _par.JointParameter(tmpNr).MechMaxAngle))
+        _com.AddMOVDataSet(True, nr, _calcTargetToSteps(_targetJoint.Items(tmpNr), nr), _calcSpeedAccToSteps(tmpV(tmpNr), nr), _calcSpeedAccToSteps(tmpA(tmpNr), nr), _calcSpeedAccToSteps(_par.JointParameter(tmpNr).ProfileStopAcc, nr))
         'Telegramm senden
         If _com.SendMOV() Then
             'Log
@@ -105,7 +112,7 @@ Friend Class RobotControl
     ' Jog Steps
     Friend Function DoJog(nr As Int32, jogval As Int32) As Boolean
         'Jog steps
-        Dim tmpJogval As Double = StepsToAngle(jogval, Par.JointParameter(nr - 1).motGear, Par.JointParameter(nr - 1).mechGear, Par.JointParameter(nr - 1).motStepsPerRot << Par.JointParameter(nr - 1).motMode, 0)
+        Dim tmpJogval As Double = StepsToAngle(jogval, _par.JointParameter(nr - 1).MotGear, _par.JointParameter(nr - 1).MechGear, _par.JointParameter(nr - 1).MotStepsPerRot << _par.JointParameter(nr - 1).MotMode, 0)
         'Datensatz zusammenstellen
         Return DoJog(nr, tmpJogval)
     End Function
@@ -115,8 +122,8 @@ Friend Class RobotControl
         _com.ClearMsgDataSend()
         Dim enabled() As Boolean = {J1, J2, J3, J4, J5, J6}
         For i = 0 To 5
-            Dim tmpMaxStepsBack As Int32 = AngleToSteps(_constRefMaxAngleBack, Par.JointParameter(i).motGear, Par.JointParameter(i).mechGear, Par.JointParameter(i).motStepsPerRot << Par.JointParameter(i).motMode, 0)
-            _com.AddREFDataSet(enabled(i), i + 1, Par.JointParameter(i).calDir Xor Par.JointParameter(i).motDir, _calcSpeedAccToSteps(Par.JointParameter(i).calSpeedFast, i + 1), _calcSpeedAccToSteps(Par.JointParameter(i).calSpeedSlow, i + 1), _calcSpeedAccToSteps(Par.JointParameter(i).calAcc, i + 1), tmpMaxStepsBack, _calcSpeedAccToSteps(Par.JointParameter(i).profileStopAcc, i + 1))
+            Dim tmpMaxStepsBack As Int32 = AngleToSteps(_constRefMaxAngleBack, _par.JointParameter(i).MotGear, _par.JointParameter(i).MechGear, _par.JointParameter(i).MotStepsPerRot << _par.JointParameter(i).MotMode, 0)
+            _com.AddREFDataSet(enabled(i), i + 1, _par.JointParameter(i).CalDir Xor _par.JointParameter(i).MotDir, _calcSpeedAccToSteps(_par.JointParameter(i).CalSpeedFast, i + 1), _calcSpeedAccToSteps(_par.JointParameter(i).CalSpeedSlow, i + 1), _calcSpeedAccToSteps(_par.JointParameter(i).CalAcc, i + 1), tmpMaxStepsBack, _calcSpeedAccToSteps(_par.JointParameter(i).ProfileStopAcc, i + 1))
         Next
         'Telegram senden
         If _com.SendREF() Then
@@ -135,9 +142,9 @@ Friend Class RobotControl
         _targetJoint = New JointAngles(J1_target, J2_target, J3_target, J4_target, J5_target, J6_target)
         'Prüfen ob Ziel schon erreicht (keine Fahrt mehr notwendig)
         For i = 0 To 5
-            If Math.Abs(_targetJoint.items(i) - _posJoint.items(i)) < 0.01 Then
+            If Math.Abs(_targetJoint.Items(i) - _posJoint.Items(i)) < 0.01 Then
                 enabled(i) = False
-                _targetJoint.setByIndex(i, _posJoint.items(i))
+                _targetJoint.SetByIndex(i, _posJoint.Items(i))
             End If
         Next
         'aktuelle Geschwindigkeit und Beschleunigung berechnen
@@ -147,7 +154,7 @@ Friend Class RobotControl
             For i = 0 To 5
                 _oSyncMov.v_max(i) = tmpV(i)
                 _oSyncMov.a_max(i) = tmpA(i)
-                _oSyncMov.s(i) = If(enabled(i), Math.Abs(_targetJoint.items(i) - _posJoint.items(i)), 0)
+                _oSyncMov.s(i) = If(enabled(i), Math.Abs(_targetJoint.Items(i) - _posJoint.Items(i)), 0)
             Next
             If Not _oSyncMov.calculate() Then
                 RaiseEvent Log("[Robo Control] Berechnung für synchrone Bewegung fehlgeschlagen", Logger.LogLevel.ERR)
@@ -161,7 +168,7 @@ Friend Class RobotControl
         'Datensätze sammeln
         _com.ClearMsgDataSend()
         For i = 0 To 5
-            _com.AddMOVDataSet(enabled(i), i + 1, _calcTargetToSteps(_targetJoint.items(i), i + 1), _calcSpeedAccToSteps(tmpV(i), i + 1), _calcSpeedAccToSteps(tmpA(i), i + 1), _calcSpeedAccToSteps(Par.JointParameter(i).profileStopAcc, i + 1))
+            _com.AddMOVDataSet(enabled(i), i + 1, _calcTargetToSteps(_targetJoint.Items(i), i + 1), _calcSpeedAccToSteps(tmpV(i), i + 1), _calcSpeedAccToSteps(tmpA(i), i + 1), _calcSpeedAccToSteps(_par.JointParameter(i).ProfileStopAcc, i + 1))
         Next
         'Telegram senden
         If _com.SendMOV() Then
@@ -172,10 +179,10 @@ Friend Class RobotControl
         End If
     End Function
     Friend Function DoHome(sync As Boolean, J1_en As Boolean, J2_en As Boolean, J3_en As Boolean, J4_en As Boolean, J5_en As Boolean, J6_en As Boolean) As Boolean
-        Return DoJointMov(sync, J1_en, Par.JointParameter(0).mechHomePosAngle, J2_en, Par.JointParameter(1).mechHomePosAngle, J3_en, Par.JointParameter(2).mechHomePosAngle, J4_en, Par.JointParameter(3).mechHomePosAngle, J5_en, Par.JointParameter(4).mechHomePosAngle, J6_en, Par.JointParameter(5).mechHomePosAngle)
+        Return DoJointMov(sync, J1_en, _par.JointParameter(0).MechHomePosAngle, J2_en, _par.JointParameter(1).MechHomePosAngle, J3_en, _par.JointParameter(2).MechHomePosAngle, J4_en, _par.JointParameter(3).MechHomePosAngle, J5_en, _par.JointParameter(4).MechHomePosAngle, J6_en, _par.JointParameter(5).MechHomePosAngle)
     End Function
     Friend Function DoPark(sync As Boolean, J1_en As Boolean, J2_en As Boolean, J3_en As Boolean, J4_en As Boolean, J5_en As Boolean, J6_en As Boolean) As Boolean
-        Return DoJointMov(sync, J1_en, Par.JointParameter(0).mechParkPosAngle, J2_en, Par.JointParameter(1).mechParkPosAngle, J3_en, Par.JointParameter(2).mechParkPosAngle, J4_en, Par.JointParameter(3).mechParkPosAngle, J5_en, Par.JointParameter(4).mechParkPosAngle, J6_en, Par.JointParameter(5).mechParkPosAngle)
+        Return DoJointMov(sync, J1_en, _par.JointParameter(0).MechParkPosAngle, J2_en, _par.JointParameter(1).MechParkPosAngle, J3_en, _par.JointParameter(2).MechParkPosAngle, J4_en, _par.JointParameter(3).MechParkPosAngle, J5_en, _par.JointParameter(4).MechParkPosAngle, J6_en, _par.JointParameter(5).MechParkPosAngle)
     End Function
     Friend Function MoveServo(srvNr As Int32, angle As Int32) As Boolean
         If _com.SendSRV(srvNr, angle) Then
@@ -202,19 +209,19 @@ Friend Class RobotControl
     End Sub
     'CALCULATIONS
     Private Function _calcServoAngle(srvNr As Int32, prc As Double) As Int32
-        Return CInt((Par.ServoParameter(srvNr - 1).maxAngle - Par.ServoParameter(srvNr - 1).minAngle) * (prc / 100.0) + Par.ServoParameter(srvNr - 1).minAngle)
+        Return CInt((_par.ServoParameter(srvNr - 1).MaxAngle - _par.ServoParameter(srvNr - 1).MinAngle) * (prc / 100.0) + _par.ServoParameter(srvNr - 1).MinAngle)
     End Function
     Private Sub _calcSpeedAcc(ByRef v() As Double, ByRef a() As Double)
         'Maximale Geschwindigkeit und Beschleunigung jeder Achse ermitteln (Maxwert oder aktueller Wert, je nachdem welcher kleiner ist!)
         For i = 0 To 5
-            If Par.JointParameter(i).profileMaxSpeed < _actV Then
-                v(i) = Par.JointParameter(i).profileMaxSpeed
+            If _par.JointParameter(i).ProfileMaxSpeed < _actV Then
+                v(i) = _par.JointParameter(i).ProfileMaxSpeed
             Else
                 v(i) = _actV
             End If
 
-            If Par.JointParameter(i).profileMaxAcc < _actA Then
-                a(i) = Par.JointParameter(i).profileMaxAcc
+            If _par.JointParameter(i).ProfileMaxAcc < _actA Then
+                a(i) = _par.JointParameter(i).ProfileMaxAcc
             Else
                 a(i) = _actA
             End If
@@ -223,12 +230,12 @@ Friend Class RobotControl
 
     Private Function _calcTargetToSteps(target As Double, nr As Int32) As Int32
         Dim tmpNr As Int32 = nr - 1
-        Return If(Par.JointParameter(tmpNr).motDir = 1, -1, 1) * AngleToSteps(target, Par.JointParameter(tmpNr).motGear, Par.JointParameter(tmpNr).mechGear, Par.JointParameter(tmpNr).motStepsPerRot << Par.JointParameter(tmpNr).motMode, If(Par.JointParameter(tmpNr).calDir = 0, Par.JointParameter(tmpNr).mechMinAngle * -1, Par.JointParameter(tmpNr).mechMaxAngle * -1))
+        Return If(_par.JointParameter(tmpNr).MotDir = 1, -1, 1) * AngleToSteps(target, _par.JointParameter(tmpNr).MotGear, _par.JointParameter(tmpNr).MechGear, _par.JointParameter(tmpNr).MotStepsPerRot << _par.JointParameter(tmpNr).MotMode, If(_par.JointParameter(tmpNr).CalDir = 0, _par.JointParameter(tmpNr).MechMinAngle * -1, _par.JointParameter(tmpNr).MechMaxAngle * -1))
     End Function
 
     Private Function _calcSpeedAccToSteps(speedAcc As Double, nr As Int32) As Int32
         Dim tmpNr As Int32 = nr - 1
-        Return AngleToSteps(speedAcc, Par.JointParameter(tmpNr).motGear, Par.JointParameter(tmpNr).mechGear, Par.JointParameter(tmpNr).motStepsPerRot, 0)
+        Return AngleToSteps(speedAcc, _par.JointParameter(tmpNr).MotGear, _par.JointParameter(tmpNr).MechGear, _par.JointParameter(tmpNr).MotStepsPerRot, 0)
     End Function
     ' -----------------------------------------------------------------------------
     ' Events
@@ -244,8 +251,8 @@ Friend Class RobotControl
     Private Sub _eSerialDisconnected() Handles _com.SerialDisconnected
         RaiseEvent SerialDisconnected()
     End Sub
-    Private Sub _eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles _com.Log
-        'Log Event durchleiten
+    Private Sub _eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles _com.Log, _par.Log
+        'Log Events durchleiten
         RaiseEvent Log(LogMsg, LogLvl)
     End Sub
     Private Sub _eFINReceived() Handles _com.FINReceived
@@ -253,7 +260,7 @@ Friend Class RobotControl
     End Sub
     Private Sub _ePOSReceived(refOkay As Boolean(), posSteps As Int32()) Handles _com.POSReceived
         For i = 0 To 5
-            _posJoint.setByIndex(i, StepsToAngle(posSteps(i), Par.JointParameter(i).motGear, Par.JointParameter(i).mechGear, Par.JointParameter(i).motStepsPerRot << Par.JointParameter(i).motMode, If(Par.JointParameter(i).calDir = 0, Par.JointParameter(i).mechMinAngle * -1, Par.JointParameter(i).mechMaxAngle * -1)))
+            _posJoint.SetByIndex(i, StepsToAngle(posSteps(i), _par.JointParameter(i).MotGear, _par.JointParameter(i).MechGear, _par.JointParameter(i).MotStepsPerRot << _par.JointParameter(i).MotMode, If(_par.JointParameter(i).CalDir = 0, _par.JointParameter(i).MechMinAngle * -1, _par.JointParameter(i).MechMaxAngle * -1)))
         Next
         refOkay.CopyTo(_refOkay, 0)
         _checkRefStateChange()
@@ -271,17 +278,20 @@ Friend Class RobotControl
         Next
         _checkRefStateChange()
     End Sub
+    Private Sub _eRoboParameterChanged(joint As Boolean, servo As Boolean) Handles _par.ParameterChanged
+        RaiseEvent RoboParameterChanged(joint, servo)
+    End Sub
 End Class
 
-Public Class classPos
-    Public Property func As String
-    Public Property cnt As Int32
-    Public Property parset As Int32()()
+Friend Class ClassPos
+    Friend Property Func As String
+    Friend Property Cnt As Int32
+    Friend Property Parset As Int32()()
 
-    Public Sub New()
-        parset = New Int32(5)() {}
+    Friend Sub New()
+        Parset = New Int32(5)() {}
         For i = 0 To 5
-            parset(i) = New Int32(7) {}
+            Parset(i) = New Int32(7) {}
         Next
     End Sub
 End Class

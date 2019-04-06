@@ -9,21 +9,21 @@ Friend Class ACLProgram
     ' -----------------------------------------------------------------------------
     ' Definitions
     ' -----------------------------------------------------------------------------
-    Public progList As New List(Of ProgramEntry)
-    Public teachPoints As New List(Of TeachPoint)
-    Public progClipboard As New ProgramEntry
-    Public teachPointClipboard As New TeachPoint
+    Friend progList As New List(Of ProgramEntry)
+    Friend teachPoints As New List(Of TeachPoint)
+    Friend progClipboard As New ProgramEntry
+    Friend teachPointClipboard As New TeachPoint
     Private _programRunning, _loopSeq As Boolean
     Private _progIndex As Int32
 
 
-    Public Event ProgChanged(ByVal e As ProgChangedEventArgs)
-    Public Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
+    Friend Event ProgChanged(ByVal e As ProgChangedEventArgs)
+    Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
     'TEACHPUNKTE
-    Public Sub addTeachPoint(tp As TeachPoint, nr As Int32)
+    Friend Sub addTeachPoint(tp As TeachPoint, nr As Int32)
         Dim i As Int32 = teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = tp.nr)
         If i >= 0 Then
             If MessageBox.Show($"Teachpunkt {tp.nr} ({teachPoints(i).name}) existiert bereits. Ersetzen?", "Teachpunkt ersetzen?", MessageBoxButtons.YesNo) _
@@ -41,7 +41,7 @@ Friend Class ACLProgram
         RaiseEvent Log($"Teachpunkt {nr} hinzugefügt!", Logger.LogLevel.INFO)
     End Sub
 
-    Public Sub deleteTeachPoint(index As Int32)
+    Friend Sub deleteTeachPoint(index As Int32)
         If teachPoints.Count > index And index >= 0 Then
             'Prüfen ob Teachpunkt benutzt wird
             If progList.Exists(Function(_seq As ProgramEntry) _seq.tpnr = teachPoints(index).nr) Then
@@ -54,11 +54,11 @@ Friend Class ACLProgram
         End If
     End Sub
 
-    Public Function getTeachPointName(nr As Int32) As String
+    Friend Function getTeachPointName(nr As Int32) As String
         Return teachPoints.Find(Function(_tp As TeachPoint) _tp.nr = nr).name
     End Function
 
-    Public Function moveToTeachPoint(index As Int32, sync As Boolean) As Boolean
+    Friend Function moveToTeachPoint(index As Int32, sync As Boolean) As Boolean
         If teachPoints.Count > index And index >= 0 Then
             'Return doJointMov(sync, True, teachPoints(index).jointAngles(0), True, teachPoints(index).jointAngles(1), True,
             'teachPoints(index).jointAngles(2), True, teachPoints(index).jointAngles(3), True, teachPoints(index).jointAngles(4),
@@ -67,7 +67,7 @@ Friend Class ACLProgram
         Return False
     End Function
 
-    Public Sub moveTPUpDown(down As Boolean, index As Int32)
+    Friend Sub moveTPUpDown(down As Boolean, index As Int32)
         Dim tmpNewIndex As Int32
         If teachPoints.Count > index And index >= 0 Then
             If down Then
@@ -115,26 +115,26 @@ Friend Class ACLProgram
     End Sub
 
     'PROGRAMM
-    Public Sub addProgItem(item As ProgramEntry, index As Int32)
+    Friend Sub addProgItem(item As ProgramEntry, index As Int32)
         progList.Insert(index + 1, item)
         RaiseEvent ProgChanged(New ProgChangedEventArgs(False, True, False, index + 1))
     End Sub
 
-    Public Sub delProgItem(index As Int32)
+    Friend Sub delProgItem(index As Int32)
         If index >= 0 And index < progList.Count Then
             progList.RemoveAt(index)
             RaiseEvent ProgChanged(New ProgChangedEventArgs(False, True, False, progList.Count - 1))
         End If
     End Sub
 
-    Public Sub replaceProgItem(item As ProgramEntry, index As Int32)
+    Friend Sub replaceProgItem(item As ProgramEntry, index As Int32)
         If index >= 0 And index < progList.Count Then
             progList(index) = item
             RaiseEvent ProgChanged(New ProgChangedEventArgs(False, True, False, index))
         End If
     End Sub
 
-    Public Function copyProgItem(index As Int32) As Boolean
+    Friend Function copyProgItem(index As Int32) As Boolean
         If index >= 0 And index < progList.Count Then
             progClipboard = progList(index)
             Return True
@@ -142,14 +142,14 @@ Friend Class ACLProgram
         Return False
     End Function
 
-    Public Sub pasteProgItem(index As Int32)
+    Friend Sub pasteProgItem(index As Int32)
         addProgItem(progClipboard, index)
     End Sub
-    Public Function isProgRunning() As Boolean
+    Friend Function isProgRunning() As Boolean
         Return _programRunning
     End Function
 
-    Public Sub executeProgramm(loopSeq As Boolean)
+    Friend Sub executeProgramm(loopSeq As Boolean)
         If progList.Count > 0 Then
             _programRunning = True
             Me._loopSeq = loopSeq
@@ -161,7 +161,7 @@ Friend Class ACLProgram
         End If
     End Sub
 
-    Public Function executeProgItem(index As Int32) As Boolean
+    Friend Function executeProgItem(index As Int32) As Boolean
         If progList.Count > index And index >= 0 Then
             If progList(index).func = "pos" Then
                 Dim tpI As Int32 = teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = progList(index).tpnr)
@@ -186,13 +186,13 @@ Friend Class ACLProgram
         Return False
     End Function
 
-    Public Sub stopProgram()
+    Friend Sub stopProgram()
         If _programRunning Then
             _programRunning = False
         End If
     End Sub
 
-    Public Function saveProgram() As Boolean
+    Friend Function saveProgram() As Boolean
         Dim saveFileDialog As New SaveFileDialog With {
            .Filter = "Positions-Dateien (*.pos)|*.pos"
        }
@@ -223,7 +223,7 @@ Friend Class ACLProgram
         End If
     End Function
 
-    Public Function loadProgram() As Boolean
+    Friend Function loadProgram() As Boolean
         Dim tmpErg As Boolean = True
         Dim openFileDialog As New OpenFileDialog With {
            .Filter = "Positions-Dateien (*.pos)|*.pos"
@@ -301,7 +301,7 @@ Friend Class ACLProgram
         Return tmpErg
     End Function
 
-    Public Sub fastStop()
+    Friend Sub fastStop()
         stopProgram() 'Sequenz stoppen
         'com.sendStop()
         'Log
@@ -351,14 +351,14 @@ Friend Class ACLProgram
     'End Sub
 End Class
 
-Public Class TeachPoint
+Friend Class TeachPoint
     Implements IComparable(Of TeachPoint)
 
-    Public nr As Int32
-    Public name As String
-    Public jointAngles(5) As Double
+    Friend nr As Int32
+    Friend name As String
+    Friend jointAngles(5) As Double
 
-    Public Function CompareTo(other As TeachPoint) As Integer _
+    Friend Function CompareTo(other As TeachPoint) As Integer _
            Implements IComparable(Of TeachPoint).CompareTo
         ' A null value means that this object is greater.
         If other Is Nothing Then
@@ -369,29 +369,29 @@ Public Class TeachPoint
     End Function
 End Class
 
-Public Class ProgramEntry
-    Public comment As String
-    Public func As String
+Friend Class ProgramEntry
+    Friend comment As String
+    Friend func As String
     'Position
-    Public tpnr As Int32
-    Public speed As Double
-    Public acc As Double
-    Public sync As Boolean
+    Friend tpnr As Int32
+    Friend speed As Double
+    Friend acc As Double
+    Friend sync As Boolean
     'Servo
-    Public servoNum As Int32
-    Public servoVal As Int32
+    Friend servoNum As Int32
+    Friend servoVal As Int32
     'Wait
-    Public waitTimeMS As Int32
+    Friend waitTimeMS As Int32
 End Class
 
-Public Class ProgChangedEventArgs : Inherits EventArgs
+Friend Class ProgChangedEventArgs : Inherits EventArgs
     Private _actProgIndex As Int32
     Private _actTpIndex As Int32
     Private _running As Boolean = False
     Private _prog As Boolean = False
     Private _tp As Boolean
 
-    Public Sub New(running As Boolean, prog As Boolean, tp As Boolean, index As Int32)
+    Friend Sub New(running As Boolean, prog As Boolean, tp As Boolean, index As Int32)
         _running = running
         _prog = prog
         _tp = tp
@@ -406,34 +406,34 @@ Public Class ProgChangedEventArgs : Inherits EventArgs
             _actTpIndex = -1
         End If
     End Sub
-    Public Sub New(running As Boolean)
+    Friend Sub New(running As Boolean)
         _running = running
         _actProgIndex = -1
         _actTpIndex = -1
         _prog = True
         _tp = True
     End Sub
-    Public ReadOnly Property running As Boolean
+    Friend ReadOnly Property running As Boolean
         Get
             Return _running
         End Get
     End Property
-    Public ReadOnly Property prog As Boolean
+    Friend ReadOnly Property prog As Boolean
         Get
             Return _prog
         End Get
     End Property
-    Public ReadOnly Property tp As Boolean
+    Friend ReadOnly Property tp As Boolean
         Get
             Return _tp
         End Get
     End Property
-    Public ReadOnly Property actProgIndex As Int32
+    Friend ReadOnly Property actProgIndex As Int32
         Get
             Return _actProgIndex
         End Get
     End Property
-    Public ReadOnly Property actTpIndex As Int32
+    Friend ReadOnly Property actTpIndex As Int32
         Get
             Return _actTpIndex
         End Get

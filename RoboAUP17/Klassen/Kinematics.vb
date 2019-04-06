@@ -8,7 +8,7 @@ Friend Class Kinematics
     Private _workframe, _toolframe As CartCoords
 
 #Region "Properties"
-    Public Property Workframe As CartCoords
+    Friend Property Workframe As CartCoords
         Get
             Return _workframe
         End Get
@@ -17,7 +17,7 @@ Friend Class Kinematics
         End Set
     End Property
 
-    Public Property Toolframe As CartCoords
+    Friend Property Toolframe As CartCoords
         Get
             Return _toolframe
         End Get
@@ -31,7 +31,7 @@ Friend Class Kinematics
     ' -----------------------------------------------------------------------------
     ' Constructor
     ' -----------------------------------------------------------------------------
-    Public Sub New(DenavitHartenbergParameter As DHParams())
+    Friend Sub New(DenavitHartenbergParameter As DHParams())
         If UBound(DenavitHartenbergParameter) <> 5 Then
             Throw New Exception("Denavit Hartenberg Parameter für alle 6 Achsen erforderlich!")
         End If
@@ -43,7 +43,7 @@ Friend Class Kinematics
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
-    Public Function ForwardKin(joints As JointAngles) As CartCoords
+    Friend Function ForwardKin(joints As JointAngles) As CartCoords
         joints.J3 = joints.J3 - 90
         joints.J6 = joints.J6 + 180
 
@@ -53,7 +53,7 @@ Friend Class Kinematics
         transForwMatr(0) = CalcFrameMatrix(_workframe)
         'Transformationsmatrizen jeder Achse
         For i As Short = 1 To 6
-            transForwMatr(i) = CalcDHTransMatrix(i, joints.items(i - 1))
+            transForwMatr(i) = CalcDHTransMatrix(i, joints.Items(i - 1))
         Next
         'Tool Frame
         transForwMatr(7) = CalcFrameMatrix(_toolframe)
@@ -79,7 +79,7 @@ Friend Class Kinematics
         Return erg
     End Function
 
-    Public Function InversKin(coords As CartCoords) As JointAngles
+    Friend Function InversKin(coords As CartCoords) As JointAngles
         Dim erg As New JointAngles
 
 #Region "Vorberechnungen"
