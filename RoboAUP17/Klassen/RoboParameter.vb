@@ -37,9 +37,9 @@
         If _XMLReader(My.Settings.LastConfigFile) Then
             _actFilename = My.Settings.LastConfigFile
         Else
-            RaiseEvent Log($"[Parameter] Die vorherige Parameterdatei konnte nicht geladen werden. Es wurden die Standardparameter geladen.", Logger.LogLevel.WARN)
+            MessageBox.Show($"Die Parameterdatei ""{My.Settings.LastConfigFile}"" konnte nicht geladen werden. Es werden die Standardparameter geladen.", "Parameterdatei nicht gefunden!", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             If Not LoadDefaulSettings() Then
-                If MessageBox.Show($"Die Konfigurationsdatei ""{cDefaultConfigFile}"" konnte nicht gefunden werden oder ist fehlerhaft. Soll sie gesucht werden?", "Konfigurationsdatei nicht gefunden!",
+                If MessageBox.Show($"Die Parameterdatei ""{cDefaultConfigFile}"" konnte nicht gefunden werden oder ist fehlerhaft. Soll sie gesucht werden?", "Parameterdatei nicht gefunden!",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Error) = DialogResult.Yes Then
                     LoadSettings()
                 End If
@@ -64,6 +64,8 @@
     Friend Function LoadDefaulSettings() As Boolean
         If System.IO.File.Exists(cDefaultConfigFile) Then
             _XMLReader(cDefaultConfigFile)
+            My.Settings.LastConfigFile = cDefaultConfigFile
+            My.Settings.Save()
             _actFilename = cDefaultConfigFile
             RaiseEvent ParameterChanged(True, True)
             RaiseEvent Log($"[Parameter] Standardparameter geladen", Logger.LogLevel.ERR)
