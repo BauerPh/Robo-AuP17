@@ -8,11 +8,21 @@
     ' Init Panel
     ' -----------------------------------------------------------------------------
     Private _initialized As Boolean = False
+    Private _actBtnNr As btnNr
     Private Sub panRoboParameter_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         If Not _initialized Then
             _initialized = True
             propGridRoboPar.SelectedObject = frmMain.roboControl.Par.JointParameter(0)
             checkButton(btnNr.J1)
+        End If
+    End Sub
+
+    Private Sub propGridRoboPar_PropertyValueChanged(sender As Object, e As EventArgs) Handles propGridRoboPar.PropertyValueChanged
+        'Objekt aktualisieren
+        If _actBtnNr > 5 Then
+            frmMain.roboControl.Par.ServoParameter(_actBtnNr - 6) = CType(propGridRoboPar.SelectedObject, ServoParameter)
+        Else
+            frmMain.roboControl.Par.JointParameter(_actBtnNr) = CType(propGridRoboPar.SelectedObject, JointParameter)
         End If
     End Sub
 
@@ -79,6 +89,7 @@
         Servo3
     End Enum
     Private Sub checkButton(nr As btnNr)
+        _actBtnNr = nr
         btnJ1.Checked = False
         btnJ2.Checked = False
         btnJ3.Checked = False

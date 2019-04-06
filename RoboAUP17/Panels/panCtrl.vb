@@ -1,4 +1,5 @@
-﻿Public Class panCtrl
+﻿
+Public Class panCtrl
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
@@ -13,6 +14,9 @@
         cbJointOrTCP.SelectedIndex = 0
         cbJogMode.SelectedIndex = 0
         cbMoveMode.SelectedIndex = 0
+
+
+        AddHandler frmMain.roboControl.RoboPositionChanged, AddressOf eNewPos
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -50,4 +54,19 @@
         End If
     End Sub
 
+    ' -----------------------------------------------------------------------------
+    ' Events
+    ' -----------------------------------------------------------------------------
+    Private Sub eNewPos()
+        If InvokeRequired Then
+            Invoke(Sub() eNewPos())
+            Return
+        End If
+        numCtrl1.Value = CDec(frmMain.roboControl.PosJoint.items(0))
+        numCtrl2.Value = CDec(frmMain.roboControl.PosJoint.items(1))
+        numCtrl3.Value = CDec(frmMain.roboControl.PosJoint.items(2))
+        numCtrl4.Value = CDec(frmMain.roboControl.PosJoint.items(3))
+        numCtrl5.Value = CDec(frmMain.roboControl.PosJoint.items(4))
+        numCtrl6.Value = CDec(frmMain.roboControl.PosJoint.items(5))
+    End Sub
 End Class

@@ -54,6 +54,7 @@ Partial Class panRoboParameter
         Me.propGridRoboPar.Dock = System.Windows.Forms.DockStyle.Fill
         Me.propGridRoboPar.Location = New System.Drawing.Point(0, 0)
         Me.propGridRoboPar.Name = "propGridRoboPar"
+        Me.propGridRoboPar.PropertySort = System.Windows.Forms.PropertySort.Categorized
         Me.propGridRoboPar.Size = New System.Drawing.Size(613, 417)
         Me.propGridRoboPar.TabIndex = 0
         '
