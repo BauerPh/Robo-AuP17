@@ -72,7 +72,10 @@ Partial Class PanCtrl
         Me.btnMoveStart = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.lblJogInterval = New System.Windows.Forms.ToolStripLabel()
-        Me.numJogInterval = New RoboAUP17.ToolStripNumericUpDown()
+        Me.numJogInterval1 = New RoboAUP17.ToolStripNumericUpDown()
+        Me.lblUnitMm = New System.Windows.Forms.ToolStripLabel()
+        Me.numJogInterval2 = New RoboAUP17.ToolStripNumericUpDown()
+        Me.lblUnitDeg = New System.Windows.Forms.ToolStripLabel()
         Me.cbJogMode = New System.Windows.Forms.ToolStripComboBox()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
@@ -657,7 +660,7 @@ Partial Class PanCtrl
         '
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblMove, Me.cbMoveMode, Me.btnMoveStart, Me.ToolStripSeparator2, Me.lblJogInterval, Me.numJogInterval, Me.cbJogMode})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblMove, Me.cbMoveMode, Me.btnMoveStart, Me.ToolStripSeparator2, Me.lblJogInterval, Me.numJogInterval1, Me.lblUnitMm, Me.numJogInterval2, Me.lblUnitDeg, Me.cbJogMode})
         Me.ToolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 26)
         Me.ToolStrip1.Name = "ToolStrip1"
@@ -699,15 +702,40 @@ Partial Class PanCtrl
         Me.lblJogInterval.Size = New System.Drawing.Size(67, 23)
         Me.lblJogInterval.Text = "Joginterval:"
         '
-        'numJogInterval
+        'numJogInterval1
         '
-        Me.numJogInterval.DecimalPlaces = 1
-        Me.numJogInterval.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.numJogInterval.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.numJogInterval.Name = "numJogInterval"
-        Me.numJogInterval.Size = New System.Drawing.Size(50, 23)
-        Me.numJogInterval.Text = "0,0"
-        Me.numJogInterval.Value = New Decimal(New Integer() {0, 0, 0, 0})
+        Me.numJogInterval1.DecimalPlaces = 1
+        Me.numJogInterval1.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.numJogInterval1.Minimum = New Decimal(New Integer() {1, 0, 0, 65536})
+        Me.numJogInterval1.Name = "numJogInterval1"
+        Me.numJogInterval1.Size = New System.Drawing.Size(50, 23)
+        Me.numJogInterval1.Text = "0,1"
+        Me.numJogInterval1.Value = New Decimal(New Integer() {1, 0, 0, 65536})
+        '
+        'lblUnitMm
+        '
+        Me.lblUnitMm.Name = "lblUnitMm"
+        Me.lblUnitMm.Size = New System.Drawing.Size(29, 23)
+        Me.lblUnitMm.Text = "mm"
+        Me.lblUnitMm.Visible = False
+        '
+        'numJogInterval2
+        '
+        Me.numJogInterval2.DecimalPlaces = 1
+        Me.numJogInterval2.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.numJogInterval2.Minimum = New Decimal(New Integer() {1, 0, 0, 65536})
+        Me.numJogInterval2.Name = "numJogInterval2"
+        Me.numJogInterval2.Size = New System.Drawing.Size(50, 23)
+        Me.numJogInterval2.Text = "0,1"
+        Me.numJogInterval2.Value = New Decimal(New Integer() {1, 0, 0, 65536})
+        Me.numJogInterval2.Visible = False
+        '
+        'lblUnitDeg
+        '
+        Me.lblUnitDeg.Name = "lblUnitDeg"
+        Me.lblUnitDeg.Size = New System.Drawing.Size(12, 23)
+        Me.lblUnitDeg.Text = "°"
+        Me.lblUnitDeg.Visible = False
         '
         'cbJogMode
         '
@@ -790,7 +818,7 @@ Partial Class PanCtrl
     Friend WithEvents btnCtrl6Inc As Button
     Friend WithEvents lblTargetAngle As Label
     Friend WithEvents lblJog As Label
-    Friend WithEvents numJogInterval As ToolStripNumericUpDown
+    Friend WithEvents numJogInterval1 As ToolStripNumericUpDown
     Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
     Friend WithEvents lblMove As ToolStripLabel
     Friend WithEvents cbMoveMode As ToolStripComboBox
@@ -804,4 +832,7 @@ Partial Class PanCtrl
     Friend WithEvents lblMode As ToolStripLabel
     Friend WithEvents cbJointOrTCP As ToolStripComboBox
     Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
+    Friend WithEvents lblUnitMm As ToolStripLabel
+    Friend WithEvents numJogInterval2 As ToolStripNumericUpDown
+    Friend WithEvents lblUnitDeg As ToolStripLabel
 End Class

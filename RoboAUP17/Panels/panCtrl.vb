@@ -2,12 +2,8 @@
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' Slider Bewegung ändert numUpDown und umgekehrt!
-    ' Min, Max-Werte für Slider aus Parameter holen, 
-    '   dazu auch ein ParameterChangedEvent (in RobotParamter, Property Setter Funktion!) implementieren!
-    '   Auch eine Setter/Getter Funktion in RoboControl.vb nötig, damit RoboParameter nicht Public sein müssen
-    ' Slider, Buttons, Bewegungsbefehle an RoboControl senden
-    ' Slider, Nums updaten wenn RoboControl sich ändert (Ereignisse, Callbacks??)
+    ' Bewegungsbefehle an RoboControl senden + Geschwindigkeit und Beschleunigung setzen
+    ' Während Bewegung Buttons deaktivieren???
     Private _tcpMode As Boolean = False
     Private _posReceived As Boolean = False
 
@@ -23,7 +19,6 @@
 
         AddHandler frmMain.RoboControl.RoboPositionChanged, AddressOf _eNewPos
         AddHandler frmMain.RoboControl.RoboParameterChanged, AddressOf _eRoboParameterChanged
-        AddHandler frmMain.RoboControl.SerialConnected, AddressOf _eComSerialConnected
         AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eComSerialDisconnected
     End Sub
 
@@ -44,9 +39,13 @@
         If cbJointOrTCP.SelectedIndex = 0 Then
             ' Joint Mode
             _tcpMode = False
+            btnMoveStart.Visible = (cbMoveMode.SelectedIndex = 0)
             cbJogMode.Visible = True
             lblMove.Visible = True
             cbMoveMode.Visible = True
+            numJogInterval2.Visible = False
+            lblUnitDeg.Visible = False
+            lblUnitMm.Visible = False
             lblCtrl1.Text = "J1:"
             lblCtrl2.Text = "J2:"
             lblCtrl3.Text = "J3:"
@@ -72,9 +71,13 @@
         Else
             ' TCP Mode
             _tcpMode = True
+            btnMoveStart.Visible = True
             cbJogMode.Visible = False
             lblMove.Visible = False
             cbMoveMode.Visible = False
+            numJogInterval2.Visible = True
+            lblUnitDeg.Visible = True
+            lblUnitMm.Visible = True
             lblCtrl1.Text = "X:"
             lblCtrl2.Text = "Y:"
             lblCtrl3.Text = "Z:"
@@ -175,8 +178,73 @@
             End With
         End If
     End Sub
+    Private Sub _enableDisableElements(disable As Boolean)
+        If disable Then
+            btnMoveStart.Enabled = False
+
+            btnCtrl1Dec.Enabled = False
+            btnCtrl1Inc.Enabled = False
+            numCtrl1.Enabled = False
+            tbCtrl1.Enabled = False
+            btnCtrl2Dec.Enabled = False
+            btnCtrl2Inc.Enabled = False
+            numCtrl2.Enabled = False
+            tbCtrl2.Enabled = False
+            btnCtrl3Dec.Enabled = False
+            btnCtrl3Inc.Enabled = False
+            numCtrl3.Enabled = False
+            tbCtrl3.Enabled = False
+            btnCtrl4Dec.Enabled = False
+            btnCtrl4Inc.Enabled = False
+            numCtrl4.Enabled = False
+            tbCtrl4.Enabled = False
+            btnCtrl5Dec.Enabled = False
+            btnCtrl5Inc.Enabled = False
+            numCtrl5.Enabled = False
+            tbCtrl5.Enabled = False
+            btnCtrl6Dec.Enabled = False
+            btnCtrl6Inc.Enabled = False
+            numCtrl6.Enabled = False
+            tbCtrl6.Enabled = False
+        Else
+            btnCtrl1Dec.Enabled = frmMain.RoboControl.RefOkay(0)
+            btnCtrl1Inc.Enabled = frmMain.RoboControl.RefOkay(0)
+            numCtrl1.Enabled = frmMain.RoboControl.RefOkay(0)
+            tbCtrl1.Enabled = frmMain.RoboControl.RefOkay(0)
+            btnCtrl2Dec.Enabled = frmMain.RoboControl.RefOkay(1)
+            btnCtrl2Inc.Enabled = frmMain.RoboControl.RefOkay(1)
+            numCtrl2.Enabled = frmMain.RoboControl.RefOkay(1)
+            tbCtrl2.Enabled = frmMain.RoboControl.RefOkay(1)
+            btnCtrl3Dec.Enabled = frmMain.RoboControl.RefOkay(2)
+            btnCtrl3Inc.Enabled = frmMain.RoboControl.RefOkay(2)
+            numCtrl3.Enabled = frmMain.RoboControl.RefOkay(2)
+            tbCtrl3.Enabled = frmMain.RoboControl.RefOkay(2)
+            btnCtrl4Dec.Enabled = frmMain.RoboControl.RefOkay(3)
+            btnCtrl4Inc.Enabled = frmMain.RoboControl.RefOkay(3)
+            numCtrl4.Enabled = frmMain.RoboControl.RefOkay(3)
+            tbCtrl4.Enabled = frmMain.RoboControl.RefOkay(3)
+            btnCtrl5Dec.Enabled = frmMain.RoboControl.RefOkay(4)
+            btnCtrl5Inc.Enabled = frmMain.RoboControl.RefOkay(4)
+            numCtrl5.Enabled = frmMain.RoboControl.RefOkay(4)
+            tbCtrl5.Enabled = frmMain.RoboControl.RefOkay(4)
+            btnCtrl6Dec.Enabled = frmMain.RoboControl.RefOkay(5)
+            btnCtrl6Inc.Enabled = frmMain.RoboControl.RefOkay(5)
+            numCtrl6.Enabled = frmMain.RoboControl.RefOkay(5)
+            tbCtrl6.Enabled = frmMain.RoboControl.RefOkay(5)
+
+            ' Start Button
+            Dim tmpEnabled As Boolean = False
+            For i = 0 To 5
+                If frmMain.RoboControl.RefOkay(i) Then
+                    tmpEnabled = True
+                    Exit For
+                End If
+            Next
+            btnMoveStart.Enabled = tmpEnabled
+        End If
+    End Sub
     Private Sub _setPosValues()
-        If _posReceived Then
+        If _posReceived Then ' Nur wenn es welche gibt
             If _tcpMode Then
                 numCtrl1.Value = CDec(frmMain.RoboControl.PosCart.X)
                 numCtrl2.Value = CDec(frmMain.RoboControl.PosCart.Y)
@@ -228,76 +296,17 @@
         _posReceived = True
         _setPosValues()
 
-        btnMoveStart.Enabled = True
-
-        btnCtrl1Dec.Enabled = frmMain.RoboControl.RefOkay(0)
-        btnCtrl1Inc.Enabled = frmMain.RoboControl.RefOkay(0)
-        numCtrl1.Enabled = frmMain.RoboControl.RefOkay(0)
-        tbCtrl1.Enabled = frmMain.RoboControl.RefOkay(0)
-        btnCtrl2Dec.Enabled = frmMain.RoboControl.RefOkay(1)
-        btnCtrl2Inc.Enabled = frmMain.RoboControl.RefOkay(1)
-        numCtrl2.Enabled = frmMain.RoboControl.RefOkay(1)
-        tbCtrl2.Enabled = frmMain.RoboControl.RefOkay(1)
-        btnCtrl3Dec.Enabled = frmMain.RoboControl.RefOkay(2)
-        btnCtrl3Inc.Enabled = frmMain.RoboControl.RefOkay(2)
-        numCtrl3.Enabled = frmMain.RoboControl.RefOkay(2)
-        tbCtrl3.Enabled = frmMain.RoboControl.RefOkay(2)
-        btnCtrl4Dec.Enabled = frmMain.RoboControl.RefOkay(3)
-        btnCtrl4Inc.Enabled = frmMain.RoboControl.RefOkay(3)
-        numCtrl4.Enabled = frmMain.RoboControl.RefOkay(3)
-        tbCtrl4.Enabled = frmMain.RoboControl.RefOkay(3)
-        btnCtrl5Dec.Enabled = frmMain.RoboControl.RefOkay(4)
-        btnCtrl5Inc.Enabled = frmMain.RoboControl.RefOkay(4)
-        numCtrl5.Enabled = frmMain.RoboControl.RefOkay(4)
-        tbCtrl5.Enabled = frmMain.RoboControl.RefOkay(4)
-        btnCtrl6Dec.Enabled = frmMain.RoboControl.RefOkay(5)
-        btnCtrl6Inc.Enabled = frmMain.RoboControl.RefOkay(5)
-        numCtrl6.Enabled = frmMain.RoboControl.RefOkay(5)
-        tbCtrl6.Enabled = frmMain.RoboControl.RefOkay(5)
+        _enableDisableElements(False)
     End Sub
+
     Private Sub _eRoboParameterChanged(joint As Boolean, servo As Boolean)
         If joint Then
             _setMinMaxValues()
         End If
     End Sub
-    Private Sub _eComSerialConnected()
-        If InvokeRequired Then
-            Invoke(Sub() _eComSerialConnected())
-            Return
-        End If
 
-    End Sub
     Private Sub _eComSerialDisconnected()
-        If InvokeRequired Then
-            Invoke(Sub() _eComSerialDisconnected())
-            Return
-        End If
-        btnMoveStart.Enabled = False
-
-        btnCtrl1Dec.Enabled = False
-        btnCtrl1Inc.Enabled = False
-        numCtrl1.Enabled = False
-        tbCtrl1.Enabled = False
-        btnCtrl2Dec.Enabled = False
-        btnCtrl2Inc.Enabled = False
-        numCtrl2.Enabled = False
-        tbCtrl2.Enabled = False
-        btnCtrl3Dec.Enabled = False
-        btnCtrl3Inc.Enabled = False
-        numCtrl3.Enabled = False
-        tbCtrl3.Enabled = False
-        btnCtrl4Dec.Enabled = False
-        btnCtrl4Inc.Enabled = False
-        numCtrl4.Enabled = False
-        tbCtrl4.Enabled = False
-        btnCtrl5Dec.Enabled = False
-        btnCtrl5Inc.Enabled = False
-        numCtrl5.Enabled = False
-        tbCtrl5.Enabled = False
-        btnCtrl6Dec.Enabled = False
-        btnCtrl6Inc.Enabled = False
-        numCtrl6.Enabled = False
-        tbCtrl6.Enabled = False
+        _enableDisableElements(True)
     End Sub
 
 End Class
