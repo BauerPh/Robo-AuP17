@@ -4,7 +4,8 @@ Friend Class RobotControl
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' ???
+    ' Kinematik einbinden
+    ' Testprogramm raus => DH Parameter aus Settings???
 
     ' -----------------------------------------------------------------------------
     ' Definitions
@@ -15,6 +16,11 @@ Friend Class RobotControl
     Private _oSyncMov As New MovementCalculations
     Private _actV As Double
     Private _actA As Double
+
+    ' Kinematik
+    Private _denHart(5) As DHParams
+    Private _kin As Kinematics
+    Private _kinInit As Boolean = False
 
     ' Parameter
     Private WithEvents _par As New RoboParameter
@@ -75,6 +81,18 @@ Friend Class RobotControl
     Friend Event RoboRefStateChanged(ByVal refState As Boolean())
     Friend Event RoboParameterChanged(ByVal joint As Boolean, ByVal servo As Boolean)
 
+    Friend Sub New()
+        'TEST
+        'DH Params
+        SetDenavitHartenbergParameter(1, -90.0, 169.77, 64.2)
+        SetDenavitHartenbergParameter(2, 0.0, 0.0, 305.0)
+        SetDenavitHartenbergParameter(3, 90.0, 0.0, 0.0)
+        SetDenavitHartenbergParameter(4, -90.0, -222.63, 0.0)
+        SetDenavitHartenbergParameter(5, 90.0, 0.0, 0.0)
+        SetDenavitHartenbergParameter(6, 0.0, -36.25, 0.0)
+        InitKinematik()
+    End Sub
+
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
@@ -84,6 +102,20 @@ Friend Class RobotControl
     End Sub
     Friend Sub SerialDisconnect()
         _com.Disconnect()
+    End Sub
+    'KINEMATIC
+    Friend Function SetDenavitHartenbergParameter(joint As Integer, alpha As Double, d As Double, a As Double) As Boolean
+        If joint > 6 Or joint < 1 Then
+            Return False
+        End If
+        _denHart(joint - 1).alpha = alpha
+        _denHart(joint - 1).d = d
+        _denHart(joint - 1).a = a
+        Return True
+    End Function
+    Friend Sub InitKinematik()
+        _kin = New Kinematics(_denHart)
+        _kinInit = True
     End Sub
     'ROBOT MOVEMENTS
     Friend Sub SetSpeedAndAcc(speed As Double, acc As Double)
@@ -259,9 +291,17 @@ Friend Class RobotControl
         RaiseEvent RoboMoveFinished()
     End Sub
     Private Sub _ePOSReceived(refOkay As Boolean(), posSteps As Int32()) Handles _com.POSReceived
+        ' Steps speichern
+        Array.Copy(posSteps, _posSteps, 6)
+        ' Joint Winkel berechnen
         For i = 0 To 5
             _posJoint.SetByIndex(i, StepsToAngle(posSteps(i), _par.JointParameter(i).MotGear, _par.JointParameter(i).MechGear, _par.JointParameter(i).MotStepsPerRot << _par.JointParameter(i).MotMode, If(_par.JointParameter(i).CalDir = 0, _par.JointParameter(i).MechMinAngle * -1, _par.JointParameter(i).MechMaxAngle * -1)))
         Next
+        ' Kartesische Koordinaten berechnen (Vorwärtskinematik)
+        If _kinInit Then
+            _posCart = _kin.ForwardKin(_posJoint)
+        End If
+        ' Referenzstatus aktualisieren
         refOkay.CopyTo(_refOkay, 0)
         _checkRefStateChange()
         RaiseEvent RoboPositionChanged()

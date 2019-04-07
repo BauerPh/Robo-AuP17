@@ -359,16 +359,16 @@ Public Class frmMain
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
-    Private Sub eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles _roboControl.Log
+    Private Sub _eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles _roboControl.Log
         If LogLvl = Logger.LogLevel.COMIN Or LogLvl = Logger.LogLevel.COMOUT Then
             _loggerComSerial.Log(LogMsg, LogLvl)
         Else
             _logger.Log(LogMsg, LogLvl)
         End If
     End Sub
-    Private Sub eSerialComPortChanged(ports As List(Of String)) Handles _roboControl.SerialComPortChanged
+    Private Sub _eSerialComPortChanged(ports As List(Of String)) Handles _roboControl.SerialComPortChanged
         If InvokeRequired Then
-            Invoke(Sub() eSerialComPortChanged(ports))
+            Invoke(Sub() _eSerialComPortChanged(ports))
             Return
         End If
 
@@ -383,17 +383,17 @@ Public Class frmMain
             tsBtnConnect.Enabled = False
         End If
     End Sub
-    Private Sub eComSerialConnected() Handles _roboControl.SerialConnected
+    Private Sub _eComSerialConnected() Handles _roboControl.SerialConnected
         If InvokeRequired Then
-            Invoke(Sub() eComSerialConnected())
+            Invoke(Sub() _eComSerialConnected())
             Return
         End If
         tsBtnConnect.Enabled = False
         tsBtnProgRun.Enabled = True
     End Sub
-    Private Sub eComSerialDisconnected() Handles _roboControl.SerialDisconnected
+    Private Sub _eComSerialDisconnected() Handles _roboControl.SerialDisconnected
         If InvokeRequired Then
-            Invoke(Sub() eComSerialDisconnected())
+            Invoke(Sub() _eComSerialDisconnected())
             Return
         End If
         tsBtnConnect.Enabled = True

@@ -215,6 +215,7 @@ Partial Class PanCtrl
         '
         Me.tbCtrl1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl1.AutoSize = False
+        Me.tbCtrl1.Enabled = False
         Me.tbCtrl1.LargeChange = 10
         Me.tbCtrl1.Location = New System.Drawing.Point(168, 28)
         Me.tbCtrl1.Maximum = 36000
@@ -228,6 +229,7 @@ Partial Class PanCtrl
         '
         Me.numCtrl1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.numCtrl1.DecimalPlaces = 2
+        Me.numCtrl1.Enabled = False
         Me.numCtrl1.Location = New System.Drawing.Point(53, 30)
         Me.numCtrl1.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
         Me.numCtrl1.Minimum = New Decimal(New Integer() {360, 0, 0, -2147483648})
@@ -263,6 +265,7 @@ Partial Class PanCtrl
         '
         Me.tbCtrl2.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl2.AutoSize = False
+        Me.tbCtrl2.Enabled = False
         Me.tbCtrl2.LargeChange = 10
         Me.tbCtrl2.Location = New System.Drawing.Point(168, 58)
         Me.tbCtrl2.Maximum = 36000
@@ -276,6 +279,7 @@ Partial Class PanCtrl
         '
         Me.numCtrl2.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.numCtrl2.DecimalPlaces = 2
+        Me.numCtrl2.Enabled = False
         Me.numCtrl2.Location = New System.Drawing.Point(53, 60)
         Me.numCtrl2.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
         Me.numCtrl2.Minimum = New Decimal(New Integer() {360, 0, 0, -2147483648})
@@ -357,6 +361,7 @@ Partial Class PanCtrl
         '
         Me.numCtrl3.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.numCtrl3.DecimalPlaces = 2
+        Me.numCtrl3.Enabled = False
         Me.numCtrl3.Location = New System.Drawing.Point(53, 90)
         Me.numCtrl3.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
         Me.numCtrl3.Minimum = New Decimal(New Integer() {360, 0, 0, -2147483648})
@@ -368,6 +373,7 @@ Partial Class PanCtrl
         '
         Me.numCtrl4.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.numCtrl4.DecimalPlaces = 2
+        Me.numCtrl4.Enabled = False
         Me.numCtrl4.Location = New System.Drawing.Point(53, 120)
         Me.numCtrl4.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
         Me.numCtrl4.Minimum = New Decimal(New Integer() {360, 0, 0, -2147483648})
@@ -379,6 +385,7 @@ Partial Class PanCtrl
         '
         Me.numCtrl5.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.numCtrl5.DecimalPlaces = 2
+        Me.numCtrl5.Enabled = False
         Me.numCtrl5.Location = New System.Drawing.Point(53, 150)
         Me.numCtrl5.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
         Me.numCtrl5.Minimum = New Decimal(New Integer() {360, 0, 0, -2147483648})
@@ -390,6 +397,7 @@ Partial Class PanCtrl
         '
         Me.numCtrl6.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.numCtrl6.DecimalPlaces = 2
+        Me.numCtrl6.Enabled = False
         Me.numCtrl6.Location = New System.Drawing.Point(53, 180)
         Me.numCtrl6.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
         Me.numCtrl6.Minimum = New Decimal(New Integer() {360, 0, 0, -2147483648})
@@ -401,6 +409,7 @@ Partial Class PanCtrl
         '
         Me.tbCtrl3.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl3.AutoSize = False
+        Me.tbCtrl3.Enabled = False
         Me.tbCtrl3.LargeChange = 10
         Me.tbCtrl3.Location = New System.Drawing.Point(168, 88)
         Me.tbCtrl3.Maximum = 36000
@@ -414,6 +423,7 @@ Partial Class PanCtrl
         '
         Me.tbCtrl4.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl4.AutoSize = False
+        Me.tbCtrl4.Enabled = False
         Me.tbCtrl4.LargeChange = 10
         Me.tbCtrl4.Location = New System.Drawing.Point(168, 118)
         Me.tbCtrl4.Maximum = 36000
@@ -427,6 +437,7 @@ Partial Class PanCtrl
         '
         Me.tbCtrl5.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl5.AutoSize = False
+        Me.tbCtrl5.Enabled = False
         Me.tbCtrl5.LargeChange = 10
         Me.tbCtrl5.Location = New System.Drawing.Point(168, 148)
         Me.tbCtrl5.Maximum = 36000
@@ -440,6 +451,7 @@ Partial Class PanCtrl
         '
         Me.tbCtrl6.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl6.AutoSize = False
+        Me.tbCtrl6.Enabled = False
         Me.tbCtrl6.LargeChange = 10
         Me.tbCtrl6.Location = New System.Drawing.Point(168, 178)
         Me.tbCtrl6.Maximum = 36000
@@ -704,7 +716,7 @@ Partial Class PanCtrl
         Me.cbJogMode.Name = "cbJogMode"
         Me.cbJogMode.Size = New System.Drawing.Size(75, 26)
         '
-        'panCtrl
+        'PanCtrl
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -712,7 +724,7 @@ Partial Class PanCtrl
         Me.ClientSize = New System.Drawing.Size(511, 310)
         Me.Controls.Add(Me.ToolStripContainer)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
-        Me.Name = "panCtrl"
+        Me.Name = "PanCtrl"
         Me.Text = "Roboter Steuerung"
         Me.ToolStripContainer.ContentPanel.ResumeLayout(False)
         Me.ToolStripContainer.TopToolStripPanel.ResumeLayout(False)
