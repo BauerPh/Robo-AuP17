@@ -135,28 +135,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Panels\panDenavitHartPar.Designer.vb">
-      <DependentUpon>panDenavitHartPar.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Panels\panDenavitHartPar.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Panels\panReference.Designer.vb">
       <DependentUpon>panReference.vb</DependentUpon>
     </Compile>
     <Compile Include="Panels\panReference.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Panels\panRoboParameter.Designer.vb">
-      <DependentUpon>panRoboParameter.vb</DependentUpon>
+    <Compile Include="Panels\panSettings.Designer.vb">
+      <DependentUpon>panSettings.vb</DependentUpon>
     </Compile>
-    <Compile Include="Panels\panRoboParameter.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Panels\panTCPServer.Designer.vb">
-      <DependentUpon>panTCPServer.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Panels\panTCPServer.vb">
+    <Compile Include="Panels\panSettings.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Steuerelemente\CustomFloatWindow.vb">
@@ -259,9 +247,6 @@
     <EmbeddedResource Include="Panels\panCtrl.resx">
       <DependentUpon>panCtrl.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Panels\panDenavitHartPar.resx">
-      <DependentUpon>panDenavitHartPar.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Panels\panLog.resx">
       <DependentUpon>panLog.vb</DependentUpon>
     </EmbeddedResource>
@@ -271,14 +256,11 @@
     <EmbeddedResource Include="Panels\panReference.resx">
       <DependentUpon>panReference.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Panels\panRoboParameter.resx">
-      <DependentUpon>panRoboParameter.vb</DependentUpon>
+    <EmbeddedResource Include="Panels\panSettings.resx">
+      <DependentUpon>panSettings.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Panels\panRoboStatus.resx">
       <DependentUpon>panRoboStatus.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Panels\panTCPServer.resx">
-      <DependentUpon>panTCPServer.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Panels\panTeachBox.resx">
       <DependentUpon>panTeachBox.vb</DependentUpon>

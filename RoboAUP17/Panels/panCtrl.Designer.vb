@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class PanCtrl
+Partial Class panCtrl
     Inherits WeifenLuo.WinFormsUI.Docking.DockContent
 
     'Das Formular überschreibt den Löschvorgang, um die Komponentenliste zu bereinigen.
@@ -22,7 +22,7 @@ Partial Class PanCtrl
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(PanCtrl))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(panCtrl))
         Me.ToolStripContainer = New System.Windows.Forms.ToolStripContainer()
         Me.TableLayoutPanel = New System.Windows.Forms.TableLayoutPanel()
         Me.btnCtrl1Inc = New System.Windows.Forms.Button()

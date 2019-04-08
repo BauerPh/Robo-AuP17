@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class PanRoboParameter
+Partial Class panSettings
     Inherits WeifenLuo.WinFormsUI.Docking.DockContent
 
     'Das Formular überschreibt den Löschvorgang, um die Komponentenliste zu bereinigen.
@@ -22,12 +22,21 @@ Partial Class PanRoboParameter
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(PanRoboParameter))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(panSettings))
         Me.propGridRoboPar = New System.Windows.Forms.PropertyGrid()
         Me.ToolStripContainer = New System.Windows.Forms.ToolStripContainer()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.lblFilename = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStrip2 = New System.Windows.Forms.ToolStrip()
+        Me.btnLoad = New System.Windows.Forms.ToolStripButton()
+        Me.btnSave = New System.Windows.Forms.ToolStripButton()
+        Me.btnDefaultConfig = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator10 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnDenHartPar = New System.Windows.Forms.ToolStripButton()
+        Me.btnRoboPar = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
+        Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnJ1 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnJ2 = New System.Windows.Forms.ToolStripButton()
@@ -45,18 +54,13 @@ Partial Class PanRoboParameter
         Me.btnServo2 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnServo3 = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStrip2 = New System.Windows.Forms.ToolStrip()
-        Me.btnLoad = New System.Windows.Forms.ToolStripButton()
-        Me.btnSave = New System.Windows.Forms.ToolStripButton()
-        Me.btnDefaultConfig = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripContainer.BottomToolStripPanel.SuspendLayout()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
         Me.ToolStripContainer.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
-        Me.ToolStrip1.SuspendLayout()
         Me.ToolStrip2.SuspendLayout()
+        Me.ToolStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'propGridRoboPar
@@ -88,8 +92,8 @@ Partial Class PanRoboParameter
         '
         'ToolStripContainer.TopToolStripPanel
         '
-        Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip1)
         Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip2)
+        Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip1)
         '
         'StatusStrip1
         '
@@ -106,6 +110,72 @@ Partial Class PanRoboParameter
         Me.lblFilename.Size = New System.Drawing.Size(147, 17)
         Me.lblFilename.Text = "geöffnete Parameterdatei: "
         '
+        'ToolStrip2
+        '
+        Me.ToolStrip2.Dock = System.Windows.Forms.DockStyle.None
+        Me.ToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+        Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnLoad, Me.btnSave, Me.btnDefaultConfig, Me.ToolStripSeparator10, Me.btnDenHartPar, Me.btnRoboPar, Me.ToolStripButton1})
+        Me.ToolStrip2.Location = New System.Drawing.Point(0, 0)
+        Me.ToolStrip2.Name = "ToolStrip2"
+        Me.ToolStrip2.Size = New System.Drawing.Size(613, 25)
+        Me.ToolStrip2.Stretch = True
+        Me.ToolStrip2.TabIndex = 1
+        '
+        'btnLoad
+        '
+        Me.btnLoad.Image = CType(resources.GetObject("btnLoad.Image"), System.Drawing.Image)
+        Me.btnLoad.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnLoad.Name = "btnLoad"
+        Me.btnLoad.Size = New System.Drawing.Size(59, 22)
+        Me.btnLoad.Text = "Laden"
+        '
+        'btnSave
+        '
+        Me.btnSave.Image = CType(resources.GetObject("btnSave.Image"), System.Drawing.Image)
+        Me.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnSave.Name = "btnSave"
+        Me.btnSave.Size = New System.Drawing.Size(79, 22)
+        Me.btnSave.Text = "Speichern"
+        '
+        'btnDefaultConfig
+        '
+        Me.btnDefaultConfig.Image = CType(resources.GetObject("btnDefaultConfig.Image"), System.Drawing.Image)
+        Me.btnDefaultConfig.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnDefaultConfig.Name = "btnDefaultConfig"
+        Me.btnDefaultConfig.Size = New System.Drawing.Size(74, 22)
+        Me.btnDefaultConfig.Text = "Standard"
+        '
+        'ToolStripSeparator10
+        '
+        Me.ToolStripSeparator10.Name = "ToolStripSeparator10"
+        Me.ToolStripSeparator10.Size = New System.Drawing.Size(6, 25)
+        '
+        'btnDenHartPar
+        '
+        Me.btnDenHartPar.Image = CType(resources.GetObject("btnDenHartPar.Image"), System.Drawing.Image)
+        Me.btnDenHartPar.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnDenHartPar.Name = "btnDenHartPar"
+        Me.btnDenHartPar.Size = New System.Drawing.Size(132, 22)
+        Me.btnDenHartPar.Text = "Denavit-Hartenberg"
+        '
+        'btnRoboPar
+        '
+        Me.btnRoboPar.Image = CType(resources.GetObject("btnRoboPar.Image"), System.Drawing.Image)
+        Me.btnRoboPar.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnRoboPar.Name = "btnRoboPar"
+        Me.btnRoboPar.Size = New System.Drawing.Size(52, 22)
+        Me.btnRoboPar.Text = "Joint"
+        Me.btnRoboPar.Visible = False
+        '
+        'ToolStripButton1
+        '
+        Me.ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), System.Drawing.Image)
+        Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripButton1.Name = "ToolStripButton1"
+        Me.ToolStripButton1.Size = New System.Drawing.Size(85, 22)
+        Me.ToolStripButton1.Text = "TCP-Server"
+        Me.ToolStripButton1.Visible = False
+        '
         'ToolStrip1
         '
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
@@ -116,6 +186,11 @@ Partial Class PanRoboParameter
         Me.ToolStrip1.Size = New System.Drawing.Size(613, 25)
         Me.ToolStrip1.Stretch = True
         Me.ToolStrip1.TabIndex = 0
+        '
+        'ToolStripSeparator9
+        '
+        Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
+        Me.ToolStripSeparator9.Size = New System.Drawing.Size(6, 25)
         '
         'btnJ1
         '
@@ -238,55 +313,15 @@ Partial Class PanRoboParameter
         Me.btnServo3.Size = New System.Drawing.Size(42, 22)
         Me.btnServo3.Text = "Serv 3"
         '
-        'ToolStrip2
-        '
-        Me.ToolStrip2.Dock = System.Windows.Forms.DockStyle.None
-        Me.ToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnLoad, Me.btnSave, Me.btnDefaultConfig})
-        Me.ToolStrip2.Location = New System.Drawing.Point(0, 0)
-        Me.ToolStrip2.Name = "ToolStrip2"
-        Me.ToolStrip2.Size = New System.Drawing.Size(613, 25)
-        Me.ToolStrip2.Stretch = True
-        Me.ToolStrip2.TabIndex = 1
-        '
-        'btnLoad
-        '
-        Me.btnLoad.Image = CType(resources.GetObject("btnLoad.Image"), System.Drawing.Image)
-        Me.btnLoad.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnLoad.Name = "btnLoad"
-        Me.btnLoad.Size = New System.Drawing.Size(59, 22)
-        Me.btnLoad.Text = "Laden"
-        '
-        'btnSave
-        '
-        Me.btnSave.Image = CType(resources.GetObject("btnSave.Image"), System.Drawing.Image)
-        Me.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnSave.Name = "btnSave"
-        Me.btnSave.Size = New System.Drawing.Size(79, 22)
-        Me.btnSave.Text = "Speichern"
-        '
-        'btnDefaultConfig
-        '
-        Me.btnDefaultConfig.Image = CType(resources.GetObject("btnDefaultConfig.Image"), System.Drawing.Image)
-        Me.btnDefaultConfig.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnDefaultConfig.Name = "btnDefaultConfig"
-        Me.btnDefaultConfig.Size = New System.Drawing.Size(74, 22)
-        Me.btnDefaultConfig.Text = "Standard"
-        '
-        'ToolStripSeparator9
-        '
-        Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
-        Me.ToolStripSeparator9.Size = New System.Drawing.Size(6, 25)
-        '
-        'panRoboParameter
+        'panSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(613, 442)
         Me.Controls.Add(Me.ToolStripContainer)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
-        Me.Name = "panRoboParameter"
-        Me.Text = "Roboter Parameter"
+        Me.Name = "panSettings"
+        Me.Text = "Settings"
         Me.ToolStripContainer.BottomToolStripPanel.ResumeLayout(False)
         Me.ToolStripContainer.BottomToolStripPanel.PerformLayout()
         Me.ToolStripContainer.ContentPanel.ResumeLayout(False)
@@ -296,10 +331,10 @@ Partial Class PanRoboParameter
         Me.ToolStripContainer.PerformLayout()
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
-        Me.ToolStrip1.ResumeLayout(False)
-        Me.ToolStrip1.PerformLayout()
         Me.ToolStrip2.ResumeLayout(False)
         Me.ToolStrip2.PerformLayout()
+        Me.ToolStrip1.ResumeLayout(False)
+        Me.ToolStrip1.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -324,11 +359,15 @@ Partial Class PanRoboParameter
     Friend WithEvents ToolStripSeparator6 As ToolStripSeparator
     Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
     Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
+    Friend WithEvents StatusStrip1 As StatusStrip
+    Friend WithEvents lblFilename As ToolStripStatusLabel
+    Friend WithEvents ToolStripSeparator9 As ToolStripSeparator
     Friend WithEvents ToolStrip2 As ToolStrip
     Friend WithEvents btnLoad As ToolStripButton
     Friend WithEvents btnSave As ToolStripButton
-    Friend WithEvents StatusStrip1 As StatusStrip
-    Friend WithEvents lblFilename As ToolStripStatusLabel
     Friend WithEvents btnDefaultConfig As ToolStripButton
-    Friend WithEvents ToolStripSeparator9 As ToolStripSeparator
+    Friend WithEvents ToolStripSeparator10 As ToolStripSeparator
+    Friend WithEvents btnDenHartPar As ToolStripButton
+    Friend WithEvents btnRoboPar As ToolStripButton
+    Friend WithEvents ToolStripButton1 As ToolStripButton
 End Class
