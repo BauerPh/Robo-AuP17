@@ -235,7 +235,7 @@
     <Compile Include="Panels\panVariables.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Klassen\RoboParameter.vb" />
+    <Compile Include="Klassen\Settings.vb" />
     <Compile Include="Steuerelemente\ToolStripNumericUpDown.Designer.vb">
       <DependentUpon>ToolStripNumericUpDown.vb</DependentUpon>
     </Compile>

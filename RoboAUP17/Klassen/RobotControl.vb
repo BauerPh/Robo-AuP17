@@ -22,7 +22,7 @@ Friend Class RobotControl
     Private _kinInit As Boolean = False
 
     ' Parameter
-    Private WithEvents _par As New RoboParameter
+    Private WithEvents _par As New Settings
     ' Serial Communication
     Private WithEvents _com As New SerialCommunication
 
@@ -33,7 +33,7 @@ Friend Class RobotControl
     Private _targetJoint As JointAngles
 
     ' Properties
-    Friend ReadOnly Property Par As RoboParameter
+    Friend ReadOnly Property Par As Settings
         Get
             Return _par
         End Get
