@@ -164,7 +164,6 @@ Partial Class panSettings
         Me.btnRoboPar.Name = "btnRoboPar"
         Me.btnRoboPar.Size = New System.Drawing.Size(52, 22)
         Me.btnRoboPar.Text = "Joint"
-        Me.btnRoboPar.Visible = False
         '
         'btnTCPServer
         '
@@ -173,7 +172,6 @@ Partial Class panSettings
         Me.btnTCPServer.Name = "btnTCPServer"
         Me.btnTCPServer.Size = New System.Drawing.Size(85, 22)
         Me.btnTCPServer.Text = "TCP-Server"
-        Me.btnTCPServer.Visible = False
         '
         'ToolStrip2
         '

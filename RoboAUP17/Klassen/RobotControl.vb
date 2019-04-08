@@ -32,7 +32,8 @@ Friend Class RobotControl
     Private _posCart As CartCoords
     Private _targetJoint As JointAngles
 
-    ' Properties
+
+#Region "Properties"
     Friend ReadOnly Property Par As Settings
         Get
             Return _par
@@ -67,6 +68,7 @@ Friend Class RobotControl
             Return _targetJoint
         End Get
     End Property
+#End Region
 
     ' Events
     Friend Event SerialComPortChanged(ByVal ports As List(Of String))
@@ -81,6 +83,12 @@ Friend Class RobotControl
     Friend Event RoboParameterChanged(ByVal joint As Boolean, ByVal servo As Boolean, ByVal dh As Boolean)
 
     ' -----------------------------------------------------------------------------
+    ' Constructor
+    ' -----------------------------------------------------------------------------
+    Friend Sub New()
+        _kin.setDenavitHartenbergParameter(_par.DenavitHartenbergParameter)
+    End Sub
+    ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
     'SERIAL
@@ -90,16 +98,6 @@ Friend Class RobotControl
     Friend Sub SerialDisconnect()
         _com.Disconnect()
     End Sub
-    'KINEMATIC
-    Friend Function SetDenavitHartenbergParameter(joint As Integer, alpha As Double, d As Double, a As Double) As Boolean
-        If joint > 6 Or joint < 1 Then
-            Return False
-        End If
-        _par.DenavitHartenbergParameter(joint - 1).alpha = alpha
-        _par.DenavitHartenbergParameter(joint - 1).d = d
-        _par.DenavitHartenbergParameter(joint - 1).a = a
-        Return True
-    End Function
     'ROBOT MOVEMENTS
     Friend Sub SetSpeedAndAcc(speed As Double, acc As Double)
         _actV = speed
@@ -208,7 +206,6 @@ Friend Class RobotControl
         End If
     End Function
 
-
     ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
@@ -307,18 +304,5 @@ Friend Class RobotControl
             _kinInit = True
         End If
         RaiseEvent RoboParameterChanged(joint, servo, dh)
-    End Sub
-End Class
-
-Friend Class ClassPos
-    Friend Property Func As String
-    Friend Property Cnt As Int32
-    Friend Property Parset As Int32()()
-
-    Friend Sub New()
-        Parset = New Int32(5)() {}
-        For i = 0 To 5
-            Parset(i) = New Int32(7) {}
-        Next
     End Sub
 End Class

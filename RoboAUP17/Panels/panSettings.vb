@@ -8,12 +8,12 @@
     ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
-    Private _initialized As Boolean = False
     Private _selectedSetting As selectedSetting = selectedSetting.RoboPar
     Private _actPropView As PropView
     Private Sub PanRoboParameter_Load(sender As Object, e As EventArgs) Handles Me.Load
         _refreshFilename()
         _setPropView(PropView.J1)
+        _refreshButtons()
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -23,8 +23,9 @@
         _selectedSetting = selectedSetting.DenHartPar
         If _actPropView > PropView.J6 Then
             _setPropView(PropView.J1)
+        Else
+            _refreshPropGrid()
         End If
-        _refreshPropGrid()
         _refreshButtons()
     End Sub
     Private Sub btnRoboPar_Click(sender As Object, e As EventArgs) Handles btnRoboPar.Click
@@ -52,11 +53,6 @@
             Case selectedSetting.TCPServer
                 'TODO
         End Select
-
-
-        If _selectedSetting = selectedSetting.RoboPar Then
-
-        End If
     End Sub
     Private Sub btnJ1_Click(sender As Object, e As EventArgs) Handles btnJ1.Click
         _setPropView(PropView.J1)
