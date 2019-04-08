@@ -6,6 +6,7 @@
 Friend Class Kinematics
     Private _DHParameter(5) As DHParameter
     Private _workframe, _toolframe As CartCoords
+    Private _initOkay As Boolean = False
 
 #Region "Properties"
     Friend Property Workframe As CartCoords
@@ -27,23 +28,21 @@ Friend Class Kinematics
     End Property
 #End Region
 
-#Region "Constructor"
-    ' -----------------------------------------------------------------------------
-    ' Constructor
-    ' -----------------------------------------------------------------------------
-    Friend Sub New(DenavitHartenbergParameter As DHParameter())
-        If UBound(DenavitHartenbergParameter) <> 5 Then
-            Throw New Exception("Denavit Hartenberg Parameter für alle 6 Achsen erforderlich!")
-        End If
-        _DHParameter = DenavitHartenbergParameter
-    End Sub
-#End Region
-
 #Region "Public"
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
+    Friend Sub setDenavitHartenbergParameter(DenavitHartenbergParameter As DHParameter())
+        If UBound(DenavitHartenbergParameter) <> 5 Then
+            Throw New Exception("Denavit Hartenberg Parameter für alle 6 Achsen erforderlich!")
+        End If
+        _DHParameter = DenavitHartenbergParameter
+        _initOkay = True
+    End Sub
     Friend Function ForwardKin(joints As JointAngles) As CartCoords
+        If Not _initOkay Then
+            Throw New Exception("Denavit Hartenberg Parameter wurden noch nicht übergeben!")
+        End If
         joints.J3 = joints.J3 - 90
         joints.J6 = joints.J6 + 180
 
@@ -80,6 +79,9 @@ Friend Class Kinematics
     End Function
 
     Friend Function InversKin(coords As CartCoords) As JointAngles
+        If Not _initOkay Then
+            Throw New Exception("Denavit Hartenberg Parameter wurden noch nicht übergeben!")
+        End If
         Dim erg As New JointAngles
 
 #Region "Vorberechnungen"

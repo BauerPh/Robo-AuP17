@@ -73,6 +73,6 @@
         denHart(5).alpha = 0.0
         denHart(5).d = -36.25
         denHart(5).a = 0.0
-        kins = New Kinematics(denHart)
+        kins = New Kinematics()
     End Sub
 End Class

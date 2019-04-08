@@ -18,7 +18,7 @@ Friend Class RobotControl
     Private _actA As Double
 
     ' Kinematik
-    Private _kin As Kinematics
+    Private _kin As New Kinematics
     Private _kinInit As Boolean = False
 
     ' Parameter
@@ -78,19 +78,7 @@ Friend Class RobotControl
     Friend Event LimitSwitchStateChanged(ByVal lssState As Boolean())
     Friend Event EmergencyStopStateChanged(ByVal essState As Boolean)
     Friend Event RoboRefStateChanged(ByVal refState As Boolean())
-    Friend Event RoboParameterChanged(ByVal joint As Boolean, ByVal servo As Boolean)
-
-    Friend Sub New()
-        'TEST
-        'DH Params
-        SetDenavitHartenbergParameter(1, -90.0, 169.77, 64.2)
-        SetDenavitHartenbergParameter(2, 0.0, 0.0, 305.0)
-        SetDenavitHartenbergParameter(3, 90.0, 0.0, 0.0)
-        SetDenavitHartenbergParameter(4, -90.0, -222.63, 0.0)
-        SetDenavitHartenbergParameter(5, 90.0, 0.0, 0.0)
-        SetDenavitHartenbergParameter(6, 0.0, -36.25, 0.0)
-        InitKinematik()
-    End Sub
+    Friend Event RoboParameterChanged(ByVal joint As Boolean, ByVal servo As Boolean, ByVal dh As Boolean)
 
     ' -----------------------------------------------------------------------------
     ' Public
@@ -112,10 +100,6 @@ Friend Class RobotControl
         _par.DenavitHartenbergParameter(joint - 1).a = a
         Return True
     End Function
-    Friend Sub InitKinematik()
-        _kin = New Kinematics(_par.DenavitHartenbergParameter)
-        _kinInit = True
-    End Sub
     'ROBOT MOVEMENTS
     Friend Sub SetSpeedAndAcc(speed As Double, acc As Double)
         _actV = speed
@@ -318,7 +302,11 @@ Friend Class RobotControl
         _checkRefStateChange()
     End Sub
     Private Sub _eRoboParameterChanged(joint As Boolean, servo As Boolean, dh As Boolean) Handles _par.ParameterChanged
-        RaiseEvent RoboParameterChanged(joint, servo)
+        If dh Then
+            _kin.setDenavitHartenbergParameter(_par.DenavitHartenbergParameter)
+            _kinInit = True
+        End If
+        RaiseEvent RoboParameterChanged(joint, servo, dh)
     End Sub
 End Class
 

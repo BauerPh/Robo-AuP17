@@ -299,7 +299,7 @@
         _enableDisableElements(False)
     End Sub
 
-    Private Sub _eRoboParameterChanged(joint As Boolean, servo As Boolean)
+    Private Sub _eRoboParameterChanged(joint As Boolean, servo As Boolean, dh As Boolean)
         If joint Then
             _setMinMaxValues()
         End If

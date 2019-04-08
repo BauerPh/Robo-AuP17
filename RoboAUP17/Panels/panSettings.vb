@@ -2,12 +2,14 @@
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' Speichern und Laden der Parameter
+    ' TCP-Server einstellungen
+    ' Denavit Hartenberg Parameter updaten bei PropGrid Change
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
     Private _initialized As Boolean = False
+    Private _selectedSetting As selectedSetting = selectedSetting.RoboPar
     Private _actPropView As PropView
     Private Sub PanRoboParameter_Load(sender As Object, e As EventArgs) Handles Me.Load
         _refreshFilename()
@@ -17,12 +19,43 @@
     ' -----------------------------------------------------------------------------
     ' Form Control
     ' -----------------------------------------------------------------------------
+    Private Sub btnDenHartPar_Click(sender As Object, e As EventArgs) Handles btnDenHartPar.Click
+        _selectedSetting = selectedSetting.DenHartPar
+        If _actPropView > PropView.J6 Then
+            _setPropView(PropView.J1)
+        End If
+        _refreshPropGrid()
+        _refreshButtons()
+    End Sub
+    Private Sub btnRoboPar_Click(sender As Object, e As EventArgs) Handles btnRoboPar.Click
+        _selectedSetting = selectedSetting.RoboPar
+        _refreshPropGrid()
+        _refreshButtons()
+    End Sub
+
+    Private Sub btnTCPServer_Click(sender As Object, e As EventArgs) Handles btnTCPServer.Click
+        _selectedSetting = selectedSetting.TCPServer
+        _refreshPropGrid()
+        _refreshButtons()
+    End Sub
     Private Sub propGridRoboPar_PropertyValueChanged(sender As Object, e As EventArgs) Handles propGridRoboPar.PropertyValueChanged
         'Objekt aktualisieren
-        If _actPropView > 5 Then
-            frmMain.RoboControl.Par.SetServoParameter(_actPropView - 6, CType(propGridRoboPar.SelectedObject, ServoParameter))
-        Else
-            frmMain.RoboControl.Par.SetJointParameter(_actPropView, CType(propGridRoboPar.SelectedObject, JointParameter))
+        Select Case _selectedSetting
+            Case selectedSetting.RoboPar
+                If _actPropView > 5 Then
+                    frmMain.RoboControl.Par.SetServoParameter(_actPropView - 6, CType(propGridRoboPar.SelectedObject, ServoParameter))
+                Else
+                    frmMain.RoboControl.Par.SetJointParameter(_actPropView, CType(propGridRoboPar.SelectedObject, JointParameter))
+                End If
+            Case selectedSetting.DenHartPar
+                frmMain.RoboControl.Par.SetDenavitHartenbergParameter(_actPropView, CType(propGridRoboPar.SelectedObject, DHParameter))
+            Case selectedSetting.TCPServer
+                'TODO
+        End Select
+
+
+        If _selectedSetting = selectedSetting.RoboPar Then
+
         End If
     End Sub
     Private Sub btnJ1_Click(sender As Object, e As EventArgs) Handles btnJ1.Click
@@ -71,7 +104,7 @@
             _refreshFilename()
         End If
     End Sub
-    Private Sub BtnDefaultConfig_Click(sender As Object, e As EventArgs) Handles btnDefaultConfig.Click
+    Private Sub btnDefaultConfig_Click(sender As Object, e As EventArgs) Handles btnDefaultConfig.Click
         If frmMain.RoboControl.Par.LoadDefaulSettings() Then
             _refreshPropGrid()
             _refreshFilename()
@@ -81,6 +114,11 @@
     ' -----------------------------------------------------------------------------
     ' Help Functions
     ' -----------------------------------------------------------------------------
+    Private Enum selectedSetting
+        RoboPar = 0
+        DenHartPar
+        TCPServer
+    End Enum
     Private Enum PropView
         J1
         J2
@@ -127,11 +165,62 @@
         _refreshPropGrid()
     End Sub
     Private Sub _refreshPropGrid()
-        If _actPropView > 5 Then
-            propGridRoboPar.SelectedObject = frmMain.RoboControl.Par.ServoParameter(_actPropView - 6)
-        Else
-            propGridRoboPar.SelectedObject = frmMain.RoboControl.Par.JointParameter(_actPropView)
-        End If
+        Select Case _selectedSetting
+            Case selectedSetting.RoboPar
+                If _actPropView > 5 Then
+                    propGridRoboPar.SelectedObject = frmMain.RoboControl.Par.ServoParameter(_actPropView - 6)
+                Else
+                    propGridRoboPar.SelectedObject = frmMain.RoboControl.Par.JointParameter(_actPropView)
+                End If
+            Case selectedSetting.DenHartPar
+                propGridRoboPar.SelectedObject = frmMain.RoboControl.Par.DenavitHartenbergParameter(_actPropView)
+            Case selectedSetting.TCPServer
+                propGridRoboPar.SelectedObject = Nothing
+        End Select
+    End Sub
+    Private Sub _refreshButtons()
+        Select Case _selectedSetting
+            Case selectedSetting.RoboPar
+                btnRoboPar.Visible = False
+                btnTCPServer.Visible = True
+                btnDenHartPar.Visible = True
+                btnJ1.Visible = True
+                btnJ2.Visible = True
+                btnJ3.Visible = True
+                btnJ4.Visible = True
+                btnJ5.Visible = True
+                btnJ6.Visible = True
+                btnServo1.Visible = True
+                btnServo2.Visible = True
+                btnServo3.Visible = True
+                ToolStrip2.Visible = True
+                sepJ6.Visible = True
+                sepServ1.Visible = True
+                sepServ2.Visible = True
+                sepServ3.Visible = True
+            Case selectedSetting.DenHartPar
+                btnRoboPar.Visible = True
+                btnTCPServer.Visible = True
+                btnDenHartPar.Visible = False
+                btnJ1.Visible = True
+                btnJ2.Visible = True
+                btnJ3.Visible = True
+                btnJ4.Visible = True
+                btnJ5.Visible = True
+                btnJ6.Visible = True
+                btnServo1.Visible = False
+                btnServo2.Visible = False
+                btnServo3.Visible = False
+                ToolStrip2.Visible = True
+                sepServ1.Visible = False
+                sepServ2.Visible = False
+                sepServ3.Visible = False
+            Case selectedSetting.TCPServer
+                btnRoboPar.Visible = True
+                btnTCPServer.Visible = False
+                btnDenHartPar.Visible = True
+                ToolStrip2.Visible = False
+        End Select
     End Sub
     Private Sub _refreshFilename()
         Dim filenameSplit As String() = frmMain.RoboControl.Par.GetActFilename.Split("\"c)
