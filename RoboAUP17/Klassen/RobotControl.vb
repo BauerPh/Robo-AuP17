@@ -5,7 +5,7 @@ Friend Class RobotControl
     ' TODO
     ' -----------------------------------------------------------------------------
     ' Kinematik einbinden
-    ' Testprogramm raus => DH Parameter aus Settings???
+    ' Kinematik initialisieren (DH Parameter)
 
     ' -----------------------------------------------------------------------------
     ' Definitions
