@@ -2,7 +2,7 @@
 ' -----------------------------------------------------------------------------
 ' TODO
 ' -----------------------------------------------------------------------------
-' Testen
+' fertig?
 Friend Class Kinematics
     Private _DHParameter(5) As DHParameter
     Private _workframe, _toolframe As CartCoords

@@ -2,7 +2,7 @@
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' ...
+    ' fertig?
 
     Private _serialConnected As Boolean = False
     ' -----------------------------------------------------------------------------
@@ -16,11 +16,15 @@
     End Sub
 
     ' -----------------------------------------------------------------------------
-    ' Robot Control
+    ' Form Control
     ' -----------------------------------------------------------------------------
     Private Sub cbCheckedChanged(sender As Object, e As EventArgs) Handles cbSelJ1.CheckedChanged, cbSelJ2.CheckedChanged, cbSelJ3.CheckedChanged, cbSelJ4.CheckedChanged, cbSelJ5.CheckedChanged, cbSelJ6.CheckedChanged
         _enableDisableElements(False)
     End Sub
+
+    ' -----------------------------------------------------------------------------
+    ' Robot Control
+    ' -----------------------------------------------------------------------------
     Private Sub btnRefStart_Click(sender As Object, e As EventArgs) Handles btnRefStart.Click
         frmMain.RoboControl.DoRef(cbSelJ1.Checked, cbSelJ2.Checked, cbSelJ3.Checked, cbSelJ4.Checked, cbSelJ5.Checked, cbSelJ6.Checked)
     End Sub

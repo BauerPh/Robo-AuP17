@@ -4,6 +4,7 @@ Friend Class ACLProgram
     ' TODO
     ' -----------------------------------------------------------------------------
     ' Komplett überarbeiten!
+    ' Teachpunkte, Variablen, TCP Variablen und ACL-Programm in einer Datei speichern und laden!
 
 
     ' -----------------------------------------------------------------------------

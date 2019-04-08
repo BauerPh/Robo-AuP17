@@ -3,6 +3,8 @@
     ' TODO
     ' -----------------------------------------------------------------------------
     ' Checkbox für SyncMove
+    ' Home & Parkposition anfahren
+    ' RefernzChanged event beachten
 
     Private _tcpMode As Boolean = False
     Private _posReceived As Boolean = False
@@ -22,6 +24,7 @@
         AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eComSerialDisconnected
         AddHandler frmMain.RoboControl.RoboMoveStarted, AddressOf _eRoboMoveStarted
         AddHandler frmMain.RoboControl.RoboMoveFinished, AddressOf _eRoboMoveFinished
+        AddHandler frmMain.RoboControl.RoboRefStateChanged, AddressOf _eRoboRefStateChanged
     End Sub
     ' -----------------------------------------------------------------------------
     ' Robot Control
@@ -372,8 +375,6 @@
     Private Sub _eNewPos()
         _posReceived = True
         _setPosValues()
-
-        _enableDisableElements(False)
     End Sub
 
     Private Sub _eRoboParameterChanged(joint As Boolean, servo As Boolean, dh As Boolean)
@@ -391,6 +392,10 @@
     End Sub
 
     Private Sub _eRoboMoveFinished()
+        _enableDisableElements(False)
+    End Sub
+
+    Private Sub _eRoboRefStateChanged(refState As Boolean())
         _enableDisableElements(False)
     End Sub
 End Class

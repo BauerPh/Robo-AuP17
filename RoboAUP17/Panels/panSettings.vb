@@ -2,8 +2,7 @@
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' TCP-Server einstellungen
-    ' Denavit Hartenberg Parameter updaten bei PropGrid Change
+    ' TCP-Server einstellungen hinzufügen
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
