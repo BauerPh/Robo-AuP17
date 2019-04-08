@@ -12,7 +12,7 @@
     ' -----------------------------------------------------------------------------
     ' TEST
     ' -----------------------------------------------------------------------------
-    Dim denHart(5) As DHParams
+    Dim denHart(5) As DHParameter
     Dim kins As Kinematics
 
 
@@ -49,27 +49,27 @@
 
     Private Sub panRoboStatus_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'DH Params
-        denHart(0) = New DHParams
+        denHart(0) = New DHParameter
         denHart(0).alpha = -90.0
         denHart(0).d = 169.77
         denHart(0).a = 64.2
-        denHart(1) = New DHParams
+        denHart(1) = New DHParameter
         denHart(1).alpha = 0.0
         denHart(1).d = 0.0
         denHart(1).a = 305.0
-        denHart(2) = New DHParams
+        denHart(2) = New DHParameter
         denHart(2).alpha = 90.0
         denHart(2).d = 0.0
         denHart(2).a = 0.0
-        denHart(3) = New DHParams
+        denHart(3) = New DHParameter
         denHart(3).alpha = -90.0
         denHart(3).d = -222.63
         denHart(3).a = 0.0
-        denHart(4) = New DHParams
+        denHart(4) = New DHParameter
         denHart(4).alpha = 90.0
         denHart(4).d = 0.0
         denHart(4).a = 0.0
-        denHart(5) = New DHParams
+        denHart(5) = New DHParameter
         denHart(5).alpha = 0.0
         denHart(5).d = -36.25
         denHart(5).a = 0.0

@@ -3,7 +3,7 @@ Module dataStructs
     ' -----------------------------------------------------------------------------
     ' Kinematics and Coordinates
     ' -----------------------------------------------------------------------------
-    Friend Structure DHParams
+    Friend Structure DHParameter
         Friend alpha, d, a As Double
         Friend Sub New(alpha As Double, d As Double, a As Double)
             Me.alpha = alpha

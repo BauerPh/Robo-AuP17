@@ -18,7 +18,7 @@ Friend Class RobotControl
     Private _actA As Double
 
     ' Kinematik
-    Private _denHart(5) As DHParams
+    Private _denHart(5) As DHParameter
     Private _kin As Kinematics
     Private _kinInit As Boolean = False
 

@@ -4,7 +4,7 @@
 ' -----------------------------------------------------------------------------
 ' Testen
 Friend Class Kinematics
-    Private _DHParameter(5) As DHParams
+    Private _DHParameter(5) As DHParameter
     Private _workframe, _toolframe As CartCoords
 
 #Region "Properties"
@@ -31,7 +31,7 @@ Friend Class Kinematics
     ' -----------------------------------------------------------------------------
     ' Constructor
     ' -----------------------------------------------------------------------------
-    Friend Sub New(DenavitHartenbergParameter As DHParams())
+    Friend Sub New(DenavitHartenbergParameter As DHParameter())
         If UBound(DenavitHartenbergParameter) <> 5 Then
             Throw New Exception("Denavit Hartenberg Parameter für alle 6 Achsen erforderlich!")
         End If
@@ -287,7 +287,7 @@ Friend Class Kinematics
     ' Private
     ' -----------------------------------------------------------------------------
     Private Function CalcDHTransMatrix(joint As Int16, theta As Double) As Matrix4x4 'Theta = Winkel einer Achse
-        Dim dh As DHParams = _DHParameter(joint - 1)
+        Dim dh As DHParameter = _DHParameter(joint - 1)
         Dim thetaBog As Double = ToRAD(theta)
         Dim erg As New Matrix4x4
 
@@ -314,7 +314,7 @@ Friend Class Kinematics
     End Function
 
     Private Function CalcInvDHTransMatrix(joint As Int16, theta As Double) As Matrix4x4 'Theta = Winkel einer Achse
-        Dim dh As DHParams = _DHParameter(joint - 1)
+        Dim dh As DHParameter = _DHParameter(joint - 1)
         Dim thetaBog As Double = ToRAD(theta)
         Dim erg As New Matrix4x4
 
