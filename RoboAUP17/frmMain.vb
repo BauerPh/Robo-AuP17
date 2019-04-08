@@ -155,7 +155,7 @@ Public Class frmMain
     End Sub
 
     Private Sub msShowACLToolbox_Click(sender As Object, e As EventArgs) Handles msShowACLToolbox.Click
-
+        _dckPanProgramTools.Show()
     End Sub
 
     Private Sub msShowTeachbox_Click(sender As Object, e As EventArgs) Handles msShowTeachbox.Click

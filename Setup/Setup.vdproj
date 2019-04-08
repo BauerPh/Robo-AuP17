@@ -39,19 +39,19 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_2FB331AA6534FE7AB99E50002089CFE6"
+        "MsmKey" = "8:_3EE76371269C9C9801E89309C09AF92B"
         "OwnerKey" = "8:_29B532213625409694D814CFCA48074C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_2FB331AA6534FE7AB99E50002089CFE6"
-        "OwnerKey" = "8:_6834CF172D5C42D1C4E4F090F7736FCE"
+        "MsmKey" = "8:_523A6E0FE4CFB91D6A65CFD4A8738BD2"
+        "OwnerKey" = "8:_3EE76371269C9C9801E89309C09AF92B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6834CF172D5C42D1C4E4F090F7736FCE"
+        "MsmKey" = "8:_523A6E0FE4CFB91D6A65CFD4A8738BD2"
         "OwnerKey" = "8:_29B532213625409694D814CFCA48074C"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -76,19 +76,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2FB331AA6534FE7AB99E50002089CFE6"
+        "OwnerKey" = "8:_3EE76371269C9C9801E89309C09AF92B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_523A6E0FE4CFB91D6A65CFD4A8738BD2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_29B532213625409694D814CFCA48074C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6834CF172D5C42D1C4E4F090F7736FCE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -234,20 +234,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2FB331AA6534FE7AB99E50002089CFE6"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3EE76371269C9C9801E89309C09AF92B"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:ACLLexerParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_2FB331AA6534FE7AB99E50002089CFE6"
+                    "_3EE76371269C9C9801E89309C09AF92B"
                     {
-                    "Name" = "8:Antlr4.Runtime.dll"
+                    "Name" = "8:ACLLexerParser.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:Antlr4.Runtime.dll"
+            "SourcePath" = "8:ACLLexerParser.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C416D1E4B687409AACD4A31EDABB330C"
@@ -265,20 +265,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6834CF172D5C42D1C4E4F090F7736FCE"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_523A6E0FE4CFB91D6A65CFD4A8738BD2"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ACLLexerParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6834CF172D5C42D1C4E4F090F7736FCE"
+                    "_523A6E0FE4CFB91D6A65CFD4A8738BD2"
                     {
-                    "Name" = "8:ACLLexerParser.dll"
+                    "Name" = "8:Antlr4.Runtime.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:ACLLexerParser.dll"
+            "SourcePath" = "8:Antlr4.Runtime.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C416D1E4B687409AACD4A31EDABB330C"
@@ -415,7 +415,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Aup17 Robo"
         "ProductCode" = "8:{F4A6C048-38E0-4C9A-9D7D-DB69A0D980E3}"
-        "PackageCode" = "8:{CFFCB68F-B7DB-49F0-8F28-C2A403D95EF5}"
+        "PackageCode" = "8:{AF9241F2-F54A-4CFB-B1DB-43550EA8AE5B}"
         "UpgradeCode" = "8:{95C1595C-F022-4CDF-A02F-AE4FBA76AC0D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -535,7 +535,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_89CF533910374EB2A6C7465BE04960C8"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_CD6C1DBB762946C1B7A4723B7A217067"
             {
             "Name" = "8:Aup17 Robo"
             "Arguments" = "8:"
@@ -950,7 +950,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_29B532213625409694D814CFCA48074C"
             {
-            "SourcePath" = "8:..\\RoboAUP17\\obj\\Debug\\RoboAUP17.exe"
+            "SourcePath" = "8:..\\RoboAUP17\\obj\\Release\\RoboAUP17.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C416D1E4B687409AACD4A31EDABB330C"
