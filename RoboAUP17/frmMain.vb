@@ -74,7 +74,7 @@ Public Class frmMain
 
         'Maximiert starten wenn Ansicht so gespeichert wurde
         If My.Settings.StartMaximized Then
-            WindowState = FormWindowState.Maximized
+            Me.WindowState = FormWindowState.Maximized
         End If
 
         'Set Log Lvl
@@ -241,6 +241,10 @@ Public Class frmMain
             .Dock = DockStyle.Fill
             .BringToFront()
             .Theme.Extender.FloatWindowFactory = New CustomFloatWindowFactory
+            .DockLeftPortion = 0.22
+            .DockRightPortion = 0.24
+            .DockTopPortion = 0.25
+            .DockBottomPortion = 0.25
         End With
 
         _dckPanCodeEditor.HideOnClose = True
@@ -254,7 +258,6 @@ Public Class frmMain
         _dckPanTeachBox.HideOnClose = True
         _dckPanJointCtrl.HideOnClose = True
         _dckPanReference.HideOnClose = True
-
         _dckPanSettings.HideOnClose = True
 
         'Edit Names
@@ -269,23 +272,23 @@ Public Class frmMain
         Else
             ' Add Panels
             _dckPanCodeEditor.Show(dckPanel, DockState.Document)
+
+            _dckPanRoboStatus.Show(dckPanel, DockState.DockLeft)
+            _dckPanReference.Show(_dckPanRoboStatus.Pane, DockAlignment.Bottom, 0.16)
+            _dckPanJointCtrl.Show(_dckPanRoboStatus.Pane, DockAlignment.Bottom, 0.4)
+
+            _dckPanVariables.Show(dckPanel, DockState.DockRight)
+            _dckPanTeachpoints.Show(dckPanel, DockState.DockRight)
+            _dckPanSettings.Show(_dckPanTeachpoints.Pane, DockAlignment.Bottom, 0.5)
+
             _dckPanLog.Show(dckPanel, DockState.DockBottom)
             _dckPanComLogSerial.Show(dckPanel, DockState.DockBottom)
             _dckPanComLogTCPIP.Show(dckPanel, DockState.DockBottom)
-            _dckPanVariables.Show(dckPanel, DockState.DockRight)
-            _dckPanTeachpoints.Show(_dckPanVariables.Pane, DockAlignment.Bottom, 0.5)
-            _dckPanRoboStatus.Show(dckPanel, DockState.DockLeft)
-            _dckPanProgramTools.Show(_dckPanRoboStatus.Pane, DockAlignment.Bottom, 0.5)
 
             _dckPanTeachBox.Show(dckPanel, DockState.Float)
             _dckPanTeachBox.Hide()
-            _dckPanJointCtrl.Show(dckPanel, DockState.Float)
-            _dckPanJointCtrl.Hide()
-            _dckPanReference.Show(dckPanel, DockState.Float)
-            _dckPanReference.Hide()
-
-            _dckPanSettings.Show(dckPanel, DockState.Float)
-            _dckPanSettings.Hide()
+            _dckPanProgramTools.Show(dckPanel, DockState.Float)
+            _dckPanProgramTools.Hide()
 
             _logger.Log("[MAIN] Standardansicht geladen", Logger.LogLevel.DEBUG)
         End If

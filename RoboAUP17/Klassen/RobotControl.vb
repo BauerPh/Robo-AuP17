@@ -5,7 +5,6 @@ Friend Class RobotControl
     ' TODO
     ' -----------------------------------------------------------------------------
     ' Kinematik einbinden
-    ' Kinematik initialisieren (DH Parameter)
 
     ' -----------------------------------------------------------------------------
     ' Definitions
@@ -76,6 +75,7 @@ Friend Class RobotControl
     Friend Event SerialDisconnected()
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
     Friend Event RoboMoveFinished()
+    Friend Event RoboMoveStarted()
     Friend Event RoboPositionChanged()
     Friend Event LimitSwitchStateChanged(ByVal lssState As Boolean())
     Friend Event EmergencyStopStateChanged(ByVal essState As Boolean)
@@ -87,6 +87,7 @@ Friend Class RobotControl
     ' -----------------------------------------------------------------------------
     Friend Sub New()
         _kin.setDenavitHartenbergParameter(_par.DenavitHartenbergParameter)
+        _kinInit = True
     End Sub
     ' -----------------------------------------------------------------------------
     ' Public
@@ -116,6 +117,7 @@ Friend Class RobotControl
         _com.AddMOVDataSet(True, nr, _calcTargetToSteps(_targetJoint.Items(tmpNr), nr), _calcSpeedAccToSteps(tmpV(tmpNr), nr), _calcSpeedAccToSteps(tmpA(tmpNr), nr), _calcSpeedAccToSteps(_par.JointParameter(tmpNr).ProfileStopAcc, nr))
         'Telegramm senden
         If _com.SendMOV() Then
+            RaiseEvent RoboMoveStarted()
             'Log
             RaiseEvent Log($"Moving Axis...", Logger.LogLevel.INFO)
             Return True
@@ -140,11 +142,15 @@ Friend Class RobotControl
         Next
         'Telegram senden
         If _com.SendREF() Then
+            RaiseEvent RoboMoveStarted()
             'Log
             RaiseEvent Log($"Referenz läuft...", Logger.LogLevel.INFO)
             Return True
         Else Return False
         End If
+    End Function
+    Friend Function DoRef(joint As Int32) As Boolean
+        Return DoRef(joint = 1, joint = 2, joint = 3, joint = 4, joint = 5, joint = 6)
     End Function
 
     Friend Function DoJointMov(sync As Boolean, J1_en As Boolean, J1_target As Double, J2_en As Boolean, J2_target As Double, J3_en As Boolean, J3_target As Double, J4_en As Boolean, J4_target As Double, J5_en As Boolean, J5_target As Double, J6_en As Boolean, J6_target As Double) As Boolean
@@ -185,6 +191,7 @@ Friend Class RobotControl
         Next
         'Telegram senden
         If _com.SendMOV() Then
+            RaiseEvent RoboMoveStarted()
             'Log
             RaiseEvent Log("[Robo Control] Bewege Achsen...", Logger.LogLevel.INFO)
             Return True

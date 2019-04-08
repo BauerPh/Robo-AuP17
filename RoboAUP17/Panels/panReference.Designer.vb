@@ -36,11 +36,11 @@ Partial Class panReference
         Me.lblJ6 = New System.Windows.Forms.Label()
         Me.lblJ1 = New System.Windows.Forms.Label()
         Me.btnRefJ1 = New System.Windows.Forms.Button()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
-        Me.Button3 = New System.Windows.Forms.Button()
-        Me.Button4 = New System.Windows.Forms.Button()
-        Me.Button5 = New System.Windows.Forms.Button()
+        Me.btnRefJ2 = New System.Windows.Forms.Button()
+        Me.btnRefJ3 = New System.Windows.Forms.Button()
+        Me.btnRefJ4 = New System.Windows.Forms.Button()
+        Me.btnRefJ5 = New System.Windows.Forms.Button()
+        Me.btnRefJ6 = New System.Windows.Forms.Button()
         Me.cbSelJ1 = New System.Windows.Forms.CheckBox()
         Me.ToolStripContainer = New System.Windows.Forms.ToolStripContainer()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
@@ -75,11 +75,11 @@ Partial Class panReference
         Me.TableLayoutPanel.Controls.Add(Me.lblJ6, 5, 0)
         Me.TableLayoutPanel.Controls.Add(Me.lblJ1, 0, 0)
         Me.TableLayoutPanel.Controls.Add(Me.btnRefJ1, 0, 1)
-        Me.TableLayoutPanel.Controls.Add(Me.Button1, 1, 1)
-        Me.TableLayoutPanel.Controls.Add(Me.Button2, 2, 1)
-        Me.TableLayoutPanel.Controls.Add(Me.Button3, 3, 1)
-        Me.TableLayoutPanel.Controls.Add(Me.Button4, 4, 1)
-        Me.TableLayoutPanel.Controls.Add(Me.Button5, 5, 1)
+        Me.TableLayoutPanel.Controls.Add(Me.btnRefJ2, 1, 1)
+        Me.TableLayoutPanel.Controls.Add(Me.btnRefJ3, 2, 1)
+        Me.TableLayoutPanel.Controls.Add(Me.btnRefJ4, 3, 1)
+        Me.TableLayoutPanel.Controls.Add(Me.btnRefJ5, 4, 1)
+        Me.TableLayoutPanel.Controls.Add(Me.btnRefJ6, 5, 1)
         Me.TableLayoutPanel.Controls.Add(Me.cbSelJ1, 0, 2)
         Me.TableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel.Location = New System.Drawing.Point(0, 0)
@@ -249,65 +249,65 @@ Partial Class panReference
         Me.btnRefJ1.Text = "Start"
         Me.btnRefJ1.UseVisualStyleBackColor = True
         '
-        'Button1
+        'btnRefJ2
         '
-        Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button1.Enabled = False
-        Me.Button1.Location = New System.Drawing.Point(79, 27)
-        Me.Button1.Margin = New System.Windows.Forms.Padding(2)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(73, 26)
-        Me.Button1.TabIndex = 39
-        Me.Button1.Text = "Start"
-        Me.Button1.UseVisualStyleBackColor = True
+        Me.btnRefJ2.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnRefJ2.Enabled = False
+        Me.btnRefJ2.Location = New System.Drawing.Point(79, 27)
+        Me.btnRefJ2.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnRefJ2.Name = "btnRefJ2"
+        Me.btnRefJ2.Size = New System.Drawing.Size(73, 26)
+        Me.btnRefJ2.TabIndex = 39
+        Me.btnRefJ2.Text = "Start"
+        Me.btnRefJ2.UseVisualStyleBackColor = True
         '
-        'Button2
+        'btnRefJ3
         '
-        Me.Button2.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button2.Enabled = False
-        Me.Button2.Location = New System.Drawing.Point(156, 27)
-        Me.Button2.Margin = New System.Windows.Forms.Padding(2)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(73, 26)
-        Me.Button2.TabIndex = 40
-        Me.Button2.Text = "Start"
-        Me.Button2.UseVisualStyleBackColor = True
+        Me.btnRefJ3.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnRefJ3.Enabled = False
+        Me.btnRefJ3.Location = New System.Drawing.Point(156, 27)
+        Me.btnRefJ3.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnRefJ3.Name = "btnRefJ3"
+        Me.btnRefJ3.Size = New System.Drawing.Size(73, 26)
+        Me.btnRefJ3.TabIndex = 40
+        Me.btnRefJ3.Text = "Start"
+        Me.btnRefJ3.UseVisualStyleBackColor = True
         '
-        'Button3
+        'btnRefJ4
         '
-        Me.Button3.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button3.Enabled = False
-        Me.Button3.Location = New System.Drawing.Point(233, 27)
-        Me.Button3.Margin = New System.Windows.Forms.Padding(2)
-        Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(73, 26)
-        Me.Button3.TabIndex = 41
-        Me.Button3.Text = "Start"
-        Me.Button3.UseVisualStyleBackColor = True
+        Me.btnRefJ4.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnRefJ4.Enabled = False
+        Me.btnRefJ4.Location = New System.Drawing.Point(233, 27)
+        Me.btnRefJ4.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnRefJ4.Name = "btnRefJ4"
+        Me.btnRefJ4.Size = New System.Drawing.Size(73, 26)
+        Me.btnRefJ4.TabIndex = 41
+        Me.btnRefJ4.Text = "Start"
+        Me.btnRefJ4.UseVisualStyleBackColor = True
         '
-        'Button4
+        'btnRefJ5
         '
-        Me.Button4.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button4.Enabled = False
-        Me.Button4.Location = New System.Drawing.Point(310, 27)
-        Me.Button4.Margin = New System.Windows.Forms.Padding(2)
-        Me.Button4.Name = "Button4"
-        Me.Button4.Size = New System.Drawing.Size(73, 26)
-        Me.Button4.TabIndex = 42
-        Me.Button4.Text = "Start"
-        Me.Button4.UseVisualStyleBackColor = True
+        Me.btnRefJ5.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnRefJ5.Enabled = False
+        Me.btnRefJ5.Location = New System.Drawing.Point(310, 27)
+        Me.btnRefJ5.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnRefJ5.Name = "btnRefJ5"
+        Me.btnRefJ5.Size = New System.Drawing.Size(73, 26)
+        Me.btnRefJ5.TabIndex = 42
+        Me.btnRefJ5.Text = "Start"
+        Me.btnRefJ5.UseVisualStyleBackColor = True
         '
-        'Button5
+        'btnRefJ6
         '
-        Me.Button5.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button5.Enabled = False
-        Me.Button5.Location = New System.Drawing.Point(387, 27)
-        Me.Button5.Margin = New System.Windows.Forms.Padding(2)
-        Me.Button5.Name = "Button5"
-        Me.Button5.Size = New System.Drawing.Size(78, 26)
-        Me.Button5.TabIndex = 43
-        Me.Button5.Text = "Start"
-        Me.Button5.UseVisualStyleBackColor = True
+        Me.btnRefJ6.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnRefJ6.Enabled = False
+        Me.btnRefJ6.Location = New System.Drawing.Point(387, 27)
+        Me.btnRefJ6.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnRefJ6.Name = "btnRefJ6"
+        Me.btnRefJ6.Size = New System.Drawing.Size(78, 26)
+        Me.btnRefJ6.TabIndex = 43
+        Me.btnRefJ6.Text = "Start"
+        Me.btnRefJ6.UseVisualStyleBackColor = True
         '
         'cbSelJ1
         '
@@ -391,11 +391,11 @@ Partial Class panReference
     Friend WithEvents lblJ6 As Label
     Friend WithEvents ToolStripContainer As ToolStripContainer
     Friend WithEvents btnRefJ1 As Button
-    Friend WithEvents Button1 As Button
-    Friend WithEvents Button2 As Button
-    Friend WithEvents Button3 As Button
-    Friend WithEvents Button4 As Button
-    Friend WithEvents Button5 As Button
+    Friend WithEvents btnRefJ2 As Button
+    Friend WithEvents btnRefJ3 As Button
+    Friend WithEvents btnRefJ4 As Button
+    Friend WithEvents btnRefJ5 As Button
+    Friend WithEvents btnRefJ6 As Button
     Friend WithEvents cbSelJ1 As CheckBox
     Friend WithEvents ToolStrip1 As ToolStrip
     Friend WithEvents btnRefStart As ToolStripButton
