@@ -2,9 +2,8 @@
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' Bewegungsbefehle an RoboControl senden + Geschwindigkeit und Beschleunigung setzen
-    ' Während Bewegung Buttons deaktivieren???
     ' Checkbox für SyncMove
+
     Private _tcpMode As Boolean = False
     Private _posReceived As Boolean = False
 
@@ -339,24 +338,30 @@
     Private Sub _doMove()
         _setSpeedAndAcc()
         If _tcpMode Then
-            'TODO
+            frmMain.RoboControl.DoTCPMov(numCtrl1.Value, numCtrl2.Value, numCtrl3.Value, numCtrl4.Value, numCtrl5.Value, numCtrl6.Value)
         Else
             frmMain.RoboControl.DoJointMov(True, numCtrl1.Value, numCtrl2.Value, numCtrl3.Value, numCtrl4.Value, numCtrl5.Value, numCtrl6.Value)
         End If
     End Sub
-    Private Sub _doJog(joint As Int32, neg As Boolean)
+    Private Sub _doJog(nr As Int32, neg As Boolean)
         Dim jogInt1 As Double = If(neg, numJogInterval1.Value * -1, numJogInterval1.Value)
         Dim jogInt2 As Double = If(neg, numJogInterval2.Value * -1, numJogInterval2.Value)
         _setSpeedAndAcc()
         If _tcpMode Then
-            'TODO
+            If nr <= 3 Then
+                'mm
+                frmMain.RoboControl.DoJogCart(nr, jogInt1)
+            Else
+                'Grad
+                frmMain.RoboControl.DoJogCart(nr, jogInt2)
+            End If
         Else
             If cbJogMode.SelectedIndex = 0 Then
                 ' Degree
-                frmMain.RoboControl.DoJog(joint, jogInt1)
+                frmMain.RoboControl.DoJog(nr, jogInt1)
             Else
                 ' Steps
-                frmMain.RoboControl.DoJog(joint, CInt(jogInt1))
+                frmMain.RoboControl.DoJog(nr, CInt(jogInt1))
             End If
         End If
     End Sub

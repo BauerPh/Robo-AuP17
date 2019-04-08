@@ -10,11 +10,6 @@ Module dataStructs
         Public Property d As Double
         <Category("Denavit-Hartenberg-Parameter")>
         Public Property a As Double
-        'Friend Sub New(alpha As Double, d As Double, a As Double)
-        '    Me.alpha = alpha
-        '    Me.d = d
-        '    Me.a = a
-        'End Sub
     End Structure
 
     Friend Structure CartCoords

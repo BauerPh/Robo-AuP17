@@ -119,7 +119,7 @@ Friend Class RobotControl
         If _com.SendMOV() Then
             RaiseEvent RoboMoveStarted()
             'Log
-            RaiseEvent Log($"Moving Axis...", Logger.LogLevel.INFO)
+            RaiseEvent Log("[Robo Control] Jogbefehl ausgeführt", Logger.LogLevel.INFO)
             Return True
         Else Return False
         End If
@@ -130,6 +130,28 @@ Friend Class RobotControl
         Dim tmpJogval As Double = StepsToAngle(jogval, _pref.JointParameter(nr - 1).MotGear, _pref.JointParameter(nr - 1).MechGear, _pref.JointParameter(nr - 1).MotStepsPerRot << _pref.JointParameter(nr - 1).MotMode, 0)
         'Datensatz zusammenstellen
         Return DoJog(nr, tmpJogval)
+    End Function
+    ' Jog Cart
+    Friend Function DoJogCart(nr As Int32, jogval As Double) As Boolean
+        Dim cartCoords As New CartCoords
+        cartCoords = _posCart
+        Select Case nr
+            Case 1
+                cartCoords.X = cartCoords.X + jogval
+            Case 2
+                cartCoords.Y = cartCoords.Y + jogval
+            Case 3
+                cartCoords.Z = cartCoords.Z + jogval
+            Case 4
+                cartCoords.yaw = cartCoords.yaw + jogval
+            Case 5
+                cartCoords.pitch = cartCoords.pitch + jogval
+            Case 6
+                cartCoords.roll = cartCoords.roll + jogval
+            Case Else
+                Return False
+        End Select
+        Return DoTCPMov(cartCoords)
     End Function
 
     Friend Function DoRef(J1 As Boolean, J2 As Boolean, J3 As Boolean, J4 As Boolean, J5 As Boolean, J6 As Boolean) As Boolean
@@ -144,7 +166,7 @@ Friend Class RobotControl
         If _com.SendREF() Then
             RaiseEvent RoboMoveStarted()
             'Log
-            RaiseEvent Log($"Referenz läuft...", Logger.LogLevel.INFO)
+            RaiseEvent Log("[Robo Control] Referenzfahrt gestartet", Logger.LogLevel.INFO)
             Return True
         Else Return False
         End If
@@ -152,14 +174,28 @@ Friend Class RobotControl
     Friend Function DoRef(joint As Int32) As Boolean
         Return DoRef(joint = 1, joint = 2, joint = 3, joint = 4, joint = 5, joint = 6)
     End Function
+    Friend Function DoTCPMov(cartCoords As CartCoords) As Boolean
+        Dim jointAngles As JointAngles = _kin.InversKin(cartCoords)
+        'Check Limits
+        If _checkJointAngleLimits(jointAngles) Then
+            RaiseEvent Log("[Robo Control] Bewegung nicht möglich, Achslimit erreicht", Logger.LogLevel.ERR)
+            RaiseEvent RoboPositionChanged()
+            Return False
+        End If
+        Return DoJointMov(True, jointAngles)
+    End Function
+    Friend Function DoTCPMov(X As Double, Y As Double, Z As Double, yaw As Double, pitch As Double, roll As Double) As Boolean
+        Dim cartCoords As New CartCoords(X, Y, Z, yaw, pitch, roll)
+        Return DoTCPMov(cartCoords)
+    End Function
 
-    Friend Function DoJointMov(sync As Boolean, J1_target As Double, J2_target As Double, J3_target As Double, J4_target As Double, J5_target As Double, J6_target As Double) As Boolean
+    Friend Function DoJointMov(sync As Boolean, jointAngles As JointAngles) As Boolean
         'Daten aufbereiten
         Dim tmpV(5) As Double
         Dim tmpA(5) As Double
         Dim atLeasOneJointMove As Boolean = False
         Dim enabled(5) As Boolean
-        _targetJoint = New JointAngles(J1_target, J2_target, J3_target, J4_target, J5_target, J6_target)
+        _targetJoint = jointAngles
         'Prüfen ob Ziel schon erreicht (keine Fahrt mehr notwendig)
         For i = 0 To 5
             If Math.Abs(_targetJoint.Items(i) - _posJoint.Items(i)) < 0.01 Then
@@ -171,6 +207,7 @@ Friend Class RobotControl
             End If
         Next
         If Not atLeasOneJointMove Then
+            RaiseEvent Log("[Robo Control] Bewegung wird nicht ausgeführt, Ziel wurde bereits erreicht", Logger.LogLevel.ERR)
             Return False
         End If
         'aktuelle Geschwindigkeit und Beschleunigung berechnen
@@ -200,10 +237,14 @@ Friend Class RobotControl
         If _com.SendMOV() Then
             RaiseEvent RoboMoveStarted()
             'Log
-            RaiseEvent Log("[Robo Control] Bewege Achsen...", Logger.LogLevel.INFO)
+            RaiseEvent Log("[Robo Control] Bewegungsbefehl gesendet", Logger.LogLevel.INFO)
             Return True
         Else Return False
         End If
+    End Function
+    Friend Function DoJointMov(sync As Boolean, J1_target As Double, J2_target As Double, J3_target As Double, J4_target As Double, J5_target As Double, J6_target As Double) As Boolean
+        Dim jointAngles As New JointAngles(J1_target, J2_target, J3_target, J4_target, J5_target, J6_target)
+        Return DoJointMov(sync, jointAngles)
     End Function
     Friend Function DoHome(sync As Boolean) As Boolean
         Return DoJointMov(sync, _pref.JointParameter(0).MechHomePosAngle, _pref.JointParameter(1).MechHomePosAngle, _pref.JointParameter(2).MechHomePosAngle, _pref.JointParameter(3).MechHomePosAngle, _pref.JointParameter(4).MechHomePosAngle, _pref.JointParameter(5).MechHomePosAngle)
@@ -214,19 +255,34 @@ Friend Class RobotControl
     Friend Function MoveServo(srvNr As Int32, angle As Int32) As Boolean
         If _com.SendSRV(srvNr, angle) Then
             'Log
-            RaiseEvent Log($"[Robo Control] Bewege Servo {srvNr}, Ziel: {angle}...", Logger.LogLevel.INFO)
+            RaiseEvent Log($"[Robo Control] Bewege Servo {srvNr}, Ziel: {angle}", Logger.LogLevel.INFO)
             Return True
         Else Return False
         End If
     End Function
 
     Friend Sub FastStop()
-        If _com.SendStop() Then RaiseEvent Log($"[Robo Control] Stoppbefehl gesendet", Logger.LogLevel.INFO)
+        If _com.SendStop() Then RaiseEvent Log("[Robo Control] Stoppbefehl gesendet", Logger.LogLevel.INFO)
     End Sub
 
     ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
+    Private Function _checkJointAngleLimits(jointAngles As JointAngles) As Boolean
+        Return _
+            jointAngles.J1 > _pref.JointParameter(0).MechMaxAngle Or
+            jointAngles.J1 < _pref.JointParameter(0).MechMinAngle Or
+            jointAngles.J2 > _pref.JointParameter(1).MechMaxAngle Or
+            jointAngles.J2 < _pref.JointParameter(1).MechMinAngle Or
+            jointAngles.J3 > _pref.JointParameter(2).MechMaxAngle Or
+            jointAngles.J3 < _pref.JointParameter(2).MechMinAngle Or
+            jointAngles.J4 > _pref.JointParameter(3).MechMaxAngle Or
+            jointAngles.J4 < _pref.JointParameter(3).MechMinAngle Or
+            jointAngles.J5 > _pref.JointParameter(4).MechMaxAngle Or
+            jointAngles.J5 < _pref.JointParameter(4).MechMinAngle Or
+            jointAngles.J6 > _pref.JointParameter(5).MechMaxAngle Or
+            jointAngles.J6 < _pref.JointParameter(5).MechMinAngle
+    End Function
     Private Sub _checkRefStateChange()
         Static refOkayOld(5) As Boolean
         For i = 0 To 5
@@ -286,6 +342,7 @@ Friend Class RobotControl
         RaiseEvent Log(LogMsg, LogLvl)
     End Sub
     Private Sub _eFINReceived() Handles _com.FINReceived
+        RaiseEvent Log("[Robo Control] Bewegung abgeschlossen", Logger.LogLevel.INFO)
         RaiseEvent RoboMoveFinished()
     End Sub
     Private Sub _ePOSReceived(refOkay As Boolean(), posSteps As Int32()) Handles _com.POSReceived
@@ -322,5 +379,12 @@ Friend Class RobotControl
             _kinInit = True
         End If
         RaiseEvent RoboParameterChanged(joint, servo, dh)
+    End Sub
+    Private Sub _eERRReceived(errnum As Integer) Handles _com.ERRReceived
+        If errnum = 3 Then
+            RaiseEvent Log("[Robo Control] Roboter nicht in Referenz", Logger.LogLevel.ERR)
+        ElseIf errnum = 4 Then
+            RaiseEvent Log("[Robo Control] Referenzfahrt fehlgeschlagen", Logger.LogLevel.ERR)
+        End If
     End Sub
 End Class

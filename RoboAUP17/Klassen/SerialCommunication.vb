@@ -310,9 +310,9 @@ Friend Class SerialCommunication
         ElseIf errnum = 2 Then
             RaiseEvent Log("[Serial] Parameter fehlerhaft", Logger.LogLevel.ERR)
         ElseIf errnum = 3 Then
-            RaiseEvent Log("[Serial] Roboter nicht in Referenz", Logger.LogLevel.ERR)
+            'Roboter nicht in Referenz
         ElseIf errnum = 4 Then
-            RaiseEvent Log("[Serial] Referenzfahrt fehlgeschlagen", Logger.LogLevel.ERR)
+            'Referenzfahrt fehlgeschlagen
         End If
         RaiseEvent ERRReceived(errnum)
     End Sub

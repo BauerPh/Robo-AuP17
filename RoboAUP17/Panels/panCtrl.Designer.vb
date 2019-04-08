@@ -57,15 +57,6 @@ Partial Class panCtrl
         Me.btnCtrl6Inc = New System.Windows.Forms.Button()
         Me.lblTargetAngle = New System.Windows.Forms.Label()
         Me.lblJog = New System.Windows.Forms.Label()
-        Me.ToolStrip2 = New System.Windows.Forms.ToolStrip()
-        Me.lblMode = New System.Windows.Forms.ToolStripLabel()
-        Me.cbJointOrTCP = New System.Windows.Forms.ToolStripComboBox()
-        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
-        Me.lblSpeed = New System.Windows.Forms.ToolStripLabel()
-        Me.numSpeed = New RoboAUP17.ToolStripNumericUpDown()
-        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
-        Me.lblAcc = New System.Windows.Forms.ToolStripLabel()
-        Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.lblMove = New System.Windows.Forms.ToolStripLabel()
         Me.cbMoveMode = New System.Windows.Forms.ToolStripComboBox()
@@ -77,6 +68,15 @@ Partial Class panCtrl
         Me.numJogInterval2 = New RoboAUP17.ToolStripNumericUpDown()
         Me.lblUnitDeg = New System.Windows.Forms.ToolStripLabel()
         Me.cbJogMode = New System.Windows.Forms.ToolStripComboBox()
+        Me.ToolStrip2 = New System.Windows.Forms.ToolStrip()
+        Me.lblMode = New System.Windows.Forms.ToolStripLabel()
+        Me.cbJointOrTCP = New System.Windows.Forms.ToolStripComboBox()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.lblSpeed = New System.Windows.Forms.ToolStripLabel()
+        Me.numSpeed = New RoboAUP17.ToolStripNumericUpDown()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.lblAcc = New System.Windows.Forms.ToolStripLabel()
+        Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
         Me.ToolStripContainer.SuspendLayout()
@@ -93,8 +93,8 @@ Partial Class panCtrl
         CType(Me.tbCtrl4, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbCtrl5, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbCtrl6, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.ToolStrip2.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
+        Me.ToolStrip2.SuspendLayout()
         Me.SuspendLayout()
         '
         'ToolStripContainer
@@ -116,8 +116,8 @@ Partial Class panCtrl
         '
         'ToolStripContainer.TopToolStripPanel
         '
-        Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip1)
         Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip2)
+        Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip1)
         '
         'TableLayoutPanel
         '
@@ -591,72 +591,6 @@ Partial Class panCtrl
         Me.lblJog.Text = "Jog"
         Me.lblJog.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
-        'ToolStrip2
-        '
-        Me.ToolStrip2.Dock = System.Windows.Forms.DockStyle.None
-        Me.ToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblMode, Me.cbJointOrTCP, Me.ToolStripSeparator3, Me.lblSpeed, Me.numSpeed, Me.ToolStripSeparator1, Me.lblAcc, Me.numAcc})
-        Me.ToolStrip2.Location = New System.Drawing.Point(0, 0)
-        Me.ToolStrip2.Name = "ToolStrip2"
-        Me.ToolStrip2.Size = New System.Drawing.Size(511, 26)
-        Me.ToolStrip2.Stretch = True
-        Me.ToolStrip2.TabIndex = 1
-        '
-        'lblMode
-        '
-        Me.lblMode.Name = "lblMode"
-        Me.lblMode.Size = New System.Drawing.Size(47, 23)
-        Me.lblMode.Text = "Modus:"
-        '
-        'cbJointOrTCP
-        '
-        Me.cbJointOrTCP.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbJointOrTCP.Items.AddRange(New Object() {"Joint", "TCP"})
-        Me.cbJointOrTCP.Name = "cbJointOrTCP"
-        Me.cbJointOrTCP.Size = New System.Drawing.Size(75, 26)
-        '
-        'ToolStripSeparator3
-        '
-        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
-        Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 26)
-        '
-        'lblSpeed
-        '
-        Me.lblSpeed.Name = "lblSpeed"
-        Me.lblSpeed.Size = New System.Drawing.Size(80, 23)
-        Me.lblSpeed.Text = "Geschw. (°/s):"
-        '
-        'numSpeed
-        '
-        Me.numSpeed.DecimalPlaces = 2
-        Me.numSpeed.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.numSpeed.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.numSpeed.Name = "numSpeed"
-        Me.numSpeed.Size = New System.Drawing.Size(56, 23)
-        Me.numSpeed.Text = "25,00"
-        Me.numSpeed.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
-        '
-        'ToolStripSeparator1
-        '
-        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 26)
-        '
-        'lblAcc
-        '
-        Me.lblAcc.Name = "lblAcc"
-        Me.lblAcc.Size = New System.Drawing.Size(77, 23)
-        Me.lblAcc.Text = "Beschl. (°/s²):"
-        '
-        'numAcc
-        '
-        Me.numAcc.DecimalPlaces = 2
-        Me.numAcc.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.numAcc.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.numAcc.Name = "numAcc"
-        Me.numAcc.Size = New System.Drawing.Size(56, 23)
-        Me.numAcc.Text = "25,00"
-        Me.numAcc.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
-        '
         'ToolStrip1
         '
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
@@ -745,6 +679,72 @@ Partial Class panCtrl
         Me.cbJogMode.Name = "cbJogMode"
         Me.cbJogMode.Size = New System.Drawing.Size(75, 26)
         '
+        'ToolStrip2
+        '
+        Me.ToolStrip2.Dock = System.Windows.Forms.DockStyle.None
+        Me.ToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+        Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblMode, Me.cbJointOrTCP, Me.ToolStripSeparator3, Me.lblSpeed, Me.numSpeed, Me.ToolStripSeparator1, Me.lblAcc, Me.numAcc})
+        Me.ToolStrip2.Location = New System.Drawing.Point(0, 0)
+        Me.ToolStrip2.Name = "ToolStrip2"
+        Me.ToolStrip2.Size = New System.Drawing.Size(511, 26)
+        Me.ToolStrip2.Stretch = True
+        Me.ToolStrip2.TabIndex = 1
+        '
+        'lblMode
+        '
+        Me.lblMode.Name = "lblMode"
+        Me.lblMode.Size = New System.Drawing.Size(47, 23)
+        Me.lblMode.Text = "Modus:"
+        '
+        'cbJointOrTCP
+        '
+        Me.cbJointOrTCP.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbJointOrTCP.Items.AddRange(New Object() {"Joint", "TCP"})
+        Me.cbJointOrTCP.Name = "cbJointOrTCP"
+        Me.cbJointOrTCP.Size = New System.Drawing.Size(75, 26)
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 26)
+        '
+        'lblSpeed
+        '
+        Me.lblSpeed.Name = "lblSpeed"
+        Me.lblSpeed.Size = New System.Drawing.Size(80, 23)
+        Me.lblSpeed.Text = "Geschw. (°/s):"
+        '
+        'numSpeed
+        '
+        Me.numSpeed.DecimalPlaces = 2
+        Me.numSpeed.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.numSpeed.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
+        Me.numSpeed.Name = "numSpeed"
+        Me.numSpeed.Size = New System.Drawing.Size(56, 23)
+        Me.numSpeed.Text = "25,00"
+        Me.numSpeed.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 26)
+        '
+        'lblAcc
+        '
+        Me.lblAcc.Name = "lblAcc"
+        Me.lblAcc.Size = New System.Drawing.Size(77, 23)
+        Me.lblAcc.Text = "Beschl. (°/s²):"
+        '
+        'numAcc
+        '
+        Me.numAcc.DecimalPlaces = 2
+        Me.numAcc.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.numAcc.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
+        Me.numAcc.Name = "numAcc"
+        Me.numAcc.Size = New System.Drawing.Size(56, 23)
+        Me.numAcc.Text = "25,00"
+        Me.numAcc.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
+        '
         'panCtrl
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -773,10 +773,10 @@ Partial Class panCtrl
         CType(Me.tbCtrl4, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbCtrl5, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbCtrl6, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ToolStrip2.ResumeLayout(False)
-        Me.ToolStrip2.PerformLayout()
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
+        Me.ToolStrip2.ResumeLayout(False)
+        Me.ToolStrip2.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
