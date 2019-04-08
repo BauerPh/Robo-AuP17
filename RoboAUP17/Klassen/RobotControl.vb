@@ -18,7 +18,6 @@ Friend Class RobotControl
     Private _actA As Double
 
     ' Kinematik
-    Private _denHart(5) As DHParameter
     Private _kin As Kinematics
     Private _kinInit As Boolean = False
 
@@ -108,13 +107,13 @@ Friend Class RobotControl
         If joint > 6 Or joint < 1 Then
             Return False
         End If
-        _denHart(joint - 1).alpha = alpha
-        _denHart(joint - 1).d = d
-        _denHart(joint - 1).a = a
+        _par.DenavitHartenbergParameter(joint - 1).alpha = alpha
+        _par.DenavitHartenbergParameter(joint - 1).d = d
+        _par.DenavitHartenbergParameter(joint - 1).a = a
         Return True
     End Function
     Friend Sub InitKinematik()
-        _kin = New Kinematics(_denHart)
+        _kin = New Kinematics(_par.DenavitHartenbergParameter)
         _kinInit = True
     End Sub
     'ROBOT MOVEMENTS
@@ -318,7 +317,7 @@ Friend Class RobotControl
         Next
         _checkRefStateChange()
     End Sub
-    Private Sub _eRoboParameterChanged(joint As Boolean, servo As Boolean) Handles _par.ParameterChanged
+    Private Sub _eRoboParameterChanged(joint As Boolean, servo As Boolean, dh As Boolean) Handles _par.ParameterChanged
         RaiseEvent RoboParameterChanged(joint, servo)
     End Sub
 End Class

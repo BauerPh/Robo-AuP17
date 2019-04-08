@@ -1,4 +1,6 @@
-﻿Friend Class RoboParameter
+﻿Imports RoboAUP17
+
+Friend Class RoboParameter
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
@@ -12,6 +14,7 @@
     Private _actFilename As String
     Private _jointParameter(5) As JointParameter
     Private _servoParameter(2) As ServoParameter
+    Private _denavitHartenbergParameter(5) As DHParameter
 
     ' Properties
     Friend ReadOnly Property JointParameter As JointParameter()
@@ -25,8 +28,14 @@
         End Get
     End Property
 
+    Friend ReadOnly Property DenavitHartenbergParameter As DHParameter()
+        Get
+            Return _denavitHartenbergParameter
+        End Get
+    End Property
+
     ' Events
-    Friend Event ParameterChanged(ByVal joint As Boolean, ByVal servo As Boolean)
+    Friend Event ParameterChanged(ByVal joint As Boolean, ByVal servo As Boolean, ByVal dh As Boolean)
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
 
     ' -----------------------------------------------------------------------------
@@ -52,11 +61,15 @@
     ' -----------------------------------------------------------------------------
     Friend Sub SetJointParameter(index As Integer, jointParameter As JointParameter)
         _jointParameter(index) = jointParameter
-        RaiseEvent ParameterChanged(True, False)
+        RaiseEvent ParameterChanged(True, False, False)
     End Sub
     Friend Sub SetServoParameter(index As Integer, servoParameter As ServoParameter)
         _servoParameter(index) = servoParameter
-        RaiseEvent ParameterChanged(False, True)
+        RaiseEvent ParameterChanged(False, True, False)
+    End Sub
+    Friend Sub SetDenavitHartenbergParameter(index As Integer, dhParameter As DHParameter)
+        _denavitHartenbergParameter(index) = dhParameter
+        RaiseEvent ParameterChanged(False, False, True)
     End Sub
     Friend Function GetDefaulConfigFilename() As String
         Return cDefaultConfigFile
@@ -67,7 +80,7 @@
             My.Settings.LastConfigFile = cDefaultConfigFile
             My.Settings.Save()
             _actFilename = cDefaultConfigFile
-            RaiseEvent ParameterChanged(True, True)
+            RaiseEvent ParameterChanged(True, True, True)
             RaiseEvent Log($"[Parameter] Standardparameter geladen", Logger.LogLevel.ERR)
             Return True
         Else
@@ -84,7 +97,7 @@
                 My.Settings.LastConfigFile = openFileDialog.FileName
                 My.Settings.Save()
                 _actFilename = openFileDialog.FileName
-                RaiseEvent ParameterChanged(True, True)
+                RaiseEvent ParameterChanged(True, True, True)
                 RaiseEvent Log("[Parameter] Parameterdatei geladen", Logger.LogLevel.INFO)
                 Return True
             Catch e As Exception
