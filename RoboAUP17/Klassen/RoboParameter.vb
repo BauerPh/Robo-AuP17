@@ -179,6 +179,12 @@ Friend Class RoboParameter
                 .WriteAttributeString("stopAcc", _jointParameter(i).ProfileStopAcc.ToString)
                 .WriteEndElement()
 
+                .WriteStartElement("denavitHartenbergParameter")
+                .WriteAttributeString("alpha", _denavitHartenbergParameter(i).alpha.ToString)
+                .WriteAttributeString("d", _denavitHartenbergParameter(i).d.ToString)
+                .WriteAttributeString("a", _denavitHartenbergParameter(i).a.ToString)
+                .WriteEndElement()
+
                 .WriteEndElement()
             Next
             For i = 0 To 2
@@ -232,7 +238,7 @@ Friend Class RoboParameter
                                             Case "stepsPerRot"
                                                 _jointParameter(i).MotStepsPerRot = CInt(.Value)
                                             Case "gear"
-                                                _jointParameter(i).MotGear = CDec(.Value)
+                                                _jointParameter(i).MotGear = CDbl(.Value)
                                             Case "mode"
                                                 _jointParameter(i).MotMode = CType([Enum].Parse(GetType(MotMode), .Value), MotMode)  'CType(CInt(.Value), motMode)
                                             Case "dir"
@@ -241,35 +247,44 @@ Friend Class RoboParameter
                                     Case "mech"
                                         Select Case .Name
                                             Case "gear"
-                                                _jointParameter(i).MechGear = CDec(.Value)
+                                                _jointParameter(i).MechGear = CDbl(.Value)
                                             Case "minAngle"
-                                                _jointParameter(i).MechMinAngle = CDec(.Value)
+                                                _jointParameter(i).MechMinAngle = CDbl(.Value)
                                             Case "maxAngle"
-                                                _jointParameter(i).MechMaxAngle = CDec(.Value)
+                                                _jointParameter(i).MechMaxAngle = CDbl(.Value)
                                             Case "homePosAngle"
-                                                _jointParameter(i).MechHomePosAngle = CDec(.Value)
+                                                _jointParameter(i).MechHomePosAngle = CDbl(.Value)
                                             Case "parkPosAngle"
-                                                _jointParameter(i).MechParkPosAngle = CDec(.Value)
+                                                _jointParameter(i).MechParkPosAngle = CDbl(.Value)
                                         End Select
                                     Case "cal"
                                         Select Case .Name
                                             Case "dir"
                                                 _jointParameter(i).CalDir = CType([Enum].Parse(GetType(CalDir), .Value), CalDir)
                                             Case "speedFast"
-                                                _jointParameter(i).CalSpeedFast = CDec(.Value)
+                                                _jointParameter(i).CalSpeedFast = CDbl(.Value)
                                             Case "speedSlow"
-                                                _jointParameter(i).CalSpeedSlow = CDec(.Value)
+                                                _jointParameter(i).CalSpeedSlow = CDbl(.Value)
                                             Case "acc"
-                                                _jointParameter(i).CalAcc = CDec(.Value)
+                                                _jointParameter(i).CalAcc = CDbl(.Value)
                                         End Select
                                     Case "profile"
                                         Select Case .Name
                                             Case "maxSpeed"
-                                                _jointParameter(i).ProfileMaxSpeed = CDec(.Value)
+                                                _jointParameter(i).ProfileMaxSpeed = CDbl(.Value)
                                             Case "maxAcc"
-                                                _jointParameter(i).ProfileMaxAcc = CDec(.Value)
+                                                _jointParameter(i).ProfileMaxAcc = CDbl(.Value)
                                             Case "stopAcc"
-                                                _jointParameter(i).ProfileStopAcc = CDec(.Value)
+                                                _jointParameter(i).ProfileStopAcc = CDbl(.Value)
+                                        End Select
+                                    Case "denavitHartenbergParameter"
+                                        Select Case .Name
+                                            Case "alpha"
+                                                _denavitHartenbergParameter(i).alpha = CDbl(.Value)
+                                            Case "d"
+                                                _denavitHartenbergParameter(i).d = CDbl(.Value)
+                                            Case "a"
+                                                _denavitHartenbergParameter(i).a = CDbl(.Value)
                                         End Select
                                 End Select
                             Else
@@ -278,9 +293,9 @@ Friend Class RoboParameter
                                     Case "angles"
                                         Select Case .Name
                                             Case "minAngle"
-                                                _servoParameter(i).MinAngle = CDec(.Value)
+                                                _servoParameter(i).MinAngle = CDbl(.Value)
                                             Case "maxAngle"
-                                                _servoParameter(i).MaxAngle = CDec(.Value)
+                                                _servoParameter(i).MaxAngle = CDbl(.Value)
                                         End Select
                                 End Select
                             End If
