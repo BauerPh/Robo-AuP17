@@ -70,6 +70,8 @@ Public Class frmMain
     ' -----------------------------------------------------------------------------
 #Region "Private"
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Me.Text = $"Aup17 Robo v{My.Application.Info.Version.ToString}"
+
         'Maximiert starten wenn Ansicht so gespeichert wurde
         If My.Settings.StartMaximized Then
             WindowState = FormWindowState.Maximized

@@ -498,7 +498,7 @@ Partial Class frmMain
         Me.MainMenuStrip = Me.MenuStrip
         Me.MinimumSize = New System.Drawing.Size(300, 300)
         Me.Name = "frmMain"
-        Me.Text = "Aup17 Robo v1.0"
+        Me.Text = "Aup17 Robo"
         Me.StatusStrip.ResumeLayout(False)
         Me.StatusStrip.PerformLayout()
         Me.MenuStrip.ResumeLayout(False)

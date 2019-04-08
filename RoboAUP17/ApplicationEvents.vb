@@ -15,6 +15,7 @@ Namespace My
 
             Using sw As New StreamWriter(File.Open(filePath, FileMode.Append))
                 sw.WriteLine("--------------New Exception--------------")
+                sw.WriteLine($"Aup17 Robo Version: v{My.Application.Info.Version.ToString}")
                 sw.WriteLine(DateTime.Now)
                 sw.WriteLine(e.Exception.Message)
                 sw.WriteLine("---Stack Trace:")
