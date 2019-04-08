@@ -16,7 +16,7 @@
     End Sub
 
     ' -----------------------------------------------------------------------------
-    ' Form Control
+    ' Robot Control
     ' -----------------------------------------------------------------------------
     Private Sub cbCheckedChanged(sender As Object, e As EventArgs) Handles cbSelJ1.CheckedChanged, cbSelJ2.CheckedChanged, cbSelJ3.CheckedChanged, cbSelJ4.CheckedChanged, cbSelJ5.CheckedChanged, cbSelJ6.CheckedChanged
         _enableDisableElements(False)

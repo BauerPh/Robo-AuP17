@@ -59,23 +59,39 @@ Public Class frmMain
         _ssHintTimer.Interval = _ssHintTimerInterval
         _ssHintTimer.Start()
     End Sub
-
-    Friend Sub DoLog(msg As String, logLvl As Logger.LogLevel)
-        _logger.Log(msg, logLvl)
-    End Sub
 #End Region
 
     ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
+#Region "Robo Steuerung"
+    Private Sub tsBtnEStop_Click(sender As Object, e As EventArgs) Handles tsBtnEStop.Click
+        _roboControl.FastStop()
+    End Sub
+    Private Sub RoboTest_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.KeyCode = Keys.Space Then
+            _roboControl.FastStop()
+        End If
+    End Sub
+#End Region
+
 #Region "Private"
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'Prüfen ob Konfigdatei geladen wurde
+        If Not _roboControl.Pref.ConfigFileLoaded Then
+            Application.Exit()
+            Return
+        End If
+
         Me.Text = $"Aup17 Robo v{My.Application.Info.Version.ToString}"
 
         'Maximiert starten wenn Ansicht so gespeichert wurde
         If My.Settings.StartMaximized Then
             Me.WindowState = FormWindowState.Maximized
         End If
+
+        'Für Key Events
+        KeyPreview = True
 
         'Set Log Lvl
         SetLogLevel(My.Settings.LogLvl)
@@ -381,4 +397,5 @@ Public Class frmMain
         tsBtnProgRun.Enabled = False
         tsBtnProgStop.Enabled = False
     End Sub
+
 End Class

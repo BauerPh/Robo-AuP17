@@ -44,12 +44,12 @@
         Select Case _selectedSetting
             Case selectedSetting.RoboPar
                 If _actPropView > 5 Then
-                    frmMain.RoboControl.Par.SetServoParameter(_actPropView - 6, CType(propGridRoboPar.SelectedObject, ServoParameter))
+                    frmMain.RoboControl.Pref.SetServoParameter(_actPropView - 6, CType(propGridRoboPar.SelectedObject, ServoParameter))
                 Else
-                    frmMain.RoboControl.Par.SetJointParameter(_actPropView, CType(propGridRoboPar.SelectedObject, JointParameter))
+                    frmMain.RoboControl.Pref.SetJointParameter(_actPropView, CType(propGridRoboPar.SelectedObject, JointParameter))
                 End If
             Case selectedSetting.DenHartPar
-                frmMain.RoboControl.Par.SetDenavitHartenbergParameter(_actPropView, CType(propGridRoboPar.SelectedObject, DHParameter))
+                frmMain.RoboControl.Pref.SetDenavitHartenbergParameter(_actPropView, CType(propGridRoboPar.SelectedObject, DHParameter))
             Case selectedSetting.TCPServer
                 'TODO
         End Select
@@ -90,18 +90,18 @@
         _setPropView(PropView.Servo3)
     End Sub
     Private Sub btnLoad_Click(sender As Object, e As EventArgs) Handles btnLoad.Click
-        If frmMain.RoboControl.Par.LoadSettings() Then
+        If frmMain.RoboControl.Pref.LoadSettings() Then
             _refreshPropGrid()
             _refreshFilename()
         End If
     End Sub
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-        If frmMain.RoboControl.Par.SaveSettings() Then
+        If frmMain.RoboControl.Pref.SaveSettings() Then
             _refreshFilename()
         End If
     End Sub
     Private Sub btnDefaultConfig_Click(sender As Object, e As EventArgs) Handles btnDefaultConfig.Click
-        If frmMain.RoboControl.Par.LoadDefaulSettings() Then
+        If frmMain.RoboControl.Pref.LoadDefaulSettings() Then
             _refreshPropGrid()
             _refreshFilename()
         End If
@@ -164,12 +164,12 @@
         Select Case _selectedSetting
             Case selectedSetting.RoboPar
                 If _actPropView > 5 Then
-                    propGridRoboPar.SelectedObject = frmMain.RoboControl.Par.ServoParameter(_actPropView - 6)
+                    propGridRoboPar.SelectedObject = frmMain.RoboControl.Pref.ServoParameter(_actPropView - 6)
                 Else
-                    propGridRoboPar.SelectedObject = frmMain.RoboControl.Par.JointParameter(_actPropView)
+                    propGridRoboPar.SelectedObject = frmMain.RoboControl.Pref.JointParameter(_actPropView)
                 End If
             Case selectedSetting.DenHartPar
-                propGridRoboPar.SelectedObject = frmMain.RoboControl.Par.DenavitHartenbergParameter(_actPropView)
+                propGridRoboPar.SelectedObject = frmMain.RoboControl.Pref.DenavitHartenbergParameter(_actPropView)
             Case selectedSetting.TCPServer
                 propGridRoboPar.SelectedObject = Nothing
         End Select
@@ -219,7 +219,7 @@
         End Select
     End Sub
     Private Sub _refreshFilename()
-        Dim filenameSplit As String() = frmMain.RoboControl.Par.GetActFilename.Split("\"c)
+        Dim filenameSplit As String() = frmMain.RoboControl.Pref.GetActFilename.Split("\"c)
         lblFilename.Text = $"Geöffnete Parameterdatei: {filenameSplit(filenameSplit.Length - 1)}"
     End Sub
 End Class

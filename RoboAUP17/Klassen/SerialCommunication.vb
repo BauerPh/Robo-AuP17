@@ -167,11 +167,13 @@ Friend Class SerialCommunication
         End If
         Return False
     End Function
-    Friend Sub SendStop()
+    Friend Function SendStop() As Boolean
         If _connected Then
             _sendMsg("!!!")
+            Return True
         End If
-    End Sub
+        Return False
+    End Function
 
     ' -----------------------------------------------------------------------------
     ' Private

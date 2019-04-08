@@ -218,6 +218,7 @@ Partial Class panCtrl
         '
         Me.tbCtrl1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbCtrl1.AutoSize = False
+        Me.tbCtrl1.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.tbCtrl1.Enabled = False
         Me.tbCtrl1.LargeChange = 10
         Me.tbCtrl1.Location = New System.Drawing.Point(168, 28)
@@ -628,10 +629,10 @@ Partial Class panCtrl
         'numSpeed
         '
         Me.numSpeed.DecimalPlaces = 2
-        Me.numSpeed.Maximum = New Decimal(New Integer() {50, 0, 0, 0})
+        Me.numSpeed.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
         Me.numSpeed.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
         Me.numSpeed.Name = "numSpeed"
-        Me.numSpeed.Size = New System.Drawing.Size(50, 23)
+        Me.numSpeed.Size = New System.Drawing.Size(56, 23)
         Me.numSpeed.Text = "25,00"
         Me.numSpeed.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
         '
@@ -649,10 +650,10 @@ Partial Class panCtrl
         'numAcc
         '
         Me.numAcc.DecimalPlaces = 2
-        Me.numAcc.Maximum = New Decimal(New Integer() {50, 0, 0, 0})
+        Me.numAcc.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
         Me.numAcc.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
         Me.numAcc.Name = "numAcc"
-        Me.numAcc.Size = New System.Drawing.Size(50, 23)
+        Me.numAcc.Size = New System.Drawing.Size(56, 23)
         Me.numAcc.Text = "25,00"
         Me.numAcc.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
         '
@@ -709,8 +710,8 @@ Partial Class panCtrl
         Me.numJogInterval1.Minimum = New Decimal(New Integer() {1, 0, 0, 65536})
         Me.numJogInterval1.Name = "numJogInterval1"
         Me.numJogInterval1.Size = New System.Drawing.Size(50, 23)
-        Me.numJogInterval1.Text = "0,1"
-        Me.numJogInterval1.Value = New Decimal(New Integer() {1, 0, 0, 65536})
+        Me.numJogInterval1.Text = "5,0"
+        Me.numJogInterval1.Value = New Decimal(New Integer() {50, 0, 0, 65536})
         '
         'lblUnitMm
         '
@@ -726,8 +727,8 @@ Partial Class panCtrl
         Me.numJogInterval2.Minimum = New Decimal(New Integer() {1, 0, 0, 65536})
         Me.numJogInterval2.Name = "numJogInterval2"
         Me.numJogInterval2.Size = New System.Drawing.Size(50, 23)
-        Me.numJogInterval2.Text = "0,1"
-        Me.numJogInterval2.Value = New Decimal(New Integer() {1, 0, 0, 65536})
+        Me.numJogInterval2.Text = "10,0"
+        Me.numJogInterval2.Value = New Decimal(New Integer() {100, 0, 0, 65536})
         Me.numJogInterval2.Visible = False
         '
         'lblUnitDeg

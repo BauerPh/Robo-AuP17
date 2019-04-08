@@ -8,6 +8,7 @@
     ' Definitions
     ' -----------------------------------------------------------------------------
     Private Const cDefaultConfigFile As String = "RoboParameterDefault.xml"
+    Private _configFileLoaded As Boolean = False
 
     Private _actFilename As String
     Private _jointParameter(5) As JointParameter
@@ -32,6 +33,15 @@
         End Get
     End Property
 
+    Public Property ConfigFileLoaded As Boolean
+        Get
+            Return _configFileLoaded
+        End Get
+        Set(value As Boolean)
+            _configFileLoaded = value
+        End Set
+    End Property
+
     ' Events
     Friend Event ParameterChanged(ByVal joint As Boolean, ByVal servo As Boolean, ByVal dh As Boolean)
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
@@ -42,6 +52,7 @@
     Friend Sub New()
         'Lade letzte geöffnete Datei, wenn vorhanden!
         If _XMLReader(My.Settings.LastConfigFile) Then
+            _configFileLoaded = True
             _actFilename = My.Settings.LastConfigFile
         Else
             If My.Settings.LastConfigFile.Length > 0 Then
@@ -82,6 +93,7 @@
             _actFilename = cDefaultConfigFile
             RaiseEvent ParameterChanged(True, True, True)
             RaiseEvent Log($"[Parameter] Standardparameter geladen", Logger.LogLevel.ERR)
+            _configFileLoaded = True
             Return True
         Else
             Return False
@@ -99,6 +111,7 @@
                 _actFilename = openFileDialog.FileName
                 RaiseEvent ParameterChanged(True, True, True)
                 RaiseEvent Log("[Parameter] Parameterdatei geladen", Logger.LogLevel.INFO)
+                _configFileLoaded = True
                 Return True
             Catch e As Exception
                 RaiseEvent Log($"[Parameter] Laden fehlgeschlagen, Fehler: {e.Message}", Logger.LogLevel.ERR)
