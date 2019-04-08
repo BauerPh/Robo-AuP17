@@ -7,7 +7,7 @@
     ' -----------------------------------------------------------------------------
     ' Definitions
     ' -----------------------------------------------------------------------------
-    Private Const cDefaultConfigFile As String = "settings\RoboParameterDefault.xml"
+    Private Const cDefaultConfigFile As String = "RoboParameterDefault.xml"
 
     Private _actFilename As String
     Private _jointParameter(5) As JointParameter
@@ -44,14 +44,16 @@
         If _XMLReader(My.Settings.LastConfigFile) Then
             _actFilename = My.Settings.LastConfigFile
         Else
-            MessageBox.Show($"Die Parameterdatei ""{My.Settings.LastConfigFile}"" konnte nicht geladen werden. Es werden die Standardparameter geladen.", "Parameterdatei nicht gefunden!", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            If My.Settings.LastConfigFile.Length > 0 Then
+                MessageBox.Show($"Die Parameterdatei ""{My.Settings.LastConfigFile}"" konnte nicht geladen werden. Es werden die Standardparameter geladen.", "Parameterdatei nicht gefunden!", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            End If
             If Not LoadDefaulSettings() Then
-                If MessageBox.Show($"Die Parameterdatei ""{cDefaultConfigFile}"" konnte nicht gefunden werden oder ist fehlerhaft. Soll sie gesucht werden?", "Parameterdatei nicht gefunden!",
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Error) = DialogResult.Yes Then
-                    LoadSettings()
+                    If MessageBox.Show($"Die Parameterdatei ""{cDefaultConfigFile}"" konnte nicht gefunden werden oder ist fehlerhaft. Soll sie gesucht werden?", "Parameterdatei nicht gefunden!",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Error) = DialogResult.Yes Then
+                        LoadSettings()
+                    End If
                 End If
             End If
-        End If
     End Sub
 
     ' -----------------------------------------------------------------------------

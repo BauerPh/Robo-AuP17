@@ -88,6 +88,9 @@
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ACLLexerParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -155,7 +158,6 @@
     <Compile Include="Klassen\RobotControl.vb" />
     <Compile Include="Klassen\SerialCommunication.vb" />
     <Compile Include="dataStructs.vb" />
-    <Compile Include="globalVars.vb" />
     <Compile Include="Klassen\Logger.vb" />
     <Compile Include="Klassen\Matrizen.vb" />
     <Compile Include="frmMain.vb">
@@ -300,15 +302,19 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="settings\RoboParameterDefault.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="ACLLexerParser.dll" />
+    <None Include="Antlr4.Runtime.dll" />
+    <Content Include="Antlr4.Runtime.xml" />
+    <Content Include="icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="RoboParameterDefault.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\icons8-checked-100.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ddl\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
