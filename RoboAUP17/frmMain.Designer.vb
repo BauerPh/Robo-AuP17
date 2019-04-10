@@ -82,6 +82,7 @@ Partial Class frmMain
         Me.tsBtnProgStop = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.tsBtnEStop = New System.Windows.Forms.ToolStripButton()
+        Me.msFrames = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
@@ -285,7 +286,7 @@ Partial Class frmMain
         '
         'EinstellungenToolStripMenuItem1
         '
-        Me.EinstellungenToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msDenavitHartPar, Me.msRoboParameter, Me.ToolStripSeparator5, Me.msTCPServer})
+        Me.EinstellungenToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msDenavitHartPar, Me.msRoboParameter, Me.msFrames, Me.ToolStripSeparator5, Me.msTCPServer})
         Me.EinstellungenToolStripMenuItem1.Name = "EinstellungenToolStripMenuItem1"
         Me.EinstellungenToolStripMenuItem1.Size = New System.Drawing.Size(90, 20)
         Me.EinstellungenToolStripMenuItem1.Text = "Einstellungen"
@@ -484,6 +485,13 @@ Partial Class frmMain
         Me.tsBtnEStop.Size = New System.Drawing.Size(132, 22)
         Me.tsBtnEStop.Text = "Not-Halt (Leertaste)"
         '
+        'msFrames
+        '
+        Me.msFrames.Image = CType(resources.GetObject("msFrames.Image"), System.Drawing.Image)
+        Me.msFrames.Name = "msFrames"
+        Me.msFrames.Size = New System.Drawing.Size(247, 22)
+        Me.msFrames.Text = "Toolframe / Workframe..."
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -569,4 +577,5 @@ Partial Class frmMain
     Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
     Friend WithEvents tsBtnEStop As ToolStripButton
     Friend WithEvents msArduinoFirmware As ToolStripMenuItem
+    Friend WithEvents msFrames As ToolStripMenuItem
 End Class

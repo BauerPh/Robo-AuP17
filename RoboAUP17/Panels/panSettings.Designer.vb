@@ -31,11 +31,12 @@ Partial Class panSettings
         Me.btnLoad = New System.Windows.Forms.ToolStripButton()
         Me.btnSave = New System.Windows.Forms.ToolStripButton()
         Me.btnDefaultConfig = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripSeparator10 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStrip2 = New System.Windows.Forms.ToolStrip()
         Me.btnDenHartPar = New System.Windows.Forms.ToolStripButton()
         Me.btnRoboPar = New System.Windows.Forms.ToolStripButton()
+        Me.btnFrames = New System.Windows.Forms.ToolStripButton()
         Me.btnTCPServer = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStrip2 = New System.Windows.Forms.ToolStrip()
+        Me.ToolStrip3 = New System.Windows.Forms.ToolStrip()
         Me.btnJ1 = New System.Windows.Forms.ToolStripButton()
         Me.sepJ2 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnJ2 = New System.Windows.Forms.ToolStripButton()
@@ -53,7 +54,9 @@ Partial Class panSettings
         Me.btnServo2 = New System.Windows.Forms.ToolStripButton()
         Me.sepServ3 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnServo3 = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton()
+        Me.btnToolframe = New System.Windows.Forms.ToolStripButton()
+        Me.sepFrames = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnWorkframe = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripContainer.BottomToolStripPanel.SuspendLayout()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
@@ -61,6 +64,7 @@ Partial Class panSettings
         Me.StatusStrip1.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
         Me.ToolStrip2.SuspendLayout()
+        Me.ToolStrip3.SuspendLayout()
         Me.SuspendLayout()
         '
         'propGridRoboPar
@@ -69,7 +73,7 @@ Partial Class panSettings
         Me.propGridRoboPar.Location = New System.Drawing.Point(0, 0)
         Me.propGridRoboPar.Name = "propGridRoboPar"
         Me.propGridRoboPar.PropertySort = System.Windows.Forms.PropertySort.Categorized
-        Me.propGridRoboPar.Size = New System.Drawing.Size(613, 370)
+        Me.propGridRoboPar.Size = New System.Drawing.Size(613, 345)
         Me.propGridRoboPar.TabIndex = 0
         '
         'ToolStripContainer
@@ -82,7 +86,7 @@ Partial Class panSettings
         'ToolStripContainer.ContentPanel
         '
         Me.ToolStripContainer.ContentPanel.Controls.Add(Me.propGridRoboPar)
-        Me.ToolStripContainer.ContentPanel.Size = New System.Drawing.Size(613, 370)
+        Me.ToolStripContainer.ContentPanel.Size = New System.Drawing.Size(613, 345)
         Me.ToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ToolStripContainer.Location = New System.Drawing.Point(0, 0)
         Me.ToolStripContainer.Name = "ToolStripContainer"
@@ -94,6 +98,7 @@ Partial Class panSettings
         '
         Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip1)
         Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip2)
+        Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip3)
         '
         'StatusStrip1
         '
@@ -114,7 +119,7 @@ Partial Class panSettings
         '
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnLoad, Me.btnSave, Me.btnDefaultConfig, Me.ToolStripSeparator10, Me.btnDenHartPar, Me.btnRoboPar, Me.btnTCPServer, Me.ToolStripButton1})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnLoad, Me.btnSave, Me.btnDefaultConfig})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(613, 25)
@@ -145,10 +150,16 @@ Partial Class panSettings
         Me.btnDefaultConfig.Size = New System.Drawing.Size(74, 22)
         Me.btnDefaultConfig.Text = "Standard"
         '
-        'ToolStripSeparator10
+        'ToolStrip2
         '
-        Me.ToolStripSeparator10.Name = "ToolStripSeparator10"
-        Me.ToolStripSeparator10.Size = New System.Drawing.Size(6, 25)
+        Me.ToolStrip2.Dock = System.Windows.Forms.DockStyle.None
+        Me.ToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+        Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnDenHartPar, Me.btnRoboPar, Me.btnFrames, Me.btnTCPServer})
+        Me.ToolStrip2.Location = New System.Drawing.Point(0, 25)
+        Me.ToolStrip2.Name = "ToolStrip2"
+        Me.ToolStrip2.Size = New System.Drawing.Size(613, 25)
+        Me.ToolStrip2.Stretch = True
+        Me.ToolStrip2.TabIndex = 2
         '
         'btnDenHartPar
         '
@@ -166,6 +177,14 @@ Partial Class panSettings
         Me.btnRoboPar.Size = New System.Drawing.Size(52, 22)
         Me.btnRoboPar.Text = "Joint"
         '
+        'btnFrames
+        '
+        Me.btnFrames.Image = CType(resources.GetObject("btnFrames.Image"), System.Drawing.Image)
+        Me.btnFrames.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnFrames.Name = "btnFrames"
+        Me.btnFrames.Size = New System.Drawing.Size(65, 22)
+        Me.btnFrames.Text = "Frames"
+        '
         'btnTCPServer
         '
         Me.btnTCPServer.Image = CType(resources.GetObject("btnTCPServer.Image"), System.Drawing.Image)
@@ -174,16 +193,16 @@ Partial Class panSettings
         Me.btnTCPServer.Size = New System.Drawing.Size(85, 22)
         Me.btnTCPServer.Text = "TCP-Server"
         '
-        'ToolStrip2
+        'ToolStrip3
         '
-        Me.ToolStrip2.Dock = System.Windows.Forms.DockStyle.None
-        Me.ToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnJ1, Me.sepJ2, Me.btnJ2, Me.sepJ3, Me.btnJ3, Me.sepJ4, Me.btnJ4, Me.sepJ5, Me.btnJ5, Me.sepJ6, Me.btnJ6, Me.sepServ1, Me.btnServo1, Me.sepServ2, Me.btnServo2, Me.sepServ3, Me.btnServo3})
-        Me.ToolStrip2.Location = New System.Drawing.Point(0, 25)
-        Me.ToolStrip2.Name = "ToolStrip2"
-        Me.ToolStrip2.Size = New System.Drawing.Size(613, 25)
-        Me.ToolStrip2.Stretch = True
-        Me.ToolStrip2.TabIndex = 0
+        Me.ToolStrip3.Dock = System.Windows.Forms.DockStyle.None
+        Me.ToolStrip3.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+        Me.ToolStrip3.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnJ1, Me.sepJ2, Me.btnJ2, Me.sepJ3, Me.btnJ3, Me.sepJ4, Me.btnJ4, Me.sepJ5, Me.btnJ5, Me.sepJ6, Me.btnJ6, Me.sepServ1, Me.btnServo1, Me.sepServ2, Me.btnServo2, Me.sepServ3, Me.btnServo3, Me.btnToolframe, Me.sepFrames, Me.btnWorkframe})
+        Me.ToolStrip3.Location = New System.Drawing.Point(0, 50)
+        Me.ToolStrip3.Name = "ToolStrip3"
+        Me.ToolStrip3.Size = New System.Drawing.Size(613, 25)
+        Me.ToolStrip3.Stretch = True
+        Me.ToolStrip3.TabIndex = 0
         '
         'btnJ1
         '
@@ -306,13 +325,28 @@ Partial Class panSettings
         Me.btnServo3.Size = New System.Drawing.Size(42, 22)
         Me.btnServo3.Text = "Serv 3"
         '
-        'ToolStripButton1
+        'btnToolframe
         '
-        Me.ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), System.Drawing.Image)
-        Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripButton1.Name = "ToolStripButton1"
-        Me.ToolStripButton1.Size = New System.Drawing.Size(81, 22)
-        Me.ToolStripButton1.Text = "Toolframe"
+        Me.btnToolframe.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.btnToolframe.Image = CType(resources.GetObject("btnToolframe.Image"), System.Drawing.Image)
+        Me.btnToolframe.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnToolframe.Name = "btnToolframe"
+        Me.btnToolframe.Size = New System.Drawing.Size(65, 22)
+        Me.btnToolframe.Text = "Toolframe"
+        '
+        'sepFrames
+        '
+        Me.sepFrames.Name = "sepFrames"
+        Me.sepFrames.Size = New System.Drawing.Size(6, 25)
+        '
+        'btnWorkframe
+        '
+        Me.btnWorkframe.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.btnWorkframe.Image = CType(resources.GetObject("btnWorkframe.Image"), System.Drawing.Image)
+        Me.btnWorkframe.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnWorkframe.Name = "btnWorkframe"
+        Me.btnWorkframe.Size = New System.Drawing.Size(70, 22)
+        Me.btnWorkframe.Text = "Workframe"
         '
         'panSettings
         '
@@ -336,13 +370,15 @@ Partial Class panSettings
         Me.ToolStrip1.PerformLayout()
         Me.ToolStrip2.ResumeLayout(False)
         Me.ToolStrip2.PerformLayout()
+        Me.ToolStrip3.ResumeLayout(False)
+        Me.ToolStrip3.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
 
     Friend WithEvents propGridRoboPar As PropertyGrid
     Friend WithEvents ToolStripContainer As ToolStripContainer
-    Friend WithEvents ToolStrip2 As ToolStrip
+    Friend WithEvents ToolStrip3 As ToolStrip
     Friend WithEvents btnJ1 As ToolStripButton
     Friend WithEvents sepJ2 As ToolStripSeparator
     Friend WithEvents btnJ2 As ToolStripButton
@@ -366,9 +402,12 @@ Partial Class panSettings
     Friend WithEvents btnLoad As ToolStripButton
     Friend WithEvents btnSave As ToolStripButton
     Friend WithEvents btnDefaultConfig As ToolStripButton
-    Friend WithEvents ToolStripSeparator10 As ToolStripSeparator
+    Friend WithEvents ToolStrip2 As ToolStrip
     Friend WithEvents btnDenHartPar As ToolStripButton
     Friend WithEvents btnRoboPar As ToolStripButton
+    Friend WithEvents btnFrames As ToolStripButton
     Friend WithEvents btnTCPServer As ToolStripButton
-    Friend WithEvents ToolStripButton1 As ToolStripButton
+    Friend WithEvents btnToolframe As ToolStripButton
+    Friend WithEvents sepFrames As ToolStripSeparator
+    Friend WithEvents btnWorkframe As ToolStripButton
 End Class

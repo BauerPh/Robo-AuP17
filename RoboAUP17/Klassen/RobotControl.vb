@@ -26,6 +26,7 @@ Friend Class RobotControl
     Private WithEvents _com As New SerialCommunication
 
     Private _refOkay(5) As Boolean
+    Private _allRefOkay As Boolean
     Private _posSteps(5) As Int32
     Private _posJoint As JointAngles
     Private _posCart As CartCoords
@@ -41,6 +42,12 @@ Friend Class RobotControl
     Friend ReadOnly Property RefOkay As Boolean()
         Get
             Return _refOkay
+        End Get
+    End Property
+
+    Public ReadOnly Property AllRefOkay As Boolean
+        Get
+            Return _allRefOkay
         End Get
     End Property
 
@@ -80,13 +87,15 @@ Friend Class RobotControl
     Friend Event LimitSwitchStateChanged(ByVal lssState As Boolean())
     Friend Event EmergencyStopStateChanged(ByVal essState As Boolean)
     Friend Event RoboRefStateChanged(ByVal refState As Boolean())
-    Friend Event RoboParameterChanged(ByVal joint As Boolean, ByVal servo As Boolean, ByVal dh As Boolean)
+    Friend Event RoboParameterChanged(ByVal parameterChanged As Settings.ParameterChangedParameter)
 
     ' -----------------------------------------------------------------------------
     ' Constructor
     ' -----------------------------------------------------------------------------
     Friend Sub New()
-        _kin.setDenavitHartenbergParameter(_pref.DenavitHartenbergParameter)
+        _kin.SetDenavitHartenbergParameter(_pref.DenavitHartenbergParameter)
+        _kin.Toolframe = _pref.Toolframe
+        _kin.Workframe = _pref.Workframe
         _kinInit = True
     End Sub
     ' -----------------------------------------------------------------------------
@@ -176,6 +185,12 @@ Friend Class RobotControl
     End Function
     Friend Function DoTCPMov(cartCoords As CartCoords) As Boolean
         Dim jointAngles As JointAngles = _kin.InversKin(cartCoords)
+        'Check inverse Kin Ergebnis ... TODO "NaN" abfangen!
+        If Double.IsNaN(jointAngles.J1) Or Double.IsNaN(jointAngles.J2) Or Double.IsNaN(jointAngles.J3) Or Double.IsNaN(jointAngles.J4) Or Double.IsNaN(jointAngles.J5) Or Double.IsNaN(jointAngles.J6) Then
+            RaiseEvent Log("[Robo Control] Bewegung nicht möglich, Position nicht erreichbar", Logger.LogLevel.ERR)
+            RaiseEvent RoboPositionChanged()
+            Return False
+        End If
         'Check Limits
         If _checkJointAngleLimits(jointAngles) Then
             RaiseEvent Log("[Robo Control] Bewegung nicht möglich, Achslimit erreicht", Logger.LogLevel.ERR)
@@ -283,14 +298,17 @@ Friend Class RobotControl
             jointAngles.J6 > _pref.JointParameter(5).MechMaxAngle Or
             jointAngles.J6 < _pref.JointParameter(5).MechMinAngle
     End Function
-    Private Sub _checkRefStateChange(Optional reset As Boolean = False)
+    Private Sub _checkRefState(Optional reset As Boolean = False)
         Static refOkayOld(5) As Boolean
+        ' Reset Ref State
         If reset Then
             For i = 0 To 5
                 refOkayOld(i) = False
             Next
+            _allRefOkay = False
             Return
         End If
+        ' Check Ref State Changed
         For i = 0 To 5
             If _refOkay(i) <> refOkayOld(i) Then
                 RaiseEvent RoboRefStateChanged(_refOkay)
@@ -298,6 +316,15 @@ Friend Class RobotControl
             End If
         Next
         _refOkay.CopyTo(refOkayOld, 0)
+
+        ' Check all
+        _allRefOkay = True
+        For i = 0 To 5
+            If Not _refOkay(i) Then
+                _allRefOkay = False
+                Exit For
+            End If
+        Next
     End Sub
     'CALCULATIONS
     Private Function _calcServoAngle(srvNr As Int32, prc As Double) As Int32
@@ -342,7 +369,7 @@ Friend Class RobotControl
     End Sub
     Private Sub _eSerialDisconnected() Handles _com.SerialDisconnected
         ' alten Ref Status reseten
-        _checkRefStateChange(True)
+        _checkRefState(True)
         RaiseEvent SerialDisconnected()
     End Sub
     Private Sub _eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles _com.Log, _pref.Log
@@ -366,7 +393,7 @@ Friend Class RobotControl
         End If
         ' Referenzstatus aktualisieren
         refOkay.CopyTo(_refOkay, 0)
-        _checkRefStateChange()
+        _checkRefState()
         RaiseEvent RoboPositionChanged()
     End Sub
     Private Sub _eLSSReceived(lssState As Boolean()) Handles _com.LSSReceived
@@ -379,14 +406,28 @@ Friend Class RobotControl
         For i = 0 To 5
             _refOkay(i) = False
         Next
-        _checkRefStateChange()
+        _checkRefState()
     End Sub
-    Private Sub _eRoboParameterChanged(joint As Boolean, servo As Boolean, dh As Boolean) Handles _pref.ParameterChanged
-        If dh Then
-            _kin.setDenavitHartenbergParameter(_pref.DenavitHartenbergParameter)
+    Private Sub _eRoboParameterChanged(changedParameter As Settings.ParameterChangedParameter) Handles _pref.ParameterChanged
+        Dim all As Boolean = (changedParameter = Settings.ParameterChangedParameter.All)
+        If changedParameter = Settings.ParameterChangedParameter.DenavitHartenbergParameter Or all Then
+            _kin.SetDenavitHartenbergParameter(_pref.DenavitHartenbergParameter)
             _kinInit = True
         End If
-        RaiseEvent RoboParameterChanged(joint, servo, dh)
+        If changedParameter = Settings.ParameterChangedParameter.Toolframe Or all Then
+            _kin.Toolframe = _pref.Toolframe
+        End If
+        If changedParameter = Settings.ParameterChangedParameter.Workframe Or all Then
+            _kin.Workframe = _pref.Workframe
+        End If
+        ' Kartesische Koordinaten berechnen (Vorwärtskinematik)
+        If changedParameter = Settings.ParameterChangedParameter.DenavitHartenbergParameter Or
+                changedParameter = Settings.ParameterChangedParameter.Toolframe Or
+                changedParameter = Settings.ParameterChangedParameter.Workframe Or
+                all Then
+            _posCart = _kin.ForwardKin(_posJoint)
+        End If
+        RaiseEvent RoboParameterChanged(changedParameter)
     End Sub
     Private Sub _eERRReceived(errnum As Integer) Handles _com.ERRReceived
         If errnum = 3 Then

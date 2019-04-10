@@ -138,14 +138,21 @@ Public Class frmMain
 #End Region
     Private Sub msRoboParameter_Click(sender As Object, e As EventArgs) Handles msRoboParameter.Click
         _dckPanSettings.Show()
+        _dckPanSettings.SetSelecteSetting(panSettings.selectedSetting.RoboPar)
     End Sub
 
     Private Sub msTCPServer_Click(sender As Object, e As EventArgs) Handles msTCPServer.Click
         _dckPanSettings.Show()
+        _dckPanSettings.SetSelecteSetting(panSettings.selectedSetting.TCPServer)
     End Sub
 
     Private Sub msDenavitHartPar_Click(sender As Object, e As EventArgs) Handles msDenavitHartPar.Click
         _dckPanSettings.Show()
+        _dckPanSettings.SetSelecteSetting(panSettings.selectedSetting.DenHartPar)
+    End Sub
+    Private Sub msFrames_Click(sender As Object, e As EventArgs) Handles msFrames.Click
+        _dckPanSettings.Show()
+        _dckPanSettings.SetSelecteSetting(panSettings.selectedSetting.Frames)
     End Sub
 
 #Region "MenuStrip Hilfe"
@@ -397,5 +404,4 @@ Public Class frmMain
         tsBtnProgRun.Enabled = False
         tsBtnProgStop.Enabled = False
     End Sub
-
 End Class

@@ -253,33 +253,37 @@
             Return
         End If
 
-        btnCtrl1Dec.Enabled = Not disable And frmMain.RoboControl.RefOkay(0)
-        btnCtrl1Inc.Enabled = Not disable And frmMain.RoboControl.RefOkay(0)
-        numCtrl1.Enabled = Not disable And frmMain.RoboControl.RefOkay(0) And cbMoveMode.SelectedIndex = 0
-        tbCtrl1.Enabled = Not disable And frmMain.RoboControl.RefOkay(0)
-        btnCtrl2Dec.Enabled = Not disable And frmMain.RoboControl.RefOkay(1)
-        btnCtrl2Inc.Enabled = Not disable And frmMain.RoboControl.RefOkay(1)
-        numCtrl2.Enabled = Not disable And frmMain.RoboControl.RefOkay(1) And cbMoveMode.SelectedIndex = 0
-        tbCtrl2.Enabled = Not disable And frmMain.RoboControl.RefOkay(1)
-        btnCtrl3Dec.Enabled = Not disable And frmMain.RoboControl.RefOkay(2)
-        btnCtrl3Inc.Enabled = Not disable And frmMain.RoboControl.RefOkay(2)
-        numCtrl3.Enabled = Not disable And frmMain.RoboControl.RefOkay(2) And cbMoveMode.SelectedIndex = 0
-        tbCtrl3.Enabled = Not disable And frmMain.RoboControl.RefOkay(2)
-        btnCtrl4Dec.Enabled = Not disable And frmMain.RoboControl.RefOkay(3)
-        btnCtrl4Inc.Enabled = Not disable And frmMain.RoboControl.RefOkay(3)
-        numCtrl4.Enabled = Not disable And frmMain.RoboControl.RefOkay(3) And cbMoveMode.SelectedIndex = 0
-        tbCtrl4.Enabled = Not disable And frmMain.RoboControl.RefOkay(3)
-        btnCtrl5Dec.Enabled = Not disable And frmMain.RoboControl.RefOkay(4)
-        btnCtrl5Inc.Enabled = Not disable And frmMain.RoboControl.RefOkay(4)
-        numCtrl5.Enabled = Not disable And frmMain.RoboControl.RefOkay(4) And cbMoveMode.SelectedIndex = 0
-        tbCtrl5.Enabled = Not disable And frmMain.RoboControl.RefOkay(4)
-        btnCtrl6Dec.Enabled = Not disable And frmMain.RoboControl.RefOkay(5)
-        btnCtrl6Inc.Enabled = Not disable And frmMain.RoboControl.RefOkay(5)
-        numCtrl6.Enabled = Not disable And frmMain.RoboControl.RefOkay(5) And cbMoveMode.SelectedIndex = 0
-        tbCtrl6.Enabled = Not disable And frmMain.RoboControl.RefOkay(5)
+        Dim tmpEnabled As Boolean
+        ' Im TCP Mode nur aktiv, wenn alle Achsen referenziert sind!
+        tmpEnabled = Not disable And (frmMain.RoboControl.AllRefOkay Or Not _tcpMode)
 
-        ' Start Button
-        Dim tmpEnabled As Boolean = False
+        btnCtrl1Dec.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(0)
+        btnCtrl1Inc.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(0)
+        numCtrl1.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(0) And cbMoveMode.SelectedIndex = 0
+        tbCtrl1.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(0)
+        btnCtrl2Dec.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(1)
+        btnCtrl2Inc.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(1)
+        numCtrl2.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(1) And cbMoveMode.SelectedIndex = 0
+        tbCtrl2.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(1)
+        btnCtrl3Dec.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(2)
+        btnCtrl3Inc.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(2)
+        numCtrl3.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(2) And cbMoveMode.SelectedIndex = 0
+        tbCtrl3.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(2)
+        btnCtrl4Dec.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(3)
+        btnCtrl4Inc.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(3)
+        numCtrl4.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(3) And cbMoveMode.SelectedIndex = 0
+        tbCtrl4.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(3)
+        btnCtrl5Dec.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(4)
+        btnCtrl5Inc.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(4)
+        numCtrl5.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(4) And cbMoveMode.SelectedIndex = 0
+        tbCtrl5.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(4)
+        btnCtrl6Dec.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(5)
+        btnCtrl6Inc.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(5)
+        numCtrl6.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(5) And cbMoveMode.SelectedIndex = 0
+        tbCtrl6.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(5)
+
+        ' Start Button (Sichtbar wenn mindestens eine Achse referenziert ist)
+        tmpEnabled = False
         If Not disable Then
             For i = 0 To 5
                 If frmMain.RoboControl.RefOkay(i) Then
@@ -377,9 +381,15 @@
         _setPosValues()
     End Sub
 
-    Private Sub _eRoboParameterChanged(joint As Boolean, servo As Boolean, dh As Boolean)
-        If joint Then
+    Private Sub _eRoboParameterChanged(parameterChaned As Settings.ParameterChangedParameter)
+        Dim all As Boolean = parameterChaned = Settings.ParameterChangedParameter.All
+        If parameterChaned = Settings.ParameterChangedParameter.Joint Or all Then
             _setMinMaxValues()
+        End If
+        If parameterChaned = Settings.ParameterChangedParameter.DenavitHartenbergParameter Or
+                parameterChaned = Settings.ParameterChangedParameter.Toolframe Or
+                parameterChaned = Settings.ParameterChangedParameter.Workframe Or all Then
+            _setPosValues()
         End If
     End Sub
 

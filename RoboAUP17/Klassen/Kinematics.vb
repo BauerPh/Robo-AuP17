@@ -32,7 +32,7 @@ Friend Class Kinematics
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
-    Friend Sub setDenavitHartenbergParameter(DenavitHartenbergParameter As DHParameter())
+    Friend Sub SetDenavitHartenbergParameter(DenavitHartenbergParameter As DHParameter())
         If UBound(DenavitHartenbergParameter) <> 5 Then
             Throw New Exception("Denavit Hartenberg Parameter für alle 6 Achsen erforderlich!")
         End If
@@ -279,7 +279,6 @@ Friend Class Kinematics
             End If
         End If
 #End Region
-
         Return erg
     End Function
 #End Region

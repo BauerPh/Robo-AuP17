@@ -15,6 +15,8 @@
     Private _jointParameter(5) As JointParameter
     Private _servoParameter(2) As ServoParameter
     Private _denavitHartenbergParameter(5) As DHParameter
+    Private _toolframe As CartCoords
+    Private _workframe As CartCoords
 
     ' Properties
     Friend ReadOnly Property JointParameter As JointParameter()
@@ -27,24 +29,37 @@
             Return _servoParameter
         End Get
     End Property
-
     Friend ReadOnly Property DenavitHartenbergParameter As DHParameter()
         Get
             Return _denavitHartenbergParameter
         End Get
     End Property
-
-    Public Property ConfigFileLoaded As Boolean
+    Friend ReadOnly Property Toolframe As CartCoords
+        Get
+            Return _toolframe
+        End Get
+    End Property
+    Friend ReadOnly Property Workframe As CartCoords
+        Get
+            Return _workframe
+        End Get
+    End Property
+    Public ReadOnly Property ConfigFileLoaded As Boolean
         Get
             Return _configFileLoaded
         End Get
-        Set(value As Boolean)
-            _configFileLoaded = value
-        End Set
     End Property
 
     ' Events
-    Friend Event ParameterChanged(ByVal joint As Boolean, ByVal servo As Boolean, ByVal dh As Boolean)
+    Friend Enum ParameterChangedParameter
+        All = 0
+        Joint
+        Servo
+        DenavitHartenbergParameter
+        Toolframe
+        Workframe
+    End Enum
+    Friend Event ParameterChanged(ByVal changedParameter As ParameterChangedParameter)
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
 
     ' -----------------------------------------------------------------------------
@@ -60,12 +75,12 @@
                 MessageBox.Show($"Die Parameterdatei ""{My.Settings.LastConfigFile}"" konnte nicht geladen werden. Es werden die Standardparameter geladen.", "Parameterdatei nicht gefunden!", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             End If
             If Not LoadDefaulSettings() Then
-                    If MessageBox.Show($"Die Parameterdatei ""{cDefaultConfigFile}"" konnte nicht gefunden werden oder ist fehlerhaft. Soll sie gesucht werden?", "Parameterdatei nicht gefunden!",
+                If MessageBox.Show($"Die Parameterdatei ""{cDefaultConfigFile}"" konnte nicht gefunden werden oder ist fehlerhaft. Soll sie gesucht werden?", "Parameterdatei nicht gefunden!",
                             MessageBoxButtons.YesNo, MessageBoxIcon.Error) = DialogResult.Yes Then
-                        LoadSettings()
-                    End If
+                    LoadSettings()
                 End If
             End If
+        End If
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -73,15 +88,23 @@
     ' -----------------------------------------------------------------------------
     Friend Sub SetJointParameter(index As Integer, jointParameter As JointParameter)
         _jointParameter(index) = jointParameter
-        RaiseEvent ParameterChanged(True, False, False)
+        RaiseEvent ParameterChanged(ParameterChangedParameter.Joint)
     End Sub
     Friend Sub SetServoParameter(index As Integer, servoParameter As ServoParameter)
         _servoParameter(index) = servoParameter
-        RaiseEvent ParameterChanged(False, True, False)
+        RaiseEvent ParameterChanged(ParameterChangedParameter.Servo)
     End Sub
     Friend Sub SetDenavitHartenbergParameter(index As Integer, dhParameter As DHParameter)
         _denavitHartenbergParameter(index) = dhParameter
-        RaiseEvent ParameterChanged(False, False, True)
+        RaiseEvent ParameterChanged(ParameterChangedParameter.DenavitHartenbergParameter)
+    End Sub
+    Friend Sub SetToolframe(toolframe As CartCoords)
+        _toolframe = toolframe
+        RaiseEvent ParameterChanged(ParameterChangedParameter.Toolframe)
+    End Sub
+    Friend Sub SetWorkframe(workframe As CartCoords)
+        _workframe = workframe
+        RaiseEvent ParameterChanged(ParameterChangedParameter.Workframe)
     End Sub
     Friend Function GetDefaulConfigFilename() As String
         Return cDefaultConfigFile
@@ -92,7 +115,7 @@
             My.Settings.LastConfigFile = cDefaultConfigFile
             My.Settings.Save()
             _actFilename = cDefaultConfigFile
-            RaiseEvent ParameterChanged(True, True, True)
+            RaiseEvent ParameterChanged(ParameterChangedParameter.All)
             RaiseEvent Log($"[Parameter] Standardparameter geladen", Logger.LogLevel.ERR)
             _configFileLoaded = True
             Return True
@@ -110,7 +133,7 @@
                 My.Settings.LastConfigFile = openFileDialog.FileName
                 My.Settings.Save()
                 _actFilename = openFileDialog.FileName
-                RaiseEvent ParameterChanged(True, True, True)
+                RaiseEvent ParameterChanged(ParameterChangedParameter.All)
                 RaiseEvent Log("[Parameter] Parameterdatei geladen", Logger.LogLevel.INFO)
                 _configFileLoaded = True
                 Return True
@@ -162,6 +185,7 @@
             .Indentation = 4
             .WriteStartDocument()
             .WriteStartElement("Settings")
+            'Joints
             For i = 0 To 5
                 .WriteStartElement("J" & (i + 1).ToString())
 
@@ -201,6 +225,7 @@
 
                 .WriteEndElement()
             Next
+            'Servos
             For i = 0 To 2
                 .WriteStartElement("SRV" & (i + 1).ToString())
 
@@ -211,6 +236,25 @@
 
                 .WriteEndElement()
             Next
+            'Toolframe
+            .WriteStartElement("toolframe")
+            .WriteAttributeString("x", _toolframe.X.ToString)
+            .WriteAttributeString("y", _toolframe.Y.ToString)
+            .WriteAttributeString("z", _toolframe.Z.ToString)
+            .WriteAttributeString("yaw", _toolframe.Yaw.ToString)
+            .WriteAttributeString("pitch", _toolframe.Pitch.ToString)
+            .WriteAttributeString("roll", _toolframe.Roll.ToString)
+            .WriteEndElement()
+            'Workframe
+            .WriteStartElement("workframe")
+            .WriteAttributeString("x", _workframe.X.ToString)
+            .WriteAttributeString("y", _workframe.Y.ToString)
+            .WriteAttributeString("z", _workframe.Z.ToString)
+            .WriteAttributeString("yaw", _workframe.Yaw.ToString)
+            .WriteAttributeString("pitch", _workframe.Pitch.ToString)
+            .WriteAttributeString("roll", _workframe.Roll.ToString)
+            .WriteEndElement()
+            'Settings
             .WriteEndElement()
             .Close()
         End With
@@ -222,7 +266,7 @@
 
         Dim XMLReader As Xml.XmlReader = New Xml.XmlTextReader(filename)
         Dim i As Int32 'Index
-        Dim joints As Boolean = False
+        Dim setting As Integer = 0
         Dim valid As Boolean = False
 
         With XMLReader
@@ -237,14 +281,18 @@
                     End If
                     If e.Substring(0, 1) = "J" Then
                         i = CInt(e.Substring(1)) - 1 'Joint Nr
-                        joints = True
+                        setting = 1
                     ElseIf e.Substring(0, 3) = "SRV" Then
                         i = CInt(e.Substring(3)) - 1
-                        joints = False
+                        setting = 2
+                    ElseIf e = "toolframe" Then
+                        setting = 3
+                    ElseIf e = "workframe" Then
+                        setting = 4
                     End If
                     If .AttributeCount > 0 Then 'sind überhaupt Attribute vorhanden?
                         While .MoveToNextAttribute 'Attribute durchlaufen
-                            If joints Then
+                            If setting = 1 Then
                                 '********** JOINTS **********
                                 Select Case e
                                     Case "mot"
@@ -301,7 +349,7 @@
                                                 _denavitHartenbergParameter(i).a = CDbl(.Value)
                                         End Select
                                 End Select
-                            Else
+                            ElseIf setting = 2 Then
                                 '********** SERVOS **********
                                 Select Case e
                                     Case "angles"
@@ -311,6 +359,38 @@
                                             Case "maxAngle"
                                                 _servoParameter(i).MaxAngle = CDbl(.Value)
                                         End Select
+                                End Select
+                            ElseIf setting = 3 Then
+                                '********** WORKFRAME **********
+                                Select Case .Name
+                                    Case "x"
+                                        _toolframe.X = CDbl(.Value)
+                                    Case "y"
+                                        _toolframe.Y = CDbl(.Value)
+                                    Case "z"
+                                        _toolframe.Z = CDbl(.Value)
+                                    Case "yaw"
+                                        _toolframe.Yaw = CDbl(.Value)
+                                    Case "pitch"
+                                        _toolframe.Pitch = CDbl(.Value)
+                                    Case "roll"
+                                        _toolframe.Roll = CDbl(.Value)
+                                End Select
+                            ElseIf setting = 4 Then
+                                '********** TOOLFRAME **********
+                                Select Case .Name
+                                    Case "x"
+                                        _workframe.X = CDbl(.Value)
+                                    Case "y"
+                                        _workframe.Y = CDbl(.Value)
+                                    Case "z"
+                                        _workframe.Z = CDbl(.Value)
+                                    Case "yaw"
+                                        _workframe.Yaw = CDbl(.Value)
+                                    Case "pitch"
+                                        _workframe.Pitch = CDbl(.Value)
+                                    Case "roll"
+                                        _workframe.Roll = CDbl(.Value)
                                 End Select
                             End If
                         End While
