@@ -13,15 +13,63 @@ Module dataStructs
     End Structure
 
     Friend Structure CartCoords
-        Friend X, Y, Z, yaw, pitch, roll As Double
+        Private _x, _y, _z, _yaw, _pitch, _roll As Double
         Friend Sub New(X As Double, Y As Double, Z As Double, yaw As Double, pitch As Double, roll As Double)
             Me.X = X
             Me.Y = Y
             Me.Z = Z
-            Me.yaw = yaw
-            Me.pitch = pitch
-            Me.roll = roll
+            Me.Yaw = yaw
+            Me.Pitch = pitch
+            Me.Roll = roll
         End Sub
+        Public Property X As Double
+            Get
+                Return _x
+            End Get
+            Set(value As Double)
+                _x = value
+            End Set
+        End Property
+        Public Property Y As Double
+            Get
+                Return _y
+            End Get
+            Set(value As Double)
+                _y = value
+            End Set
+        End Property
+        Public Property Z As Double
+            Get
+                Return _z
+            End Get
+            Set(value As Double)
+                _z = value
+            End Set
+        End Property
+        Public Property Yaw As Double
+            Get
+                Return _yaw
+            End Get
+            Set(value As Double)
+                _yaw = value
+            End Set
+        End Property
+        Public Property Pitch As Double
+            Get
+                Return _pitch
+            End Get
+            Set(value As Double)
+                _pitch = value
+            End Set
+        End Property
+        Public Property Roll As Double
+            Get
+                Return _roll
+            End Get
+            Set(value As Double)
+                _roll = value
+            End Set
+        End Property
     End Structure
 
     Friend Structure JointAngles

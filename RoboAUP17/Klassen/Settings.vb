@@ -3,6 +3,7 @@
     ' TODO
     ' -----------------------------------------------------------------------------
     ' TCP-Server Einstellungen einbinden
+    ' Toolframe Einstellungen hinzufügen
 
     ' -----------------------------------------------------------------------------
     ' Definitions

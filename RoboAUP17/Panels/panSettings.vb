@@ -2,7 +2,8 @@
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' TCP-Server einstellungen hinzufügen
+    ' TCP-Server Einstellungen hinzufügen
+    ' Toolframe Einstellungen hinzufügen
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
@@ -39,7 +40,7 @@
         _refreshButtons()
     End Sub
     Private Sub propGridRoboPar_PropertyValueChanged(sender As Object, e As EventArgs) Handles propGridRoboPar.PropertyValueChanged
-        'Objekt aktualisieren
+        'Objekte aktualisieren
         Select Case _selectedSetting
             Case selectedSetting.RoboPar
                 If _actPropView > 5 Then

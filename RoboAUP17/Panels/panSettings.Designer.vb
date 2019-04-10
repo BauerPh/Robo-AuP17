@@ -53,6 +53,7 @@ Partial Class panSettings
         Me.btnServo2 = New System.Windows.Forms.ToolStripButton()
         Me.sepServ3 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnServo3 = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripContainer.BottomToolStripPanel.SuspendLayout()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
@@ -113,7 +114,7 @@ Partial Class panSettings
         '
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnLoad, Me.btnSave, Me.btnDefaultConfig, Me.ToolStripSeparator10, Me.btnDenHartPar, Me.btnRoboPar, Me.btnTCPServer})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnLoad, Me.btnSave, Me.btnDefaultConfig, Me.ToolStripSeparator10, Me.btnDenHartPar, Me.btnRoboPar, Me.btnTCPServer, Me.ToolStripButton1})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(613, 25)
@@ -305,6 +306,14 @@ Partial Class panSettings
         Me.btnServo3.Size = New System.Drawing.Size(42, 22)
         Me.btnServo3.Text = "Serv 3"
         '
+        'ToolStripButton1
+        '
+        Me.ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), System.Drawing.Image)
+        Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripButton1.Name = "ToolStripButton1"
+        Me.ToolStripButton1.Size = New System.Drawing.Size(81, 22)
+        Me.ToolStripButton1.Text = "Toolframe"
+        '
         'panSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -361,4 +370,5 @@ Partial Class panSettings
     Friend WithEvents btnDenHartPar As ToolStripButton
     Friend WithEvents btnRoboPar As ToolStripButton
     Friend WithEvents btnTCPServer As ToolStripButton
+    Friend WithEvents ToolStripButton1 As ToolStripButton
 End Class

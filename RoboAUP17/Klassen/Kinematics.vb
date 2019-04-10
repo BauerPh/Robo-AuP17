@@ -71,9 +71,9 @@ Friend Class Kinematics
         erg.Z = tmpMatr.val(3, 2)
         'Ausrichtung
         Dim tmpPitch As Double = Math.Atan2(Math.Sqrt((tmpMatr.val(2, 0) ^ 2) + (tmpMatr.val(2, 1) ^ 2)), tmpMatr.val(2, 2) * -1)
-        erg.yaw = ToDEG(Math.Atan2(tmpMatr.val(0, 2) / tmpPitch, tmpMatr.val(1, 2) / tmpPitch))
-        erg.pitch = ToDEG(tmpPitch)
-        erg.roll = ToDEG(Math.Atan2(tmpMatr.val(2, 0) / tmpPitch, tmpMatr.val(2, 1) / tmpPitch))
+        erg.Yaw = ToDEG(Math.Atan2(tmpMatr.val(0, 2) / tmpPitch, tmpMatr.val(1, 2) / tmpPitch))
+        erg.Pitch = ToDEG(tmpPitch)
+        erg.Roll = ToDEG(Math.Atan2(tmpMatr.val(2, 0) / tmpPitch, tmpMatr.val(2, 1) / tmpPitch))
 
         Return erg
     End Function
@@ -88,7 +88,7 @@ Friend Class Kinematics
         ' Vorberechnungen
         '------------------------------------
         ' Winkel in Bogenmaß umrechnen
-        Dim coordRad As New CartCoords(coords.X, coords.Y, coords.Z, ToRAD(coords.yaw), ToRAD(coords.pitch), ToRAD(coords.roll))
+        Dim coordRad As New CartCoords(coords.X, coords.Y, coords.Z, ToRAD(coords.Yaw), ToRAD(coords.Pitch), ToRAD(coords.Roll))
 
         ' Quadrant von J1 berechnen
         Dim J1Quadrant As Integer
@@ -108,17 +108,17 @@ Friend Class Kinematics
 
         ' TCP Matrix berechnen (R 0-T)
         Dim tcpFrame As New Matrix4x4
-        tcpFrame.val(0, 0) = Math.Cos(coordRad.yaw) * Math.Cos(coordRad.roll) - Math.Cos(coordRad.pitch) * Math.Sin(coordRad.yaw) * Math.Sin(coordRad.roll)
-        tcpFrame.val(0, 1) = Math.Cos(coordRad.pitch) * Math.Cos(coordRad.roll) * Math.Sin(coordRad.yaw) + Math.Cos(coordRad.yaw) * Math.Sin(coordRad.roll)
-        tcpFrame.val(0, 2) = Math.Sin(coordRad.yaw) * Math.Sin(coordRad.pitch)
+        tcpFrame.val(0, 0) = Math.Cos(coordRad.Yaw) * Math.Cos(coordRad.Roll) - Math.Cos(coordRad.Pitch) * Math.Sin(coordRad.Yaw) * Math.Sin(coordRad.Roll)
+        tcpFrame.val(0, 1) = Math.Cos(coordRad.Pitch) * Math.Cos(coordRad.Roll) * Math.Sin(coordRad.Yaw) + Math.Cos(coordRad.Yaw) * Math.Sin(coordRad.Roll)
+        tcpFrame.val(0, 2) = Math.Sin(coordRad.Yaw) * Math.Sin(coordRad.Pitch)
         tcpFrame.val(0, 3) = 0.0
-        tcpFrame.val(1, 0) = Math.Cos(coordRad.roll) * Math.Sin(coordRad.yaw) + Math.Cos(coordRad.yaw) * Math.Cos(coordRad.pitch) * Math.Sin(coordRad.roll)
-        tcpFrame.val(1, 1) = Math.Cos(coordRad.yaw) * Math.Cos(coordRad.pitch) * Math.Cos(coordRad.roll) - Math.Sin(coordRad.yaw) * Math.Sin(coordRad.roll)
-        tcpFrame.val(1, 2) = Math.Cos(coordRad.yaw) * Math.Sin(coordRad.pitch)
+        tcpFrame.val(1, 0) = Math.Cos(coordRad.Roll) * Math.Sin(coordRad.Yaw) + Math.Cos(coordRad.Yaw) * Math.Cos(coordRad.Pitch) * Math.Sin(coordRad.Roll)
+        tcpFrame.val(1, 1) = Math.Cos(coordRad.Yaw) * Math.Cos(coordRad.Pitch) * Math.Cos(coordRad.Roll) - Math.Sin(coordRad.Yaw) * Math.Sin(coordRad.Roll)
+        tcpFrame.val(1, 2) = Math.Cos(coordRad.Yaw) * Math.Sin(coordRad.Pitch)
         tcpFrame.val(1, 3) = 0.0
-        tcpFrame.val(2, 0) = Math.Sin(coordRad.pitch) * Math.Sin(coordRad.roll)
-        tcpFrame.val(2, 1) = Math.Cos(coordRad.roll) * Math.Sin(coordRad.pitch)
-        tcpFrame.val(2, 2) = -Math.Cos(coordRad.pitch)
+        tcpFrame.val(2, 0) = Math.Sin(coordRad.Pitch) * Math.Sin(coordRad.Roll)
+        tcpFrame.val(2, 1) = Math.Cos(coordRad.Roll) * Math.Sin(coordRad.Pitch)
+        tcpFrame.val(2, 2) = -Math.Cos(coordRad.Pitch)
         tcpFrame.val(2, 3) = 0.0
         tcpFrame.val(3, 0) = coords.X
         tcpFrame.val(3, 1) = coords.Y
@@ -347,9 +347,9 @@ Friend Class Kinematics
 
     Private Function CalcFrameMatrix(frame As CartCoords) As Matrix4x4
         Dim Matrix As New Matrix4x4
-        Dim yaw As Double = ToRAD(frame.yaw)
-        Dim pitch As Double = ToRAD(frame.pitch)
-        Dim roll As Double = ToRAD(frame.roll)
+        Dim yaw As Double = ToRAD(frame.Yaw)
+        Dim pitch As Double = ToRAD(frame.Pitch)
+        Dim roll As Double = ToRAD(frame.Roll)
 
         Matrix.val(0, 0) = Math.Cos(roll) * Math.Cos(pitch)
         Matrix.val(0, 1) = Math.Sin(roll) * Math.Cos(pitch)

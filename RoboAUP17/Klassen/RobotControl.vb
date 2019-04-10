@@ -143,11 +143,11 @@ Friend Class RobotControl
             Case 3
                 cartCoords.Z = cartCoords.Z + jogval
             Case 4
-                cartCoords.yaw = cartCoords.yaw + jogval
+                cartCoords.Yaw = cartCoords.Yaw + jogval
             Case 5
-                cartCoords.pitch = cartCoords.pitch + jogval
+                cartCoords.Pitch = cartCoords.Pitch + jogval
             Case 6
-                cartCoords.roll = cartCoords.roll + jogval
+                cartCoords.Roll = cartCoords.Roll + jogval
             Case Else
                 Return False
         End Select
@@ -283,8 +283,14 @@ Friend Class RobotControl
             jointAngles.J6 > _pref.JointParameter(5).MechMaxAngle Or
             jointAngles.J6 < _pref.JointParameter(5).MechMinAngle
     End Function
-    Private Sub _checkRefStateChange()
+    Private Sub _checkRefStateChange(Optional reset As Boolean = False)
         Static refOkayOld(5) As Boolean
+        If reset Then
+            For i = 0 To 5
+                refOkayOld(i) = False
+            Next
+            Return
+        End If
         For i = 0 To 5
             If _refOkay(i) <> refOkayOld(i) Then
                 RaiseEvent RoboRefStateChanged(_refOkay)
@@ -335,6 +341,8 @@ Friend Class RobotControl
         RaiseEvent SerialConnected()
     End Sub
     Private Sub _eSerialDisconnected() Handles _com.SerialDisconnected
+        ' alten Ref Status reseten
+        _checkRefStateChange(True)
         RaiseEvent SerialDisconnected()
     End Sub
     Private Sub _eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles _com.Log, _pref.Log

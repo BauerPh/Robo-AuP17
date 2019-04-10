@@ -301,9 +301,9 @@
                 numCtrl1.Value = CDec(frmMain.RoboControl.PosCart.X)
                 numCtrl2.Value = CDec(frmMain.RoboControl.PosCart.Y)
                 numCtrl3.Value = CDec(frmMain.RoboControl.PosCart.Z)
-                numCtrl4.Value = CDec(frmMain.RoboControl.PosCart.yaw)
-                numCtrl5.Value = CDec(frmMain.RoboControl.PosCart.pitch)
-                numCtrl6.Value = CDec(frmMain.RoboControl.PosCart.roll)
+                numCtrl4.Value = CDec(frmMain.RoboControl.PosCart.Yaw)
+                numCtrl5.Value = CDec(frmMain.RoboControl.PosCart.Pitch)
+                numCtrl6.Value = CDec(frmMain.RoboControl.PosCart.Roll)
             Else
                 numCtrl1.Value = CDec(frmMain.RoboControl.PosJoint.J1)
                 numCtrl2.Value = CDec(frmMain.RoboControl.PosJoint.J2)
