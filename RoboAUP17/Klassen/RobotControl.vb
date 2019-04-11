@@ -113,8 +113,8 @@ Friend Class RobotControl
         _actV = speed
         _actA = acc
     End Sub
-    ' Jog Angle
     Friend Function DoJog(nr As Int32, jogval As Double) As Boolean
+        ' Jog Angle
         Dim tmpV(5) As Double
         Dim tmpA(5) As Double
         'aktuelle Geschwindigkeit und Beschleunigung berechnen
@@ -352,6 +352,11 @@ Friend Class RobotControl
         Return If(_pref.JointParameter(tmpNr).MotDir = 1, -1, 1) * AngleToSteps(target, _pref.JointParameter(tmpNr).MotGear, _pref.JointParameter(tmpNr).MechGear, _pref.JointParameter(tmpNr).MotStepsPerRot << _pref.JointParameter(tmpNr).MotMode, If(_pref.JointParameter(tmpNr).CalDir = 0, _pref.JointParameter(tmpNr).MechMinAngle * -1, _pref.JointParameter(tmpNr).MechMaxAngle * -1))
     End Function
 
+    Private Function _calcStepsToJointAngle(steps As Int32, nr As Int32) As Double
+        Dim tmpNr As Int32 = nr - 1
+        Return StepsToAngle(If(_pref.JointParameter(tmpNr).MotDir = 1, -1, 1) * steps, _pref.JointParameter(tmpNr).MotGear, _pref.JointParameter(tmpNr).MechGear, _pref.JointParameter(tmpNr).MotStepsPerRot << _pref.JointParameter(tmpNr).MotMode, If(_pref.JointParameter(tmpNr).CalDir = 0, _pref.JointParameter(tmpNr).MechMinAngle * -1, _pref.JointParameter(tmpNr).MechMaxAngle * -1))
+    End Function
+
     Private Function _calcSpeedAccToSteps(speedAcc As Double, nr As Int32) As Int32
         Dim tmpNr As Int32 = nr - 1
         Return AngleToSteps(speedAcc, _pref.JointParameter(tmpNr).MotGear, _pref.JointParameter(tmpNr).MechGear, _pref.JointParameter(tmpNr).MotStepsPerRot, 0)
@@ -385,7 +390,7 @@ Friend Class RobotControl
         Array.Copy(posSteps, _posSteps, 6)
         ' Joint Winkel berechnen
         For i = 0 To 5
-            _posJoint.SetByIndex(i, StepsToAngle(posSteps(i), _pref.JointParameter(i).MotGear, _pref.JointParameter(i).MechGear, _pref.JointParameter(i).MotStepsPerRot << _pref.JointParameter(i).MotMode, If(_pref.JointParameter(i).CalDir = 0, _pref.JointParameter(i).MechMinAngle * -1, _pref.JointParameter(i).MechMaxAngle * -1)))
+            _posJoint.SetByIndex(i, _calcStepsToJointAngle(_posSteps(i), i + 1))
         Next
         ' Kartesische Koordinaten berechnen (Vorwärtskinematik)
         If _kinInit Then

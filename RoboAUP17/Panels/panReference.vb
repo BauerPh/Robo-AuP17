@@ -5,6 +5,7 @@
     ' fertig?
 
     Private _serialConnected As Boolean = False
+    Private _moveStarted As Boolean = False
     ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
@@ -19,7 +20,7 @@
     ' Form Control
     ' -----------------------------------------------------------------------------
     Private Sub cbCheckedChanged(sender As Object, e As EventArgs) Handles cbSelJ1.CheckedChanged, cbSelJ2.CheckedChanged, cbSelJ3.CheckedChanged, cbSelJ4.CheckedChanged, cbSelJ5.CheckedChanged, cbSelJ6.CheckedChanged
-        _enableDisableElements(False)
+        _enableDisableElements()
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -49,35 +50,37 @@
     ' -----------------------------------------------------------------------------
     ' Helper Functions
     ' -----------------------------------------------------------------------------
-    Private Sub _enableDisableElements(disable As Boolean)
+    Private Sub _enableDisableElements()
         If InvokeRequired Then
-            Invoke(Sub() _enableDisableElements(disable))
+            Invoke(Sub() _enableDisableElements())
             Return
         End If
 
-        btnRefJ1.Enabled = _serialConnected And Not disable
-        btnRefJ2.Enabled = _serialConnected And Not disable
-        btnRefJ3.Enabled = _serialConnected And Not disable
-        btnRefJ4.Enabled = _serialConnected And Not disable
-        btnRefJ5.Enabled = _serialConnected And Not disable
-        btnRefJ6.Enabled = _serialConnected And Not disable
-        btnRefStart.Enabled = Not disable And _serialConnected And (cbSelJ1.Checked Or cbSelJ2.Checked Or cbSelJ3.Checked Or cbSelJ4.Checked Or cbSelJ5.Checked Or cbSelJ6.Checked)
+        btnRefJ1.Enabled = _serialConnected And Not _moveStarted
+        btnRefJ2.Enabled = _serialConnected And Not _moveStarted
+        btnRefJ3.Enabled = _serialConnected And Not _moveStarted
+        btnRefJ4.Enabled = _serialConnected And Not _moveStarted
+        btnRefJ5.Enabled = _serialConnected And Not _moveStarted
+        btnRefJ6.Enabled = _serialConnected And Not _moveStarted
+        btnRefStart.Enabled = _serialConnected And Not _moveStarted And (cbSelJ1.Checked Or cbSelJ2.Checked Or cbSelJ3.Checked Or cbSelJ4.Checked Or cbSelJ5.Checked Or cbSelJ6.Checked)
     End Sub
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
     Private Sub _eComSerialConnected()
         _serialConnected = True
-        _enableDisableElements(False)
+        _enableDisableElements()
     End Sub
     Private Sub _eComSerialDisconnected()
         _serialConnected = False
-        _enableDisableElements(False)
+        _enableDisableElements()
     End Sub
     Private Sub _eRoboMoveStarted()
-        _enableDisableElements(True)
+        _moveStarted = True
+        _enableDisableElements()
     End Sub
     Private Sub _eRoboMoveFinished()
-        _enableDisableElements(False)
+        _moveStarted = False
+        _enableDisableElements()
     End Sub
 End Class
