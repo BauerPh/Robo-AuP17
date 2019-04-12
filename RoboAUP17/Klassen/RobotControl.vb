@@ -4,7 +4,7 @@ Friend Class RobotControl
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' fertig?
+    ' Cart Coord nur berechnen wenn alle Achsen Referenz haben!
 
     ' -----------------------------------------------------------------------------
     ' Definitions
@@ -185,7 +185,7 @@ Friend Class RobotControl
     End Function
     Friend Function DoTCPMov(cartCoords As CartCoords) As Boolean
         Dim jointAngles As JointAngles = _kin.InversKin(cartCoords)
-        'Check inverse Kin Ergebnis ... TODO "NaN" abfangen!
+        'Check inverse Kin Ergebnis
         If Double.IsNaN(jointAngles.J1) Or Double.IsNaN(jointAngles.J2) Or Double.IsNaN(jointAngles.J3) Or Double.IsNaN(jointAngles.J4) Or Double.IsNaN(jointAngles.J5) Or Double.IsNaN(jointAngles.J6) Then
             RaiseEvent Log("[Robo Control] Bewegung nicht möglich, Position nicht erreichbar", Logger.LogLevel.ERR)
             RaiseEvent RoboPositionChanged()
@@ -388,17 +388,31 @@ Friend Class RobotControl
     Private Sub _ePOSReceived(refOkay As Boolean(), posSteps As Int32()) Handles _com.POSReceived
         ' Steps speichern
         Array.Copy(posSteps, _posSteps, 6)
-        ' Joint Winkel berechnen
+        ' Joint Winkel berechnen und Grenzwerte prüfen
         For i = 0 To 5
             _posJoint.SetByIndex(i, _calcStepsToJointAngle(_posSteps(i), i + 1))
+            If _posJoint.Items(i) > _pref.JointParameter(i).MechMaxAngle Or _posJoint.Items(i) < _pref.JointParameter(i).MechMinAngle Then
+                RaiseEvent Log($"[Robo Control] Achse {i + 1} außerhalb der Grenzwerte => Referenzfahrt erforderlich!", Logger.LogLevel.WARN)
+                _posJoint.SetByIndex(i, _pref.JointParameter(i).MechMinAngle)
+                refOkay(i) = False 'Parameter überschreiben!
+            End If
         Next
-        ' Kartesische Koordinaten berechnen (Vorwärtskinematik)
-        If _kinInit Then
-            _posCart = _kin.ForwardKin(_posJoint)
-        End If
         ' Referenzstatus aktualisieren
         refOkay.CopyTo(_refOkay, 0)
         _checkRefState()
+
+        ' Kartesische Koordinaten berechnen (Vorwärtskinematik)
+        If _kinInit And _allRefOkay Then
+            _posCart = _kin.ForwardKin(_posJoint)
+        Else
+            _posCart.X = 0
+            _posCart.Y = 0
+            _posCart.Z = 0
+            _posCart.Yaw = 0
+            _posCart.Pitch = 0
+            _posCart.Roll = 0
+        End If
+
         RaiseEvent RoboPositionChanged()
     End Sub
     Private Sub _eLSSReceived(lssState As Boolean()) Handles _com.LSSReceived
@@ -437,8 +451,10 @@ Friend Class RobotControl
     Private Sub _eERRReceived(errnum As Integer) Handles _com.ERRReceived
         If errnum = 3 Then
             RaiseEvent Log("[Robo Control] Roboter nicht in Referenz", Logger.LogLevel.ERR)
+            RaiseEvent RoboMoveFinished()
         ElseIf errnum = 4 Then
             RaiseEvent Log("[Robo Control] Referenzfahrt fehlgeschlagen", Logger.LogLevel.ERR)
+            RaiseEvent RoboMoveFinished()
         End If
     End Sub
 End Class

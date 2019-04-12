@@ -69,10 +69,12 @@
     ' -----------------------------------------------------------------------------
     Private Sub _eComSerialConnected()
         _serialConnected = True
+        _moveStarted = False
         _enableDisableElements()
     End Sub
     Private Sub _eComSerialDisconnected()
         _serialConnected = False
+        _moveStarted = False
         _enableDisableElements()
     End Sub
     Private Sub _eRoboMoveStarted()

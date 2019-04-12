@@ -2,6 +2,8 @@
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
+    ' Servosteuerung
+    ' TODO: alten Jog-Interval für jeden Mode speicher und wiederherstellen
     ' Checkbox für SyncMove
     ' Home & Parkposition anfahren
     ' RefernzChanged event beachten
@@ -130,10 +132,9 @@
             TableLayoutPanel.ColumnStyles(3).Width = 12.5
             TableLayoutPanel.ColumnStyles(4).Width = 12.5
 
-            'Min/Max Werte aktualisieren
-            _setMinMaxValues()
-            'Pos Werte aktualisieren
-            _setPosValues()
+            ' TODO: alten Jog-Interval für jeden Mode speicher und wiederherstellen
+            ' das gleiche auch mit Geschwindigkeit und Beschleunigung!
+            numJogInterval1.Value = 5
         Else
             ' TCP Mode
             _tcpMode = True
@@ -161,12 +162,16 @@
             TableLayoutPanel.ColumnStyles(2).Width = 0
             TableLayoutPanel.ColumnStyles(3).Width = 30
             TableLayoutPanel.ColumnStyles(4).Width = 30
-
-            'Min/Max Werte aktualisieren
-            _setMinMaxValues()
-            'Pos Werte aktualisieren
-            _setPosValues()
+            ' TODO: alten Jog-Interval für jeden Mode speicher und wiederherstellen
+            ' das gleiche auch mit Geschwindigkeit und Beschleunigung!
+            numJogInterval1.Value = 20
         End If
+        'Min/Max Werte aktualisieren
+        _setMinMaxValues()
+        'Pos Werte aktualisieren
+        _setPosValues()
+        'Felder aktualisieren
+        _enableDisableElements(False)
     End Sub
     Private Sub cbJogMode_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbJogMode.SelectedIndexChanged
         numJogInterval1.DecimalPlaces = If(cbJogMode.SelectedIndex = 0, 1, 0)

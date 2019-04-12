@@ -57,6 +57,9 @@ Partial Class panCtrl
         Me.btnCtrl6Inc = New System.Windows.Forms.Button()
         Me.lblTargetAngle = New System.Windows.Forms.Label()
         Me.lblJog = New System.Windows.Forms.Label()
+        Me.lblServo1 = New System.Windows.Forms.Label()
+        Me.lblServo2 = New System.Windows.Forms.Label()
+        Me.lblServo3 = New System.Windows.Forms.Label()
         Me.ToolStrip2 = New System.Windows.Forms.ToolStrip()
         Me.lblMode = New System.Windows.Forms.ToolStripLabel()
         Me.cbJointOrTCP = New System.Windows.Forms.ToolStripComboBox()
@@ -104,20 +107,20 @@ Partial Class panCtrl
         'ToolStripContainer.ContentPanel
         '
         Me.ToolStripContainer.ContentPanel.Controls.Add(Me.TableLayoutPanel)
-        Me.ToolStripContainer.ContentPanel.Size = New System.Drawing.Size(511, 258)
+        Me.ToolStripContainer.ContentPanel.Size = New System.Drawing.Size(536, 358)
         Me.ToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ToolStripContainer.LeftToolStripPanelVisible = False
         Me.ToolStripContainer.Location = New System.Drawing.Point(0, 0)
         Me.ToolStripContainer.Name = "ToolStripContainer"
         Me.ToolStripContainer.RightToolStripPanelVisible = False
-        Me.ToolStripContainer.Size = New System.Drawing.Size(511, 310)
+        Me.ToolStripContainer.Size = New System.Drawing.Size(536, 410)
         Me.ToolStripContainer.TabIndex = 0
         Me.ToolStripContainer.Text = "ToolStripContainer"
         '
         'ToolStripContainer.TopToolStripPanel
         '
-        Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip2)
         Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip1)
+        Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip2)
         '
         'TableLayoutPanel
         '
@@ -161,10 +164,13 @@ Partial Class panCtrl
         Me.TableLayoutPanel.Controls.Add(Me.btnCtrl6Inc, 4, 6)
         Me.TableLayoutPanel.Controls.Add(Me.lblTargetAngle, 1, 0)
         Me.TableLayoutPanel.Controls.Add(Me.lblJog, 3, 0)
+        Me.TableLayoutPanel.Controls.Add(Me.lblServo1, 0, 7)
+        Me.TableLayoutPanel.Controls.Add(Me.lblServo2, 0, 8)
+        Me.TableLayoutPanel.Controls.Add(Me.lblServo3, 0, 9)
         Me.TableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel.Location = New System.Drawing.Point(0, 0)
         Me.TableLayoutPanel.Name = "TableLayoutPanel"
-        Me.TableLayoutPanel.RowCount = 8
+        Me.TableLayoutPanel.RowCount = 11
         Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25.0!))
         Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
         Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
@@ -172,18 +178,21 @@ Partial Class panCtrl
         Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
         Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
         Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
+        Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
+        Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
+        Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
         Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel.Size = New System.Drawing.Size(511, 258)
+        Me.TableLayoutPanel.Size = New System.Drawing.Size(536, 358)
         Me.TableLayoutPanel.TabIndex = 0
         '
         'btnCtrl1Inc
         '
         Me.btnCtrl1Inc.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCtrl1Inc.Enabled = False
-        Me.btnCtrl1Inc.Location = New System.Drawing.Point(454, 27)
+        Me.btnCtrl1Inc.Location = New System.Drawing.Point(476, 27)
         Me.btnCtrl1Inc.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCtrl1Inc.Name = "btnCtrl1Inc"
-        Me.btnCtrl1Inc.Size = New System.Drawing.Size(55, 26)
+        Me.btnCtrl1Inc.Size = New System.Drawing.Size(58, 26)
         Me.btnCtrl1Inc.TabIndex = 4
         Me.btnCtrl1Inc.Text = "+"
         Me.btnCtrl1Inc.UseVisualStyleBackColor = True
@@ -206,10 +215,10 @@ Partial Class panCtrl
         '
         Me.btnCtrl1Dec.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCtrl1Dec.Enabled = False
-        Me.btnCtrl1Dec.Location = New System.Drawing.Point(397, 27)
+        Me.btnCtrl1Dec.Location = New System.Drawing.Point(416, 27)
         Me.btnCtrl1Dec.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCtrl1Dec.Name = "btnCtrl1Dec"
-        Me.btnCtrl1Dec.Size = New System.Drawing.Size(53, 26)
+        Me.btnCtrl1Dec.Size = New System.Drawing.Size(56, 26)
         Me.btnCtrl1Dec.TabIndex = 2
         Me.btnCtrl1Dec.Text = "-"
         Me.btnCtrl1Dec.UseVisualStyleBackColor = True
@@ -221,11 +230,11 @@ Partial Class panCtrl
         Me.tbCtrl1.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.tbCtrl1.Enabled = False
         Me.tbCtrl1.LargeChange = 10
-        Me.tbCtrl1.Location = New System.Drawing.Point(168, 28)
+        Me.tbCtrl1.Location = New System.Drawing.Point(174, 28)
         Me.tbCtrl1.Maximum = 36000
         Me.tbCtrl1.Minimum = -36000
         Me.tbCtrl1.Name = "tbCtrl1"
-        Me.tbCtrl1.Size = New System.Drawing.Size(224, 24)
+        Me.tbCtrl1.Size = New System.Drawing.Size(237, 24)
         Me.tbCtrl1.TabIndex = 0
         Me.tbCtrl1.TickStyle = System.Windows.Forms.TickStyle.None
         '
@@ -238,17 +247,17 @@ Partial Class panCtrl
         Me.numCtrl1.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
         Me.numCtrl1.Minimum = New Decimal(New Integer() {360, 0, 0, -2147483648})
         Me.numCtrl1.Name = "numCtrl1"
-        Me.numCtrl1.Size = New System.Drawing.Size(109, 20)
+        Me.numCtrl1.Size = New System.Drawing.Size(115, 20)
         Me.numCtrl1.TabIndex = 3
         '
         'btnCtrl2Inc
         '
         Me.btnCtrl2Inc.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCtrl2Inc.Enabled = False
-        Me.btnCtrl2Inc.Location = New System.Drawing.Point(454, 57)
+        Me.btnCtrl2Inc.Location = New System.Drawing.Point(476, 57)
         Me.btnCtrl2Inc.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCtrl2Inc.Name = "btnCtrl2Inc"
-        Me.btnCtrl2Inc.Size = New System.Drawing.Size(55, 26)
+        Me.btnCtrl2Inc.Size = New System.Drawing.Size(58, 26)
         Me.btnCtrl2Inc.TabIndex = 9
         Me.btnCtrl2Inc.Text = "+"
         Me.btnCtrl2Inc.UseVisualStyleBackColor = True
@@ -257,10 +266,10 @@ Partial Class panCtrl
         '
         Me.btnCtrl2Dec.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCtrl2Dec.Enabled = False
-        Me.btnCtrl2Dec.Location = New System.Drawing.Point(397, 57)
+        Me.btnCtrl2Dec.Location = New System.Drawing.Point(416, 57)
         Me.btnCtrl2Dec.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCtrl2Dec.Name = "btnCtrl2Dec"
-        Me.btnCtrl2Dec.Size = New System.Drawing.Size(53, 26)
+        Me.btnCtrl2Dec.Size = New System.Drawing.Size(56, 26)
         Me.btnCtrl2Dec.TabIndex = 7
         Me.btnCtrl2Dec.Text = "-"
         Me.btnCtrl2Dec.UseVisualStyleBackColor = True
@@ -271,11 +280,11 @@ Partial Class panCtrl
         Me.tbCtrl2.AutoSize = False
         Me.tbCtrl2.Enabled = False
         Me.tbCtrl2.LargeChange = 10
-        Me.tbCtrl2.Location = New System.Drawing.Point(168, 58)
+        Me.tbCtrl2.Location = New System.Drawing.Point(174, 58)
         Me.tbCtrl2.Maximum = 36000
         Me.tbCtrl2.Minimum = -36000
         Me.tbCtrl2.Name = "tbCtrl2"
-        Me.tbCtrl2.Size = New System.Drawing.Size(224, 24)
+        Me.tbCtrl2.Size = New System.Drawing.Size(237, 24)
         Me.tbCtrl2.TabIndex = 5
         Me.tbCtrl2.TickStyle = System.Windows.Forms.TickStyle.None
         '
@@ -288,7 +297,7 @@ Partial Class panCtrl
         Me.numCtrl2.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
         Me.numCtrl2.Minimum = New Decimal(New Integer() {360, 0, 0, -2147483648})
         Me.numCtrl2.Name = "numCtrl2"
-        Me.numCtrl2.Size = New System.Drawing.Size(109, 20)
+        Me.numCtrl2.Size = New System.Drawing.Size(115, 20)
         Me.numCtrl2.TabIndex = 8
         '
         'lblCtrl2
@@ -370,7 +379,7 @@ Partial Class panCtrl
         Me.numCtrl3.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
         Me.numCtrl3.Minimum = New Decimal(New Integer() {360, 0, 0, -2147483648})
         Me.numCtrl3.Name = "numCtrl3"
-        Me.numCtrl3.Size = New System.Drawing.Size(109, 20)
+        Me.numCtrl3.Size = New System.Drawing.Size(115, 20)
         Me.numCtrl3.TabIndex = 14
         '
         'numCtrl4
@@ -382,7 +391,7 @@ Partial Class panCtrl
         Me.numCtrl4.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
         Me.numCtrl4.Minimum = New Decimal(New Integer() {360, 0, 0, -2147483648})
         Me.numCtrl4.Name = "numCtrl4"
-        Me.numCtrl4.Size = New System.Drawing.Size(109, 20)
+        Me.numCtrl4.Size = New System.Drawing.Size(115, 20)
         Me.numCtrl4.TabIndex = 15
         '
         'numCtrl5
@@ -394,7 +403,7 @@ Partial Class panCtrl
         Me.numCtrl5.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
         Me.numCtrl5.Minimum = New Decimal(New Integer() {360, 0, 0, -2147483648})
         Me.numCtrl5.Name = "numCtrl5"
-        Me.numCtrl5.Size = New System.Drawing.Size(109, 20)
+        Me.numCtrl5.Size = New System.Drawing.Size(115, 20)
         Me.numCtrl5.TabIndex = 16
         '
         'numCtrl6
@@ -406,7 +415,7 @@ Partial Class panCtrl
         Me.numCtrl6.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
         Me.numCtrl6.Minimum = New Decimal(New Integer() {360, 0, 0, -2147483648})
         Me.numCtrl6.Name = "numCtrl6"
-        Me.numCtrl6.Size = New System.Drawing.Size(109, 20)
+        Me.numCtrl6.Size = New System.Drawing.Size(115, 20)
         Me.numCtrl6.TabIndex = 17
         '
         'tbCtrl3
@@ -415,11 +424,11 @@ Partial Class panCtrl
         Me.tbCtrl3.AutoSize = False
         Me.tbCtrl3.Enabled = False
         Me.tbCtrl3.LargeChange = 10
-        Me.tbCtrl3.Location = New System.Drawing.Point(168, 88)
+        Me.tbCtrl3.Location = New System.Drawing.Point(174, 88)
         Me.tbCtrl3.Maximum = 36000
         Me.tbCtrl3.Minimum = -36000
         Me.tbCtrl3.Name = "tbCtrl3"
-        Me.tbCtrl3.Size = New System.Drawing.Size(224, 24)
+        Me.tbCtrl3.Size = New System.Drawing.Size(237, 24)
         Me.tbCtrl3.TabIndex = 18
         Me.tbCtrl3.TickStyle = System.Windows.Forms.TickStyle.None
         '
@@ -429,11 +438,11 @@ Partial Class panCtrl
         Me.tbCtrl4.AutoSize = False
         Me.tbCtrl4.Enabled = False
         Me.tbCtrl4.LargeChange = 10
-        Me.tbCtrl4.Location = New System.Drawing.Point(168, 118)
+        Me.tbCtrl4.Location = New System.Drawing.Point(174, 118)
         Me.tbCtrl4.Maximum = 36000
         Me.tbCtrl4.Minimum = -36000
         Me.tbCtrl4.Name = "tbCtrl4"
-        Me.tbCtrl4.Size = New System.Drawing.Size(224, 24)
+        Me.tbCtrl4.Size = New System.Drawing.Size(237, 24)
         Me.tbCtrl4.TabIndex = 19
         Me.tbCtrl4.TickStyle = System.Windows.Forms.TickStyle.None
         '
@@ -443,11 +452,11 @@ Partial Class panCtrl
         Me.tbCtrl5.AutoSize = False
         Me.tbCtrl5.Enabled = False
         Me.tbCtrl5.LargeChange = 10
-        Me.tbCtrl5.Location = New System.Drawing.Point(168, 148)
+        Me.tbCtrl5.Location = New System.Drawing.Point(174, 148)
         Me.tbCtrl5.Maximum = 36000
         Me.tbCtrl5.Minimum = -36000
         Me.tbCtrl5.Name = "tbCtrl5"
-        Me.tbCtrl5.Size = New System.Drawing.Size(224, 24)
+        Me.tbCtrl5.Size = New System.Drawing.Size(237, 24)
         Me.tbCtrl5.TabIndex = 20
         Me.tbCtrl5.TickStyle = System.Windows.Forms.TickStyle.None
         '
@@ -457,11 +466,11 @@ Partial Class panCtrl
         Me.tbCtrl6.AutoSize = False
         Me.tbCtrl6.Enabled = False
         Me.tbCtrl6.LargeChange = 10
-        Me.tbCtrl6.Location = New System.Drawing.Point(168, 178)
+        Me.tbCtrl6.Location = New System.Drawing.Point(174, 178)
         Me.tbCtrl6.Maximum = 36000
         Me.tbCtrl6.Minimum = -36000
         Me.tbCtrl6.Name = "tbCtrl6"
-        Me.tbCtrl6.Size = New System.Drawing.Size(224, 24)
+        Me.tbCtrl6.Size = New System.Drawing.Size(237, 24)
         Me.tbCtrl6.TabIndex = 21
         Me.tbCtrl6.TickStyle = System.Windows.Forms.TickStyle.None
         '
@@ -469,10 +478,10 @@ Partial Class panCtrl
         '
         Me.btnCtrl3Dec.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCtrl3Dec.Enabled = False
-        Me.btnCtrl3Dec.Location = New System.Drawing.Point(397, 87)
+        Me.btnCtrl3Dec.Location = New System.Drawing.Point(416, 87)
         Me.btnCtrl3Dec.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCtrl3Dec.Name = "btnCtrl3Dec"
-        Me.btnCtrl3Dec.Size = New System.Drawing.Size(53, 26)
+        Me.btnCtrl3Dec.Size = New System.Drawing.Size(56, 26)
         Me.btnCtrl3Dec.TabIndex = 22
         Me.btnCtrl3Dec.Text = "-"
         Me.btnCtrl3Dec.UseVisualStyleBackColor = True
@@ -481,10 +490,10 @@ Partial Class panCtrl
         '
         Me.btnCtrl4Dec.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCtrl4Dec.Enabled = False
-        Me.btnCtrl4Dec.Location = New System.Drawing.Point(397, 117)
+        Me.btnCtrl4Dec.Location = New System.Drawing.Point(416, 117)
         Me.btnCtrl4Dec.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCtrl4Dec.Name = "btnCtrl4Dec"
-        Me.btnCtrl4Dec.Size = New System.Drawing.Size(53, 26)
+        Me.btnCtrl4Dec.Size = New System.Drawing.Size(56, 26)
         Me.btnCtrl4Dec.TabIndex = 24
         Me.btnCtrl4Dec.Text = "-"
         Me.btnCtrl4Dec.UseVisualStyleBackColor = True
@@ -493,10 +502,10 @@ Partial Class panCtrl
         '
         Me.btnCtrl5Dec.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCtrl5Dec.Enabled = False
-        Me.btnCtrl5Dec.Location = New System.Drawing.Point(397, 147)
+        Me.btnCtrl5Dec.Location = New System.Drawing.Point(416, 147)
         Me.btnCtrl5Dec.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCtrl5Dec.Name = "btnCtrl5Dec"
-        Me.btnCtrl5Dec.Size = New System.Drawing.Size(53, 26)
+        Me.btnCtrl5Dec.Size = New System.Drawing.Size(56, 26)
         Me.btnCtrl5Dec.TabIndex = 23
         Me.btnCtrl5Dec.Text = "-"
         Me.btnCtrl5Dec.UseVisualStyleBackColor = True
@@ -505,10 +514,10 @@ Partial Class panCtrl
         '
         Me.btnCtrl6Dec.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCtrl6Dec.Enabled = False
-        Me.btnCtrl6Dec.Location = New System.Drawing.Point(397, 177)
+        Me.btnCtrl6Dec.Location = New System.Drawing.Point(416, 177)
         Me.btnCtrl6Dec.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCtrl6Dec.Name = "btnCtrl6Dec"
-        Me.btnCtrl6Dec.Size = New System.Drawing.Size(53, 26)
+        Me.btnCtrl6Dec.Size = New System.Drawing.Size(56, 26)
         Me.btnCtrl6Dec.TabIndex = 25
         Me.btnCtrl6Dec.Text = "-"
         Me.btnCtrl6Dec.UseVisualStyleBackColor = True
@@ -517,10 +526,10 @@ Partial Class panCtrl
         '
         Me.btnCtrl3Inc.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCtrl3Inc.Enabled = False
-        Me.btnCtrl3Inc.Location = New System.Drawing.Point(454, 87)
+        Me.btnCtrl3Inc.Location = New System.Drawing.Point(476, 87)
         Me.btnCtrl3Inc.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCtrl3Inc.Name = "btnCtrl3Inc"
-        Me.btnCtrl3Inc.Size = New System.Drawing.Size(55, 26)
+        Me.btnCtrl3Inc.Size = New System.Drawing.Size(58, 26)
         Me.btnCtrl3Inc.TabIndex = 27
         Me.btnCtrl3Inc.Text = "+"
         Me.btnCtrl3Inc.UseVisualStyleBackColor = True
@@ -529,10 +538,10 @@ Partial Class panCtrl
         '
         Me.btnCtrl4Inc.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCtrl4Inc.Enabled = False
-        Me.btnCtrl4Inc.Location = New System.Drawing.Point(454, 117)
+        Me.btnCtrl4Inc.Location = New System.Drawing.Point(476, 117)
         Me.btnCtrl4Inc.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCtrl4Inc.Name = "btnCtrl4Inc"
-        Me.btnCtrl4Inc.Size = New System.Drawing.Size(55, 26)
+        Me.btnCtrl4Inc.Size = New System.Drawing.Size(58, 26)
         Me.btnCtrl4Inc.TabIndex = 26
         Me.btnCtrl4Inc.Text = "+"
         Me.btnCtrl4Inc.UseVisualStyleBackColor = True
@@ -541,10 +550,10 @@ Partial Class panCtrl
         '
         Me.btnCtrl5Inc.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCtrl5Inc.Enabled = False
-        Me.btnCtrl5Inc.Location = New System.Drawing.Point(454, 147)
+        Me.btnCtrl5Inc.Location = New System.Drawing.Point(476, 147)
         Me.btnCtrl5Inc.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCtrl5Inc.Name = "btnCtrl5Inc"
-        Me.btnCtrl5Inc.Size = New System.Drawing.Size(55, 26)
+        Me.btnCtrl5Inc.Size = New System.Drawing.Size(58, 26)
         Me.btnCtrl5Inc.TabIndex = 28
         Me.btnCtrl5Inc.Text = "+"
         Me.btnCtrl5Inc.UseVisualStyleBackColor = True
@@ -553,10 +562,10 @@ Partial Class panCtrl
         '
         Me.btnCtrl6Inc.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCtrl6Inc.Enabled = False
-        Me.btnCtrl6Inc.Location = New System.Drawing.Point(454, 177)
+        Me.btnCtrl6Inc.Location = New System.Drawing.Point(476, 177)
         Me.btnCtrl6Inc.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCtrl6Inc.Name = "btnCtrl6Inc"
-        Me.btnCtrl6Inc.Size = New System.Drawing.Size(55, 26)
+        Me.btnCtrl6Inc.Size = New System.Drawing.Size(58, 26)
         Me.btnCtrl6Inc.TabIndex = 29
         Me.btnCtrl6Inc.Text = "+"
         Me.btnCtrl6Inc.UseVisualStyleBackColor = True
@@ -571,7 +580,7 @@ Partial Class panCtrl
         Me.lblTargetAngle.Margin = New System.Windows.Forms.Padding(3)
         Me.lblTargetAngle.Name = "lblTargetAngle"
         Me.lblTargetAngle.Padding = New System.Windows.Forms.Padding(2, 0, 0, 0)
-        Me.lblTargetAngle.Size = New System.Drawing.Size(339, 19)
+        Me.lblTargetAngle.Size = New System.Drawing.Size(358, 19)
         Me.lblTargetAngle.TabIndex = 30
         Me.lblTargetAngle.Text = "Position / Zielwinkel"
         Me.lblTargetAngle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -582,23 +591,65 @@ Partial Class panCtrl
         Me.TableLayoutPanel.SetColumnSpan(Me.lblJog, 2)
         Me.lblJog.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblJog.ImageAlign = System.Drawing.ContentAlignment.TopLeft
-        Me.lblJog.Location = New System.Drawing.Point(398, 3)
+        Me.lblJog.Location = New System.Drawing.Point(417, 3)
         Me.lblJog.Margin = New System.Windows.Forms.Padding(3)
         Me.lblJog.Name = "lblJog"
         Me.lblJog.Padding = New System.Windows.Forms.Padding(2, 0, 0, 0)
-        Me.lblJog.Size = New System.Drawing.Size(110, 19)
+        Me.lblJog.Size = New System.Drawing.Size(116, 19)
         Me.lblJog.TabIndex = 31
         Me.lblJog.Text = "Jog"
         Me.lblJog.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'lblServo1
+        '
+        Me.lblServo1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblServo1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblServo1.ImageAlign = System.Drawing.ContentAlignment.TopLeft
+        Me.lblServo1.Location = New System.Drawing.Point(3, 208)
+        Me.lblServo1.Margin = New System.Windows.Forms.Padding(3)
+        Me.lblServo1.Name = "lblServo1"
+        Me.lblServo1.Padding = New System.Windows.Forms.Padding(2, 0, 0, 0)
+        Me.lblServo1.Size = New System.Drawing.Size(44, 24)
+        Me.lblServo1.TabIndex = 32
+        Me.lblServo1.Text = "Ser1:"
+        Me.lblServo1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lblServo2
+        '
+        Me.lblServo2.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblServo2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblServo2.ImageAlign = System.Drawing.ContentAlignment.TopLeft
+        Me.lblServo2.Location = New System.Drawing.Point(3, 238)
+        Me.lblServo2.Margin = New System.Windows.Forms.Padding(3)
+        Me.lblServo2.Name = "lblServo2"
+        Me.lblServo2.Padding = New System.Windows.Forms.Padding(2, 0, 0, 0)
+        Me.lblServo2.Size = New System.Drawing.Size(44, 24)
+        Me.lblServo2.TabIndex = 33
+        Me.lblServo2.Text = "Ser2:"
+        Me.lblServo2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lblServo3
+        '
+        Me.lblServo3.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblServo3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblServo3.ImageAlign = System.Drawing.ContentAlignment.TopLeft
+        Me.lblServo3.Location = New System.Drawing.Point(3, 268)
+        Me.lblServo3.Margin = New System.Windows.Forms.Padding(3)
+        Me.lblServo3.Name = "lblServo3"
+        Me.lblServo3.Padding = New System.Windows.Forms.Padding(2, 0, 0, 0)
+        Me.lblServo3.Size = New System.Drawing.Size(44, 24)
+        Me.lblServo3.TabIndex = 34
+        Me.lblServo3.Text = "Ser3:"
+        Me.lblServo3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'ToolStrip2
         '
         Me.ToolStrip2.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblMode, Me.cbJointOrTCP, Me.ToolStripSeparator3, Me.lblSpeed, Me.numSpeed, Me.ToolStripSeparator1, Me.lblAcc, Me.numAcc})
-        Me.ToolStrip2.Location = New System.Drawing.Point(0, 26)
+        Me.ToolStrip2.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip2.Name = "ToolStrip2"
-        Me.ToolStrip2.Size = New System.Drawing.Size(511, 26)
+        Me.ToolStrip2.Size = New System.Drawing.Size(536, 26)
         Me.ToolStrip2.Stretch = True
         Me.ToolStrip2.TabIndex = 1
         '
@@ -663,9 +714,9 @@ Partial Class panCtrl
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblMove, Me.cbMoveMode, Me.btnMoveStart, Me.ToolStripSeparator2, Me.lblJogInterval, Me.numJogInterval1, Me.lblUnitMm, Me.numJogInterval2, Me.lblUnitDeg, Me.cbJogMode})
         Me.ToolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow
-        Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
+        Me.ToolStrip1.Location = New System.Drawing.Point(0, 26)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(511, 26)
+        Me.ToolStrip1.Size = New System.Drawing.Size(536, 26)
         Me.ToolStrip1.Stretch = True
         Me.ToolStrip1.TabIndex = 0
         '
@@ -750,7 +801,7 @@ Partial Class panCtrl
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
-        Me.ClientSize = New System.Drawing.Size(511, 310)
+        Me.ClientSize = New System.Drawing.Size(536, 410)
         Me.Controls.Add(Me.ToolStripContainer)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panCtrl"
@@ -836,4 +887,7 @@ Partial Class panCtrl
     Friend WithEvents lblUnitMm As ToolStripLabel
     Friend WithEvents numJogInterval2 As ToolStripNumericUpDown
     Friend WithEvents lblUnitDeg As ToolStripLabel
+    Friend WithEvents lblServo1 As Label
+    Friend WithEvents lblServo2 As Label
+    Friend WithEvents lblServo3 As Label
 End Class
