@@ -269,6 +269,7 @@ Friend Class RobotControl
     End Function
     Friend Function MoveServoAngle(srvNr As Int32, angle As Int32) As Boolean
         If _com.SendSRV(srvNr, angle) Then
+            RaiseEvent RoboMoveStarted()
             'Log
             RaiseEvent Log($"[Robo Control] Bewege Servo {srvNr}, Ziel: {angle}", Logger.LogLevel.INFO)
             Return True

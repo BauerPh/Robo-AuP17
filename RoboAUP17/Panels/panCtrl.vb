@@ -12,6 +12,8 @@
     Private _posReceived As Boolean = False
     Private _serialConnected As Boolean = False
     Private _robotMoving As Boolean = False
+    Private _servoAngleOld() As Double = {-1.0, -1.0, -1.0}
+    Private _doMoveAfterServoMove As Boolean = False
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
@@ -36,7 +38,25 @@
     ' Robot Control
     ' -----------------------------------------------------------------------------
     Private Sub btnMoveStart_Click(sender As Object, e As EventArgs) Handles btnMoveStart.Click
-        _doMove()
+        Dim ServoMoved As Boolean = False
+
+        ' Move Servos
+        If _doServo(1, numServ1.Value) Then
+            ServoMoved = True
+        End If
+        If _doServo(2, numServ2.Value) Then
+            ServoMoved = True
+        End If
+        If _doServo(3, numServ3.Value) Then
+            ServoMoved = True
+        End If
+
+        ' Move Axis
+        If ServoMoved Then
+            _doMoveAfterServoMove = True
+        Else
+            _doMove()
+        End If
     End Sub
     Private Sub btnCtrl1Dec_Click(sender As Object, e As EventArgs) Handles btnCtrl1Dec.Click
         _doJog(1, True)
@@ -429,6 +449,11 @@
         frmMain.RoboControl.SetSpeedAndAcc(numSpeed.Value, numAcc.Value)
     End Sub
     Private Sub _doMove()
+        If InvokeRequired Then
+            Invoke(Sub() _doMove())
+            Return
+        End If
+
         _setSpeedAndAcc()
         If _tcpMode Then
             frmMain.RoboControl.DoTCPMov(numCtrl1.Value, numCtrl2.Value, numCtrl3.Value, numCtrl4.Value, numCtrl5.Value, numCtrl6.Value)
@@ -458,9 +483,17 @@
             End If
         End If
     End Sub
-    Private Sub _doServo(nr As Int32, prc As Double)
-        frmMain.RoboControl.MoveServoPrc(nr, prc)
-    End Sub
+    'TODO!!!
+    Private Function _doServo(nr As Int32, prc As Double) As Boolean
+        If frmMain.RoboControl.Pref.ServoParameter(nr - 1).Available And _servoAngleOld(0) <> prc Then
+            If frmMain.RoboControl.MoveServoPrc(nr, prc) Then
+                _servoAngleOld(nr - 1) = prc
+                Return True
+            End If
+        Else
+            Return False
+        End If
+    End Function
     Private Sub _doJogServo(srvNr As Int32, numUpDown As NumericUpDown, increment As Decimal)
         If numUpDown.Value = numUpDown.Minimum And increment <= 0 Then Return
         If numUpDown.Value = numUpDown.Maximum And increment > 0 Then Return
@@ -515,7 +548,13 @@
     End Sub
     Private Sub _eRoboMoveFinished()
         _robotMoving = False
-        _enableDisableElements()
+        ' Achsen Bewegen falls Servos erst angesteuert wurden
+        If _doMoveAfterServoMove Then
+            _doMoveAfterServoMove = False
+            _doMove()
+        Else
+            _enableDisableElements()
+        End If
     End Sub
     Private Sub _eRoboRefStateChanged(refState As Boolean())
         _enableDisableElements()
