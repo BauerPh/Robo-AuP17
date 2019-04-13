@@ -5,7 +5,7 @@
     ' fertig?
 
     Private _serialConnected As Boolean = False
-    Private _moveStarted As Boolean = False
+    Private _robotMoving As Boolean = False
     ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
@@ -56,33 +56,33 @@
             Return
         End If
 
-        btnRefJ1.Enabled = _serialConnected And Not _moveStarted
-        btnRefJ2.Enabled = _serialConnected And Not _moveStarted
-        btnRefJ3.Enabled = _serialConnected And Not _moveStarted
-        btnRefJ4.Enabled = _serialConnected And Not _moveStarted
-        btnRefJ5.Enabled = _serialConnected And Not _moveStarted
-        btnRefJ6.Enabled = _serialConnected And Not _moveStarted
-        btnRefStart.Enabled = _serialConnected And Not _moveStarted And (cbSelJ1.Checked Or cbSelJ2.Checked Or cbSelJ3.Checked Or cbSelJ4.Checked Or cbSelJ5.Checked Or cbSelJ6.Checked)
+        btnRefJ1.Enabled = _serialConnected And Not _robotMoving
+        btnRefJ2.Enabled = _serialConnected And Not _robotMoving
+        btnRefJ3.Enabled = _serialConnected And Not _robotMoving
+        btnRefJ4.Enabled = _serialConnected And Not _robotMoving
+        btnRefJ5.Enabled = _serialConnected And Not _robotMoving
+        btnRefJ6.Enabled = _serialConnected And Not _robotMoving
+        btnRefStart.Enabled = _serialConnected And Not _robotMoving And (cbSelJ1.Checked Or cbSelJ2.Checked Or cbSelJ3.Checked Or cbSelJ4.Checked Or cbSelJ5.Checked Or cbSelJ6.Checked)
     End Sub
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
     Private Sub _eComSerialConnected()
         _serialConnected = True
-        _moveStarted = False
+        _robotMoving = False
         _enableDisableElements()
     End Sub
     Private Sub _eComSerialDisconnected()
         _serialConnected = False
-        _moveStarted = False
+        _robotMoving = False
         _enableDisableElements()
     End Sub
     Private Sub _eRoboMoveStarted()
-        _moveStarted = True
+        _robotMoving = True
         _enableDisableElements()
     End Sub
     Private Sub _eRoboMoveFinished()
-        _moveStarted = False
+        _robotMoving = False
         _enableDisableElements()
     End Sub
 End Class

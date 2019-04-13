@@ -229,6 +229,8 @@
             For i = 0 To 2
                 .WriteStartElement("SRV" & (i + 1).ToString())
 
+                .WriteAttributeString("available", _servoParameter(i).Available.ToString)
+
                 .WriteStartElement("angles")
                 .WriteAttributeString("minAngle", _servoParameter(i).MinAngle.ToString)
                 .WriteAttributeString("maxAngle", _servoParameter(i).MaxAngle.ToString)
@@ -359,6 +361,10 @@
                                             Case "maxAngle"
                                                 _servoParameter(i).MaxAngle = CDbl(.Value)
                                         End Select
+                                    Case Else
+                                        If .Name = "available" Then
+                                            _servoParameter(i).Available = CBool(.Value)
+                                        End If
                                 End Select
                             ElseIf setting = 3 Then
                                 '********** WORKFRAME **********

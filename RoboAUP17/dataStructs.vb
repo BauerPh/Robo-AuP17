@@ -208,6 +208,9 @@ Module dataStructs
     End Structure
 
     Friend Structure ServoParameter
+        <Category("Allgemein"),
+            DisplayName("Aktiv")>
+        Public Property Available As Boolean
         <Category("Winkel"),
             DisplayName("Minimaler Winkel")>
         Public Property MinAngle As Double

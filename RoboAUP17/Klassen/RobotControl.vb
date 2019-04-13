@@ -267,13 +267,18 @@ Friend Class RobotControl
     Friend Function DoPark(sync As Boolean) As Boolean
         Return DoJointMov(sync, _pref.JointParameter(0).MechParkPosAngle, _pref.JointParameter(1).MechParkPosAngle, _pref.JointParameter(2).MechParkPosAngle, _pref.JointParameter(3).MechParkPosAngle, _pref.JointParameter(4).MechParkPosAngle, _pref.JointParameter(5).MechParkPosAngle)
     End Function
-    Friend Function MoveServo(srvNr As Int32, angle As Int32) As Boolean
+    Friend Function MoveServoAngle(srvNr As Int32, angle As Int32) As Boolean
         If _com.SendSRV(srvNr, angle) Then
             'Log
             RaiseEvent Log($"[Robo Control] Bewege Servo {srvNr}, Ziel: {angle}", Logger.LogLevel.INFO)
             Return True
-        Else Return False
+        Else
+            RaiseEvent Log($"[Robo Control] Servobewegung fehlgeschlagen", Logger.LogLevel.ERR)
+            Return False
         End If
+    End Function
+    Friend Function MoveServoPrc(srvNr As Int32, prc As Double) As Boolean
+        Return MoveServoAngle(srvNr, _calcServoAngle(srvNr, prc))
     End Function
 
     Friend Sub FastStop()
