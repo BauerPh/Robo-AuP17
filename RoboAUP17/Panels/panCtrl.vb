@@ -9,8 +9,6 @@
     Private _tcpMode As Boolean = False
     Private _moveModeDirect As Boolean = False
     Private _posReceived As Boolean = False
-    Private _serialConnected As Boolean = False
-    Private _robotMoving As Boolean = False
     Private _servoAngleOld() As Double = {-1.0, -1.0, -1.0}
     Private _doMoveAfterServoMove As Boolean = False
 
@@ -27,11 +25,11 @@
 
         AddHandler frmMain.RoboControl.RoboPositionChanged, AddressOf _eNewPos
         AddHandler frmMain.RoboControl.RoboParameterChanged, AddressOf _eRoboParameterChanged
-        AddHandler frmMain.RoboControl.SerialConnected, AddressOf _eComSerialConnected
-        AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eComSerialDisconnected
-        AddHandler frmMain.RoboControl.RoboMoveStarted, AddressOf _eRoboMoveStarted
+        AddHandler frmMain.RoboControl.SerialConnected, AddressOf _eRefresh
+        AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eRefresh
+        AddHandler frmMain.RoboControl.RoboMoveStarted, AddressOf _eRefresh
         AddHandler frmMain.RoboControl.RoboMoveFinished, AddressOf _eRoboMoveFinished
-        AddHandler frmMain.RoboControl.RoboRefStateChanged, AddressOf _eRoboRefStateChanged
+        AddHandler frmMain.RoboControl.RoboRefStateChanged, AddressOf _eRefresh
     End Sub
     ' -----------------------------------------------------------------------------
     ' Robot Control
@@ -344,7 +342,7 @@
 
         Dim tmpEnabled As Boolean
         ' Im TCP Mode nur aktiv, wenn alle Achsen referenziert sind!
-        tmpEnabled = _serialConnected And Not _robotMoving And (frmMain.RoboControl.AllRefOkay Or Not _tcpMode)
+        tmpEnabled = SerialConnected And Not RobotMoving And (frmMain.RoboControl.AllRefOkay Or Not _tcpMode)
 
         btnCtrl1Dec.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(0)
         btnCtrl1Inc.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(0)
@@ -384,7 +382,7 @@
         btnMoveStart.Enabled = tmpEnabled
 
         ' Servos
-        tmpEnabled = _serialConnected And Not _robotMoving
+        tmpEnabled = SerialConnected And Not RobotMoving
 
         btnServ1Dec.Enabled = tmpEnabled
         btnServ1Inc.Enabled = tmpEnabled
@@ -530,30 +528,15 @@
             _setPosValues()
         End If
     End Sub
-    Private Sub _eComSerialConnected()
-        _serialConnected = True
-        _robotMoving = False
-        _enableDisableElements()
-    End Sub
-    Private Sub _eComSerialDisconnected()
-        _serialConnected = False
-        _robotMoving = False
-        _enableDisableElements()
-    End Sub
-    Private Sub _eRoboMoveStarted()
-        _robotMoving = True
+    Private Sub _eRefresh()
         _enableDisableElements()
     End Sub
     Private Sub _eRoboMoveFinished()
-        _robotMoving = False
         ' Achsen Bewegen falls Servos erst angesteuert wurden
         If _doMoveAfterServoMove Then
             _doMoveAfterServoMove = False
             _doMove()
         End If
-        _enableDisableElements()
-    End Sub
-    Private Sub _eRoboRefStateChanged(refState As Boolean())
         _enableDisableElements()
     End Sub
 End Class

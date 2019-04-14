@@ -4,16 +4,14 @@
     ' -----------------------------------------------------------------------------
     ' fertig?
 
-    Private _serialConnected As Boolean = False
-    Private _robotMoving As Boolean = False
     ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
     Private Sub panReference_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        AddHandler frmMain.RoboControl.SerialConnected, AddressOf _eComSerialConnected
-        AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eComSerialDisconnected
-        AddHandler frmMain.RoboControl.RoboMoveStarted, AddressOf _eRoboMoveStarted
-        AddHandler frmMain.RoboControl.RoboMoveFinished, AddressOf _eRoboMoveFinished
+        AddHandler frmMain.RoboControl.SerialConnected, AddressOf _eRefresh
+        AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eRefresh
+        AddHandler frmMain.RoboControl.RoboMoveStarted, AddressOf _eRefresh
+        AddHandler frmMain.RoboControl.RoboMoveFinished, AddressOf _eRefresh
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -56,33 +54,18 @@
             Return
         End If
 
-        btnRefJ1.Enabled = _serialConnected And Not _robotMoving
-        btnRefJ2.Enabled = _serialConnected And Not _robotMoving
-        btnRefJ3.Enabled = _serialConnected And Not _robotMoving
-        btnRefJ4.Enabled = _serialConnected And Not _robotMoving
-        btnRefJ5.Enabled = _serialConnected And Not _robotMoving
-        btnRefJ6.Enabled = _serialConnected And Not _robotMoving
-        btnRefStart.Enabled = _serialConnected And Not _robotMoving And (cbSelJ1.Checked Or cbSelJ2.Checked Or cbSelJ3.Checked Or cbSelJ4.Checked Or cbSelJ5.Checked Or cbSelJ6.Checked)
+        btnRefJ1.Enabled = SerialConnected And Not RobotMoving
+        btnRefJ2.Enabled = SerialConnected And Not RobotMoving
+        btnRefJ3.Enabled = SerialConnected And Not RobotMoving
+        btnRefJ4.Enabled = SerialConnected And Not RobotMoving
+        btnRefJ5.Enabled = SerialConnected And Not RobotMoving
+        btnRefJ6.Enabled = SerialConnected And Not RobotMoving
+        btnRefStart.Enabled = SerialConnected And Not RobotMoving And (cbSelJ1.Checked Or cbSelJ2.Checked Or cbSelJ3.Checked Or cbSelJ4.Checked Or cbSelJ5.Checked Or cbSelJ6.Checked)
     End Sub
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
-    Private Sub _eComSerialConnected()
-        _serialConnected = True
-        _robotMoving = False
-        _enableDisableElements()
-    End Sub
-    Private Sub _eComSerialDisconnected()
-        _serialConnected = False
-        _robotMoving = False
-        _enableDisableElements()
-    End Sub
-    Private Sub _eRoboMoveStarted()
-        _robotMoving = True
-        _enableDisableElements()
-    End Sub
-    Private Sub _eRoboMoveFinished()
-        _robotMoving = False
+    Private Sub _eRefresh()
         _enableDisableElements()
     End Sub
 End Class

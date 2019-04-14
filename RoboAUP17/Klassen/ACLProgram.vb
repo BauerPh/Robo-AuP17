@@ -13,18 +13,96 @@ Friend Class ACLProgram
     ' Definitions
     ' -----------------------------------------------------------------------------
     Private _teachPoints As New List(Of TeachPoint)
+    Private _listBox As ListBox
 
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
+    Friend Event DoMove(ByVal tp As TeachPoint)
+
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
     'TEACHPUNKTE
-    Friend Sub AddTeachPoint(tp As TeachPoint, nr As Int32)
+    Friend Function GetTeachpointByIndex(index As Int32) As TeachPoint
+        If _teachPoints.Count > index And index >= 0 Then
+            Return _teachPoints(index)
+        End If
+    End Function
+    Friend Function AddTeachPoint(name As String, cartCoords As CartCoords, tpNr As Int32) As Boolean
+        Dim tp As TeachPoint
+        tp.cart = True
+        tp.tcpCoords = cartCoords
+        tp.name = name
+        tp.nr = tpNr
+        Return _addTeachPoint(tp)
+    End Function
+    Friend Function AddTeachPoint(name As String, jointAngles As JointAngles, tpNr As Int32) As Boolean
+        Dim tp As TeachPoint
+        tp.cart = False
+        tp.jointAngles = jointAngles
+        tp.name = name
+        tp.nr = tpNr
+        Return _addTeachPoint(tp)
+    End Function
+    Friend Sub MoveTeachPoint(index As Int32, up As Boolean)
+        If _teachPoints.Count > index And index >= 0 Then
+            Dim indexVal As Int32 = 1
+            If up Then indexVal = -1
+
+            If (up And index > 0) Or (Not up And index < _teachPoints.Count - 1) Then
+                If _teachPoints(index + indexVal).nr = (_teachPoints(index).nr + indexVal) Then
+                    'Nummer tauschen
+                    Dim nr As Int32 = _teachPoints(index + indexVal).nr
+                    Dim tp As TeachPoint = _teachPoints(index + indexVal)
+                    tp.nr = _teachPoints(index).nr
+                    _teachPoints(index + indexVal) = tp
+                    tp = _teachPoints(index)
+                    tp.nr = nr
+                    _teachPoints(index) = tp
+                Else
+                    'Nummer inkrementieren / dekrementieren
+                    Dim tp As TeachPoint = _teachPoints(index)
+                    tp.nr += indexVal
+                    _teachPoints(index) = tp
+                End If
+                _teachPoints.Sort()
+                Dim selIndex As Int32 = _listBox.SelectedIndex + indexVal
+                _printToListBox()
+                _listBox.SelectedIndex = selIndex
+            End If
+        End If
+    End Sub
+
+    Friend Sub SetListBox(lb As ListBox)
+        _listBox = lb
+    End Sub
+
+    Friend Sub DeleteTeachPoint(index As Int32)
+        If _teachPoints.Count > index And index >= 0 Then
+            Dim tpNr As Int32 = _teachPoints(index).nr
+            _teachPoints.RemoveAt(index)
+            Dim selIndex As Int32 = _listBox.SelectedIndex - 1
+            _printToListBox()
+            If selIndex < 0 And _listBox.Items.Count > 0 Then selIndex = 0
+            _listBox.SelectedIndex = selIndex
+            RaiseEvent Log($"[ACL] Teachpunkt {tpNr} wurde gelöscht!", Logger.LogLevel.INFO)
+        End If
+    End Sub
+
+    Friend Sub MoveToTeachPoint(index As Int32, sync As Boolean)
+        If _teachPoints.Count > index And index >= 0 Then
+            RaiseEvent DoMove(_teachPoints(index))
+        End If
+    End Sub
+
+    ' -----------------------------------------------------------------------------
+    ' Private
+    ' -----------------------------------------------------------------------------
+    Private Function _addTeachPoint(tp As TeachPoint) As Boolean
         Dim i As Int32 = _teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = tp.nr)
         If i >= 0 Then
             If MessageBox.Show($"Teachpunkt {tp.nr} ({_teachPoints(i).name}) existiert bereits. Ersetzen?", "Teachpunkt ersetzen?", MessageBoxButtons.YesNo) _
              = Windows.Forms.DialogResult.No Then
-                Return
+                Return False
             End If
             _teachPoints(i) = tp
         Else
@@ -32,30 +110,20 @@ Friend Class ACLProgram
             'Liste Sortieren
             _teachPoints.Sort()
         End If
-        RaiseEvent Log($"Teachpunkt {nr} hinzugefügt!", Logger.LogLevel.INFO)
-    End Sub
-
-    Friend Sub DeleteTeachPoint(index As Int32)
-        If _teachPoints.Count > index And index >= 0 Then
-            RaiseEvent Log($"Teachpunkt {_teachPoints(index).nr} wurde gelöscht!", Logger.LogLevel.INFO)
-            _teachPoints.RemoveAt(index)
-            RaiseEvent ProgChanged(New ProgChangedEventArgs(False, False, True, index - 1))
-        End If
-    End Sub
-
-    Friend Function getTeachPointName(nr As Int32) As String
-        Return _teachPoints.Find(Function(_tp As TeachPoint) _tp.nr = nr).name
+        _printToListBox()
+        _listBox.SelectedIndex = _listBox.Items.Count - 1
+        RaiseEvent Log($"[ACL] Teachpunkt {tp.nr} hinzugefügt!", Logger.LogLevel.INFO)
+        Return True
     End Function
 
-    Friend Function moveToTeachPoint(index As Int32, sync As Boolean) As Boolean
-        If _teachPoints.Count > index And index >= 0 Then
-            'Return doJointMov(sync, True, teachPoints(index).jointAngles(0), True, teachPoints(index).jointAngles(1), True,
-            'teachPoints(index).jointAngles(2), True, teachPoints(index).jointAngles(3), True, teachPoints(index).jointAngles(4),
-            '  True, teachPoints(index).jointAngles(5))
+    Private Sub _printToListBox()
+        If _listBox IsNot Nothing Then
+            _listBox.Items.Clear()
+            For i = 0 To _teachPoints.Count - 1
+                _listBox.Items.Add(_teachPoints(i).ToString)
+            Next
         End If
-        Return False
-    End Function
-
+    End Sub
 
     ' -----------------------------------------------------------------------------
     ' AB HIER ALT!!
@@ -353,36 +421,4 @@ Friend Class ProgChangedEventArgs : Inherits EventArgs
             _actTpIndex = -1
         End If
     End Sub
-    Friend Sub New(running As Boolean)
-        _running = running
-        _actProgIndex = -1
-        _actTpIndex = -1
-        _prog = True
-        _tp = True
-    End Sub
-    Friend ReadOnly Property running As Boolean
-        Get
-            Return _running
-        End Get
-    End Property
-    Friend ReadOnly Property prog As Boolean
-        Get
-            Return _prog
-        End Get
-    End Property
-    Friend ReadOnly Property tp As Boolean
-        Get
-            Return _tp
-        End Get
-    End Property
-    Friend ReadOnly Property actProgIndex As Int32
-        Get
-            Return _actProgIndex
-        End Get
-    End Property
-    Friend ReadOnly Property actTpIndex As Int32
-        Get
-            Return _actTpIndex
-        End Get
-    End Property
 End Class

@@ -49,13 +49,13 @@ Partial Class frmMain
         Me.msShowRoboStatus = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowRoboReference = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowRoboCtrl = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowTeachbox = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowLog = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowComLogSerial = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowComLogTCPIP = New System.Windows.Forms.ToolStripMenuItem()
         Me.EinstellungenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.msDenavitHartPar = New System.Windows.Forms.ToolStripMenuItem()
         Me.msRoboParameter = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msFrames = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.msTCPServer = New System.Windows.Forms.ToolStripMenuItem()
         Me.HilfeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -82,7 +82,6 @@ Partial Class frmMain
         Me.tsBtnProgStop = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.tsBtnEStop = New System.Windows.Forms.ToolStripButton()
-        Me.msFrames = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
@@ -206,7 +205,7 @@ Partial Class frmMain
         '
         'RoboterToolStripMenuItem
         '
-        Me.RoboterToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowVars, Me.msShowTeachpoints, Me.msShowACLEditor, Me.msShowACLToolbox, Me.RoboterToolStripMenuItem1, Me.msShowTeachbox, Me.msShowLog, Me.msShowComLogSerial, Me.msShowComLogTCPIP})
+        Me.RoboterToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowVars, Me.msShowTeachpoints, Me.msShowACLEditor, Me.msShowACLToolbox, Me.RoboterToolStripMenuItem1, Me.msShowLog, Me.msShowComLogSerial, Me.msShowComLogTCPIP})
         Me.RoboterToolStripMenuItem.Name = "RoboterToolStripMenuItem"
         Me.RoboterToolStripMenuItem.Size = New System.Drawing.Size(185, 22)
         Me.RoboterToolStripMenuItem.Text = "Anzeigen"
@@ -214,32 +213,32 @@ Partial Class frmMain
         'msShowVars
         '
         Me.msShowVars.Name = "msShowVars"
-        Me.msShowVars.Size = New System.Drawing.Size(169, 22)
+        Me.msShowVars.Size = New System.Drawing.Size(180, 22)
         Me.msShowVars.Text = "Variablen"
         '
         'msShowTeachpoints
         '
         Me.msShowTeachpoints.Name = "msShowTeachpoints"
-        Me.msShowTeachpoints.Size = New System.Drawing.Size(169, 22)
+        Me.msShowTeachpoints.Size = New System.Drawing.Size(180, 22)
         Me.msShowTeachpoints.Text = "Teachpunkte"
         '
         'msShowACLEditor
         '
         Me.msShowACLEditor.Name = "msShowACLEditor"
-        Me.msShowACLEditor.Size = New System.Drawing.Size(169, 22)
+        Me.msShowACLEditor.Size = New System.Drawing.Size(180, 22)
         Me.msShowACLEditor.Text = "ACL-Editor"
         '
         'msShowACLToolbox
         '
         Me.msShowACLToolbox.Name = "msShowACLToolbox"
-        Me.msShowACLToolbox.Size = New System.Drawing.Size(169, 22)
+        Me.msShowACLToolbox.Size = New System.Drawing.Size(180, 22)
         Me.msShowACLToolbox.Text = "ACL-Toolbox"
         '
         'RoboterToolStripMenuItem1
         '
         Me.RoboterToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowRoboStatus, Me.msShowRoboReference, Me.msShowRoboCtrl})
         Me.RoboterToolStripMenuItem1.Name = "RoboterToolStripMenuItem1"
-        Me.RoboterToolStripMenuItem1.Size = New System.Drawing.Size(169, 22)
+        Me.RoboterToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
         Me.RoboterToolStripMenuItem1.Text = "Robotersteuerung"
         '
         'msShowRoboStatus
@@ -260,28 +259,22 @@ Partial Class frmMain
         Me.msShowRoboCtrl.Size = New System.Drawing.Size(159, 22)
         Me.msShowRoboCtrl.Text = "Robo Steuerung"
         '
-        'msShowTeachbox
-        '
-        Me.msShowTeachbox.Name = "msShowTeachbox"
-        Me.msShowTeachbox.Size = New System.Drawing.Size(169, 22)
-        Me.msShowTeachbox.Text = "Teachbox"
-        '
         'msShowLog
         '
         Me.msShowLog.Name = "msShowLog"
-        Me.msShowLog.Size = New System.Drawing.Size(169, 22)
+        Me.msShowLog.Size = New System.Drawing.Size(180, 22)
         Me.msShowLog.Text = "Logausgabe"
         '
         'msShowComLogSerial
         '
         Me.msShowComLogSerial.Name = "msShowComLogSerial"
-        Me.msShowComLogSerial.Size = New System.Drawing.Size(169, 22)
+        Me.msShowComLogSerial.Size = New System.Drawing.Size(180, 22)
         Me.msShowComLogSerial.Text = "Comlog (Serial)"
         '
         'msShowComLogTCPIP
         '
         Me.msShowComLogTCPIP.Name = "msShowComLogTCPIP"
-        Me.msShowComLogTCPIP.Size = New System.Drawing.Size(169, 22)
+        Me.msShowComLogTCPIP.Size = New System.Drawing.Size(180, 22)
         Me.msShowComLogTCPIP.Text = "Comlog (TCP/IP)"
         '
         'EinstellungenToolStripMenuItem1
@@ -304,6 +297,13 @@ Partial Class frmMain
         Me.msRoboParameter.Name = "msRoboParameter"
         Me.msRoboParameter.Size = New System.Drawing.Size(247, 22)
         Me.msRoboParameter.Text = "Robo Parameter..."
+        '
+        'msFrames
+        '
+        Me.msFrames.Image = CType(resources.GetObject("msFrames.Image"), System.Drawing.Image)
+        Me.msFrames.Name = "msFrames"
+        Me.msFrames.Size = New System.Drawing.Size(247, 22)
+        Me.msFrames.Text = "Toolframe / Workframe..."
         '
         'ToolStripSeparator5
         '
@@ -485,13 +485,6 @@ Partial Class frmMain
         Me.tsBtnEStop.Size = New System.Drawing.Size(132, 22)
         Me.tsBtnEStop.Text = "Not-Halt (Leertaste)"
         '
-        'msFrames
-        '
-        Me.msFrames.Image = CType(resources.GetObject("msFrames.Image"), System.Drawing.Image)
-        Me.msFrames.Name = "msFrames"
-        Me.msFrames.Size = New System.Drawing.Size(247, 22)
-        Me.msFrames.Text = "Toolframe / Workframe..."
-        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -560,7 +553,6 @@ Partial Class frmMain
     Friend WithEvents msShowRoboStatus As ToolStripMenuItem
     Friend WithEvents msShowRoboReference As ToolStripMenuItem
     Friend WithEvents msShowRoboCtrl As ToolStripMenuItem
-    Friend WithEvents msShowTeachbox As ToolStripMenuItem
     Friend WithEvents msShowLog As ToolStripMenuItem
     Friend WithEvents msShowComLogSerial As ToolStripMenuItem
     Friend WithEvents msShowComLogTCPIP As ToolStripMenuItem

@@ -86,7 +86,7 @@ Friend Class RobotControl
     Friend Event RoboPositionChanged()
     Friend Event LimitSwitchStateChanged(ByVal lssState As Boolean())
     Friend Event EmergencyStopStateChanged(ByVal essState As Boolean)
-    Friend Event RoboRefStateChanged(ByVal refState As Boolean())
+    Friend Event RoboRefStateChanged()
     Friend Event RoboParameterChanged(ByVal parameterChanged As Settings.ParameterChangedParameter)
 
     ' -----------------------------------------------------------------------------
@@ -317,7 +317,7 @@ Friend Class RobotControl
         ' Check Ref State Changed
         For i = 0 To 5
             If _refOkay(i) <> refOkayOld(i) Then
-                RaiseEvent RoboRefStateChanged(_refOkay)
+                RaiseEvent RoboRefStateChanged()
                 Exit For
             End If
         Next

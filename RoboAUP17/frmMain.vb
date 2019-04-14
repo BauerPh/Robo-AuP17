@@ -9,6 +9,7 @@ Public Class frmMain
     Friend settingsTest As New DHParameter
 
     'Robotersteuerung
+    Private WithEvents _aclProgram As New ACLProgram
     Private WithEvents _roboControl As New RobotControl
 
     ' Konstanten
@@ -27,7 +28,6 @@ Public Class frmMain
     Private _dckPanTeachpoints As New panTeachPoints
     Private _dckPanRoboStatus As New panRoboStatus
     Private _dckPanProgramTools As New panProgramTools
-    Private _dckPanTeachBox As New panTeachBox
     Private _dckPanJointCtrl As New panCtrl
     Private _dckPanReference As New panReference
 
@@ -40,6 +40,11 @@ Public Class frmMain
     Private _loggerComTCPIP As New Logger(_dckPanComLogTCPIP.sciLog)
 #End Region
     ' Properties
+    Friend ReadOnly Property ACLProgram As ACLProgram
+        Get
+            Return _aclProgram
+        End Get
+    End Property
     Friend ReadOnly Property RoboControl As RobotControl
         Get
             Return _roboControl
@@ -192,10 +197,6 @@ Public Class frmMain
         _dckPanProgramTools.Show()
     End Sub
 
-    Private Sub msShowTeachbox_Click(sender As Object, e As EventArgs) Handles msShowTeachbox.Click
-        _dckPanTeachBox.Show()
-    End Sub
-
     Private Sub msShowLog_Click(sender As Object, e As EventArgs) Handles msShowLog.Click
         _dckPanLog.Show()
     End Sub
@@ -289,7 +290,6 @@ Public Class frmMain
         _dckPanTeachpoints.HideOnClose = True
         _dckPanRoboStatus.HideOnClose = True
         _dckPanProgramTools.HideOnClose = True
-        _dckPanTeachBox.HideOnClose = True
         _dckPanJointCtrl.HideOnClose = True
         _dckPanReference.HideOnClose = True
         _dckPanSettings.HideOnClose = True
@@ -319,8 +319,6 @@ Public Class frmMain
             _dckPanComLogSerial.Show(dckPanel, DockState.DockBottom)
             _dckPanComLogTCPIP.Show(dckPanel, DockState.DockBottom)
 
-            _dckPanTeachBox.Show(dckPanel, DockState.Float)
-            _dckPanTeachBox.Hide()
             _dckPanProgramTools.Show(dckPanel, DockState.Float)
             _dckPanProgramTools.Hide()
 
@@ -350,8 +348,6 @@ Public Class frmMain
             Return _dckPanSettings
         ElseIf persist.EndsWith("RoboStatus") Then
             Return _dckPanRoboStatus
-        ElseIf persist.EndsWith("TeachBox") Then
-            Return _dckPanTeachBox
         ElseIf persist.EndsWith("TeachPoints") Then
             Return _dckPanTeachpoints
         ElseIf persist.EndsWith("Variables") Then
@@ -374,7 +370,7 @@ Public Class frmMain
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
-    Private Sub _eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles _roboControl.Log
+    Private Sub _eLog(LogMsg As String, LogLvl As Logger.LogLevel) Handles _roboControl.Log, _aclProgram.Log
         If LogLvl = Logger.LogLevel.COMIN Or LogLvl = Logger.LogLevel.COMOUT Then
             _loggerComSerial.Log(LogMsg, LogLvl)
         Else
@@ -405,6 +401,9 @@ Public Class frmMain
         End If
         tsBtnConnect.Enabled = False
         tsBtnProgRun.Enabled = True
+
+        SerialConnected = True
+        RobotMoving = False
     End Sub
     Private Sub _eComSerialDisconnected() Handles _roboControl.SerialDisconnected
         If InvokeRequired Then
@@ -414,5 +413,14 @@ Public Class frmMain
         tsBtnConnect.Enabled = True
         tsBtnProgRun.Enabled = False
         tsBtnProgStop.Enabled = False
+
+        SerialConnected = False
+        RobotMoving = False
+    End Sub
+    Private Sub _eRoboMoveStarted() Handles _roboControl.RoboMoveStarted
+        RobotMoving = True
+    End Sub
+    Private Sub _eRoboMoveFinished() Handles _roboControl.RoboMoveFinished
+        RobotMoving = False
     End Sub
 End Class

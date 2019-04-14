@@ -209,7 +209,7 @@ Module dataStructs
 
     Friend Structure ServoParameter
         <Category("Allgemein"),
-            DisplayName("Aktiv")>
+            DisplayName("Angeschlossen")>
         Public Property Available As Boolean
         <Category("Winkel"),
             DisplayName("Minimaler Winkel")>
@@ -234,7 +234,15 @@ Module dataStructs
         Friend Function CompareTo(other As TeachPoint) As Integer _
             Implements IComparable(Of TeachPoint).CompareTo
             ' A null value means that this object is greater.
-            Return Me.nr.CompareTo(other.nr)
+            Return nr.CompareTo(other.nr)
+        End Function
+
+        Public Overrides Function ToString() As String
+            If cart Then
+                Return $"{nr}: {name} (X: {tcpCoords.X}; Y: {tcpCoords.Y}; Z: {tcpCoords.Z}; yaw: {tcpCoords.Yaw}; pitch: {tcpCoords.Pitch}; roll: {tcpCoords.Roll})"
+            Else
+                Return $"{nr}: {name} (J1: {jointAngles.J1}; J2: {jointAngles.J2}; J3: {jointAngles.J3}; J4: {jointAngles.J4}; J5: {jointAngles.J5}; J6: {jointAngles.J6})"
+            End If
         End Function
     End Structure
 
