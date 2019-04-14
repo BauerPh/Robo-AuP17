@@ -3,64 +3,52 @@ Friend Class ACLProgram
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' Komplett überarbeiten!
+    ' Teachpunkte (wip...)
+    ' Variablen
+    ' TCP Variablen
+    ' ACL-Programm
     ' Teachpunkte, Variablen, TCP Variablen und ACL-Programm in einer Datei speichern und laden!
-
 
     ' -----------------------------------------------------------------------------
     ' Definitions
     ' -----------------------------------------------------------------------------
-    Friend progList As New List(Of ProgramEntry)
-    Friend teachPoints As New List(Of TeachPoint)
-    Friend progClipboard As New ProgramEntry
-    Friend teachPointClipboard As New TeachPoint
-    Private _programRunning, _loopSeq As Boolean
-    Private _progIndex As Int32
+    Private _teachPoints As New List(Of TeachPoint)
 
-
-    Friend Event ProgChanged(ByVal e As ProgChangedEventArgs)
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
     'TEACHPUNKTE
-    Friend Sub addTeachPoint(tp As TeachPoint, nr As Int32)
-        Dim i As Int32 = teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = tp.nr)
+    Friend Sub AddTeachPoint(tp As TeachPoint, nr As Int32)
+        Dim i As Int32 = _teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = tp.nr)
         If i >= 0 Then
-            If MessageBox.Show($"Teachpunkt {tp.nr} ({teachPoints(i).name}) existiert bereits. Ersetzen?", "Teachpunkt ersetzen?", MessageBoxButtons.YesNo) _
+            If MessageBox.Show($"Teachpunkt {tp.nr} ({_teachPoints(i).name}) existiert bereits. Ersetzen?", "Teachpunkt ersetzen?", MessageBoxButtons.YesNo) _
              = Windows.Forms.DialogResult.No Then
                 Return
             End If
-            teachPoints(i) = tp
-            RaiseEvent ProgChanged(New ProgChangedEventArgs(False, True, True, -1))
+            _teachPoints(i) = tp
         Else
-            teachPoints.Add(tp)
+            _teachPoints.Add(tp)
             'Liste Sortieren
-            teachPoints.Sort()
-            RaiseEvent ProgChanged(New ProgChangedEventArgs(False, False, True, teachPoints.Count - 1))
+            _teachPoints.Sort()
         End If
         RaiseEvent Log($"Teachpunkt {nr} hinzugefügt!", Logger.LogLevel.INFO)
     End Sub
 
-    Friend Sub deleteTeachPoint(index As Int32)
-        If teachPoints.Count > index And index >= 0 Then
-            'Prüfen ob Teachpunkt benutzt wird
-            If progList.Exists(Function(_seq As ProgramEntry) _seq.tpnr = teachPoints(index).nr) Then
-                RaiseEvent Log($"Teachpunkt {teachPoints(index).nr} wird verwendet und kann nicht gelöscht werden!", Logger.LogLevel.ERR)
-            Else
-                RaiseEvent Log($"Teachpunkt {teachPoints(index).nr} wurde gelöscht!", Logger.LogLevel.INFO)
-                teachPoints.RemoveAt(index)
-            End If
+    Friend Sub DeleteTeachPoint(index As Int32)
+        If _teachPoints.Count > index And index >= 0 Then
+            RaiseEvent Log($"Teachpunkt {_teachPoints(index).nr} wurde gelöscht!", Logger.LogLevel.INFO)
+            _teachPoints.RemoveAt(index)
             RaiseEvent ProgChanged(New ProgChangedEventArgs(False, False, True, index - 1))
         End If
     End Sub
 
     Friend Function getTeachPointName(nr As Int32) As String
-        Return teachPoints.Find(Function(_tp As TeachPoint) _tp.nr = nr).name
+        Return _teachPoints.Find(Function(_tp As TeachPoint) _tp.nr = nr).name
     End Function
 
     Friend Function moveToTeachPoint(index As Int32, sync As Boolean) As Boolean
-        If teachPoints.Count > index And index >= 0 Then
+        If _teachPoints.Count > index And index >= 0 Then
             'Return doJointMov(sync, True, teachPoints(index).jointAngles(0), True, teachPoints(index).jointAngles(1), True,
             'teachPoints(index).jointAngles(2), True, teachPoints(index).jointAngles(3), True, teachPoints(index).jointAngles(4),
             '  True, teachPoints(index).jointAngles(5))
@@ -68,52 +56,26 @@ Friend Class ACLProgram
         Return False
     End Function
 
-    Friend Sub moveTPUpDown(down As Boolean, index As Int32)
-        Dim tmpNewIndex As Int32
-        If teachPoints.Count > index And index >= 0 Then
-            If down Then
-                If index < teachPoints.Count - 1 Then 'Es gibt noch mind. einen weiteren Eintrag => also tauschen
-                    If teachPoints(index + 1).nr = teachPoints(index).nr + 1 Then
-                        teachPoints(index).nr += 1
-                        teachPoints(index + 1).nr -= 1
-                        _swapTPNr(teachPoints(index).nr, teachPoints(index + 1).nr)
-                        tmpNewIndex = index + 1
-                    Else
-                        teachPoints(index).nr += 1
-                        _changeTPNr(teachPoints(index).nr - 1, teachPoints(index).nr)
-                        tmpNewIndex = index
-                    End If
-                Else
-                    teachPoints(index).nr += 1
-                    _changeTPNr(teachPoints(index).nr - 1, teachPoints(index).nr)
-                    tmpNewIndex = index
-                End If
-            Else
-                If teachPoints(index).nr > 0 Then
-                    If index > 0 Then
-                        If teachPoints(index - 1).nr = teachPoints(index).nr - 1 Then
-                            teachPoints(index).nr -= 1
-                            teachPoints(index - 1).nr += 1
-                            _swapTPNr(teachPoints(index).nr, teachPoints(index - 1).nr)
-                            tmpNewIndex = index - 1
-                        Else
-                            teachPoints(index).nr -= 1
-                            _changeTPNr(teachPoints(index).nr + 1, teachPoints(index).nr)
-                            tmpNewIndex = index
-                        End If
-                    Else
-                        teachPoints(index).nr -= 1
-                        _changeTPNr(teachPoints(index).nr + 1, teachPoints(index).nr)
-                        tmpNewIndex = index
-                    End If
-                End If
-            End If
-            'Liste neu sortieren
-            teachPoints.Sort()
-            'TPs Updaten
-            RaiseEvent ProgChanged(New ProgChangedEventArgs(False, False, True, tmpNewIndex))
-        End If
-    End Sub
+
+    ' -----------------------------------------------------------------------------
+    ' AB HIER ALT!!
+    ' -----------------------------------------------------------------------------
+
+    ' -----------------------------------------------------------------------------
+    ' Definitions
+    ' -----------------------------------------------------------------------------
+    Friend progList As New List(Of ProgramEntry)
+
+    Friend progClipboard As New ProgramEntry
+    Friend teachPointClipboard As New TeachPoint
+    Private _programRunning, _loopSeq As Boolean
+    Private _progIndex As Int32
+
+
+    Friend Event ProgChanged(ByVal e As ProgChangedEventArgs)
+    ' -----------------------------------------------------------------------------
+    ' Public
+    ' -----------------------------------------------------------------------------
 
     'PROGRAMM
     Friend Sub addProgItem(item As ProgramEntry, index As Int32)
@@ -165,7 +127,7 @@ Friend Class ACLProgram
     Friend Function executeProgItem(index As Int32) As Boolean
         If progList.Count > index And index >= 0 Then
             If progList(index).func = "pos" Then
-                Dim tpI As Int32 = teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = progList(index).tpnr)
+                Dim tpI As Int32 = _teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = progList(index).tpnr)
                 If tpI = -1 Then
                     RaiseEvent Log($"Teachpunkt {progList(index).tpnr} existierte nicht!", Logger.LogLevel.ERR)
                     Return False
@@ -201,10 +163,10 @@ Friend Class ACLProgram
             Dim objStreamWriter As StreamWriter
             objStreamWriter = New StreamWriter(saveFileDialog.FileName)
             'TeachPunkte
-            For Each x As TeachPoint In teachPoints
-                objStreamWriter.WriteLine(x.name & ";tp;" & x.nr & ";" & x.jointAngles(0) & ";" & x.jointAngles(1) & ";" _
-                         & x.jointAngles(2) & ";" & x.jointAngles(3) & ";" _
-                         & x.jointAngles(4) & ";" & x.jointAngles(5))
+            For Each x As TeachPoint In _teachPoints
+                objStreamWriter.WriteLine(x.name & ";tp;" & x.nr & ";" & x.jointAngles.Items(0) & ";" & x.jointAngles.Items(1) & ";" _
+                         & x.jointAngles.Items(2) & ";" & x.jointAngles.Items(3) & ";" _
+                         & x.jointAngles.Items(4) & ";" & x.jointAngles.Items(5))
             Next
             'Programm
             For Each x As ProgramEntry In progList
@@ -248,12 +210,12 @@ Friend Class ACLProgram
                             Dim item As New TeachPoint
                             item.name = tmpSplit(0)
                             item.nr = CInt(tmpSplit(2))
-                            item.jointAngles(0) = CDec(tmpSplit(3))
-                            item.jointAngles(1) = CDec(tmpSplit(4))
-                            item.jointAngles(2) = CDec(tmpSplit(5))
-                            item.jointAngles(3) = CDec(tmpSplit(6))
-                            item.jointAngles(4) = CDec(tmpSplit(7))
-                            item.jointAngles(5) = CDec(tmpSplit(8))
+                            item.jointAngles.SetByIndex(0, CDec(tmpSplit(3)))
+                            item.jointAngles.SetByIndex(1, CDec(tmpSplit(4)))
+                            item.jointAngles.SetByIndex(2, CDec(tmpSplit(5)))
+                            item.jointAngles.SetByIndex(3, CDec(tmpSplit(6)))
+                            item.jointAngles.SetByIndex(4, CDec(tmpSplit(7)))
+                            item.jointAngles.SetByIndex(5, CDec(tmpSplit(8)))
                             tmpTpList.Add(item)
                         Else
                             'Programm
@@ -278,9 +240,9 @@ Friend Class ACLProgram
                     End If
                 Loop Until strLine Is Nothing
                 'Listen kopieren
-                teachPoints.Clear()
+                _teachPoints.Clear()
                 For Each x As TeachPoint In tmpTpList
-                    teachPoints.Add(x)
+                    _teachPoints.Add(x)
                 Next
                 progList.Clear()
                 For Each x As ProgramEntry In tmpSeqList
@@ -289,7 +251,7 @@ Friend Class ACLProgram
                 'und Changed Event auslösen
                 RaiseEvent ProgChanged(New ProgChangedEventArgs(False, True, True, progList.Count - 1))
             Catch ex As Exception
-                teachPoints.Clear()
+                _teachPoints.Clear()
                 progList.Clear()
                 tmpErg = False
             Finally
@@ -352,23 +314,7 @@ Friend Class ACLProgram
     'End Sub
 End Class
 
-Friend Class TeachPoint
-    Implements IComparable(Of TeachPoint)
 
-    Friend nr As Int32
-    Friend name As String
-    Friend jointAngles(5) As Double
-
-    Friend Function CompareTo(other As TeachPoint) As Integer _
-           Implements IComparable(Of TeachPoint).CompareTo
-        ' A null value means that this object is greater.
-        If other Is Nothing Then
-            Return 1
-        Else
-            Return Me.nr.CompareTo(other.nr)
-        End If
-    End Function
-End Class
 
 Friend Class ProgramEntry
     Friend comment As String

@@ -3,7 +3,6 @@
     ' TODO
     ' -----------------------------------------------------------------------------
     ' TCP-Server Einstellungen einbinden
-    ' Toolframe Einstellungen hinzufügen
 
     ' -----------------------------------------------------------------------------
     ' Definitions
@@ -17,6 +16,7 @@
     Private _denavitHartenbergParameter(5) As DHParameter
     Private _toolframe As CartCoords
     Private _workframe As CartCoords
+    Private _unsavedChanges As Boolean = False
 
     ' Properties
     Friend ReadOnly Property JointParameter As JointParameter()
@@ -47,6 +47,11 @@
     Public ReadOnly Property ConfigFileLoaded As Boolean
         Get
             Return _configFileLoaded
+        End Get
+    End Property
+    Public ReadOnly Property UnsavedChanges As Boolean
+        Get
+            Return _unsavedChanges
         End Get
     End Property
 
@@ -88,27 +93,29 @@
     ' -----------------------------------------------------------------------------
     Friend Sub SetJointParameter(index As Integer, jointParameter As JointParameter)
         _jointParameter(index) = jointParameter
+        _unsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.Joint)
     End Sub
     Friend Sub SetServoParameter(index As Integer, servoParameter As ServoParameter)
         _servoParameter(index) = servoParameter
+        _unsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.Servo)
     End Sub
     Friend Sub SetDenavitHartenbergParameter(index As Integer, dhParameter As DHParameter)
         _denavitHartenbergParameter(index) = dhParameter
+        _unsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.DenavitHartenbergParameter)
     End Sub
     Friend Sub SetToolframe(toolframe As CartCoords)
         _toolframe = toolframe
+        _unsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.Toolframe)
     End Sub
     Friend Sub SetWorkframe(workframe As CartCoords)
         _workframe = workframe
+        _unsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.Workframe)
     End Sub
-    Friend Function GetDefaulConfigFilename() As String
-        Return cDefaultConfigFile
-    End Function
     Friend Function LoadDefaulSettings() As Boolean
         If System.IO.File.Exists(cDefaultConfigFile) Then
             _XMLReader(cDefaultConfigFile)
@@ -118,6 +125,7 @@
             RaiseEvent ParameterChanged(ParameterChangedParameter.All)
             RaiseEvent Log($"[Parameter] Standardparameter geladen", Logger.LogLevel.ERR)
             _configFileLoaded = True
+            _unsavedChanges = False
             Return True
         Else
             Return False
@@ -136,6 +144,7 @@
                 RaiseEvent ParameterChanged(ParameterChangedParameter.All)
                 RaiseEvent Log("[Parameter] Parameterdatei geladen", Logger.LogLevel.INFO)
                 _configFileLoaded = True
+                _unsavedChanges = False
                 Return True
             Catch e As Exception
                 RaiseEvent Log($"[Parameter] Laden fehlgeschlagen, Fehler: {e.Message}", Logger.LogLevel.ERR)
@@ -156,6 +165,7 @@
                 My.Settings.Save()
                 _actFilename = saveFileDialog.FileName
                 RaiseEvent Log("[Parameter] Parameterdatei gespeichert", Logger.LogLevel.INFO)
+                _unsavedChanges = False
                 Return True
             Catch e As Exception
                 RaiseEvent Log($"[Parameter] Speichern fehlgeschlagen, Fehler: {e.Message}", Logger.LogLevel.ERR)
@@ -164,7 +174,9 @@
         End If
         Return False
     End Function
-
+    Friend Function GetDefaulConfigFilename() As String
+        Return cDefaultConfigFile
+    End Function
     Friend Function GetActFilename() As String
         If _actFilename <> Nothing Then
             Return _actFilename

@@ -10,6 +10,8 @@
     Private maxLineNumberCharLength As Int32
     Private Sub panCodeEditor_Load(sender As Object, e As EventArgs) Handles Me.Load
         sciCodeEditor.Margins(0).Width = sciCodeEditor.TextWidth(ScintillaNET.Style.LineNumber, "99")
+        sciCodeEditor.Styles(ScintillaNET.Style.Default).Font = "Courier New"
+        sciCodeEditor.Styles(ScintillaNET.Style.Default).Size = 12
     End Sub
 
     ' -----------------------------------------------------------------------------

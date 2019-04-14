@@ -30,7 +30,7 @@
             End If
             'Log
             _logBox.ReadOnly = False
-            _logBox.AppendText($"{Now().ToString("HH:mm:ss.fff")} [{lvl.ToString()}]{"".PadLeft(8 - lvl.ToString().Length())}{msg}{vbCrLf}")
+            _logBox.AppendText($"{Now().ToString("HH:mm:ss.fff")} [ {lvl.ToString().PadRight(7)} ] {msg}{vbCrLf}")
             _logBox.ReadOnly = True
             ' Scroll Logbox
             _logBox.SelectionStart = _logBox.Text.Length

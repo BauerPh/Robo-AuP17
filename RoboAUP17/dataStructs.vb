@@ -219,4 +219,23 @@ Module dataStructs
         Public Property MaxAngle As Double
     End Structure
 
+    ' -----------------------------------------------------------------------------
+    ' ACL
+    ' -----------------------------------------------------------------------------
+    Friend Structure TeachPoint
+        Implements IComparable(Of TeachPoint)
+
+        Friend nr As Int32
+        Friend name As String
+        Friend cart As Boolean
+        Friend jointAngles As JointAngles
+        Friend tcpCoords As CartCoords
+
+        Friend Function CompareTo(other As TeachPoint) As Integer _
+            Implements IComparable(Of TeachPoint).CompareTo
+            ' A null value means that this object is greater.
+            Return Me.nr.CompareTo(other.nr)
+        End Function
+    End Structure
+
 End Module

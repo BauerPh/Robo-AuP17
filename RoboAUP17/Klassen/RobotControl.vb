@@ -4,7 +4,7 @@ Friend Class RobotControl
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' Cart Coord nur berechnen wenn alle Achsen Referenz haben!
+    ' 
 
     ' -----------------------------------------------------------------------------
     ' Definitions
@@ -222,7 +222,7 @@ Friend Class RobotControl
             End If
         Next
         If Not atLeasOneJointMove Then
-            RaiseEvent Log("[Robo Control] Bewegung wird nicht ausgeführt, Ziel wurde bereits erreicht", Logger.LogLevel.ERR)
+            RaiseEvent Log("[Robo Control] Bewegung wird nicht ausgeführt, Ziel wurde bereits erreicht", Logger.LogLevel.WARN)
             Return False
         End If
         'aktuelle Geschwindigkeit und Beschleunigung berechnen

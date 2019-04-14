@@ -107,6 +107,17 @@ Public Class frmMain
     End Sub
     Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         My.Settings.Save()
+        ' Ungespeicherte Änderungen prüfen
+        If _roboControl.Pref.UnsavedChanges Then
+            Dim erg As DialogResult = MessageBox.Show($"Einstellungen wurden geändert und nicht gespeichert. Wollen sie diese jetzt Speichern?", "Ungespeicherte Änderungen", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
+            If erg = DialogResult.Cancel Then
+                e.Cancel = True
+            ElseIf erg = DialogResult.Yes Then
+                If Not _roboControl.Pref.SaveSettings() Then
+                    e.Cancel = True
+                End If
+            End If
+        End If
     End Sub
     Private Sub tsBtnConnect_Click(sender As Object, e As EventArgs) Handles tsBtnConnect.Click
         _roboControl.SerialConnect(tsCbComPort.Text)

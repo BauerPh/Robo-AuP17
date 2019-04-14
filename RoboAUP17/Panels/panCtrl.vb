@@ -2,7 +2,6 @@
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' Servos mit "Start" bewegen!
     ' TODO: alten Jog-Interval für jeden Mode speicher und wiederherstellen
     ' Checkbox für SyncMove
     ' Home & Parkposition anfahren
@@ -483,16 +482,15 @@
             End If
         End If
     End Sub
-    'TODO!!!
+
     Private Function _doServo(nr As Int32, prc As Double) As Boolean
         If frmMain.RoboControl.Pref.ServoParameter(nr - 1).Available And _servoAngleOld(0) <> prc Then
             If frmMain.RoboControl.MoveServoPrc(nr, prc) Then
                 _servoAngleOld(nr - 1) = prc
                 Return True
             End If
-        Else
-            Return False
         End If
+        Return False
     End Function
     Private Sub _doJogServo(srvNr As Int32, numUpDown As NumericUpDown, increment As Decimal)
         If numUpDown.Value = numUpDown.Minimum And increment <= 0 Then Return
@@ -505,7 +503,7 @@
         ElseIf newVal > numUpDown.Maximum Then
             numUpDown.Value = numUpDown.Maximum
         Else
-            numUpDown.Value = numUpDown.Value + increment
+            numUpDown.Value = CDec(newVal)
         End If
         _doServo(srvNr, numUpDown.Value)
     End Sub
@@ -552,9 +550,8 @@
         If _doMoveAfterServoMove Then
             _doMoveAfterServoMove = False
             _doMove()
-        Else
-            _enableDisableElements()
         End If
+        _enableDisableElements()
     End Sub
     Private Sub _eRoboRefStateChanged(refState As Boolean())
         _enableDisableElements()
