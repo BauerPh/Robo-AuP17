@@ -489,6 +489,8 @@ Public Class ACLListener
     Inherits ACLParserBaseListener
     Private _maxAcc, _maxSpeed, _acc, _speed As Double
     Private _ifStack As New Stack(Of Integer)
+    Private _labels As New Dictionary(Of String, Integer)
+    Private _gotos As New Dictionary(Of String, List(Of Integer))
     Private _tp As List(Of TeachPoint)
     Private _progList As List(Of ProgramEntry)
 
@@ -651,12 +653,11 @@ Public Class ACLListener
     End Sub
     Public Overrides Sub EnterElse(<NotNull> context As ACLParser.ElseContext)
         Dim thisIndex As Int32 = _progList.Count
-        Dim lineNr As Integer = context.ELSE.Symbol.Line
 
         ' Sprung hinzufügen
         Dim progEntry As New ProgramEntry
         progEntry.func = progFunc.jump
-        progEntry.lineNr = lineNr
+        progEntry.lineNr = context.ELSE.Symbol.Line
         progEntry.jumpTarget = -1 ' Wird bei ENDIF gesetzt
         _progList.Add(progEntry)
 
@@ -673,11 +674,11 @@ Public Class ACLListener
     End Sub
     Public Overrides Sub ExitIf(<NotNull> context As ACLParser.IfContext)
         Dim thisIndex As Int32 = _progList.Count
-        Dim lineNr As Integer = context.ENDIF.Symbol.Line
 
         ' NOOP hinzufügen
         Dim progEntry As New ProgramEntry
         progEntry.func = progFunc.noop
+        progEntry.lineNr = context.ENDIF.Symbol.Line
         _progList.Add(progEntry)
 
         ' Eintrag vom IF vom Stack holen und bearbeiten
@@ -691,5 +692,69 @@ Public Class ACLListener
         _progList(progListIfOrElseEntryNum) = progEntry
 
         MyBase.ExitIf(context)
+    End Sub
+    Public Overrides Sub EnterLabel(<NotNull> context As ACLParser.LabelContext)
+        Dim lineNr As Integer = context.LABEL.Symbol.Line
+        Dim thisIndex As Int32 = _progList.Count
+        ' Prüfen ob das Label schon existiert, wenn nicht => anlegen
+        Dim labelText As String = context.IDENTIFIER.GetText
+        If _labels.ContainsKey(labelText) Then
+            RaiseEvent CompileErrorEvent(lineNr, $"Label ""{labelText}"" wurde nochmals definiert")
+        Else
+            ' NOOP hinzufügen
+            Dim progEntry As New ProgramEntry
+            progEntry.func = progFunc.noop
+            progEntry.lineNr = lineNr
+            _progList.Add(progEntry)
+
+            ' Label anlgen und Prüfen ob es GOTOs gibt
+            _labels.Add(labelText, thisIndex)
+            If _gotos.ContainsKey(labelText) Then
+                For Each item As Int32 In _gotos(labelText)
+                    progEntry = _progList(item)
+                    progEntry.jumpTarget = thisIndex
+                    _progList(item) = progEntry
+                Next
+                _gotos.Remove(labelText)
+            End If
+        End If
+
+        MyBase.EnterLabel(context)
+    End Sub
+    Public Overrides Sub EnterGoto(<NotNull> context As ACLParser.GotoContext)
+        Dim lineNr As Integer = context.GOTO.Symbol.Line
+        Dim thisIndex As Int32 = _progList.Count
+
+        ' Sprung hinzufügen
+        Dim progEntry As New ProgramEntry
+        progEntry.func = progFunc.jump
+        progEntry.lineNr = lineNr
+        progEntry.jumpTarget = -1
+
+        ' Prüfen ob es schon ein Label gibt
+        Dim labelText As String = context.IDENTIFIER.GetText
+        If _labels.ContainsKey(labelText) Then
+            progEntry.jumpTarget = _labels(labelText)
+        Else
+            ' Goto zwischenspeichern
+            If Not _gotos.ContainsKey(labelText) Then
+                _gotos.Add(labelText, New List(Of Integer))
+            End If
+            _gotos(labelText).Add(thisIndex)
+        End If
+
+        _progList.Add(progEntry)
+
+        MyBase.EnterGoto(context)
+    End Sub
+
+    Public Overrides Sub ExitRoot(<NotNull> context As ACLParser.RootContext)
+        If _gotos.Count > 0 Then
+            For Each item As KeyValuePair(Of String, List(Of Integer)) In _gotos
+                RaiseEvent CompileErrorEvent(_progList(item.Value(0)).lineNr, $"Label ""{item.Key}"" wurde nicht definiert")
+            Next
+        End If
+
+        MyBase.ExitRoot(context)
     End Sub
 End Class

@@ -16,7 +16,7 @@ statement
 //	| variable NEWLINE
 	| progflow
 //	| config NEWLINE
-//	| report NEWLINE
+	| report NEWLINE
 	;
 
 // statements
@@ -28,10 +28,18 @@ axisctrl
 	| acc
 	| speed
 	| home
+	| delay
 	;
 
 progflow
 	: if
+	| label
+	| goto
+	;
+
+report
+	: print
+	| println
 	;
 
 // commands
@@ -55,6 +63,10 @@ home
 	: HOME INTEGER?
 	;
 
+delay
+	: DELAY INTEGER
+	;
+
 condition
 	: (INTEGER | IDENTIFIER) (COMPAREOPERATOR | EQUAL) (INTEGER | IDENTIFIER)
 	;
@@ -71,4 +83,19 @@ else
 	: ELSE NEWLINE statement+
 	;
 
+label
+	: LABEL IDENTIFIER NEWLINE
+	;
+
+goto
+	: GOTO IDENTIFIER NEWLINE
+	;
+
+println
+	: PRINTLN (STRING | IDENTIFIER) NEWLINE
+	;
+
+print
+	: PRINT (STRING | IDENTIFIER) NEWLINE
+	;
 

@@ -1,12 +1,12 @@
 lexer grammar ACLLexer;
 
 // Axis Control Commands
-MOVE:			'MOVE';
+MOVE:			'MOVE';		//okay
 OPEN:			'OPEN';
 CLOSE:			'CLOSE';
 JAW:			'JAW';
-ACC:			'ACC';
-SPEED:			'SPEED';
+ACC:			'ACC';		//okay
+SPEED:			'SPEED';	//okay
 HOME:			'HOME';
 
 // Program Control
@@ -31,11 +31,11 @@ DELVAR:			'DELVAR';
 SET:			'SET';
 
 // Program Flow Commands
-IF:				'IF';
-ANDIF:			'ANDIF';
-ORIF:			'ORIF';
-ELSE:			'ELSE';
-ENDIF:			'ENDIF';
+IF:				'IF';		//okay
+ANDIF:			'ANDIF';	//okay
+ORIF:			'ORIF';		//okay
+ELSE:			'ELSE';		//okay
+ENDIF:			'ENDIF';	//okay
 FOR:			'FOR';
 ENDFOR:			'ENDFOR';
 LABEL:			'LABEL';
