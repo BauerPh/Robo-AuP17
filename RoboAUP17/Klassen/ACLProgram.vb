@@ -103,7 +103,7 @@ Friend Class ACLProgram
 
 #Region "ACL-Programm"
     Friend Function CompileProgram(input As String, acc As Double, speed As Double) As Boolean
-        RaiseEvent Log("[ACL] erstelle Programm...", Logger.LogLevel.ERR)
+        RaiseEvent Log("[ACL] erstelle Programm...", Logger.LogLevel.INFO)
         _programSyntaxOkay = True
         ' Erstelle Input Stream
         Dim inputStream As AntlrInputStream = New AntlrInputStream(input)
@@ -130,6 +130,12 @@ Friend Class ACLProgram
             _progList.Clear()
             Tree.ParseTreeWalker.Default.Walk(aclListener, rootContext)
             RemoveHandler aclListener.CompileErrorEvent, AddressOf _eCompileError
+
+            If _programCompiled Then
+                RaiseEvent Log("[ACL] erfolgreich kompiliert", Logger.LogLevel.INFO)
+            Else
+                RaiseEvent Log("[ACL] Kompilieren fehlgeschlagen", Logger.LogLevel.ERR)
+            End If
         Else
             RaiseEvent Log("[ACL] Syntaxfehler", Logger.LogLevel.ERR)
             _programCompiled = False
@@ -138,11 +144,6 @@ Friend Class ACLProgram
         ' Error Handler vom ErrorListener wieder entfernen
         RemoveHandler aclErrorListener.SyntaxErrorEvent, AddressOf _eSyntaxError
 
-        If _programCompiled Then
-            RaiseEvent Log("[ACL] erfolgreich kompiliert", Logger.LogLevel.INFO)
-        Else
-            RaiseEvent Log("[ACL] Kompilieren fehlgeschlagen", Logger.LogLevel.ERR)
-        End If
         Return _programCompiled
     End Function
 #End Region
@@ -487,6 +488,7 @@ End Class
 Public Class ACLListener
     Inherits ACLParserBaseListener
     Private _maxAcc, _maxSpeed, _acc, _speed As Double
+    Private _ifStack As New Stack(Of Integer)
     Private _tp As List(Of TeachPoint)
     Private _progList As List(Of ProgramEntry)
 
@@ -533,6 +535,20 @@ Public Class ACLListener
 
         MyBase.EnterMove(context)
     End Sub
+    Public Overrides Sub EnterAcc(<NotNull> context As ACLParser.AccContext)
+        Dim lineNr As Integer = context.ACC.Symbol.Line
+        Dim acc As Integer = CInt(context.INTEGER.GetText)
+
+        ' Acc prüfen
+        If acc > 100 Or acc < 1 Then
+            RaiseEvent CompileErrorEvent(lineNr, $"ACC muss zwischen 1 und 100 liegen")
+        Else
+            ' Speed
+            _acc = (acc / 100) * _maxAcc
+        End If
+
+        MyBase.EnterAcc(context)
+    End Sub
     Public Overrides Sub EnterSpeed(<NotNull> context As ACLParser.SpeedContext)
         Dim lineNr As Integer = context.SPEED.Symbol.Line
         Dim speed As Integer = CInt(context.INTEGER.GetText)
@@ -546,5 +562,134 @@ Public Class ACLListener
         End If
 
         MyBase.EnterSpeed(context)
+    End Sub
+    Public Overrides Sub EnterIf(<NotNull> context As ACLParser.IfContext)
+        Dim thisIndex As Int32 = _progList.Count
+        ' Bedingter Sprung hinzufügen (Bedingung wird bei "EnterCondition" hinzugefügt)
+        Dim progEntry As New ProgramEntry
+        progEntry.func = progFunc.cjump
+        progEntry.lineNr = context.IF.Symbol.Line
+        progEntry.VKEFirst = True
+        progEntry.jumpTrueTarget = thisIndex + 1 ' Auf nächsten Eintrag, wenn dieser hier hinzugefügt wurde
+        progEntry.jumpFalseTarget = -1 ' Wird bei ANDIF, ORIF, ELSE oder ENDIF gesetzt!
+        _progList.Add(progEntry)
+
+        ' Index von diesem IF auf den Stack legen
+        _ifStack.Push(thisIndex)
+
+        MyBase.EnterIf(context)
+    End Sub
+    Public Overrides Sub EnterCondition(<NotNull> context As ACLParser.ConditionContext)
+        ' Letztes Element holen
+        Dim thisIndex As Int32 = _progList.Count - 1
+        Dim progEntry As ProgramEntry = _progList(thisIndex)
+
+        ' Prüfen ob Variable oder Wert
+        Dim val1 As String = context.GetChild(0).GetText()
+        Dim oper As String = context.GetChild(1).GetText()
+        Dim val2 As String = context.GetChild(2).GetText()
+        If IsNumeric(val1) Then
+            progEntry.val1 = CInt(val1)
+        Else
+            ' Check Variable...
+            progEntry.var1 = val1
+        End If
+        If IsNumeric(val2) Then
+            progEntry.val2 = CInt(val2)
+        Else
+            ' Check Variable...
+            progEntry.var2 = val2
+        End If
+
+        ' Operator
+        Select Case oper
+            Case ">"
+                progEntry.compareOperator = progCompOperator.greater
+            Case "<"
+                progEntry.compareOperator = progCompOperator.less
+            Case ">="
+                progEntry.compareOperator = progCompOperator.greaterOrEqual
+            Case "<="
+                progEntry.compareOperator = progCompOperator.lessOrEqual
+            Case "="
+                progEntry.compareOperator = progCompOperator.equal
+            Case "<>"
+                progEntry.compareOperator = progCompOperator.notEqual
+        End Select
+
+        ' Zurückspeichern
+        _progList(thisIndex) = progEntry
+
+        MyBase.EnterCondition(context)
+    End Sub
+    Public Overrides Sub EnterAnd_or_if(<NotNull> context As ACLParser.And_or_ifContext)
+        ' Bedingter Sprung hinzufügen (Bedingung wird bei "EnterCondition" hinzugefügt)
+        Dim thisIndex As Int32 = _progList.Count
+        Dim progEntry As New ProgramEntry
+        progEntry.func = progFunc.cjump
+        If context.ANDIF IsNot Nothing Then
+            progEntry.lineNr = context.ANDIF.Symbol.Line
+            progEntry.booleanOperator = progBoolOperator.and
+        Else
+            progEntry.lineNr = context.ORIF.Symbol.Line
+            progEntry.booleanOperator = progBoolOperator.or
+        End If
+        progEntry.VKEFirst = False
+        progEntry.jumpTrueTarget = thisIndex + 1 ' Auf nächsten Eintrag, wenn dieser hier hinzugefügt wurde
+        progEntry.jumpFalseTarget = -1 ' Wird bei ANDIF, ORIF, ELSE oder ENDIF gesetzt!
+        _progList.Add(progEntry)
+
+        ' Eintrag vom IF vom Stack holen und durch Condition ersetzen
+        Dim progListIfEntryNum = _ifStack.Pop
+        progEntry = _progList(progListIfEntryNum)
+        progEntry.func = progFunc.condition
+        _progList(progListIfEntryNum) = progEntry
+
+        _ifStack.Push(thisIndex) ' Index von diesem IF auf den Stack legen
+
+        MyBase.EnterAnd_or_if(context)
+    End Sub
+    Public Overrides Sub EnterElse(<NotNull> context As ACLParser.ElseContext)
+        Dim thisIndex As Int32 = _progList.Count
+        Dim lineNr As Integer = context.ELSE.Symbol.Line
+
+        ' Sprung hinzufügen
+        Dim progEntry As New ProgramEntry
+        progEntry.func = progFunc.jump
+        progEntry.lineNr = lineNr
+        progEntry.jumpTarget = -1 ' Wird bei ENDIF gesetzt
+        _progList.Add(progEntry)
+
+        ' Eintrag vom IF vom Stack holen und bearbeiten
+        Dim progListIfEntryNum = _ifStack.Pop
+        progEntry = _progList(progListIfEntryNum)
+        progEntry.jumpFalseTarget = thisIndex + 1
+        _progList(progListIfEntryNum) = progEntry
+
+        ' Index von diesem ELSE auf den Stack legen
+        _ifStack.Push(thisIndex)
+
+        MyBase.EnterElse(context)
+    End Sub
+    Public Overrides Sub ExitIf(<NotNull> context As ACLParser.IfContext)
+        Dim thisIndex As Int32 = _progList.Count
+        Dim lineNr As Integer = context.ENDIF.Symbol.Line
+
+        ' NOOP hinzufügen
+        Dim progEntry As New ProgramEntry
+        progEntry.func = progFunc.noop
+        _progList.Add(progEntry)
+
+        ' Eintrag vom IF vom Stack holen und bearbeiten
+        Dim progListIfOrElseEntryNum = _ifStack.Pop
+        progEntry = _progList(progListIfOrElseEntryNum)
+        If progEntry.func = progFunc.cjump Then
+            progEntry.jumpFalseTarget = thisIndex
+        Else
+            progEntry.jumpTarget = thisIndex
+        End If
+        _progList(progListIfOrElseEntryNum) = progEntry
+
+        MyBase.ExitIf(context)
     End Sub
 End Class

@@ -68,7 +68,7 @@ if
 	;
 
 else
-	: ELSE statement+ NEWLINE
+	: ELSE NEWLINE statement+
 	;
 
 

@@ -247,25 +247,54 @@ Module dataStructs
     End Structure
 
     Friend Enum progFunc
-        cartMove = 0
+        noop = 0
+        cartMove
         jointMove
         servoMove
-        wait
+        delay
+        cjump
+        jump
+        condition
+    End Enum
+    Friend Enum progCompOperator
+        equal = 0
+        greater
+        less
+        greaterOrEqual
+        lessOrEqual
+        notEqual
+    End Enum
+    Friend Enum progBoolOperator
+        [nothing] = 0
+        [and]
+        [or]
     End Enum
     Friend Structure ProgramEntry
         Friend lineNr As Int32
         Friend func As progFunc
-        'Position
+        ' Position
         Friend cartCoords As CartCoords
         Friend jointAngles As JointAngles
         Friend speed As Double
         Friend acc As Double
         Friend sync As Boolean
-        'Servo
+        ' Servo
         Friend servoNum As Int32
         Friend servoVal As Int32
-        'Wait
-        Friend waitTimeMS As Int32
+        ' Delay
+        Friend delayTimeMS As Int32
+        ' Condition
+        Friend var1 As String
+        Friend var2 As String
+        Friend val1 As Int32
+        Friend val2 As Int32
+        Friend compareOperator As progCompOperator
+        Friend VKEFirst As Boolean
+        Friend booleanOperator As progBoolOperator
+        ' Jumps
+        Friend jumpTarget As Int32
+        Friend jumpTrueTarget As Int32
+        Friend jumpFalseTarget As Int32
     End Structure
 
 End Module
