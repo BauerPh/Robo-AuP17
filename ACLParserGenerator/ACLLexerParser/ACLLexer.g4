@@ -38,8 +38,8 @@ ELSE:			'ELSE';		//okay
 ENDIF:			'ENDIF';	//okay
 FOR:			'FOR';
 ENDFOR:			'ENDFOR';
-LABEL:			'LABEL';
-GOTO:			'GOTO';
+LABEL:			'LABEL';	//okay
+GOTO:			'GOTO';		//okay
 
 // Config
 INIT:			'INIT';

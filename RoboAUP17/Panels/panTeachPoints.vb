@@ -17,6 +17,7 @@
         AddHandler frmMain.RoboControl.RoboMoveStarted, AddressOf _eRefresh
         AddHandler frmMain.RoboControl.RoboMoveFinished, AddressOf _eRefresh
         AddHandler frmMain.RoboControl.RoboRefStateChanged, AddressOf _eRefresh
+        AddHandler frmMain.ACLProgram.ProgramFinished, AddressOf _eRefresh
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -65,7 +66,7 @@
             Return
         End If
 
-        btnMoveTo.Enabled = SerialConnected And Not RobotMoving And lbTeachPoints.SelectedIndex > -1
+        btnMoveTo.Enabled = SerialConnected And Not RobotMoving And Not ProgramRunning And lbTeachPoints.SelectedIndex > -1
     End Sub
 
     ' -----------------------------------------------------------------------------

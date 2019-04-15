@@ -12,6 +12,8 @@ Public Class frmMain
     Private WithEvents _aclProgram As New ACLProgram
     Private WithEvents _roboControl As New RobotControl
 
+    Private _serialPortsAvailable As Boolean = False
+
     ' Konstanten
     Private Const _ssHintTimerInterval As Int32 = 4000
     Private Const _viewSettingsFilename As String = "ViewSettings.xml"
@@ -30,7 +32,6 @@ Public Class frmMain
     Private _dckPanProgramTools As New panProgramTools
     Private _dckPanJointCtrl As New panCtrl
     Private _dckPanReference As New panReference
-
     Private _dckPanSettings As New panSettings
 
     ' Objekte
@@ -72,12 +73,27 @@ Public Class frmMain
 #Region "Robo Steuerung"
     Private Sub tsBtnEStop_Click(sender As Object, e As EventArgs) Handles tsBtnEStop.Click
         _roboControl.FastStop()
+        _aclProgram.StopProgram()
     End Sub
-    Private Sub RoboTest_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+    Private Sub RoboAUP17_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         If e.KeyCode = Keys.Space Then
             _roboControl.FastStop()
+            _aclProgram.StopProgram()
         End If
     End Sub
+
+    ' ACL Program
+    Private Sub tsBtnProgCheck_Click(sender As Object, e As EventArgs) Handles tsBtnProgCheck.Click
+        _aclProgram.CompileProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
+    End Sub
+    Private Sub tsBtnProgRun_Click(sender As Object, e As EventArgs) Handles tsBtnProgRun.Click
+        _aclProgram.RunProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
+    End Sub
+    Private Sub tsBtnProgStop_Click(sender As Object, e As EventArgs) Handles tsBtnProgStop.Click
+        tsBtnProgStop.Enabled = False
+        _aclProgram.StopProgram()
+    End Sub
+
 #End Region
 
 #Region "Private"
@@ -129,10 +145,6 @@ Public Class frmMain
     End Sub
     Private Sub tsBtnDisconnect_Click(sender As Object, e As EventArgs) Handles tsBtnDisconnect.Click
         _roboControl.SerialDisconnect()
-    End Sub
-    ' ACL Program
-    Private Sub tsBtnProgCheck_Click(sender As Object, e As EventArgs) Handles tsBtnProgCheck.Click
-        _aclProgram.CompileProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
     End Sub
 #End Region
 
@@ -371,6 +383,17 @@ Public Class frmMain
         ssLblStatus.Text = ""
     End Sub
 
+    Private Sub _enableDisableElements()
+        If InvokeRequired Then
+            Invoke(Sub() _enableDisableElements())
+            Return
+        End If
+
+        tsBtnConnect.Enabled = Not SerialConnected And _serialPortsAvailable
+        tsBtnProgRun.Enabled = SerialConnected And Not RobotMoving And Not ProgramRunning
+        tsBtnProgStop.Enabled = ProgramRunning
+    End Sub
+
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
@@ -393,39 +416,43 @@ Public Class frmMain
                 tsCbComPort.Items.Add(ports(i))
             Next
             tsCbComPort.SelectedIndex = 0
-            tsBtnConnect.Enabled = True
+            _serialPortsAvailable = True
         Else
-            tsBtnConnect.Enabled = False
+            _serialPortsAvailable = False
         End If
+
+        _enableDisableElements()
     End Sub
     Private Sub _eComSerialConnected() Handles _roboControl.SerialConnected
-        If InvokeRequired Then
-            Invoke(Sub() _eComSerialConnected())
-            Return
-        End If
-        tsBtnConnect.Enabled = False
-        tsBtnProgRun.Enabled = True
-
         SerialConnected = True
         RobotMoving = False
+
+        _enableDisableElements()
     End Sub
     Private Sub _eComSerialDisconnected() Handles _roboControl.SerialDisconnected
-        If InvokeRequired Then
-            Invoke(Sub() _eComSerialDisconnected())
-            Return
-        End If
-        tsBtnConnect.Enabled = True
-        tsBtnProgRun.Enabled = False
-        tsBtnProgStop.Enabled = False
-
         SerialConnected = False
         RobotMoving = False
+
+        _enableDisableElements()
     End Sub
     Private Sub _eRoboMoveStarted() Handles _roboControl.RoboMoveStarted
         RobotMoving = True
+
+        _enableDisableElements()
     End Sub
     Private Sub _eRoboMoveFinished() Handles _roboControl.RoboMoveFinished
         RobotMoving = False
+
+        _enableDisableElements()
+    End Sub
+
+    ' ACL-Program
+    Private Sub _eProgramFinished() Handles _aclProgram.ProgramFinished
+        _enableDisableElements()
+    End Sub
+    Private Sub _eDoJointMove(jointAngles As JointAngles, acc As Double, speed As Double) Handles _aclProgram.DoJointMove
+        _roboControl.SetSpeedAndAcc(speed, acc)
+        _roboControl.DoJointMov(True, jointAngles)
     End Sub
 
 End Class

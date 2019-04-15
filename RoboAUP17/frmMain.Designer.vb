@@ -77,17 +77,17 @@ Partial Class frmMain
         Me.tsBtnConnect = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnDisconnect = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.lblSpeed = New System.Windows.Forms.ToolStripLabel()
+        Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
+        Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
+        Me.lblAcc = New System.Windows.Forms.ToolStripLabel()
+        Me.numSpeed = New RoboAUP17.ToolStripNumericUpDown()
+        Me.ToolStripSeparator11 = New System.Windows.Forms.ToolStripSeparator()
         Me.tsBtnProgCheck = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnProgRun = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnProgStop = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
-        Me.tsBtnEStop = New System.Windows.Forms.ToolStripButton()
-        Me.lblSpeed = New System.Windows.Forms.ToolStripLabel()
-        Me.numSpeed = New RoboAUP17.ToolStripNumericUpDown()
-        Me.lblAcc = New System.Windows.Forms.ToolStripLabel()
-        Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
         Me.ToolStripSeparator10 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripSeparator11 = New System.Windows.Forms.ToolStripSeparator()
+        Me.tsBtnEStop = New System.Windows.Forms.ToolStripButton()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
@@ -397,7 +397,7 @@ Partial Class frmMain
         Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsBtnOpen, Me.tsBtnSave, Me.ToolStripSeparator1, Me.tsCbComPort, Me.tsBtnConnect, Me.tsBtnDisconnect, Me.ToolStripSeparator2, Me.lblSpeed, Me.numAcc, Me.ToolStripSeparator8, Me.lblAcc, Me.numSpeed, Me.ToolStripSeparator11, Me.tsBtnProgCheck, Me.tsBtnProgRun, Me.tsBtnProgStop, Me.ToolStripSeparator10, Me.tsBtnEStop})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 24)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(1182, 25)
+        Me.ToolStrip1.Size = New System.Drawing.Size(1182, 26)
         Me.ToolStrip1.TabIndex = 2
         Me.ToolStrip1.Text = "ToolStrip"
         '
@@ -452,6 +452,48 @@ Partial Class frmMain
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
         Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 26)
         '
+        'lblSpeed
+        '
+        Me.lblSpeed.Name = "lblSpeed"
+        Me.lblSpeed.Size = New System.Drawing.Size(80, 23)
+        Me.lblSpeed.Text = "Geschw. (°/s):"
+        '
+        'numAcc
+        '
+        Me.numAcc.DecimalPlaces = 2
+        Me.numAcc.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.numAcc.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
+        Me.numAcc.Name = "numAcc"
+        Me.numAcc.Size = New System.Drawing.Size(56, 23)
+        Me.numAcc.Text = "25,00"
+        Me.numAcc.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
+        '
+        'ToolStripSeparator8
+        '
+        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
+        Me.ToolStripSeparator8.Size = New System.Drawing.Size(6, 26)
+        '
+        'lblAcc
+        '
+        Me.lblAcc.Name = "lblAcc"
+        Me.lblAcc.Size = New System.Drawing.Size(77, 23)
+        Me.lblAcc.Text = "Beschl. (°/s²):"
+        '
+        'numSpeed
+        '
+        Me.numSpeed.DecimalPlaces = 2
+        Me.numSpeed.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.numSpeed.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
+        Me.numSpeed.Name = "numSpeed"
+        Me.numSpeed.Size = New System.Drawing.Size(56, 23)
+        Me.numSpeed.Text = "25,00"
+        Me.numSpeed.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
+        '
+        'ToolStripSeparator11
+        '
+        Me.ToolStripSeparator11.Name = "ToolStripSeparator11"
+        Me.ToolStripSeparator11.Size = New System.Drawing.Size(6, 26)
+        '
         'tsBtnProgCheck
         '
         Me.tsBtnProgCheck.Image = CType(resources.GetObject("tsBtnProgCheck.Image"), System.Drawing.Image)
@@ -478,10 +520,10 @@ Partial Class frmMain
         Me.tsBtnProgStop.Size = New System.Drawing.Size(130, 23)
         Me.tsBtnProgStop.Text = "Programm stoppen"
         '
-        'ToolStripSeparator8
+        'ToolStripSeparator10
         '
-        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
-        Me.ToolStripSeparator8.Size = New System.Drawing.Size(6, 26)
+        Me.ToolStripSeparator10.Name = "ToolStripSeparator10"
+        Me.ToolStripSeparator10.Size = New System.Drawing.Size(6, 26)
         '
         'tsBtnEStop
         '
@@ -490,48 +532,6 @@ Partial Class frmMain
         Me.tsBtnEStop.Name = "tsBtnEStop"
         Me.tsBtnEStop.Size = New System.Drawing.Size(132, 23)
         Me.tsBtnEStop.Text = "Not-Halt (Leertaste)"
-        '
-        'lblSpeed
-        '
-        Me.lblSpeed.Name = "lblSpeed"
-        Me.lblSpeed.Size = New System.Drawing.Size(80, 23)
-        Me.lblSpeed.Text = "Geschw. (°/s):"
-        '
-        'numSpeed
-        '
-        Me.numSpeed.DecimalPlaces = 2
-        Me.numSpeed.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.numSpeed.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.numSpeed.Name = "numSpeed"
-        Me.numSpeed.Size = New System.Drawing.Size(56, 23)
-        Me.numSpeed.Text = "25,00"
-        Me.numSpeed.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
-        '
-        'lblAcc
-        '
-        Me.lblAcc.Name = "lblAcc"
-        Me.lblAcc.Size = New System.Drawing.Size(77, 23)
-        Me.lblAcc.Text = "Beschl. (°/s²):"
-        '
-        'numAcc
-        '
-        Me.numAcc.DecimalPlaces = 2
-        Me.numAcc.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.numAcc.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.numAcc.Name = "numAcc"
-        Me.numAcc.Size = New System.Drawing.Size(56, 23)
-        Me.numAcc.Text = "25,00"
-        Me.numAcc.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
-        '
-        'ToolStripSeparator10
-        '
-        Me.ToolStripSeparator10.Name = "ToolStripSeparator10"
-        Me.ToolStripSeparator10.Size = New System.Drawing.Size(6, 25)
-        '
-        'ToolStripSeparator11
-        '
-        Me.ToolStripSeparator11.Name = "ToolStripSeparator11"
-        Me.ToolStripSeparator11.Size = New System.Drawing.Size(6, 25)
         '
         'frmMain
         '

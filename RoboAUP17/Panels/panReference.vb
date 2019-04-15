@@ -12,6 +12,7 @@
         AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eRefresh
         AddHandler frmMain.RoboControl.RoboMoveStarted, AddressOf _eRefresh
         AddHandler frmMain.RoboControl.RoboMoveFinished, AddressOf _eRefresh
+        AddHandler frmMain.ACLProgram.ProgramFinished, AddressOf _eRefresh
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -54,13 +55,15 @@
             Return
         End If
 
-        btnRefJ1.Enabled = SerialConnected And Not RobotMoving
-        btnRefJ2.Enabled = SerialConnected And Not RobotMoving
-        btnRefJ3.Enabled = SerialConnected And Not RobotMoving
-        btnRefJ4.Enabled = SerialConnected And Not RobotMoving
-        btnRefJ5.Enabled = SerialConnected And Not RobotMoving
-        btnRefJ6.Enabled = SerialConnected And Not RobotMoving
-        btnRefStart.Enabled = SerialConnected And Not RobotMoving And (cbSelJ1.Checked Or cbSelJ2.Checked Or cbSelJ3.Checked Or cbSelJ4.Checked Or cbSelJ5.Checked Or cbSelJ6.Checked)
+        Dim tmpEnabled As Boolean = SerialConnected And Not RobotMoving And Not ProgramRunning
+
+        btnRefJ1.Enabled = tmpEnabled
+        btnRefJ2.Enabled = tmpEnabled
+        btnRefJ3.Enabled = tmpEnabled
+        btnRefJ4.Enabled = tmpEnabled
+        btnRefJ5.Enabled = tmpEnabled
+        btnRefJ6.Enabled = tmpEnabled
+        btnRefStart.Enabled = tmpEnabled And (cbSelJ1.Checked Or cbSelJ2.Checked Or cbSelJ3.Checked Or cbSelJ4.Checked Or cbSelJ5.Checked Or cbSelJ6.Checked)
     End Sub
     ' -----------------------------------------------------------------------------
     ' Events
