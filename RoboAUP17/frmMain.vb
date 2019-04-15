@@ -130,6 +130,10 @@ Public Class frmMain
     Private Sub tsBtnDisconnect_Click(sender As Object, e As EventArgs) Handles tsBtnDisconnect.Click
         _roboControl.SerialDisconnect()
     End Sub
+    ' ACL Program
+    Private Sub tsBtnProgCheck_Click(sender As Object, e As EventArgs) Handles tsBtnProgCheck.Click
+        _aclProgram.CompileProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
+    End Sub
 #End Region
 
 #Region "MenuStrip Datei"
@@ -423,4 +427,5 @@ Public Class frmMain
     Private Sub _eRoboMoveFinished() Handles _roboControl.RoboMoveFinished
         RobotMoving = False
     End Sub
+
 End Class

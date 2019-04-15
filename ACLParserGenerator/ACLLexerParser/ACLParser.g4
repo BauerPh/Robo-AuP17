@@ -6,7 +6,7 @@ options { tokenVocab=ACLLexer; }
 // Top Level Description
 
 root
-	: statement* EOF
+	: statement*
 	;
 
 statement
@@ -25,6 +25,7 @@ axisctrl
 	| OPEN
 	| CLOSE
 	| jaw
+	| acc
 	| speed
 	| home
 	;
@@ -40,6 +41,10 @@ move
 
 jaw
 	: JAW INTEGER
+	;
+
+acc
+	: ACC INTEGER
 	;
 
 speed

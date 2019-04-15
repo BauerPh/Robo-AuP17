@@ -82,6 +82,12 @@ Partial Class frmMain
         Me.tsBtnProgStop = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.tsBtnEStop = New System.Windows.Forms.ToolStripButton()
+        Me.lblSpeed = New System.Windows.Forms.ToolStripLabel()
+        Me.numSpeed = New RoboAUP17.ToolStripNumericUpDown()
+        Me.lblAcc = New System.Windows.Forms.ToolStripLabel()
+        Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
+        Me.ToolStripSeparator10 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripSeparator11 = New System.Windows.Forms.ToolStripSeparator()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
@@ -92,7 +98,7 @@ Partial Class frmMain
         Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ssLblStatus})
         Me.StatusStrip.Location = New System.Drawing.Point(0, 647)
         Me.StatusStrip.Name = "StatusStrip"
-        Me.StatusStrip.Size = New System.Drawing.Size(1113, 22)
+        Me.StatusStrip.Size = New System.Drawing.Size(1182, 22)
         Me.StatusStrip.TabIndex = 0
         Me.StatusStrip.Text = "StatusStrip"
         '
@@ -107,7 +113,7 @@ Partial Class frmMain
         Me.MenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DateiToolStripMenuItem, Me.BearbeitenToolStripMenuItem, Me.AnsichtToolStripMenuItem, Me.EinstellungenToolStripMenuItem1, Me.HilfeToolStripMenuItem})
         Me.MenuStrip.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip.Name = "MenuStrip"
-        Me.MenuStrip.Size = New System.Drawing.Size(1113, 24)
+        Me.MenuStrip.Size = New System.Drawing.Size(1182, 24)
         Me.MenuStrip.TabIndex = 1
         Me.MenuStrip.Text = "MenuStrip"
         '
@@ -213,32 +219,32 @@ Partial Class frmMain
         'msShowVars
         '
         Me.msShowVars.Name = "msShowVars"
-        Me.msShowVars.Size = New System.Drawing.Size(180, 22)
+        Me.msShowVars.Size = New System.Drawing.Size(169, 22)
         Me.msShowVars.Text = "Variablen"
         '
         'msShowTeachpoints
         '
         Me.msShowTeachpoints.Name = "msShowTeachpoints"
-        Me.msShowTeachpoints.Size = New System.Drawing.Size(180, 22)
+        Me.msShowTeachpoints.Size = New System.Drawing.Size(169, 22)
         Me.msShowTeachpoints.Text = "Teachpunkte"
         '
         'msShowACLEditor
         '
         Me.msShowACLEditor.Name = "msShowACLEditor"
-        Me.msShowACLEditor.Size = New System.Drawing.Size(180, 22)
+        Me.msShowACLEditor.Size = New System.Drawing.Size(169, 22)
         Me.msShowACLEditor.Text = "ACL-Editor"
         '
         'msShowACLToolbox
         '
         Me.msShowACLToolbox.Name = "msShowACLToolbox"
-        Me.msShowACLToolbox.Size = New System.Drawing.Size(180, 22)
+        Me.msShowACLToolbox.Size = New System.Drawing.Size(169, 22)
         Me.msShowACLToolbox.Text = "ACL-Toolbox"
         '
         'RoboterToolStripMenuItem1
         '
         Me.RoboterToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowRoboStatus, Me.msShowRoboReference, Me.msShowRoboCtrl})
         Me.RoboterToolStripMenuItem1.Name = "RoboterToolStripMenuItem1"
-        Me.RoboterToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.RoboterToolStripMenuItem1.Size = New System.Drawing.Size(169, 22)
         Me.RoboterToolStripMenuItem1.Text = "Robotersteuerung"
         '
         'msShowRoboStatus
@@ -262,19 +268,19 @@ Partial Class frmMain
         'msShowLog
         '
         Me.msShowLog.Name = "msShowLog"
-        Me.msShowLog.Size = New System.Drawing.Size(180, 22)
+        Me.msShowLog.Size = New System.Drawing.Size(169, 22)
         Me.msShowLog.Text = "Logausgabe"
         '
         'msShowComLogSerial
         '
         Me.msShowComLogSerial.Name = "msShowComLogSerial"
-        Me.msShowComLogSerial.Size = New System.Drawing.Size(180, 22)
+        Me.msShowComLogSerial.Size = New System.Drawing.Size(169, 22)
         Me.msShowComLogSerial.Text = "Comlog (Serial)"
         '
         'msShowComLogTCPIP
         '
         Me.msShowComLogTCPIP.Name = "msShowComLogTCPIP"
-        Me.msShowComLogTCPIP.Size = New System.Drawing.Size(180, 22)
+        Me.msShowComLogTCPIP.Size = New System.Drawing.Size(169, 22)
         Me.msShowComLogTCPIP.Text = "Comlog (TCP/IP)"
         '
         'EinstellungenToolStripMenuItem1
@@ -388,10 +394,10 @@ Partial Class frmMain
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsBtnOpen, Me.tsBtnSave, Me.ToolStripSeparator1, Me.tsCbComPort, Me.tsBtnConnect, Me.tsBtnDisconnect, Me.ToolStripSeparator2, Me.tsBtnProgCheck, Me.tsBtnProgRun, Me.tsBtnProgStop, Me.ToolStripSeparator8, Me.tsBtnEStop})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsBtnOpen, Me.tsBtnSave, Me.ToolStripSeparator1, Me.tsCbComPort, Me.tsBtnConnect, Me.tsBtnDisconnect, Me.ToolStripSeparator2, Me.lblSpeed, Me.numAcc, Me.ToolStripSeparator8, Me.lblAcc, Me.numSpeed, Me.ToolStripSeparator11, Me.tsBtnProgCheck, Me.tsBtnProgRun, Me.tsBtnProgStop, Me.ToolStripSeparator10, Me.tsBtnEStop})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 24)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(1113, 25)
+        Me.ToolStrip1.Size = New System.Drawing.Size(1182, 25)
         Me.ToolStrip1.TabIndex = 2
         Me.ToolStrip1.Text = "ToolStrip"
         '
@@ -401,7 +407,7 @@ Partial Class frmMain
         Me.tsBtnOpen.Image = CType(resources.GetObject("tsBtnOpen.Image"), System.Drawing.Image)
         Me.tsBtnOpen.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsBtnOpen.Name = "tsBtnOpen"
-        Me.tsBtnOpen.Size = New System.Drawing.Size(23, 22)
+        Me.tsBtnOpen.Size = New System.Drawing.Size(23, 23)
         Me.tsBtnOpen.Text = "Öffnen"
         '
         'tsBtnSave
@@ -410,19 +416,19 @@ Partial Class frmMain
         Me.tsBtnSave.Image = CType(resources.GetObject("tsBtnSave.Image"), System.Drawing.Image)
         Me.tsBtnSave.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsBtnSave.Name = "tsBtnSave"
-        Me.tsBtnSave.Size = New System.Drawing.Size(23, 22)
+        Me.tsBtnSave.Size = New System.Drawing.Size(23, 23)
         Me.tsBtnSave.Text = "Speichern"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 25)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 26)
         '
         'tsCbComPort
         '
         Me.tsCbComPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.tsCbComPort.Name = "tsCbComPort"
-        Me.tsCbComPort.Size = New System.Drawing.Size(121, 25)
+        Me.tsCbComPort.Size = New System.Drawing.Size(121, 26)
         '
         'tsBtnConnect
         '
@@ -430,7 +436,7 @@ Partial Class frmMain
         Me.tsBtnConnect.Image = CType(resources.GetObject("tsBtnConnect.Image"), System.Drawing.Image)
         Me.tsBtnConnect.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsBtnConnect.Name = "tsBtnConnect"
-        Me.tsBtnConnect.Size = New System.Drawing.Size(80, 22)
+        Me.tsBtnConnect.Size = New System.Drawing.Size(80, 23)
         Me.tsBtnConnect.Text = "Verbinden"
         '
         'tsBtnDisconnect
@@ -438,20 +444,20 @@ Partial Class frmMain
         Me.tsBtnDisconnect.Image = CType(resources.GetObject("tsBtnDisconnect.Image"), System.Drawing.Image)
         Me.tsBtnDisconnect.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsBtnDisconnect.Name = "tsBtnDisconnect"
-        Me.tsBtnDisconnect.Size = New System.Drawing.Size(70, 22)
+        Me.tsBtnDisconnect.Size = New System.Drawing.Size(70, 23)
         Me.tsBtnDisconnect.Text = "Trennen"
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 25)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 26)
         '
         'tsBtnProgCheck
         '
         Me.tsBtnProgCheck.Image = CType(resources.GetObject("tsBtnProgCheck.Image"), System.Drawing.Image)
         Me.tsBtnProgCheck.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsBtnProgCheck.Name = "tsBtnProgCheck"
-        Me.tsBtnProgCheck.Size = New System.Drawing.Size(122, 22)
+        Me.tsBtnProgCheck.Size = New System.Drawing.Size(122, 23)
         Me.tsBtnProgCheck.Text = "Programm prüfen"
         '
         'tsBtnProgRun
@@ -460,7 +466,7 @@ Partial Class frmMain
         Me.tsBtnProgRun.Image = CType(resources.GetObject("tsBtnProgRun.Image"), System.Drawing.Image)
         Me.tsBtnProgRun.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsBtnProgRun.Name = "tsBtnProgRun"
-        Me.tsBtnProgRun.Size = New System.Drawing.Size(123, 22)
+        Me.tsBtnProgRun.Size = New System.Drawing.Size(123, 23)
         Me.tsBtnProgRun.Text = "Programm starten"
         '
         'tsBtnProgStop
@@ -469,28 +475,70 @@ Partial Class frmMain
         Me.tsBtnProgStop.Image = CType(resources.GetObject("tsBtnProgStop.Image"), System.Drawing.Image)
         Me.tsBtnProgStop.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsBtnProgStop.Name = "tsBtnProgStop"
-        Me.tsBtnProgStop.Size = New System.Drawing.Size(130, 22)
+        Me.tsBtnProgStop.Size = New System.Drawing.Size(130, 23)
         Me.tsBtnProgStop.Text = "Programm stoppen"
         '
         'ToolStripSeparator8
         '
         Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
-        Me.ToolStripSeparator8.Size = New System.Drawing.Size(6, 25)
+        Me.ToolStripSeparator8.Size = New System.Drawing.Size(6, 26)
         '
         'tsBtnEStop
         '
         Me.tsBtnEStop.Image = CType(resources.GetObject("tsBtnEStop.Image"), System.Drawing.Image)
         Me.tsBtnEStop.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsBtnEStop.Name = "tsBtnEStop"
-        Me.tsBtnEStop.Size = New System.Drawing.Size(132, 22)
+        Me.tsBtnEStop.Size = New System.Drawing.Size(132, 23)
         Me.tsBtnEStop.Text = "Not-Halt (Leertaste)"
+        '
+        'lblSpeed
+        '
+        Me.lblSpeed.Name = "lblSpeed"
+        Me.lblSpeed.Size = New System.Drawing.Size(80, 23)
+        Me.lblSpeed.Text = "Geschw. (°/s):"
+        '
+        'numSpeed
+        '
+        Me.numSpeed.DecimalPlaces = 2
+        Me.numSpeed.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.numSpeed.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
+        Me.numSpeed.Name = "numSpeed"
+        Me.numSpeed.Size = New System.Drawing.Size(56, 23)
+        Me.numSpeed.Text = "25,00"
+        Me.numSpeed.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
+        '
+        'lblAcc
+        '
+        Me.lblAcc.Name = "lblAcc"
+        Me.lblAcc.Size = New System.Drawing.Size(77, 23)
+        Me.lblAcc.Text = "Beschl. (°/s²):"
+        '
+        'numAcc
+        '
+        Me.numAcc.DecimalPlaces = 2
+        Me.numAcc.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.numAcc.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
+        Me.numAcc.Name = "numAcc"
+        Me.numAcc.Size = New System.Drawing.Size(56, 23)
+        Me.numAcc.Text = "25,00"
+        Me.numAcc.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
+        '
+        'ToolStripSeparator10
+        '
+        Me.ToolStripSeparator10.Name = "ToolStripSeparator10"
+        Me.ToolStripSeparator10.Size = New System.Drawing.Size(6, 25)
+        '
+        'ToolStripSeparator11
+        '
+        Me.ToolStripSeparator11.Name = "ToolStripSeparator11"
+        Me.ToolStripSeparator11.Size = New System.Drawing.Size(6, 25)
         '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
-        Me.ClientSize = New System.Drawing.Size(1113, 669)
+        Me.ClientSize = New System.Drawing.Size(1182, 669)
         Me.Controls.Add(Me.ToolStrip1)
         Me.Controls.Add(Me.StatusStrip)
         Me.Controls.Add(Me.MenuStrip)
@@ -570,4 +618,10 @@ Partial Class frmMain
     Friend WithEvents tsBtnEStop As ToolStripButton
     Friend WithEvents msArduinoFirmware As ToolStripMenuItem
     Friend WithEvents msFrames As ToolStripMenuItem
+    Friend WithEvents lblSpeed As ToolStripLabel
+    Friend WithEvents numSpeed As ToolStripNumericUpDown
+    Friend WithEvents lblAcc As ToolStripLabel
+    Friend WithEvents numAcc As ToolStripNumericUpDown
+    Friend WithEvents ToolStripSeparator11 As ToolStripSeparator
+    Friend WithEvents ToolStripSeparator10 As ToolStripSeparator
 End Class

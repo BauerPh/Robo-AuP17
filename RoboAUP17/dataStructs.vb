@@ -246,4 +246,26 @@ Module dataStructs
         End Function
     End Structure
 
+    Friend Enum progFunc
+        cartMove = 0
+        jointMove
+        servoMove
+        wait
+    End Enum
+    Friend Structure ProgramEntry
+        Friend lineNr As Int32
+        Friend func As progFunc
+        'Position
+        Friend cartCoords As CartCoords
+        Friend jointAngles As JointAngles
+        Friend speed As Double
+        Friend acc As Double
+        Friend sync As Boolean
+        'Servo
+        Friend servoNum As Int32
+        Friend servoVal As Int32
+        'Wait
+        Friend waitTimeMS As Int32
+    End Structure
+
 End Module

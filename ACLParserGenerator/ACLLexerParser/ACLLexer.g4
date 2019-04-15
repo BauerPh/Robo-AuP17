@@ -5,6 +5,7 @@ MOVE:			'MOVE';
 OPEN:			'OPEN';
 CLOSE:			'CLOSE';
 JAW:			'JAW';
+ACC:			'ACC';
 SPEED:			'SPEED';
 HOME:			'HOME';
 
@@ -51,7 +52,7 @@ PRINT:			'PRINT';
 // expressions
 IDENTIFIER:			[a-zA-Z][a-zA-Z0-9]*;
 SIGNEDINT:			( '+' | '-' )+ INTEGER;
-INTEGER:			[1-9] [0-9]*;
+INTEGER:			[0-9] [0-9]*;
 DECIMAL:			( '+' | '-' )? ( '0' | ( [1-9] [0-9]* ) ) ( '.' [0-9]+ )?;
 SUMOPERATOR:		'+' | '-';
 FACTOROPERATOR:		'*' | '/';
@@ -62,7 +63,7 @@ CLOSEBRACKET:		')';
 OPENCURLYBRACKET:	'{';
 CLOSECURLYBRACKET:	'}';
 STRING:				'"' ~[\r\n\t\f"]* '"';
-NEWLINE:			'\n' | '\r\n' | '\r';
+NEWLINE:			'\n' | '\r\n' | '\r' | EOF;
 
 
 // Skip Whitespaces
