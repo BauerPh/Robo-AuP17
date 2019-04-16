@@ -128,40 +128,40 @@ Partial Class frmMain
         '
         Me.msNew.Image = CType(resources.GetObject("msNew.Image"), System.Drawing.Image)
         Me.msNew.Name = "msNew"
-        Me.msNew.Size = New System.Drawing.Size(166, 22)
+        Me.msNew.Size = New System.Drawing.Size(180, 22)
         Me.msNew.Text = "Neu"
         '
         'msOpen
         '
         Me.msOpen.Image = CType(resources.GetObject("msOpen.Image"), System.Drawing.Image)
         Me.msOpen.Name = "msOpen"
-        Me.msOpen.Size = New System.Drawing.Size(166, 22)
+        Me.msOpen.Size = New System.Drawing.Size(180, 22)
         Me.msOpen.Text = "Öffnen"
         '
         'msSave
         '
         Me.msSave.Image = CType(resources.GetObject("msSave.Image"), System.Drawing.Image)
         Me.msSave.Name = "msSave"
-        Me.msSave.Size = New System.Drawing.Size(166, 22)
+        Me.msSave.Size = New System.Drawing.Size(180, 22)
         Me.msSave.Text = "Speichern"
         '
         'msSaveAs
         '
         Me.msSaveAs.Image = CType(resources.GetObject("msSaveAs.Image"), System.Drawing.Image)
         Me.msSaveAs.Name = "msSaveAs"
-        Me.msSaveAs.Size = New System.Drawing.Size(166, 22)
+        Me.msSaveAs.Size = New System.Drawing.Size(180, 22)
         Me.msSaveAs.Text = "Speichern unter..."
         '
         'ToolStripSeparator4
         '
         Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(163, 6)
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(177, 6)
         '
         'msExit
         '
         Me.msExit.Image = CType(resources.GetObject("msExit.Image"), System.Drawing.Image)
         Me.msExit.Name = "msExit"
-        Me.msExit.Size = New System.Drawing.Size(166, 22)
+        Me.msExit.Size = New System.Drawing.Size(180, 22)
         Me.msExit.Text = "Beenden"
         '
         'BearbeitenToolStripMenuItem
@@ -466,7 +466,7 @@ Partial Class frmMain
         Me.numAcc.Name = "numAcc"
         Me.numAcc.Size = New System.Drawing.Size(56, 23)
         Me.numAcc.Text = "100,00"
-        Me.numAcc.Value = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.numAcc.Value = New Decimal(New Integer() {10000, 0, 0, 131072})
         '
         'ToolStripSeparator8
         '
@@ -487,7 +487,7 @@ Partial Class frmMain
         Me.numSpeed.Name = "numSpeed"
         Me.numSpeed.Size = New System.Drawing.Size(56, 23)
         Me.numSpeed.Text = "50,00"
-        Me.numSpeed.Value = New Decimal(New Integer() {50, 0, 0, 0})
+        Me.numSpeed.Value = New Decimal(New Integer() {5000, 0, 0, 131072})
         '
         'ToolStripSeparator11
         '

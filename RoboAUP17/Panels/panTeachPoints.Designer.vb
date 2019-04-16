@@ -42,6 +42,7 @@ Partial Class panTeachPoints
         Me.lblAcc = New System.Windows.Forms.ToolStripLabel()
         Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
         Me.btnMoveTo = New System.Windows.Forms.ToolStripButton()
+        Me.lblName = New System.Windows.Forms.ToolStripLabel()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
         Me.ToolStripContainer.SuspendLayout()
@@ -55,11 +56,11 @@ Partial Class panTeachPoints
         'ToolStripContainer.ContentPanel
         '
         Me.ToolStripContainer.ContentPanel.Controls.Add(Me.lbTeachPoints)
-        Me.ToolStripContainer.ContentPanel.Size = New System.Drawing.Size(355, 362)
+        Me.ToolStripContainer.ContentPanel.Size = New System.Drawing.Size(373, 362)
         Me.ToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ToolStripContainer.Location = New System.Drawing.Point(0, 0)
         Me.ToolStripContainer.Name = "ToolStripContainer"
-        Me.ToolStripContainer.Size = New System.Drawing.Size(355, 414)
+        Me.ToolStripContainer.Size = New System.Drawing.Size(373, 414)
         Me.ToolStripContainer.TabIndex = 0
         Me.ToolStripContainer.Text = "ToolStripContainer"
         '
@@ -77,17 +78,17 @@ Partial Class panTeachPoints
         Me.lbTeachPoints.ItemHeight = 16
         Me.lbTeachPoints.Location = New System.Drawing.Point(0, 0)
         Me.lbTeachPoints.Name = "lbTeachPoints"
-        Me.lbTeachPoints.Size = New System.Drawing.Size(355, 362)
+        Me.lbTeachPoints.Size = New System.Drawing.Size(373, 362)
         Me.lbTeachPoints.TabIndex = 0
         '
         'ToolStrip1
         '
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tbName, Me.numNr, Me.btnAdd, Me.ToolStripSeparator2, Me.btnDelete, Me.ToolStripSeparator1, Me.btnUp, Me.btnDown})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblName, Me.tbName, Me.numNr, Me.btnAdd, Me.ToolStripSeparator2, Me.btnDelete, Me.ToolStripSeparator1, Me.btnUp, Me.btnDown})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(355, 26)
+        Me.ToolStrip1.Size = New System.Drawing.Size(373, 26)
         Me.ToolStrip1.Stretch = True
         Me.ToolStrip1.TabIndex = 0
         '
@@ -159,7 +160,7 @@ Partial Class panTeachPoints
         Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblSpeed, Me.numSpeed, Me.ToolStripSeparator3, Me.lblAcc, Me.numAcc, Me.btnMoveTo})
         Me.ToolStrip2.Location = New System.Drawing.Point(0, 26)
         Me.ToolStrip2.Name = "ToolStrip2"
-        Me.ToolStrip2.Size = New System.Drawing.Size(355, 26)
+        Me.ToolStrip2.Size = New System.Drawing.Size(373, 26)
         Me.ToolStrip2.Stretch = True
         Me.ToolStrip2.TabIndex = 1
         '
@@ -177,7 +178,7 @@ Partial Class panTeachPoints
         Me.numSpeed.Name = "numSpeed"
         Me.numSpeed.Size = New System.Drawing.Size(56, 23)
         Me.numSpeed.Text = "50,00"
-        Me.numSpeed.Value = New Decimal(New Integer() {50, 0, 0, 0})
+        Me.numSpeed.Value = New Decimal(New Integer() {5000, 0, 0, 131072})
         '
         'ToolStripSeparator3
         '
@@ -198,7 +199,7 @@ Partial Class panTeachPoints
         Me.numAcc.Name = "numAcc"
         Me.numAcc.Size = New System.Drawing.Size(56, 23)
         Me.numAcc.Text = "50,00"
-        Me.numAcc.Value = New Decimal(New Integer() {50, 0, 0, 0})
+        Me.numAcc.Value = New Decimal(New Integer() {5000, 0, 0, 131072})
         '
         'btnMoveTo
         '
@@ -209,12 +210,18 @@ Partial Class panTeachPoints
         Me.btnMoveTo.Size = New System.Drawing.Size(23, 23)
         Me.btnMoveTo.Text = "Teachpunkt anfahren"
         '
+        'lblName
+        '
+        Me.lblName.Name = "lblName"
+        Me.lblName.Size = New System.Drawing.Size(42, 23)
+        Me.lblName.Text = "Name:"
+        '
         'panTeachPoints
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
-        Me.ClientSize = New System.Drawing.Size(355, 414)
+        Me.ClientSize = New System.Drawing.Size(373, 414)
         Me.Controls.Add(Me.ToolStripContainer)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panTeachPoints"
@@ -250,4 +257,5 @@ Partial Class panTeachPoints
     Friend WithEvents lblAcc As ToolStripLabel
     Friend WithEvents numAcc As ToolStripNumericUpDown
     Friend WithEvents btnMoveTo As ToolStripButton
+    Friend WithEvents lblName As ToolStripLabel
 End Class

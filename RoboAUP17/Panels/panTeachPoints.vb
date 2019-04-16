@@ -42,7 +42,7 @@
     Private Sub btnDown_Click(sender As Object, e As EventArgs) Handles btnDown.Click
         frmMain.ACLProgram.MoveTeachPoint(lbTeachPoints.SelectedIndex, False)
     End Sub
-    Private Sub btnMoveTo_Click(sender As Object, e As EventArgs)
+    Private Sub btnMoveTo_Click(sender As Object, e As EventArgs) Handles btnMoveTo.Click
         Dim tp As TeachPoint = frmMain.ACLProgram.GetTeachpointByIndex(lbTeachPoints.SelectedIndex)
 
         frmMain.RoboControl.SetSpeedAndAcc(numSpeed.Value, numAcc.Value)
@@ -66,7 +66,10 @@
             Return
         End If
 
-        btnMoveTo.Enabled = SerialConnected And Not RobotBusy And Not ProgramRunning And lbTeachPoints.SelectedIndex > -1
+        Dim tmpEnabled As Boolean = SerialConnected And Not RobotBusy And Not ProgramRunning And frmMain.RoboControl.AllRefOkay
+
+        btnMoveTo.Enabled = tmpEnabled And lbTeachPoints.SelectedIndex > -1
+        btnAdd.Enabled = tmpEnabled
     End Sub
 
     ' -----------------------------------------------------------------------------

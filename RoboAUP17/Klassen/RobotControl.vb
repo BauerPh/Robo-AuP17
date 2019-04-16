@@ -314,14 +314,6 @@ Friend Class RobotControl
             _allRefOkay = False
             Return
         End If
-        ' Check Ref State Changed
-        For i = 0 To 5
-            If _refOkay(i) <> refOkayOld(i) Then
-                RaiseEvent RoboRefStateChanged()
-                Exit For
-            End If
-        Next
-        _refOkay.CopyTo(refOkayOld, 0)
 
         ' Check all
         _allRefOkay = True
@@ -331,6 +323,16 @@ Friend Class RobotControl
                 Exit For
             End If
         Next
+
+        ' Check Ref State Changed
+        For i = 0 To 5
+            If _refOkay(i) <> refOkayOld(i) Then
+                RaiseEvent RoboRefStateChanged()
+                Exit For
+            End If
+        Next
+        _refOkay.CopyTo(refOkayOld, 0)
+
     End Sub
     'CALCULATIONS
     Private Function _calcServoAngle(srvNr As Int32, prc As Double) As Int32

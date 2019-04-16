@@ -25,10 +25,18 @@ Friend Class ACLProgram
     Private _programCompiled As Boolean = False
     Private _stopProgram As Boolean = False
 
+    Private _filename As String = Nothing
+    Private _unsavedChanges As Boolean = False
+    Public ReadOnly Property UnsavedChanges As Boolean
+        Get
+            Return _unsavedChanges
+        End Get
+    End Property
+
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
     Friend Event DoJointMove(ByVal jointAngles As JointAngles, acc As Double, speed As Double)
     Friend Event DoCartMove(ByVal cartCoords As CartCoords, acc As Double, speed As Double)
-    Friend Event DoServoMove(ByVal servoNr As Int32, prc As Double)
+    Friend Event DoServoMove(ByVal srvNr As Int32, prc As Double)
     Friend Event ProgramStarted()
     Friend Event ProgramFinished()
     Friend Event ProgramLineChanged(line As Int32)
@@ -37,6 +45,10 @@ Friend Class ACLProgram
     ' Public
     ' -----------------------------------------------------------------------------
 #Region "Teachpunkte"
+    Friend Sub ClearTeachpoints()
+        _teachPoints.Clear()
+        _printTeachpointToListBox()
+    End Sub
     Friend Function GetTeachpointByIndex(index As Int32) As TeachPoint
         If _teachPoints.Count > index And index >= 0 Then
             Return _teachPoints(index)
@@ -84,6 +96,7 @@ Friend Class ACLProgram
                 Dim selIndex As Int32 = _listBox.SelectedIndex + indexVal
                 _printTeachpointToListBox()
                 _listBox.SelectedIndex = selIndex
+                _unsavedChanges = True
             End If
         End If
     End Sub
@@ -100,6 +113,7 @@ Friend Class ACLProgram
             _printTeachpointToListBox()
             If selIndex < 0 And _listBox.Items.Count > 0 Then selIndex = 0
             _listBox.SelectedIndex = selIndex
+            _unsavedChanges = True
             RaiseEvent Log($"[ACL] Teachpunkt {tpNr} wurde gelöscht!", Logger.LogLevel.INFO)
         End If
     End Sub
@@ -129,6 +143,106 @@ Friend Class ACLProgram
     End Sub
 #End Region
 
+#Region "Speichern / Laden"
+    Public Function Save(prog As String, Optional saveAs As Boolean = False) As Boolean
+        Dim tmpFilename As String
+        If _filename Is Nothing Or saveAs Then
+            Dim saveFileDialog As New SaveFileDialog With {
+                .Filter = "RoboAUP17-Dateien (*.aup17)|*.aup17"
+            }
+            If saveFileDialog.ShowDialog() = DialogResult.OK Then
+                tmpFilename = saveFileDialog.FileName
+            Else
+                Return False
+            End If
+        Else
+            tmpFilename = _filename
+        End If
+
+        Dim objStreamWriter As StreamWriter
+        objStreamWriter = New StreamWriter(tmpFilename)
+        'Teachpunkte
+        For Each tp As TeachPoint In _teachPoints
+            objStreamWriter.Write($"<tp>;{tp.nr};{tp.name};{tp.cart}")
+            If tp.cart Then
+                For i = 0 To 5
+                    objStreamWriter.Write($";{tp.cartCoords.Items(i)}")
+                Next
+            Else
+                For i = 0 To 5
+                    objStreamWriter.Write($";{tp.jointAngles.Items(i)}")
+                Next
+            End If
+            objStreamWriter.WriteLine()
+        Next
+        'Programm
+        objStreamWriter.WriteLine("<program>")
+        objStreamWriter.Write(prog)
+        objStreamWriter.Close()
+        _filename = tmpFilename
+        _unsavedChanges = False
+        Return True
+    End Function
+    Public Function Load(ByRef prog As String) As Boolean
+        Dim erg As Boolean = True
+        Dim readProg As Boolean = False
+        Dim openFileDialog As New OpenFileDialog With {
+           .Filter = "RoboAUP17-Dateien (*.aup17)|*.aup17"
+        }
+        If openFileDialog.ShowDialog() = DialogResult.OK Then
+            ' Teachpunkte leeren
+            _teachPoints.Clear()
+
+            Dim objStreamReader As StreamReader
+            objStreamReader = New StreamReader(openFileDialog.FileName)
+            Try
+                'Jede Zeile der Datei einlesen
+                Dim strLine As String
+                Do
+                    strLine = objStreamReader.ReadLine
+                    If Not strLine Is Nothing Then
+                        Dim tmpSplit As String() = strLine.Split(";"c)
+                        If tmpSplit(0) = "<tp>" Then
+                            'TeachPunkt
+                            Dim item As New TeachPoint
+                            item.nr = CInt(tmpSplit(1))
+                            item.name = tmpSplit(2)
+                            item.cart = CBool(tmpSplit(3))
+                            If item.cart Then
+                                For i = 0 To 5
+                                    item.cartCoords.SetByIndex(i, CDbl(tmpSplit(4 + i)))
+                                Next
+                            Else
+                                For i = 0 To 5
+                                    item.jointAngles.SetByIndex(i, CDbl(tmpSplit(4 + i)))
+                                Next
+                            End If
+                            _teachPoints.Add(item)
+                        ElseIf tmpSplit(0) = "<program>" Then
+                            ' Programm einlesen
+                            prog = objStreamReader.ReadToEnd()
+                        End If
+                    End If
+                Loop Until strLine Is Nothing
+
+                _printTeachpointToListBox()
+                _filename = openFileDialog.FileName
+                _unsavedChanges = False
+            Catch ex As Exception
+                _teachPoints.Clear()
+                prog = ""
+                erg = False
+            Finally
+                'StreamReader schließen
+                objStreamReader.Close()
+            End Try
+        Else
+            erg = False
+        End If
+        Return erg
+    End Function
+#End Region
+
     ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
@@ -148,6 +262,7 @@ Friend Class ACLProgram
         End If
         _printTeachpointToListBox()
         _listBox.SelectedIndex = _listBox.Items.Count - 1
+        _unsavedChanges = True
         RaiseEvent Log($"[ACL] Teachpunkt {tp.nr} hinzugefügt!", Logger.LogLevel.INFO)
         Return True
     End Function
@@ -211,19 +326,25 @@ Friend Class ACLProgram
 
     Private Sub _runProgram()
         Dim vke As Boolean = False
-
-        For i = 0 To _progList.Count - 1
+        Dim i As Integer = 0
+        While i < _progList.Count
             If _stopProgram Then
                 _stopProgram = False
-                Exit For
+                Exit While
             End If
             ' Aktuelle Line ausgeben
             RaiseEvent ProgramLineChanged(_progList(i).lineNr)
             Select Case _progList(i).func
+                Case progFunc.noop
+                    ' -------------------------------------
+                    ' NOOP
+                    ' -------------------------------------
+                    i += 1
                 Case progFunc.condition
                     ' -------------------------------------
                     ' CONDITION
                     ' -------------------------------------
+                    i += 1
                 Case progFunc.cjump
                     ' -------------------------------------
                     ' CONDITIONED JUMP
@@ -238,6 +359,7 @@ Friend Class ACLProgram
                     ' -------------------------------------
                     ' SERVO
                     ' -------------------------------------
+                    i += 1
                 Case progFunc.move
                     ' -------------------------------------
                     ' MOVE
@@ -259,17 +381,19 @@ Friend Class ACLProgram
                         ' Dürfte niemanls passieren!
                         StopProgram()
                     End If
+                    i += 1
                 Case progFunc.delay
                     ' -------------------------------------
                     ' DELAY
                     ' -------------------------------------
+                    i += 1
             End Select
 
             ' Warten bis Bewegung fertig ist
             While RobotBusy
                 Thread.Sleep(5)
             End While
-        Next
+        End While
 
         ' Programm fertig
         ProgramRunning = False

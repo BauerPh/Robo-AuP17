@@ -81,7 +81,9 @@ Public Class frmMain
             _aclProgram.StopProgram()
         End If
     End Sub
+#End Region
 
+#Region "ACL Programm"
     ' ACL Program
     Private Sub tsBtnProgCheck_Click(sender As Object, e As EventArgs) Handles tsBtnProgCheck.Click
         _aclProgram.CompileProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
@@ -93,7 +95,12 @@ Public Class frmMain
         tsBtnProgStop.Enabled = False
         _aclProgram.StopProgram()
     End Sub
-
+    Private Sub tsBtnSave_Click(sender As Object, e As EventArgs) Handles tsBtnSave.Click
+        _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text)
+    End Sub
+    Private Sub tsBtnOpen_Click(sender As Object, e As EventArgs) Handles tsBtnOpen.Click
+        _aclProgram.Load(_dckPanCodeEditor.sciCodeEditor.Text)
+    End Sub
 #End Region
 
 #Region "Private"
@@ -130,11 +137,21 @@ Public Class frmMain
         My.Settings.Save()
         ' Ungespeicherte Änderungen prüfen
         If _roboControl.Pref.UnsavedChanges Then
-            Dim erg As DialogResult = MessageBox.Show($"Einstellungen wurden geändert und nicht gespeichert. Wollen sie diese jetzt Speichern?", "Ungespeicherte Änderungen", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
+            Dim erg As DialogResult = MessageBox.Show($"Einstellungen wurden geändert und nicht gespeichert. Wollen Sie die Änderungen vor dem Beenden speichern?", "Ungespeicherte Änderungen", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
             If erg = DialogResult.Cancel Then
                 e.Cancel = True
             ElseIf erg = DialogResult.Yes Then
                 If Not _roboControl.Pref.SaveSettings() Then
+                    e.Cancel = True
+                End If
+            End If
+        End If
+        If _aclProgram.UnsavedChanges Then
+            Dim erg As DialogResult = MessageBox.Show($"Programm wurde geändert und nicht gespeichert. Wollen Sie die Änderungen vor dem Beenden speichern?", "Ungespeicherte Änderungen", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
+            If erg = DialogResult.Cancel Then
+                e.Cancel = True
+            ElseIf erg = DialogResult.Yes Then
+                If Not _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text) Then
                     e.Cancel = True
                 End If
             End If
@@ -149,6 +166,32 @@ Public Class frmMain
 #End Region
 
 #Region "MenuStrip Datei"
+    Private Sub msNew_Click(sender As Object, e As EventArgs) Handles msNew.Click
+        Dim cancel As Boolean = False
+        If _aclProgram.UnsavedChanges Then
+            Dim erg As DialogResult = MessageBox.Show($"Programm wurde geändert und nicht gespeichert. Wollen Sie jetzt speichern?", "Ungespeicherte Änderungen", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
+            If erg = DialogResult.Cancel Then
+                cancel = True
+            ElseIf erg = DialogResult.Yes Then
+                If Not _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text) Then
+                    cancel = True
+                End If
+            End If
+        End If
+        If Not cancel Then
+            _aclProgram.ClearTeachpoints()
+            _dckPanCodeEditor.sciCodeEditor.ClearAll()
+        End If
+    End Sub
+    Private Sub msOpen_Click(sender As Object, e As EventArgs) Handles msOpen.Click
+        _aclProgram.Load(_dckPanCodeEditor.sciCodeEditor.Text)
+    End Sub
+    Private Sub msSave_Click(sender As Object, e As EventArgs) Handles msSave.Click
+        _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text)
+    End Sub
+    Private Sub msSaveAs_Click(sender As Object, e As EventArgs) Handles msSaveAs.Click
+        _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text, True)
+    End Sub
     Private Sub msExit_Click(sender As Object, e As EventArgs) Handles msExit.Click
         Application.Exit()
     End Sub
@@ -168,6 +211,8 @@ Public Class frmMain
         _logger.Log("[MAIN] Standardansicht wurde wiederhergestellt. Neustart erforderlich!", Logger.LogLevel.INFO)
     End Sub
 #End Region
+
+#Region "MenuStrip Einstellungen"
     Private Sub msRoboParameter_Click(sender As Object, e As EventArgs) Handles msRoboParameter.Click
         _dckPanSettings.Show()
         _dckPanSettings.SetSelecteSetting(panSettings.selectedSetting.RoboPar)
@@ -186,6 +231,7 @@ Public Class frmMain
         _dckPanSettings.Show()
         _dckPanSettings.SetSelecteSetting(panSettings.selectedSetting.Frames)
     End Sub
+#End Region
 
 #Region "MenuStrip Hilfe"
     Private Sub msGitHub_Click(sender As Object, e As EventArgs) Handles msGitHub.Click
@@ -391,7 +437,7 @@ Public Class frmMain
 
         tsBtnConnect.Enabled = Not SerialConnected And _serialPortsAvailable
         tsBtnProgCheck.Enabled = Not ProgramRunning
-        tsBtnProgRun.Enabled = SerialConnected And Not RobotBusy And Not ProgramRunning
+        tsBtnProgRun.Enabled = SerialConnected And Not RobotBusy And Not ProgramRunning And _roboControl.AllRefOkay
         tsBtnProgStop.Enabled = ProgramRunning
     End Sub
 
@@ -446,14 +492,20 @@ Public Class frmMain
 
         _enableDisableElements()
     End Sub
-
-    ' ACL-Program
-    Private Sub _eProgramFinished() Handles _aclProgram.ProgramFinished
+    Private Sub _eRefresh() Handles _aclProgram.ProgramStarted, _aclProgram.ProgramFinished, _roboControl.RoboRefStateChanged
         _enableDisableElements()
     End Sub
+
+    ' ACL-Program
     Private Sub _eDoJointMove(jointAngles As JointAngles, acc As Double, speed As Double) Handles _aclProgram.DoJointMove
         _roboControl.SetSpeedAndAcc(speed, acc)
         _roboControl.DoJointMov(True, jointAngles)
     End Sub
-
+    Private Sub _eDoCartMove(cartCoords As CartCoords, acc As Double, speed As Double) Handles _aclProgram.DoCartMove
+        _roboControl.SetSpeedAndAcc(speed, acc)
+        _roboControl.DoTCPMov(cartCoords)
+    End Sub
+    Private Sub _eDoServoMove(srvNr As Integer, prc As Double) Handles _aclProgram.DoServoMove
+        _roboControl.MoveServoPrc(srvNr, prc)
+    End Sub
 End Class
