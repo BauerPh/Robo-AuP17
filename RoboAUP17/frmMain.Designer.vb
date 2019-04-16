@@ -461,12 +461,12 @@ Partial Class frmMain
         'numAcc
         '
         Me.numAcc.DecimalPlaces = 2
-        Me.numAcc.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.numAcc.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
+        Me.numAcc.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
+        Me.numAcc.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.numAcc.Name = "numAcc"
         Me.numAcc.Size = New System.Drawing.Size(56, 23)
-        Me.numAcc.Text = "25,00"
-        Me.numAcc.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
+        Me.numAcc.Text = "100,00"
+        Me.numAcc.Value = New Decimal(New Integer() {100, 0, 0, 0})
         '
         'ToolStripSeparator8
         '
@@ -482,12 +482,12 @@ Partial Class frmMain
         'numSpeed
         '
         Me.numSpeed.DecimalPlaces = 2
-        Me.numSpeed.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.numSpeed.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
+        Me.numSpeed.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
+        Me.numSpeed.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.numSpeed.Name = "numSpeed"
         Me.numSpeed.Size = New System.Drawing.Size(56, 23)
-        Me.numSpeed.Text = "25,00"
-        Me.numSpeed.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
+        Me.numSpeed.Text = "50,00"
+        Me.numSpeed.Value = New Decimal(New Integer() {50, 0, 0, 0})
         '
         'ToolStripSeparator11
         '

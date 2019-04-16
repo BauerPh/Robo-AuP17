@@ -2,7 +2,8 @@
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' TODO: alten Jog-Interval für jeden Mode speicher und wiederherstellen
+    ' Speed, Acc, JogInterval in MySettings speichern
+    ' alten Jog-Interval für jeden Mode speichern und wiederherstellen
     ' Checkbox für SyncMove
     ' Home & Parkposition anfahren
 

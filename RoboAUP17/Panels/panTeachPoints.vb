@@ -42,7 +42,7 @@
     Private Sub btnDown_Click(sender As Object, e As EventArgs) Handles btnDown.Click
         frmMain.ACLProgram.MoveTeachPoint(lbTeachPoints.SelectedIndex, False)
     End Sub
-    Private Sub btnMoveTo_Click(sender As Object, e As EventArgs) Handles btnMoveTo.Click
+    Private Sub btnMoveTo_Click(sender As Object, e As EventArgs)
         Dim tp As TeachPoint = frmMain.ACLProgram.GetTeachpointByIndex(lbTeachPoints.SelectedIndex)
 
         frmMain.RoboControl.SetSpeedAndAcc(numSpeed.Value, numAcc.Value)

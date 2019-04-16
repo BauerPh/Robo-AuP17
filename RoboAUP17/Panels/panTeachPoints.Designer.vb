@@ -26,12 +26,6 @@ Partial Class panTeachPoints
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(panTeachPoints))
         Me.ToolStripContainer = New System.Windows.Forms.ToolStripContainer()
         Me.lbTeachPoints = New System.Windows.Forms.ListBox()
-        Me.ToolStrip2 = New System.Windows.Forms.ToolStrip()
-        Me.lblSpeed = New System.Windows.Forms.ToolStripLabel()
-        Me.numSpeed = New RoboAUP17.ToolStripNumericUpDown()
-        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
-        Me.lblAcc = New System.Windows.Forms.ToolStripLabel()
-        Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.tbName = New System.Windows.Forms.ToolStripTextBox()
         Me.numNr = New RoboAUP17.ToolStripNumericUpDown()
@@ -41,13 +35,18 @@ Partial Class panTeachPoints
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnUp = New System.Windows.Forms.ToolStripButton()
         Me.btnDown = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStrip2 = New System.Windows.Forms.ToolStrip()
+        Me.lblSpeed = New System.Windows.Forms.ToolStripLabel()
+        Me.numSpeed = New RoboAUP17.ToolStripNumericUpDown()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.lblAcc = New System.Windows.Forms.ToolStripLabel()
+        Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
         Me.btnMoveTo = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
         Me.ToolStripContainer.SuspendLayout()
-        Me.ToolStrip2.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
+        Me.ToolStrip2.SuspendLayout()
         Me.SuspendLayout()
         '
         'ToolStripContainer
@@ -81,59 +80,11 @@ Partial Class panTeachPoints
         Me.lbTeachPoints.Size = New System.Drawing.Size(355, 362)
         Me.lbTeachPoints.TabIndex = 0
         '
-        'ToolStrip2
-        '
-        Me.ToolStrip2.Dock = System.Windows.Forms.DockStyle.None
-        Me.ToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblSpeed, Me.numSpeed, Me.ToolStripSeparator3, Me.lblAcc, Me.numAcc})
-        Me.ToolStrip2.Location = New System.Drawing.Point(0, 26)
-        Me.ToolStrip2.Name = "ToolStrip2"
-        Me.ToolStrip2.Size = New System.Drawing.Size(355, 26)
-        Me.ToolStrip2.Stretch = True
-        Me.ToolStrip2.TabIndex = 1
-        '
-        'lblSpeed
-        '
-        Me.lblSpeed.Name = "lblSpeed"
-        Me.lblSpeed.Size = New System.Drawing.Size(80, 23)
-        Me.lblSpeed.Text = "Geschw. (°/s):"
-        '
-        'numSpeed
-        '
-        Me.numSpeed.DecimalPlaces = 2
-        Me.numSpeed.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.numSpeed.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.numSpeed.Name = "numSpeed"
-        Me.numSpeed.Size = New System.Drawing.Size(56, 23)
-        Me.numSpeed.Text = "25,00"
-        Me.numSpeed.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
-        '
-        'ToolStripSeparator3
-        '
-        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
-        Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 26)
-        '
-        'lblAcc
-        '
-        Me.lblAcc.Name = "lblAcc"
-        Me.lblAcc.Size = New System.Drawing.Size(77, 23)
-        Me.lblAcc.Text = "Beschl. (°/s²):"
-        '
-        'numAcc
-        '
-        Me.numAcc.DecimalPlaces = 2
-        Me.numAcc.Maximum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.numAcc.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.numAcc.Name = "numAcc"
-        Me.numAcc.Size = New System.Drawing.Size(56, 23)
-        Me.numAcc.Text = "25,00"
-        Me.numAcc.Value = New Decimal(New Integer() {2500, 0, 0, 131072})
-        '
         'ToolStrip1
         '
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tbName, Me.numNr, Me.btnAdd, Me.ToolStripSeparator2, Me.btnDelete, Me.ToolStripSeparator1, Me.btnUp, Me.btnDown, Me.ToolStripSeparator5, Me.btnMoveTo})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tbName, Me.numNr, Me.btnAdd, Me.ToolStripSeparator2, Me.btnDelete, Me.ToolStripSeparator1, Me.btnUp, Me.btnDown})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(355, 26)
@@ -201,10 +152,53 @@ Partial Class panTeachPoints
         Me.btnDown.Size = New System.Drawing.Size(23, 23)
         Me.btnDown.Text = "Runter"
         '
-        'ToolStripSeparator5
+        'ToolStrip2
         '
-        Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
-        Me.ToolStripSeparator5.Size = New System.Drawing.Size(6, 26)
+        Me.ToolStrip2.Dock = System.Windows.Forms.DockStyle.None
+        Me.ToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+        Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblSpeed, Me.numSpeed, Me.ToolStripSeparator3, Me.lblAcc, Me.numAcc, Me.btnMoveTo})
+        Me.ToolStrip2.Location = New System.Drawing.Point(0, 26)
+        Me.ToolStrip2.Name = "ToolStrip2"
+        Me.ToolStrip2.Size = New System.Drawing.Size(355, 26)
+        Me.ToolStrip2.Stretch = True
+        Me.ToolStrip2.TabIndex = 1
+        '
+        'lblSpeed
+        '
+        Me.lblSpeed.Name = "lblSpeed"
+        Me.lblSpeed.Size = New System.Drawing.Size(80, 23)
+        Me.lblSpeed.Text = "Geschw. (°/s):"
+        '
+        'numSpeed
+        '
+        Me.numSpeed.DecimalPlaces = 2
+        Me.numSpeed.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
+        Me.numSpeed.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
+        Me.numSpeed.Name = "numSpeed"
+        Me.numSpeed.Size = New System.Drawing.Size(56, 23)
+        Me.numSpeed.Text = "50,00"
+        Me.numSpeed.Value = New Decimal(New Integer() {50, 0, 0, 0})
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 26)
+        '
+        'lblAcc
+        '
+        Me.lblAcc.Name = "lblAcc"
+        Me.lblAcc.Size = New System.Drawing.Size(77, 23)
+        Me.lblAcc.Text = "Beschl. (°/s²):"
+        '
+        'numAcc
+        '
+        Me.numAcc.DecimalPlaces = 2
+        Me.numAcc.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
+        Me.numAcc.Minimum = New Decimal(New Integer() {0, 0, 0, 0})
+        Me.numAcc.Name = "numAcc"
+        Me.numAcc.Size = New System.Drawing.Size(56, 23)
+        Me.numAcc.Text = "50,00"
+        Me.numAcc.Value = New Decimal(New Integer() {50, 0, 0, 0})
         '
         'btnMoveTo
         '
@@ -230,10 +224,10 @@ Partial Class panTeachPoints
         Me.ToolStripContainer.TopToolStripPanel.PerformLayout()
         Me.ToolStripContainer.ResumeLayout(False)
         Me.ToolStripContainer.PerformLayout()
-        Me.ToolStrip2.ResumeLayout(False)
-        Me.ToolStrip2.PerformLayout()
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
+        Me.ToolStrip2.ResumeLayout(False)
+        Me.ToolStrip2.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -255,6 +249,5 @@ Partial Class panTeachPoints
     Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
     Friend WithEvents lblAcc As ToolStripLabel
     Friend WithEvents numAcc As ToolStripNumericUpDown
-    Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
     Friend WithEvents btnMoveTo As ToolStripButton
 End Class

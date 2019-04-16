@@ -390,6 +390,7 @@ Public Class frmMain
         End If
 
         tsBtnConnect.Enabled = Not SerialConnected And _serialPortsAvailable
+        tsBtnProgCheck.Enabled = Not ProgramRunning
         tsBtnProgRun.Enabled = SerialConnected And Not RobotBusy And Not ProgramRunning
         tsBtnProgStop.Enabled = ProgramRunning
     End Sub

@@ -8,9 +8,8 @@ Friend Class ACLProgram
     ' TODO
     ' -----------------------------------------------------------------------------
     ' ACL-Programm (wip...)
-    ' Variablen
-    ' TCP Variablen
-    ' Teachpunkte, Variablen, TCP Variablen und ACL-Programm in einer Datei speichern und laden!
+    ' Speichern und Laden (TP, Vars und Programm)!
+    ' Variablen und TCP Variablen
 
     ' -----------------------------------------------------------------------------
     ' Definitions
@@ -134,7 +133,7 @@ Friend Class ACLProgram
     Private Function _addTeachPoint(tp As TeachPoint) As Boolean
         Dim i As Int32 = _teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = tp.nr)
         If i >= 0 Then
-            If MessageBox.Show($"Teachpunkt {tp.nr} ({_teachPoints(i).name}) existiert bereits. Ersetzen?", "Teachpunkt ersetzen?", MessageBoxButtons.YesNo) _
+            If MessageBox.Show($"Teachpunkt {tp.nr} ({_teachPoints(i).name}) existiert bereits. Ersetzen?", "Teachpunkt ersetzen?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) _
              = Windows.Forms.DialogResult.No Then
                 Return False
             End If
@@ -184,8 +183,7 @@ Friend Class ACLProgram
         If _programSyntaxOkay Then
             ' Teachpoints kopieren (deep copy!)
             _compiledTeachPoints = _teachPoints.Select(Function(item) CType(item.Clone(), TeachPoint)).ToList()
-
-            Dim aclListener As New ACLListener(_compiledTeachPoints, _progList, acc, speed)
+            Dim aclListener As New ACLListener(_compiledTeachPoints, _progList, acc, speed) ' Eigentlicher Compiler
             AddHandler aclListener.CompileErrorEvent, AddressOf _eCompileError
             _programCompiled = True
             _progList.Clear()
