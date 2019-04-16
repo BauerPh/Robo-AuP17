@@ -55,7 +55,7 @@
             Return
         End If
 
-        Dim tmpEnabled As Boolean = SerialConnected And Not RobotMoving And Not ProgramRunning
+        Dim tmpEnabled As Boolean = SerialConnected And Not RobotBusy And Not ProgramRunning
 
         btnRefJ1.Enabled = tmpEnabled
         btnRefJ2.Enabled = tmpEnabled

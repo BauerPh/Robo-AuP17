@@ -15,9 +15,12 @@ Friend Class ACLProgram
     ' -----------------------------------------------------------------------------
     ' Definitions
     ' -----------------------------------------------------------------------------
-    Private _progThread As Thread
+
     Private _teachPoints As New List(Of TeachPoint)
     Private _listBox As ListBox
+
+    Private _progThread As Thread
+    Private _compiledTeachPoints As New List(Of TeachPoint)
     Private _progList As New List(Of ProgramEntry)
     Private _programSyntaxOkay As Boolean = False
     Private _programCompiled As Boolean = False
@@ -42,7 +45,7 @@ Friend Class ACLProgram
     Friend Function AddTeachPoint(name As String, cartCoords As CartCoords, tpNr As Int32) As Boolean
         Dim tp As TeachPoint
         tp.cart = True
-        tp.tcpCoords = cartCoords
+        tp.cartCoords = cartCoords
         tp.name = name
         tp.nr = tpNr
         Return _addTeachPoint(tp)
@@ -179,7 +182,10 @@ Friend Class ACLProgram
 
         ' ACL Programm kompilieren, wenn Syntax okay
         If _programSyntaxOkay Then
-            Dim aclListener As New ACLListener(_teachPoints, _progList, acc, speed)
+            ' Teachpoints kopieren (deep copy!)
+            _compiledTeachPoints = _teachPoints.Select(Function(item) CType(item.Clone(), TeachPoint)).ToList()
+
+            Dim aclListener As New ACLListener(_compiledTeachPoints, _progList, acc, speed)
             AddHandler aclListener.CompileErrorEvent, AddressOf _eCompileError
             _programCompiled = True
             _progList.Clear()
@@ -212,24 +218,53 @@ Friend Class ACLProgram
             End If
             Select Case _progList(i).func
                 Case progFunc.condition
-
+                    ' -------------------------------------
+                    ' CONDITION
+                    ' -------------------------------------
                 Case progFunc.cjump
-
+                    ' -------------------------------------
+                    ' CONDITIONED JUMP
+                    i = If(vke, _progList(i).jumpTrueTarget, _progList(i).jumpFalseTarget)
+                    ' -------------------------------------
                 Case progFunc.jump
-
+                    ' -------------------------------------
+                    ' JUMP
+                    ' -------------------------------------
+                    i = _progList(i).jumpTarget
                 Case progFunc.servoMove
-
-                Case progFunc.jointMove
-                    RaiseEvent DoJointMove(_progList(i).jointAngles, _progList(i).speed, _progList(i).acc)
-                Case progFunc.cartMove
-                    RaiseEvent DoCartMove(_progList(i).cartCoords, _progList(i).speed, _progList(i).acc)
+                    ' -------------------------------------
+                    ' SERVO
+                    ' -------------------------------------
+                Case progFunc.move
+                    ' -------------------------------------
+                    ' MOVE
+                    ' -------------------------------------
+                    ' Teachpoint suchen und anfahren
+                    Dim found As Boolean = False
+                    For Each tp As TeachPoint In _compiledTeachPoints
+                        If _progList(i).teachPoint = tp.nr Then
+                            If tp.cart Then
+                                RaiseEvent DoCartMove(tp.cartCoords, _progList(i).speed, _progList(i).acc)
+                            Else
+                                RaiseEvent DoJointMove(tp.jointAngles, _progList(i).speed, _progList(i).acc)
+                            End If
+                            found = True
+                            Exit For
+                        End If
+                    Next
+                    If Not found Then
+                        ' Dürfte niemanls passieren!
+                        StopProgram()
+                    End If
                 Case progFunc.delay
-
+                    ' -------------------------------------
+                    ' DELAY
+                    ' -------------------------------------
             End Select
 
             ' Warten bis Bewegung fertig ist
-            While RobotMoving
-                Thread.Sleep(100)
+            While RobotBusy
+                Thread.Sleep(5)
             End While
         Next
 
@@ -242,11 +277,11 @@ Friend Class ACLProgram
 
     Private Sub _eSyntaxError(line As Integer, msg As String)
         _programSyntaxOkay = False
-        RaiseEvent Log($"[ACL-PARSE] Zeile {line.ToString(),4:N}: {msg}", Logger.LogLevel.ERR)
+        RaiseEvent Log($"[ACL-PARSE  ] Zeile {line.ToString(),3:N}: {msg}", Logger.LogLevel.ERR)
     End Sub
     Private Sub _eCompileError(line As Integer, msg As String)
         _programCompiled = False
-        RaiseEvent Log($"[ACL-COMPILE] Zeile {line.ToString(),4:N}: {msg}", Logger.LogLevel.ERR)
+        RaiseEvent Log($"[ACL-COMPILE] Zeile {line.ToString(),3:N}: {msg}", Logger.LogLevel.ERR)
     End Sub
 #End Region
 
@@ -287,23 +322,18 @@ Public Class ACLListener
         Dim lineNr As Integer = context.MOVE.Symbol.Line
         Dim tpNr As Integer = CInt(context.INTEGER.GetText)
 
-        ' Teachpunkt suchen
+        ' Teachpunkt suchen und move Befehl hinzufgen
         Dim found As Boolean = False
         For Each tp As TeachPoint In _tp
             If tp.nr = tpNr Then
                 ' Move hinzufügen
                 Dim progEntry As New ProgramEntry
+                progEntry.func = progFunc.move
                 progEntry.lineNr = lineNr
                 progEntry.sync = True
                 progEntry.acc = _acc
                 progEntry.speed = _speed
-                If tp.cart Then
-                    progEntry.func = progFunc.cartMove
-                    progEntry.cartCoords = tp.tcpCoords
-                Else
-                    progEntry.func = progFunc.jointMove
-                    progEntry.jointAngles = tp.jointAngles
-                End If
+                progEntry.teachPoint = tp.nr
                 _progList.Add(progEntry)
                 found = True
                 Exit For

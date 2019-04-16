@@ -343,7 +343,7 @@
 
         Dim tmpEnabled As Boolean
         ' Im TCP Mode nur aktiv, wenn alle Achsen referenziert sind!
-        tmpEnabled = SerialConnected And Not RobotMoving And Not ProgramRunning And (frmMain.RoboControl.AllRefOkay Or Not _tcpMode)
+        tmpEnabled = SerialConnected And Not RobotBusy And Not ProgramRunning And (frmMain.RoboControl.AllRefOkay Or Not _tcpMode)
 
         btnCtrl1Dec.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(0)
         btnCtrl1Inc.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(0)
@@ -383,7 +383,7 @@
         btnMoveStart.Enabled = tmpEnabled
 
         ' Servos
-        tmpEnabled = SerialConnected And Not RobotMoving And Not ProgramRunning
+        tmpEnabled = SerialConnected And Not RobotBusy And Not ProgramRunning
 
         btnServ1Dec.Enabled = tmpEnabled
         btnServ1Inc.Enabled = tmpEnabled

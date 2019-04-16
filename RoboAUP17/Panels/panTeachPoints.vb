@@ -48,7 +48,7 @@
         frmMain.RoboControl.SetSpeedAndAcc(numSpeed.Value, numAcc.Value)
 
         If tp.cart Then
-            frmMain.RoboControl.DoTCPMov(tp.tcpCoords)
+            frmMain.RoboControl.DoTCPMov(tp.cartCoords)
         Else
             frmMain.RoboControl.DoJointMov(True, tp.jointAngles)
         End If
@@ -66,7 +66,7 @@
             Return
         End If
 
-        btnMoveTo.Enabled = SerialConnected And Not RobotMoving And Not ProgramRunning And lbTeachPoints.SelectedIndex > -1
+        btnMoveTo.Enabled = SerialConnected And Not RobotBusy And Not ProgramRunning And lbTeachPoints.SelectedIndex > -1
     End Sub
 
     ' -----------------------------------------------------------------------------

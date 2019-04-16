@@ -224,12 +224,13 @@ Module dataStructs
     ' -----------------------------------------------------------------------------
     Friend Structure TeachPoint
         Implements IComparable(Of TeachPoint)
+        Implements ICloneable
 
         Friend nr As Int32
         Friend name As String
         Friend cart As Boolean
         Friend jointAngles As JointAngles
-        Friend tcpCoords As CartCoords
+        Friend cartCoords As CartCoords
 
         Friend Function CompareTo(other As TeachPoint) As Integer _
             Implements IComparable(Of TeachPoint).CompareTo
@@ -239,17 +240,25 @@ Module dataStructs
 
         Public Overrides Function ToString() As String
             If cart Then
-                Return $"{nr}: {name} (X: {tcpCoords.X}; Y: {tcpCoords.Y}; Z: {tcpCoords.Z}; yaw: {tcpCoords.Yaw}; pitch: {tcpCoords.Pitch}; roll: {tcpCoords.Roll})"
+                Return $"{nr}: {name} (X: {cartCoords.X}; Y: {cartCoords.Y}; Z: {cartCoords.Z}; yaw: {cartCoords.Yaw}; pitch: {cartCoords.Pitch}; roll: {cartCoords.Roll})"
             Else
                 Return $"{nr}: {name} (J1: {jointAngles.J1}; J2: {jointAngles.J2}; J3: {jointAngles.J3}; J4: {jointAngles.J4}; J5: {jointAngles.J5}; J6: {jointAngles.J6})"
             End If
+        End Function
+
+        Friend Function Clone() As Object Implements ICloneable.Clone
+            Return New TeachPoint With {
+                .nr = nr,
+                .name = name,
+                .cart = cart,
+                .jointAngles = jointAngles,
+                .cartCoords = cartCoords}
         End Function
     End Structure
 
     Friend Enum progFunc
         noop = 0
-        cartMove
-        jointMove
+        move
         servoMove
         delay
         cjump
@@ -273,8 +282,7 @@ Module dataStructs
         Friend lineNr As Int32
         Friend func As progFunc
         ' Position
-        Friend cartCoords As CartCoords
-        Friend jointAngles As JointAngles
+        Friend teachPoint As Int32
         Friend speed As Double
         Friend acc As Double
         Friend sync As Boolean

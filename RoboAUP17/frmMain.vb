@@ -390,7 +390,7 @@ Public Class frmMain
         End If
 
         tsBtnConnect.Enabled = Not SerialConnected And _serialPortsAvailable
-        tsBtnProgRun.Enabled = SerialConnected And Not RobotMoving And Not ProgramRunning
+        tsBtnProgRun.Enabled = SerialConnected And Not RobotBusy And Not ProgramRunning
         tsBtnProgStop.Enabled = ProgramRunning
     End Sub
 
@@ -425,23 +425,23 @@ Public Class frmMain
     End Sub
     Private Sub _eComSerialConnected() Handles _roboControl.SerialConnected
         SerialConnected = True
-        RobotMoving = False
+        RobotBusy = False
 
         _enableDisableElements()
     End Sub
     Private Sub _eComSerialDisconnected() Handles _roboControl.SerialDisconnected
         SerialConnected = False
-        RobotMoving = False
+        RobotBusy = False
 
         _enableDisableElements()
     End Sub
     Private Sub _eRoboMoveStarted() Handles _roboControl.RoboMoveStarted
-        RobotMoving = True
+        RobotBusy = True
 
         _enableDisableElements()
     End Sub
     Private Sub _eRoboMoveFinished() Handles _roboControl.RoboMoveFinished
-        RobotMoving = False
+        RobotBusy = False
 
         _enableDisableElements()
     End Sub
