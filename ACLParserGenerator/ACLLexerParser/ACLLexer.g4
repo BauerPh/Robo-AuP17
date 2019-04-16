@@ -70,4 +70,4 @@ NEWLINE:			'\n' | '\r\n' | '\r' | EOF;
 WS: [ \t\f]+ -> skip;
 
 // Unknown token
-ERROR_RECONGNIGION: . -> channel(HIDDEN);
+ERROR_RECONGNIGION: .; //-> channel(HIDDEN);

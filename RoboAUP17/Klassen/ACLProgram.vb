@@ -29,7 +29,9 @@ Friend Class ACLProgram
     Friend Event DoJointMove(ByVal jointAngles As JointAngles, acc As Double, speed As Double)
     Friend Event DoCartMove(ByVal cartCoords As CartCoords, acc As Double, speed As Double)
     Friend Event DoServoMove(ByVal servoNr As Int32, prc As Double)
+    Friend Event ProgramStarted()
     Friend Event ProgramFinished()
+    Friend Event ProgramLineChanged(line As Int32)
 
     ' -----------------------------------------------------------------------------
     ' Public
@@ -115,6 +117,7 @@ Friend Class ACLProgram
             _progThread.IsBackground = True
             _progThread.Start()
             ProgramRunning = True
+            RaiseEvent ProgramStarted()
             RaiseEvent Log("[ACL] Programm gestartet", Logger.LogLevel.INFO)
         End If
     End Sub
@@ -214,6 +217,8 @@ Friend Class ACLProgram
                 _stopProgram = False
                 Exit For
             End If
+            ' Aktuelle Line ausgeben
+            RaiseEvent ProgramLineChanged(_progList(i).lineNr)
             Select Case _progList(i).func
                 Case progFunc.condition
                     ' -------------------------------------
@@ -268,8 +273,8 @@ Friend Class ACLProgram
 
         ' Programm fertig
         ProgramRunning = False
-        RaiseEvent Log("[ACL] Programm beendet", Logger.LogLevel.INFO)
         RaiseEvent ProgramFinished()
+        RaiseEvent Log("[ACL] Programm beendet", Logger.LogLevel.INFO)
         _progThread.Abort()
     End Sub
 
