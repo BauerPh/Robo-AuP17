@@ -294,7 +294,7 @@ Friend Class ACLProgram
         RaiseEvent Log("[ACL] erstelle Programm...", Logger.LogLevel.INFO)
         _programSyntaxOkay = True
         ' Erstelle Input Stream
-        Dim inputStream As AntlrInputStream = New AntlrInputStream(input)
+        Dim inputStream As AntlrInputStream = New AntlrInputStream(input + vbCrLf)
         ' Erstelle Lexer
         Dim aclLexer As ACLLexer = New ACLLexer(inputStream)
         ' Erstelle Token Stream
@@ -343,11 +343,14 @@ Friend Class ACLProgram
     End Function
 
     Private Sub _runProgram()
+        _stopProgram = False
+        _forceStopProgram = False
         Dim vke As Boolean = False
         Dim i As Integer = 0
         While i < _progList.Count
-            If _stopProgram Then
+            If _stopProgram Or _forceStopProgram Then
                 _stopProgram = False
+                _forceStopProgram = False
                 Exit While
             End If
 

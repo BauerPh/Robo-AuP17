@@ -5,8 +5,6 @@ Public Class panCodeEditor
     ' -----------------------------------------------------------------------------
     ' Syntax Highlighting
     Private _lastHighlightedLineIndex As Int32 = 0
-    Private _lastHighlightedErrorLineIndex As Int32 = 0
-
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
@@ -20,7 +18,7 @@ Public Class panCodeEditor
         sciCodeEditor.Markers(0).Symbol = MarkerSymbol.Arrow
         sciCodeEditor.Markers(0).SetBackColor(Color.Yellow)
         sciCodeEditor.Markers(1).Symbol = MarkerSymbol.Background
-        sciCodeEditor.Markers(1).SetBackColor(Color.LightYellow)
+        sciCodeEditor.Markers(1).SetBackColor(Color.LightGoldenrodYellow)
         sciCodeEditor.Markers(2).Symbol = MarkerSymbol.Background
         sciCodeEditor.Markers(2).SetBackColor(Color.Red)
 
@@ -34,11 +32,6 @@ Public Class panCodeEditor
     ' Form Control
     ' -----------------------------------------------------------------------------
     Private Sub sciCodeEditor_TextChanged(sender As Object, e As EventArgs) Handles sciCodeEditor.TextChanged
-        ' Ungespeicherte Änderungen!
-        frmMain.ACLProgram.UnsavedChanges = True
-        ' Remove marker
-        sciCodeEditor.Lines(_lastHighlightedErrorLineIndex).MarkerDelete(2)
-
         ' Calculate Line Number Width
         Dim maxLineNumberCharLength = sciCodeEditor.Lines.Count.ToString().Length
         If (maxLineNumberCharLength = Me.maxLineNumberCharLength) Then
@@ -46,6 +39,26 @@ Public Class panCodeEditor
         End If
         sciCodeEditor.Margins(0).Width = sciCodeEditor.TextWidth(ScintillaNET.Style.LineNumber, New String("9"c, maxLineNumberCharLength + 1))
         Me.maxLineNumberCharLength = maxLineNumberCharLength
+
+        ' Remove error marker
+        _removeMarker()
+    End Sub
+
+    Private Sub sciCodeEditor_TextEdited(sender As Object, e As EventArgs) Handles sciCodeEditor.CharAdded, sciCodeEditor.Delete
+        ' Ungespeicherte Änderungen!
+        frmMain.ACLProgram.UnsavedChanges = True
+
+        ' Remove error marker
+        _removeMarker()
+    End Sub
+
+    ' -----------------------------------------------------------------------------
+    ' Private
+    ' -----------------------------------------------------------------------------
+    Private Sub _removeMarker()
+        For i = 0 To sciCodeEditor.Lines.Count - 1
+            sciCodeEditor.Lines(i).MarkerDelete(2)
+        Next
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -88,6 +101,5 @@ Public Class panCodeEditor
         End If
 
         sciCodeEditor.Lines(line - 1).MarkerAdd(2)
-        _lastHighlightedErrorLineIndex = line - 1
     End Sub
 End Class

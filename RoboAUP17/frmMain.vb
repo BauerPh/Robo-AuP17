@@ -436,7 +436,7 @@ Public Class frmMain
         End If
 
         tsBtnConnect.Enabled = Not SerialConnected And _serialPortsAvailable
-        tsBtnDisconnect.Enabled = Not ProgramRunning
+        'tsBtnDisconnect.Enabled = Not ProgramRunning
         tsBtnProgCheck.Enabled = Not ProgramRunning
         tsBtnProgRun.Enabled = SerialConnected And Not RobotBusy And Not ProgramRunning And _roboControl.AllRefOkay
         tsBtnProgStop.Enabled = ProgramRunning
