@@ -27,6 +27,7 @@ axisctrl
 	| acc
 	| speed
 	| home
+	| park
 	;
 
 progctrl
@@ -93,7 +94,11 @@ speed
 	;
 
 home
-	: HOME INTEGER (COMMA INTEGER)+
+	: HOME INTEGER+
+	;
+
+park
+	: PARK INTEGER+
 	;
 
 delay
@@ -101,7 +106,7 @@ delay
 	;
 
 wait
-	: WAIT condition
+	: WAIT IDENTIFIER (COMPAREOPERATOR | EQUAL) (SIGNEDINT | INTEGER | IDENTIFIER | BOOL)
 	;
 
 defp
@@ -197,7 +202,7 @@ setpos
 	;
 
 setvar
-	: SET IDENTIFIER ( ( (EQUAL | NOT) (SIGNEDINT | INTEGER | IDENTIFIER | BOOL) ) | (EQUAL calculation) )
+	: SET IDENTIFIER EQUAL (SIGNEDINT | INTEGER | IDENTIFIER | BOOL | calculation)
 	;
 
 calculation

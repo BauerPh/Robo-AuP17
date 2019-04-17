@@ -85,8 +85,7 @@ Friend Class RobotControl
     Friend Event SerialConnected()
     Friend Event SerialDisconnected()
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
-    Friend Event RoboMoveFinished()
-    Friend Event RoboMoveStarted()
+    Friend Event RoboBusy(ByVal busy As Boolean)
     Friend Event RoboPositionChanged()
     Friend Event RoboServoChanged()
     Friend Event LimitSwitchStateChanged(ByVal lssState As Boolean())
@@ -132,7 +131,7 @@ Friend Class RobotControl
         _com.AddMOVDataSet(True, nr, _calcTargetToSteps(target, nr), _calcSpeedAccToSteps(tmpV(tmpNr), nr), _calcSpeedAccToSteps(tmpA(tmpNr), nr), _calcSpeedAccToSteps(_pref.JointParameter(tmpNr).ProfileStopAcc, nr))
         'Telegramm senden
         If _com.SendMOV() Then
-            RaiseEvent RoboMoveStarted()
+            RaiseEvent RoboBusy(True)
             'Log
             RaiseEvent Log("[Robo Control] Jogbefehl ausgeführt", Logger.LogLevel.INFO)
             Return True
@@ -179,7 +178,7 @@ Friend Class RobotControl
         Next
         'Telegram senden
         If _com.SendREF() Then
-            RaiseEvent RoboMoveStarted()
+            RaiseEvent RoboBusy(True)
             'Log
             RaiseEvent Log("[Robo Control] Referenzfahrt gestartet", Logger.LogLevel.INFO)
             Return True
@@ -256,7 +255,7 @@ Friend Class RobotControl
         Next
         'Telegram senden
         If _com.SendMOV() Then
-            RaiseEvent RoboMoveStarted()
+            RaiseEvent RoboBusy(True)
             'Log
             RaiseEvent Log("[Robo Control] Bewegungsbefehl gesendet", Logger.LogLevel.INFO)
             Return True
@@ -273,9 +272,13 @@ Friend Class RobotControl
     Friend Function DoPark(sync As Boolean) As Boolean
         Return DoJointMov(sync, _pref.JointParameter(0).MechParkPosAngle, _pref.JointParameter(1).MechParkPosAngle, _pref.JointParameter(2).MechParkPosAngle, _pref.JointParameter(3).MechParkPosAngle, _pref.JointParameter(4).MechParkPosAngle, _pref.JointParameter(5).MechParkPosAngle)
     End Function
+    Friend Function DoDelay(delay As Int32) As Boolean
+        RaiseEvent RoboBusy(True)
+        Return _com.SendWAI(delay)
+    End Function
     Friend Function MoveServoAngle(srvNr As Int32, angle As Int32) As Boolean
         If _com.SendSRV(srvNr, angle) Then
-            RaiseEvent RoboMoveStarted()
+            RaiseEvent RoboBusy(True)
             'Log
             RaiseEvent Log($"[Robo Control] Bewege Servo {srvNr}, Ziel: {angle}", Logger.LogLevel.INFO)
             Return True
@@ -400,7 +403,7 @@ Friend Class RobotControl
     End Sub
     Private Sub _eFINReceived() Handles _com.FINReceived
         RaiseEvent Log("[Robo Control] Bewegung abgeschlossen", Logger.LogLevel.INFO)
-        RaiseEvent RoboMoveFinished()
+        RaiseEvent RoboBusy(False)
     End Sub
     Private Sub _ePOSReceived(refOkay As Boolean(), posSteps As Int32()) Handles _com.POSReceived
         ' Steps speichern
@@ -473,10 +476,10 @@ Friend Class RobotControl
     Private Sub _eERRReceived(errnum As Integer) Handles _com.ERRReceived
         If errnum = 3 Then
             RaiseEvent Log("[Robo Control] Roboter nicht in Referenz", Logger.LogLevel.ERR)
-            RaiseEvent RoboMoveFinished()
+            RaiseEvent RoboBusy(False)
         ElseIf errnum = 4 Then
             RaiseEvent Log("[Robo Control] Referenzfahrt fehlgeschlagen", Logger.LogLevel.ERR)
-            RaiseEvent RoboMoveFinished()
+            RaiseEvent RoboBusy(False)
         End If
     End Sub
 End Class

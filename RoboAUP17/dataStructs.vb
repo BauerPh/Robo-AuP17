@@ -1,5 +1,6 @@
 ﻿Imports System.ComponentModel
 Module dataStructs
+#Region "Kinematik und Koordinaten"
     ' -----------------------------------------------------------------------------
     ' Kinematics and Coordinates
     ' -----------------------------------------------------------------------------
@@ -119,7 +120,9 @@ Module dataStructs
             Return New JointAngles(J1, J2, J3, J4, J5, J6)
         End Function
     End Structure
+#End Region
 
+#Region "Settings"
     ' -----------------------------------------------------------------------------
     ' Settings
     ' -----------------------------------------------------------------------------
@@ -214,7 +217,9 @@ Module dataStructs
             DisplayName("Maximaler Winkel")>
         Public Property MaxAngle As Double
     End Structure
+#End Region
 
+#Region "ACL"
     ' -----------------------------------------------------------------------------
     ' ACL
     ' -----------------------------------------------------------------------------
@@ -252,6 +257,20 @@ Module dataStructs
         End Function
     End Structure
 
+    Friend Enum varType
+        int = 0
+    End Enum
+    Friend Structure Variable
+        Friend type As varType
+        Friend intVal As Int32
+        Friend defLine As Int32
+
+        Friend Sub New(type As varType, defLine As Int32)
+            Me.type = type
+            Me.defLine = defLine
+        End Sub
+    End Structure
+
     Friend Enum progFunc
         noop = 0
         move
@@ -260,6 +279,11 @@ Module dataStructs
         cjump
         jump
         condition
+        calculation
+        defVar
+        delVar
+        setVar
+        setVarToBuffer
     End Enum
     Friend Enum progCompOperator
         equal = 0
@@ -274,6 +298,14 @@ Module dataStructs
         [and]
         [or]
     End Enum
+    Friend Enum progMathOperator
+        plus = 0
+        minus
+        mult
+        div
+        exp
+        [mod]
+    End Enum
     Friend Structure ProgramEntry
         Friend lineNr As Int32
         Friend func As progFunc
@@ -287,18 +319,23 @@ Module dataStructs
         Friend servoVal As Int32
         ' Delay
         Friend delayTimeMS As Int32
-        ' Condition
+        ' Condition & Calculation
         Friend var1 As String
         Friend var2 As String
         Friend val1 As Int32
         Friend val2 As Int32
         Friend compareOperator As progCompOperator
-        Friend VKEFirst As Boolean
         Friend booleanOperator As progBoolOperator
+        Friend mathOperator As progMathOperator
+        Friend VKEFirst As Boolean
         ' Jumps
         Friend jumpTarget As Int32
         Friend jumpTrueTarget As Int32
         Friend jumpFalseTarget As Int32
+        ' Variablen
+        Friend varName As String
+        Friend varValue As Integer
+        Friend varVariable As String
     End Structure
-
+#End Region
 End Module

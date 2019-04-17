@@ -129,6 +129,9 @@ Public Class frmMain
         ConfigureDockPanel()
         Me.ResumeLayout()
 
+        'Pass Settings Object to ACLProgram Object
+        _aclProgram.SetSettingsObject(_roboControl.Pref)
+
         'Welcome Log
         ShowStatusStripHint("Anwendung gestartet...")
         _logger.Log("[MAIN] Hi!", Logger.LogLevel.INFO)
@@ -484,13 +487,8 @@ Public Class frmMain
         _aclProgram.ForceStopProgram() ' Kill Thread
         _enableDisableElements()
     End Sub
-    Private Sub _eRoboMoveStarted() Handles _roboControl.RoboMoveStarted
-        RobotBusy = True
-
-        _enableDisableElements()
-    End Sub
-    Private Sub _eRoboMoveFinished() Handles _roboControl.RoboMoveFinished
-        RobotBusy = False
+    Private Sub _eRoboBusy(busy As Boolean) Handles _roboControl.RoboBusy
+        RobotBusy = busy
 
         _enableDisableElements()
     End Sub
@@ -509,5 +507,8 @@ Public Class frmMain
     End Sub
     Private Sub _eDoServoMove(srvNr As Integer, prc As Double) Handles _aclProgram.DoServoMove
         _roboControl.MoveServoPrc(srvNr, prc)
+    End Sub
+    Private Sub _eDoDelay(delay As Int32) Handles _aclProgram.DoDelay
+        _roboControl.DoDelay(delay)
     End Sub
 End Class

@@ -29,8 +29,7 @@
         AddHandler frmMain.RoboControl.RoboParameterChanged, AddressOf _eRoboParameterChanged
         AddHandler frmMain.RoboControl.SerialConnected, AddressOf _eRefresh
         AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eRefresh
-        AddHandler frmMain.RoboControl.RoboMoveStarted, AddressOf _eRefresh
-        AddHandler frmMain.RoboControl.RoboMoveFinished, AddressOf _eRoboMoveFinished
+        AddHandler frmMain.RoboControl.RoboBusy, AddressOf _eRoboBusy
         AddHandler frmMain.RoboControl.RoboRefStateChanged, AddressOf _eRefresh
         AddHandler frmMain.ACLProgram.ProgramFinished, AddressOf _eRefresh
     End Sub
@@ -551,9 +550,9 @@
     Private Sub _eRefresh()
         _enableDisableElements()
     End Sub
-    Private Sub _eRoboMoveFinished()
+    Private Sub _eRoboBusy(busy As Boolean)
         ' Achsen Bewegen falls Servos erst angesteuert wurden
-        If _doMoveAfterServoMove Then
+        If _doMoveAfterServoMove And busy Then
             _doMoveAfterServoMove = False
             _doMove()
         End If

@@ -20,12 +20,12 @@ Public Class panCodeEditor
         sciCodeEditor.Markers(1).Symbol = MarkerSymbol.Background
         sciCodeEditor.Markers(1).SetBackColor(Color.LightGoldenrodYellow)
         sciCodeEditor.Markers(2).Symbol = MarkerSymbol.Background
-        sciCodeEditor.Markers(2).SetBackColor(Color.Red)
+        sciCodeEditor.Markers(2).SetBackColor(Color.IndianRed)
 
         AddHandler frmMain.ACLProgram.ProgramStarted, AddressOf _eProgramStarted
         AddHandler frmMain.ACLProgram.ProgramFinished, AddressOf _eProgramFinished
         AddHandler frmMain.ACLProgram.ProgramLineChanged, AddressOf _eProgramLineChanged
-        AddHandler frmMain.ACLProgram.CompileErrorLine, AddressOf _eCompileErrorLine
+        AddHandler frmMain.ACLProgram.ErrorLine, AddressOf _eErrorLineEvent
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -94,9 +94,9 @@ Public Class panCodeEditor
         sciCodeEditor.Lines(_lastHighlightedLineIndex).MarkerAdd(1)
     End Sub
 
-    Private Sub _eCompileErrorLine(line As Int32)
+    Private Sub _eErrorLineEvent(line As Int32)
         If InvokeRequired Then
-            Invoke(Sub() _eProgramLineChanged(line))
+            Invoke(Sub() _eErrorLineEvent(line))
             Return
         End If
 
