@@ -4,7 +4,8 @@ Public Class panCodeEditor
     ' TODO
     ' -----------------------------------------------------------------------------
     ' Syntax Highlighting
-    Private _lastHighlightedLine As Int32 = 0
+    Private _lastHighlightedLineIndex As Int32 = 0
+    Private _lastHighlightedErrorLineIndex As Int32 = 0
 
 
     ' -----------------------------------------------------------------------------
@@ -16,19 +17,29 @@ Public Class panCodeEditor
         sciCodeEditor.Styles(Style.Default).Font = "Courier New"
         sciCodeEditor.Styles(Style.Default).Size = 12
 
-        sciCodeEditor.Markers(0).Symbol = MarkerSymbol.Background
-        sciCodeEditor.Markers(0).SetBackColor(Color.Red)
+        sciCodeEditor.Markers(0).Symbol = MarkerSymbol.Arrow
+        sciCodeEditor.Markers(0).SetBackColor(Color.Yellow)
+        sciCodeEditor.Markers(1).Symbol = MarkerSymbol.Background
+        sciCodeEditor.Markers(1).SetBackColor(Color.LightYellow)
+        sciCodeEditor.Markers(2).Symbol = MarkerSymbol.Background
+        sciCodeEditor.Markers(2).SetBackColor(Color.Red)
 
         AddHandler frmMain.ACLProgram.ProgramStarted, AddressOf _eProgramStarted
         AddHandler frmMain.ACLProgram.ProgramFinished, AddressOf _eProgramFinished
         AddHandler frmMain.ACLProgram.ProgramLineChanged, AddressOf _eProgramLineChanged
+        AddHandler frmMain.ACLProgram.CompileErrorLine, AddressOf _eCompileErrorLine
     End Sub
 
     ' -----------------------------------------------------------------------------
     ' Form Control
     ' -----------------------------------------------------------------------------
     Private Sub sciCodeEditor_TextChanged(sender As Object, e As EventArgs) Handles sciCodeEditor.TextChanged
-        'Calculate Line Number Width
+        ' Ungespeicherte Änderungen!
+        frmMain.ACLProgram.UnsavedChanges = True
+        ' Remove marker
+        sciCodeEditor.Lines(_lastHighlightedErrorLineIndex).MarkerDelete(2)
+
+        ' Calculate Line Number Width
         Dim maxLineNumberCharLength = sciCodeEditor.Lines.Count.ToString().Length
         If (maxLineNumberCharLength = Me.maxLineNumberCharLength) Then
             Return
@@ -45,7 +56,6 @@ Public Class panCodeEditor
             Invoke(Sub() _eProgramStarted())
             Return
         End If
-
         sciCodeEditor.ReadOnly = True
     End Sub
     Private Sub _eProgramFinished()
@@ -54,7 +64,8 @@ Public Class panCodeEditor
             Return
         End If
 
-        sciCodeEditor.Lines(_lastHighlightedLine).MarkerDelete(0)
+        sciCodeEditor.Lines(_lastHighlightedLineIndex).MarkerDelete(0)
+        sciCodeEditor.Lines(_lastHighlightedLineIndex).MarkerDelete(1)
         sciCodeEditor.ReadOnly = False
     End Sub
     Private Sub _eProgramLineChanged(line As Int32)
@@ -63,8 +74,20 @@ Public Class panCodeEditor
             Return
         End If
 
-        sciCodeEditor.Lines(_lastHighlightedLine).MarkerDelete(0)
-        _lastHighlightedLine = line - 1
-        sciCodeEditor.Lines(_lastHighlightedLine).MarkerAdd(0)
+        sciCodeEditor.Lines(_lastHighlightedLineIndex).MarkerDelete(0)
+        sciCodeEditor.Lines(_lastHighlightedLineIndex).MarkerDelete(1)
+        _lastHighlightedLineIndex = line - 1
+        sciCodeEditor.Lines(_lastHighlightedLineIndex).MarkerAdd(0)
+        sciCodeEditor.Lines(_lastHighlightedLineIndex).MarkerAdd(1)
+    End Sub
+
+    Private Sub _eCompileErrorLine(line As Int32)
+        If InvokeRequired Then
+            Invoke(Sub() _eProgramLineChanged(line))
+            Return
+        End If
+
+        sciCodeEditor.Lines(line - 1).MarkerAdd(2)
+        _lastHighlightedErrorLineIndex = line - 1
     End Sub
 End Class

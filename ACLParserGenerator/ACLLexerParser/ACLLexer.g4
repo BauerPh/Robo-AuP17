@@ -14,6 +14,9 @@ DELAY:			'DELAY';
 WAIT:			'WAIT';
 
 // Position def & manipulation
+DEFP:			'DEFP';
+DELP:			'DELP';
+UNDEF:			'UNDEF';
 HERER:			'HERER';
 HERE:			'HERE';
 TEACHR:			'TEACHR';
@@ -24,9 +27,13 @@ SHIFTC:			'SHIFTC';
 SHIFT:			'SHIFT';
 SETP:			'SETP';
 BY:				'BY';
+PVAL:			'PVAL';
+PVALC:			'PVALC';
+PSTATUS:		'PSTATUS';
 
 // Variable Definition & manipulation
 DEFINE:			'DEFINE';
+GLOBAL:			'GLOBAL';
 DELVAR:			'DELVAR';
 SET:			'SET';
 
@@ -37,37 +44,39 @@ ORIF:			'ORIF';		//okay
 ELSE:			'ELSE';		//okay
 ENDIF:			'ENDIF';	//okay
 FOR:			'FOR';
+TO:				'TO';
 ENDFOR:			'ENDFOR';
 LABEL:			'LABEL';	//okay
 GOTO:			'GOTO';		//okay
 
-// Config
-INIT:			'INIT';
-
 // Report
-SHOW:			'SHOW';
-PRINTLN:		'PRINTLN';
 PRINT:			'PRINT';
 
 // expressions
-IDENTIFIER:			[a-zA-Z][a-zA-Z0-9]*;
-SIGNEDINT:			( '+' | '-' )+ INTEGER;
-INTEGER:			[0-9] [0-9]*;
-DECIMAL:			( '+' | '-' )? ( '0' | ( [1-9] [0-9]* ) ) ( '.' [0-9]+ )?;
+BOOL:				'TRUE' | 'FALSE';
+DECIMAL:			SIGNEDINT '.' [0-9]+;
+INTEGER:			'0' | ( [1-9] [0-9]* );
+SIGNEDINT:			( '+' | '-' )? INTEGER;
 SUMOPERATOR:		'+' | '-';
-FACTOROPERATOR:		'*' | '/';
+FACTOROPERATOR:		'*' | '/' | 'EXP' | 'MOD';
+BOOLOPERATOR:		'AND' | 'OR';
+NOT:				'NOT';
 EQUAL:				'=';
 COMPAREOPERATOR:	'<>' | '<=' | '>=' | '<' | '>';
 OPENBRACKET:		'(';
 CLOSEBRACKET:		')';
 OPENCURLYBRACKET:	'{';
 CLOSECURLYBRACKET:	'}';
+COMMA:				',';
 STRING:				'"' ~[\r\n\t\f"]* '"';
-NEWLINE:			'\n' | '\r\n' | '\r' | EOF;
+NEWLINE:			('\r'? '\n')+;
+IDENTIFIER:			[a-zA-Z] [a-zA-Z0-9]*;
 
+// Comment
+LINE_COMMENT:		'//' ~[\r\n]*	-> skip;
 
 // Skip Whitespaces
-WS: [ \t\f]+ -> skip;
+WS:					[ \t\f]+		-> skip;
 
 // Unknown token
-ERROR_RECONGNIGION: .; //-> channel(HIDDEN);
+ERROR_RECONGNIGION: .;				//-> channel(HIDDEN);

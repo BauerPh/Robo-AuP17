@@ -6,17 +6,17 @@ options { tokenVocab=ACLLexer; }
 // Top Level Description
 
 root
-	: statement*
+	: statement+ EOF
 	;
 
 statement
 	: axisctrl NEWLINE
-//	| progctrl NEWLINE
-//	| posmanipulation NEWLINE
-//	| variable NEWLINE
-	| progflow
-//	| config NEWLINE
+	| progctrl NEWLINE
+	| posmanipulation NEWLINE
+	| variable NEWLINE
+	| progflow NEWLINE
 	| report NEWLINE
+	| setcommand NEWLINE	// pos manipulation OR variable
 	;
 
 // statements
@@ -28,23 +28,52 @@ axisctrl
 	| acc
 	| speed
 	| home
-	| delay
+	;
+
+progctrl
+	: delay
+	| wait
+	;
+
+posmanipulation
+	: defp
+	| delp
+	| undef
+	| herer
+	| here
+	| teachr
+	| teach
+	| setpvc
+	| setpv
+	| shiftc
+	| shift
+	| setp
+	;
+
+variable
+	: define
+	| delvar
 	;
 
 progflow
 	: if
+	| for
 	| label
 	| goto
 	;
 
 report
 	: print
-	| println
+	;
+
+setcommand
+	: setpos
+	| setvar
 	;
 
 // commands
 move
-	: MOVE INTEGER
+	: MOVE (INTEGER | IDENTIFIER)
 	;
 
 jaw
@@ -60,15 +89,75 @@ speed
 	;
 
 home
-	: HOME INTEGER?
+	: HOME INTEGER (COMMA INTEGER)+
 	;
 
 delay
 	: DELAY INTEGER
 	;
 
+wait
+	: WAIT condition
+	;
+
+defp
+	: DEFP IDENTIFIER
+	;
+
+delp
+	: DELP IDENTIFIER
+	;
+
+undef
+	: UNDEF IDENTIFIER
+	;
+
+herer
+	: HERER IDENTIFIER IDENTIFIER?
+	;
+
+here
+	: HERE IDENTIFIER
+	;
+
+teachr
+	: TEACHR IDENTIFIER IDENTIFIER?
+	;
+
+teach
+	: TEACH IDENTIFIER
+	;
+
+setpvc
+	: SETPVC IDENTIFIER IDENTIFIER (SIGNEDINT | INTEGER | IDENTIFIER)
+	;
+
+setpv
+	: SETPV IDENTIFIER INTEGER (SIGNEDINT | INTEGER | IDENTIFIER)
+	;
+
+shiftc
+	: SHIFTC IDENTIFIER BY IDENTIFIER (SIGNEDINT | INTEGER | IDENTIFIER)
+	;
+
+shift
+	: SHIFT IDENTIFIER BY INTEGER (SIGNEDINT | INTEGER | IDENTIFIER)
+	;
+
+setp
+	: SETP IDENTIFIER EQUAL IDENTIFIER
+	;
+
+define 
+	: (DEFINE | GLOBAL) IDENTIFIER+
+	;
+
+delvar
+	: DELVAR IDENTIFIER
+	;
+
 condition
-	: (INTEGER | IDENTIFIER) (COMPAREOPERATOR | EQUAL) (INTEGER | IDENTIFIER)
+	: (SIGNEDINT | INTEGER | IDENTIFIER) (COMPAREOPERATOR | EQUAL) (SIGNEDINT | INTEGER | IDENTIFIER | BOOL)
 	;
 
 and_or_if
@@ -76,26 +165,38 @@ and_or_if
 	;
 
 if
-	: IF condition NEWLINE and_or_if* statement+ else? ENDIF NEWLINE
+	: IF condition NEWLINE and_or_if* statement+ else? ENDIF
 	;
 
 else
 	: ELSE NEWLINE statement+
 	;
 
+for
+	: FOR IDENTIFIER EQUAL (SIGNEDINT | INTEGER | IDENTIFIER) TO (SIGNEDINT | INTEGER | IDENTIFIER) NEWLINE statement+ ENDFOR
+	;
+
 label
-	: LABEL IDENTIFIER NEWLINE
+	: LABEL IDENTIFIER
 	;
 
 goto
-	: GOTO IDENTIFIER NEWLINE
-	;
-
-println
-	: PRINTLN (STRING | IDENTIFIER) NEWLINE
+	: GOTO IDENTIFIER
 	;
 
 print
-	: PRINT (STRING | IDENTIFIER) NEWLINE
+	: PRINT (STRING | IDENTIFIER)+
+	;
+
+setpos
+	: SET IDENTIFIER EQUAL ((PVAL IDENTIFIER INTEGER) | (PVALC IDENTIFIER IDENTIFIER) | (PSTATUS IDENTIFIER))
+	;
+
+setvar
+	: SET IDENTIFIER ( ( (EQUAL | NOT) (SIGNEDINT | INTEGER | IDENTIFIER | BOOL) ) | (EQUAL calculation) )
+	;
+
+calculation
+	: (SIGNEDINT | INTEGER | IDENTIFIER) (SUMOPERATOR | FACTOROPERATOR | BOOLOPERATOR) (SIGNEDINT | INTEGER | IDENTIFIER)
 	;
 
