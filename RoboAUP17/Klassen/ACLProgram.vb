@@ -63,7 +63,7 @@ Friend Class ACLProgram
     Friend Function AddTeachPoint(name As String, cartCoords As CartCoords, tpNr As Int32) As Boolean
         Dim tp As TeachPoint
         tp.cart = True
-        tp.cartCoords = cartCoords
+        tp.cartCoords = cartCoords.Round(2)
         tp.name = name
         tp.nr = tpNr
         Return _addTeachPoint(tp)
@@ -348,6 +348,7 @@ Friend Class ACLProgram
         Dim vke As Boolean = False
         Dim i As Integer = 0
         While i < _progList.Count
+            Dim cmd As ProgramEntry = _progList(i)
             If _stopProgram Or _forceStopProgram Then
                 _stopProgram = False
                 _forceStopProgram = False
@@ -355,9 +356,9 @@ Friend Class ACLProgram
             End If
 
             ' Aktuelle Line ausgeben
-            RaiseEvent ProgramLineChanged(_progList(i).lineNr)
+            RaiseEvent ProgramLineChanged(cmd.lineNr)
 
-            Select Case _progList(i).func
+            Select Case cmd.func
                 Case progFunc.noop
                     ' -------------------------------------
                     ' NOOP
@@ -367,21 +368,23 @@ Friend Class ACLProgram
                     ' -------------------------------------
                     ' CONDITION
                     ' -------------------------------------
+
                     i += 1
                 Case progFunc.cjump
                     ' -------------------------------------
                     ' CONDITIONED JUMP
-                    i = If(vke, _progList(i).jumpTrueTarget, _progList(i).jumpFalseTarget)
+                    i = If(vke, cmd.jumpTrueTarget, cmd.jumpFalseTarget)
                     ' -------------------------------------
                 Case progFunc.jump
                     ' -------------------------------------
                     ' JUMP
                     ' -------------------------------------
-                    i = _progList(i).jumpTarget
+                    i = cmd.jumpTarget
                 Case progFunc.servoMove
                     ' -------------------------------------
                     ' SERVO
                     ' -------------------------------------
+                    RaiseEvent DoServoMove(cmd.servoNum, cmd.servoVal)
                     i += 1
                 Case progFunc.move
                     ' -------------------------------------
@@ -390,11 +393,11 @@ Friend Class ACLProgram
                     ' Teachpoint suchen und anfahren
                     Dim found As Boolean = False
                     For Each tp As TeachPoint In _compiledTeachPoints
-                        If _progList(i).teachPoint = tp.nr Then
+                        If cmd.teachPoint = tp.nr Then
                             If tp.cart Then
-                                RaiseEvent DoCartMove(tp.cartCoords, _progList(i).speed, _progList(i).acc)
+                                RaiseEvent DoCartMove(tp.cartCoords, cmd.speed, cmd.acc)
                             Else
-                                RaiseEvent DoJointMove(tp.jointAngles, _progList(i).speed, _progList(i).acc)
+                                RaiseEvent DoJointMove(tp.jointAngles, cmd.speed, cmd.acc)
                             End If
                             found = True
                             Exit For
@@ -479,13 +482,14 @@ Friend Class ACLProgram
             For Each tp As TeachPoint In _tp
                 If tp.nr = tpNr Then
                     ' Move hinzufügen
-                    Dim progEntry As New ProgramEntry
-                    progEntry.func = progFunc.move
-                    progEntry.lineNr = lineNr
-                    progEntry.sync = True
-                    progEntry.acc = _acc
-                    progEntry.speed = _speed
-                    progEntry.teachPoint = tp.nr
+                    Dim progEntry As New ProgramEntry With {
+                        .func = progFunc.move,
+                        .lineNr = lineNr,
+                        .sync = True,
+                        .acc = _acc,
+                        .speed = _speed,
+                        .teachPoint = tp.nr
+                    }
                     _progList.Add(progEntry)
                     found = True
                     Exit For
@@ -497,6 +501,48 @@ Friend Class ACLProgram
             End If
 
             MyBase.EnterMove(context)
+        End Sub
+        Public Overrides Sub EnterOpenclose(<NotNull> context As ACLParser.OpencloseContext)
+            Dim lineNr As Integer = CType(context.GetChild(0), Tree.ITerminalNode).Symbol.Line
+            Dim servoNr As Int32 = CInt(context.GetChild(1).GetText())
+            If servoNr < 1 Or servoNr > 3 Then
+                RaiseEvent CompileErrorEvent(lineNr, $"Servonummer muss zwischen 1 und 3 liegen")
+            End If
+            ' Servomove hinzufügen
+            Dim thisIndex As Int32 = _progList.Count
+            Dim progEntry As New ProgramEntry
+            progEntry.func = progFunc.servoMove
+            progEntry.lineNr = lineNr
+            progEntry.servoNum = servoNr
+            If CType(context.GetChild(0), Tree.ITerminalNode).Symbol.Type = ACLLexer.OPEN Then
+                progEntry.servoVal = 100
+            Else
+                progEntry.servoVal = 0
+            End If
+            _progList.Add(progEntry)
+
+            MyBase.EnterOpenclose(context)
+        End Sub
+        Public Overrides Sub EnterJaw(<NotNull> context As ACLParser.JawContext)
+            Dim lineNr As Integer = context.JAW.Symbol.Line
+            Dim servoNr As Int32 = CInt(context.GetChild(1).GetText())
+            Dim servoVal As Int32 = CInt(context.GetChild(2).GetText())
+            If servoNr < 1 Or servoNr > 3 Then
+                RaiseEvent CompileErrorEvent(lineNr, $"Servonummer muss zwischen 1 und 3 liegen")
+            End If
+            If servoVal < 1 Or servoVal > 100 Then
+                RaiseEvent CompileErrorEvent(lineNr, $"Servowert muss zwischen 1 und 100 liegen")
+            End If
+            ' Servomove hinzufügen
+            Dim thisIndex As Int32 = _progList.Count
+            Dim progEntry As New ProgramEntry
+            progEntry.func = progFunc.servoMove
+            progEntry.lineNr = lineNr
+            progEntry.servoNum = servoNr
+            progEntry.servoVal = servoVal
+            _progList.Add(progEntry)
+
+            MyBase.EnterJaw(context)
         End Sub
         Public Overrides Sub EnterAcc(<NotNull> context As ACLParser.AccContext)
             Dim lineNr As Integer = context.ACC.Symbol.Line
@@ -529,12 +575,13 @@ Friend Class ACLProgram
         Public Overrides Sub EnterIf(<NotNull> context As ACLParser.IfContext)
             Dim thisIndex As Int32 = _progList.Count
             ' Bedingter Sprung hinzufügen (Bedingung wird bei "EnterCondition" hinzugefügt)
-            Dim progEntry As New ProgramEntry
-            progEntry.func = progFunc.cjump
-            progEntry.lineNr = context.IF.Symbol.Line
-            progEntry.VKEFirst = True
-            progEntry.jumpTrueTarget = thisIndex + 1 ' Auf nächsten Eintrag, wenn dieser hier hinzugefügt wurde
-            progEntry.jumpFalseTarget = -1 ' Wird bei ANDIF, ORIF, ELSE oder ENDIF gesetzt!
+            Dim progEntry As New ProgramEntry With {
+                .func = progFunc.cjump,
+                .lineNr = context.IF.Symbol.Line,
+                .VKEFirst = True,
+                .jumpTrueTarget = thisIndex + 1, ' Auf nächsten Eintrag, wenn dieser hier hinzugefügt wurde
+                .jumpFalseTarget = -1 ' Wird bei ANDIF, ORIF, ELSE oder ENDIF gesetzt!
+            }
             _progList.Add(progEntry)
 
             ' Index von diesem IF auf den Stack legen
@@ -590,11 +637,10 @@ Friend Class ACLProgram
             Dim thisIndex As Int32 = _progList.Count
             Dim progEntry As New ProgramEntry
             progEntry.func = progFunc.cjump
-            If context.ANDIF IsNot Nothing Then
-                progEntry.lineNr = context.ANDIF.Symbol.Line
+            progEntry.lineNr = CType(context.GetChild(0), Tree.ITerminalNode).Symbol.Line
+            If CType(context.GetChild(0), Tree.ITerminalNode).Symbol.Type = ACLLexer.ANDIF Then
                 progEntry.booleanOperator = progBoolOperator.and
             Else
-                progEntry.lineNr = context.ORIF.Symbol.Line
                 progEntry.booleanOperator = progBoolOperator.or
             End If
             progEntry.VKEFirst = False
@@ -687,10 +733,11 @@ Friend Class ACLProgram
             Dim thisIndex As Int32 = _progList.Count
 
             ' Sprung hinzufügen
-            Dim progEntry As New ProgramEntry
-            progEntry.func = progFunc.jump
-            progEntry.lineNr = lineNr
-            progEntry.jumpTarget = -1
+            Dim progEntry As New ProgramEntry With {
+                .func = progFunc.jump,
+                .lineNr = lineNr,
+                .jumpTarget = -1
+            }
 
             ' Prüfen ob es schon ein Label gibt
             Dim labelText As String = context.IDENTIFIER.GetText

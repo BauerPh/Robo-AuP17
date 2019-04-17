@@ -22,8 +22,7 @@ statement
 // statements
 axisctrl
 	: move
-	| OPEN
-	| CLOSE
+	| openclose
 	| jaw
 	| acc
 	| speed
@@ -76,8 +75,13 @@ move
 	: MOVE (INTEGER | IDENTIFIER)
 	;
 
+openclose
+	: OPEN INTEGER
+	| CLOSE INTEGER
+	;
+
 jaw
-	: JAW INTEGER
+	: JAW INTEGER INTEGER
 	;
 
 acc

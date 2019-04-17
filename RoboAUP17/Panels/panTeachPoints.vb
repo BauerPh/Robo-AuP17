@@ -10,6 +10,8 @@
     Private Sub panTeachPoints_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         frmMain.ACLProgram.SetListBox(lbTeachPoints)
 
+        cbTPMode.SelectedIndex = 0
+
         _enableDisableElements()
 
         AddHandler frmMain.RoboControl.SerialConnected, AddressOf _eRefresh
@@ -24,9 +26,16 @@
     ' Form Control
     ' -----------------------------------------------------------------------------
     Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
-        If frmMain.ACLProgram.AddTeachPoint(tbName.Text, frmMain.RoboControl.PosJoint, CInt(numNr.Value)) Then
-            numNr.Value += 1
-            tbName.Text = ""
+        If cbTPMode.SelectedIndex = 0 Then
+            If frmMain.ACLProgram.AddTeachPoint(tbName.Text, frmMain.RoboControl.PosCart, CInt(numNr.Value)) Then
+                numNr.Value += 1
+                tbName.Text = ""
+            End If
+        Else
+            If frmMain.ACLProgram.AddTeachPoint(tbName.Text, frmMain.RoboControl.PosJoint, CInt(numNr.Value)) Then
+                numNr.Value += 1
+                tbName.Text = ""
+            End If
         End If
     End Sub
 

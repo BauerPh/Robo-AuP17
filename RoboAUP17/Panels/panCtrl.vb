@@ -25,6 +25,7 @@
         _hideShowServo()
 
         AddHandler frmMain.RoboControl.RoboPositionChanged, AddressOf _eNewPos
+        AddHandler frmMain.RoboControl.RoboServoChanged, AddressOf _eNewServo
         AddHandler frmMain.RoboControl.RoboParameterChanged, AddressOf _eRoboParameterChanged
         AddHandler frmMain.RoboControl.SerialConnected, AddressOf _eRefresh
         AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eRefresh
@@ -399,13 +400,13 @@
         numServ3.Enabled = tmpEnabled
         tbServ3.Enabled = tmpEnabled
     End Sub
-    Private Sub _setPosValues()
+    Private Sub _setPosValues(Optional srv As Boolean = False)
         If InvokeRequired Then
-            Invoke(Sub() _setPosValues())
+            Invoke(Sub() _setPosValues(srv))
             Return
         End If
 
-        If _posReceived Then ' Nur wenn es welche gibt
+        If _posReceived And Not srv Then ' Nur wenn es welche gibt
             If _tcpMode Then
                 numCtrl1.Value = CDec(frmMain.RoboControl.PosCart.X)
                 numCtrl2.Value = CDec(frmMain.RoboControl.PosCart.Y)
@@ -420,6 +421,18 @@
                 numCtrl4.Value = CDec(frmMain.RoboControl.PosJoint.J4)
                 numCtrl5.Value = CDec(frmMain.RoboControl.PosJoint.J5)
                 numCtrl6.Value = CDec(frmMain.RoboControl.PosJoint.J6)
+            End If
+        End If
+        ' Servos
+        If srv Then
+            If frmMain.RoboControl.Pref.ServoParameter(0).Available Then
+                numServ1.Value = CDec(frmMain.RoboControl.PosServo(0))
+            End If
+            If frmMain.RoboControl.Pref.ServoParameter(1).Available Then
+                numServ1.Value = CDec(frmMain.RoboControl.PosServo(1))
+            End If
+            If frmMain.RoboControl.Pref.ServoParameter(2).Available Then
+                numServ1.Value = CDec(frmMain.RoboControl.PosServo(2))
             End If
         End If
     End Sub
@@ -516,6 +529,10 @@
         _setPosValues()
     End Sub
 
+    Private Sub _eNewServo()
+        _setPosValues(True)
+    End Sub
+
     Private Sub _eRoboParameterChanged(parameterChanged As Settings.ParameterChangedParameter)
         Dim all As Boolean = parameterChanged = Settings.ParameterChangedParameter.All
         If parameterChanged = Settings.ParameterChangedParameter.Joint Or all Then
@@ -523,6 +540,7 @@
         End If
         If parameterChanged = Settings.ParameterChangedParameter.Servo Or all Then
             _hideShowServo()
+            _setPosValues(True)
         End If
         If parameterChanged = Settings.ParameterChangedParameter.DenavitHartenbergParameter Or
                 parameterChanged = Settings.ParameterChangedParameter.Toolframe Or

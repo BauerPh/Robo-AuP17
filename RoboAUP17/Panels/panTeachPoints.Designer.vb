@@ -27,8 +27,10 @@ Partial Class panTeachPoints
         Me.ToolStripContainer = New System.Windows.Forms.ToolStripContainer()
         Me.lbTeachPoints = New System.Windows.Forms.ListBox()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
+        Me.lblName = New System.Windows.Forms.ToolStripLabel()
         Me.tbName = New System.Windows.Forms.ToolStripTextBox()
         Me.numNr = New RoboAUP17.ToolStripNumericUpDown()
+        Me.cbTPMode = New System.Windows.Forms.ToolStripComboBox()
         Me.btnAdd = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnDelete = New System.Windows.Forms.ToolStripButton()
@@ -42,7 +44,6 @@ Partial Class panTeachPoints
         Me.lblAcc = New System.Windows.Forms.ToolStripLabel()
         Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
         Me.btnMoveTo = New System.Windows.Forms.ToolStripButton()
-        Me.lblName = New System.Windows.Forms.ToolStripLabel()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
         Me.ToolStripContainer.SuspendLayout()
@@ -56,18 +57,18 @@ Partial Class panTeachPoints
         'ToolStripContainer.ContentPanel
         '
         Me.ToolStripContainer.ContentPanel.Controls.Add(Me.lbTeachPoints)
-        Me.ToolStripContainer.ContentPanel.Size = New System.Drawing.Size(373, 362)
+        Me.ToolStripContainer.ContentPanel.Size = New System.Drawing.Size(361, 362)
         Me.ToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ToolStripContainer.Location = New System.Drawing.Point(0, 0)
         Me.ToolStripContainer.Name = "ToolStripContainer"
-        Me.ToolStripContainer.Size = New System.Drawing.Size(373, 414)
+        Me.ToolStripContainer.Size = New System.Drawing.Size(361, 414)
         Me.ToolStripContainer.TabIndex = 0
         Me.ToolStripContainer.Text = "ToolStripContainer"
         '
         'ToolStripContainer.TopToolStripPanel
         '
-        Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip1)
         Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip2)
+        Me.ToolStripContainer.TopToolStripPanel.Controls.Add(Me.ToolStrip1)
         '
         'lbTeachPoints
         '
@@ -78,19 +79,25 @@ Partial Class panTeachPoints
         Me.lbTeachPoints.ItemHeight = 16
         Me.lbTeachPoints.Location = New System.Drawing.Point(0, 0)
         Me.lbTeachPoints.Name = "lbTeachPoints"
-        Me.lbTeachPoints.Size = New System.Drawing.Size(373, 362)
+        Me.lbTeachPoints.Size = New System.Drawing.Size(361, 362)
         Me.lbTeachPoints.TabIndex = 0
         '
         'ToolStrip1
         '
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblName, Me.tbName, Me.numNr, Me.btnAdd, Me.ToolStripSeparator2, Me.btnDelete, Me.ToolStripSeparator1, Me.btnUp, Me.btnDown})
-        Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblName, Me.tbName, Me.numNr, Me.cbTPMode, Me.btnAdd, Me.ToolStripSeparator2, Me.btnDelete, Me.ToolStripSeparator1, Me.btnUp, Me.btnDown})
+        Me.ToolStrip1.Location = New System.Drawing.Point(0, 26)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(373, 26)
+        Me.ToolStrip1.Size = New System.Drawing.Size(361, 26)
         Me.ToolStrip1.Stretch = True
         Me.ToolStrip1.TabIndex = 0
+        '
+        'lblName
+        '
+        Me.lblName.Name = "lblName"
+        Me.lblName.Size = New System.Drawing.Size(42, 23)
+        Me.lblName.Text = "Name:"
         '
         'tbName
         '
@@ -106,6 +113,15 @@ Partial Class panTeachPoints
         Me.numNr.Size = New System.Drawing.Size(41, 23)
         Me.numNr.Text = "0"
         Me.numNr.Value = New Decimal(New Integer() {0, 0, 0, 0})
+        '
+        'cbTPMode
+        '
+        Me.cbTPMode.AutoSize = False
+        Me.cbTPMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbTPMode.DropDownWidth = 60
+        Me.cbTPMode.Items.AddRange(New Object() {"Cart", "Joint"})
+        Me.cbTPMode.Name = "cbTPMode"
+        Me.cbTPMode.Size = New System.Drawing.Size(60, 23)
         '
         'btnAdd
         '
@@ -158,9 +174,9 @@ Partial Class panTeachPoints
         Me.ToolStrip2.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblSpeed, Me.numSpeed, Me.ToolStripSeparator3, Me.lblAcc, Me.numAcc, Me.btnMoveTo})
-        Me.ToolStrip2.Location = New System.Drawing.Point(0, 26)
+        Me.ToolStrip2.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip2.Name = "ToolStrip2"
-        Me.ToolStrip2.Size = New System.Drawing.Size(373, 26)
+        Me.ToolStrip2.Size = New System.Drawing.Size(361, 26)
         Me.ToolStrip2.Stretch = True
         Me.ToolStrip2.TabIndex = 1
         '
@@ -210,18 +226,12 @@ Partial Class panTeachPoints
         Me.btnMoveTo.Size = New System.Drawing.Size(23, 23)
         Me.btnMoveTo.Text = "Teachpunkt anfahren"
         '
-        'lblName
-        '
-        Me.lblName.Name = "lblName"
-        Me.lblName.Size = New System.Drawing.Size(42, 23)
-        Me.lblName.Text = "Name:"
-        '
         'panTeachPoints
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
-        Me.ClientSize = New System.Drawing.Size(373, 414)
+        Me.ClientSize = New System.Drawing.Size(361, 414)
         Me.Controls.Add(Me.ToolStripContainer)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panTeachPoints"
@@ -258,4 +268,5 @@ Partial Class panTeachPoints
     Friend WithEvents numAcc As ToolStripNumericUpDown
     Friend WithEvents btnMoveTo As ToolStripButton
     Friend WithEvents lblName As ToolStripLabel
+    Friend WithEvents cbTPMode As ToolStripComboBox
 End Class

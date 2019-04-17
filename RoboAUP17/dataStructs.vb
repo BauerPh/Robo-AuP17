@@ -58,6 +58,14 @@ Module dataStructs
                     Throw New Exception("Index out of range")
             End Select
         End Sub
+
+        Friend Function Round(decPlaces As Integer) As CartCoords
+            Dim coords As CartCoords
+            For i = 0 To 5
+                coords.SetByIndex(i, Math.Round(Items(i), decPlaces))
+            Next
+            Return coords
+        End Function
     End Structure
 
     Friend Structure JointAngles

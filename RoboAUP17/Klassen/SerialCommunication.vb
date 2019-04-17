@@ -39,6 +39,7 @@ Friend Class SerialCommunication
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
     Friend Event FINReceived()
     Friend Event POSReceived(ByVal refOkay As Boolean(), ByVal posSteps As Int32())
+    Friend Event SRVReceived(ByVal srvNr As Int32, ByVal srvVal As Int32)
     Friend Event LSSReceived(ByVal lssState As Boolean())
     Friend Event ESSReceived(ByVal essState As Boolean)
     Friend Event RESReceived()
@@ -237,7 +238,7 @@ Friend Class SerialCommunication
     Private Sub _rcvMsg(msg As String)
         RaiseEvent Log(msg, Logger.LogLevel.COMIN)
 
-        Dim funcList() As String = {"ack", "fin", "pos", "ess", "lss", "res", "err"}
+        Dim funcList() As String = {"ack", "fin", "pos", "srv", "ess", "lss", "res", "err"}
         If Not _parseMsg(msg, _msgDataRcv, funcList) Then
             Return
         End If
@@ -249,6 +250,8 @@ Friend Class SerialCommunication
                 RaiseEvent FINReceived()
             Case "pos"
                 _rcvPOS()
+            Case "srv"
+                _rcvSRV()
             Case "ess"
                 _rcvESS()
             Case "lss"
@@ -284,6 +287,11 @@ Friend Class SerialCommunication
             tmpPosSteps(nr) = _msgDataRcv.Parset(i)(2)
         Next
         RaiseEvent POSReceived(tmpRefOkay, tmpPosSteps)
+    End Sub
+    Private Sub _rcvSRV()
+        For i = 0 To _msgDataRcv.Cnt - 1
+            RaiseEvent SRVReceived(_msgDataRcv.Parset(i)(0), _msgDataRcv.Parset(i)(1))
+        Next
     End Sub
     Private Sub _rcvLSS()
         Dim tmpState(5) As Boolean
