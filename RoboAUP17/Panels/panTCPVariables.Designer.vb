@@ -26,13 +26,13 @@ Partial Class panTCPVariables
         Me.dataGridView = New System.Windows.Forms.DataGridView()
         Me.ToolStripContainer = New System.Windows.Forms.ToolStripContainer()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
-        Me.btnAdd = New System.Windows.Forms.ToolStripButton()
-        Me.tbName = New System.Windows.Forms.ToolStripTextBox()
         Me.lblName = New System.Windows.Forms.ToolStripLabel()
+        Me.tbName = New System.Windows.Forms.ToolStripTextBox()
+        Me.btnAdd = New System.Windows.Forms.ToolStripButton()
         Me.btnDelete = New System.Windows.Forms.ToolStripButton()
-        Me.lblConnectStatus = New System.Windows.Forms.ToolStripLabel()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.lblConnectStatusTitle = New System.Windows.Forms.ToolStripLabel()
+        Me.lblConnectStatus = New System.Windows.Forms.ToolStripLabel()
         CType(Me.dataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
@@ -84,6 +84,17 @@ Partial Class panTCPVariables
         Me.ToolStrip1.Stretch = True
         Me.ToolStrip1.TabIndex = 0
         '
+        'lblName
+        '
+        Me.lblName.Name = "lblName"
+        Me.lblName.Size = New System.Drawing.Size(42, 22)
+        Me.lblName.Text = "Name:"
+        '
+        'tbName
+        '
+        Me.tbName.Name = "tbName"
+        Me.tbName.Size = New System.Drawing.Size(100, 25)
+        '
         'btnAdd
         '
         Me.btnAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
@@ -91,18 +102,7 @@ Partial Class panTCPVariables
         Me.btnAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnAdd.Name = "btnAdd"
         Me.btnAdd.Size = New System.Drawing.Size(23, 22)
-        Me.btnAdd.Text = "ToolStripButton1"
-        '
-        'tbName
-        '
-        Me.tbName.Name = "tbName"
-        Me.tbName.Size = New System.Drawing.Size(100, 25)
-        '
-        'lblName
-        '
-        Me.lblName.Name = "lblName"
-        Me.lblName.Size = New System.Drawing.Size(42, 22)
-        Me.lblName.Text = "Name:"
+        Me.btnAdd.Text = "Hinzufügen"
         '
         'btnDelete
         '
@@ -111,14 +111,7 @@ Partial Class panTCPVariables
         Me.btnDelete.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnDelete.Name = "btnDelete"
         Me.btnDelete.Size = New System.Drawing.Size(23, 22)
-        Me.btnDelete.Text = "ToolStripButton2"
-        '
-        'lblConnectStatus
-        '
-        Me.lblConnectStatus.ForeColor = System.Drawing.Color.Red
-        Me.lblConnectStatus.Name = "lblConnectStatus"
-        Me.lblConnectStatus.Size = New System.Drawing.Size(94, 22)
-        Me.lblConnectStatus.Text = "nicht verbunden"
+        Me.btnDelete.Text = "Löschen"
         '
         'ToolStripSeparator1
         '
@@ -130,6 +123,13 @@ Partial Class panTCPVariables
         Me.lblConnectStatusTitle.Name = "lblConnectStatusTitle"
         Me.lblConnectStatusTitle.Size = New System.Drawing.Size(41, 22)
         Me.lblConnectStatusTitle.Text = "Client:"
+        '
+        'lblConnectStatus
+        '
+        Me.lblConnectStatus.ForeColor = System.Drawing.Color.Red
+        Me.lblConnectStatus.Name = "lblConnectStatus"
+        Me.lblConnectStatus.Size = New System.Drawing.Size(94, 22)
+        Me.lblConnectStatus.Text = "nicht verbunden"
         '
         'panTCPVariables
         '

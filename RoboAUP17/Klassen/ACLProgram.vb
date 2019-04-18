@@ -9,7 +9,7 @@ Friend Class ACLProgram
     ' -----------------------------------------------------------------------------
     ' ACL-Programm (wip...)
     ' Speichern und Laden (wip...) / Variablen fehlen noch!
-    ' Variablen und TCP Variablen
+    ' TCP Variablen (wip...)
 
     ' -----------------------------------------------------------------------------
     ' Definitions
@@ -135,6 +135,27 @@ Friend Class ACLProgram
             _listBox.SelectedIndex = selIndex
             _unsavedChanges = True
             RaiseEvent Log($"[ACL] Teachpunkt {tpNr} wurde gelöscht!", Logger.LogLevel.INFO)
+        End If
+    End Sub
+
+    Friend Sub RenameTeachPoint(index As Int32, name As String, nr As Integer)
+        If _teachPoints.Count > index And index >= 0 Then
+            If _teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = nr) >= 0 Then
+                MessageBox.Show($"Nummer existiert bereits.", "Umbenennen fehlgeschlagen", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+            End If
+
+            ' Teachpunkt bearbeiten
+            Dim tp As TeachPoint = _teachPoints(index)
+            tp.name = name
+            tp.nr = nr
+            _teachPoints(index) = tp
+
+            'Liste Sortieren
+            _teachPoints.Sort()
+            'und ausgeben
+            _printTeachpointToListBox()
+            _unsavedChanges = True
         End If
     End Sub
 
@@ -334,7 +355,7 @@ Friend Class ACLProgram
         If _programSyntaxOkay Then
             ' Teachpoints kopieren (deep copy!)
             _compiledTeachPoints = _teachPoints.Select(Function(item) CType(item.Clone(), TeachPoint)).ToList()
-            Dim aclListener As New _ACLListener(_compiledTeachPoints, _progList, acc, speed) ' Eigentlicher Compiler
+            Dim aclListener As New _ACLListener(_compiledTeachPoints, TcpVariables, _progList, acc, speed) ' Eigentlicher Compiler
             AddHandler aclListener.CompileErrorEvent, AddressOf _eCompileError
             _programCompiled = True
             _progList.Clear()
@@ -396,16 +417,12 @@ Friend Class ACLProgram
                     ' -------------------------------------
                     'Get val1
                     Dim val1 As Int32
-                    If cmd.var1 IsNot Nothing Then
-                        val1 = rtVariables(cmd.var1).intVal
-                    Else
+                    If Not GetCmdVal(cmd.var1, cmd.lineNr, rtVariables, val1) Then
                         val1 = cmd.val1
                     End If
                     'Get val2
                     Dim val2 As Int32
-                    If cmd.var2 IsNot Nothing Then
-                        val2 = rtVariables(cmd.var2).intVal
-                    Else
+                    If Not GetCmdVal(cmd.var2, cmd.lineNr, rtVariables, val2) Then
                         val2 = cmd.val2
                     End If
                     ' Berechnen
@@ -481,6 +498,10 @@ Friend Class ACLProgram
                         _runtimeError(cmd.lineNr, $"Variable {cmd.varName} wurde nochmals definiert")
                         Exit While 'Programm beenden
                     End If
+                    If TcpVariables.Exists(cmd.varName) Then
+                        _runtimeError(cmd.lineNr, $"Variable {cmd.varName} wurde bereits als TCP-Variable definiert")
+                        Exit While 'Programm beenden
+                    End If
                     rtVariables.Add(cmd.varName, New Variable(varType.int, cmd.lineNr))
                     i += 1
                 Case progFunc.delVar
@@ -497,29 +518,49 @@ Friend Class ACLProgram
                     ' -------------------------------------
                     ' SET VARIABLE
                     ' -------------------------------------
-                    If Not rtVariables.ContainsKey(cmd.varName) Then
+                    If Not rtVariables.ContainsKey(cmd.varName) And Not TcpVariables.Exists(cmd.varName) Then
                         _runtimeError(cmd.lineNr, $"Variable {cmd.varName} ist an dieser Stelle nicht definiert")
                         Exit While 'Programm beenden
                     End If
-                    Dim var As Variable = rtVariables(cmd.varName)
+                    ' Wert holen
+                    Dim val As Integer
                     If cmd.varVariable IsNot Nothing Then
-                        var.intVal = rtVariables(cmd.varVariable).intVal
+                        val = rtVariables(cmd.varVariable).intVal
                     Else
-                        var.intVal = cmd.varValue
+                        val = cmd.varValue
                     End If
-                    rtVariables(cmd.varName) = var
+                    ' Variable setzen
+                    If rtVariables.ContainsKey(cmd.varName) Then
+                        Dim var As Variable = rtVariables(cmd.varName)
+                        var.intVal = val
+                        rtVariables(cmd.varName) = var
+                    Else
+                        ' TCP-Variable
+                        If Not TcpVariables.SetVariable(cmd.varName, val) Then
+                            _runtimeError(cmd.lineNr, $"TCP-Variable {cmd.varName} wurde nicht gefunden")
+                            Exit While 'Programm beenden
+                        End If
+                    End If
                     i += 1
                 Case progFunc.setVarToBuffer
                     ' -------------------------------------
                     ' SET VARIABLE TO BUFFER
                     ' -------------------------------------
-                    If Not rtVariables.ContainsKey(cmd.varName) Then
+                    If Not rtVariables.ContainsKey(cmd.varName) And Not TcpVariables.Exists(cmd.varName) Then
                         _runtimeError(cmd.lineNr, $"Variable {cmd.varName} ist an dieser Stelle nicht definiert")
                         Exit While 'Programm beenden
                     End If
-                    Dim var As Variable = rtVariables(cmd.varName)
-                    var.intVal = calcBuffer
-                    rtVariables(cmd.varName) = var
+                    If rtVariables.ContainsKey(cmd.varName) Then
+                        Dim var As Variable = rtVariables(cmd.varName)
+                        var.intVal = calcBuffer
+                        rtVariables(cmd.varName) = var
+                    Else
+                        ' TCP-Variable
+                        If Not TcpVariables.SetVariable(cmd.varName, calcBuffer) Then
+                            _runtimeError(cmd.lineNr, $"TCP-Variable {cmd.varName} wurde nicht gefunden")
+                            Exit While 'Programm beenden
+                        End If
+                    End If
                     i += 1
             End Select
 
@@ -534,19 +575,15 @@ Friend Class ACLProgram
         RaiseEvent ProgramFinished()
         RaiseEvent Log("[ACL] Programm beendet", Logger.LogLevel.INFO)
     End Sub
-    Private Function _checkCondition(cmd As ProgramEntry, ByRef rtVariables As Dictionary(Of String, Variable), vke As Boolean) As Boolean
+    Private Function _checkCondition(cmd As ProgramEntry, ByRef rtVariables As Dictionary(Of String, Variable), ByRef vke As Boolean) As Boolean
         'Get val1
         Dim val1 As Int32
-        If cmd.var1 IsNot Nothing Then
-            val1 = rtVariables(cmd.var1).intVal
-        Else
+        If Not GetCmdVal(cmd.var1, cmd.lineNr, rtVariables, val1) Then
             val1 = cmd.val1
         End If
         'Get val2
         Dim val2 As Int32
-        If cmd.var2 IsNot Nothing Then
-            val2 = rtVariables(cmd.var2).intVal
-        Else
+        If Not GetCmdVal(cmd.var2, cmd.lineNr, rtVariables, val2) Then
             val2 = cmd.val2
         End If
 
@@ -578,9 +615,26 @@ Friend Class ACLProgram
         End If
         Return tmpVKE
     End Function
+    Private Function GetCmdVal(var As String, line As Integer, ByRef rtVariables As Dictionary(Of String, Variable), ByRef val As Integer) As Boolean
+        If var IsNot Nothing Then
+            ' RT Var
+            If rtVariables.ContainsKey(var) Then
+                val = rtVariables(var).intVal
+            Else
+                ' TCP Var
+                If Not TcpVariables.GetVariable(var, val) Then
+                    _runtimeError(line, $"TCP-Variable {var} ist nicht mehr vorhanden")
+                End If
+            End If
+            Return True
+        Else
+            Return False
+        End If
+    End Function
     Private Sub _runtimeError(lineNr As Integer, msg As String)
         RaiseEvent ErrorLine(lineNr)
         RaiseEvent Log($"[ACL-RT] Zeile {lineNr.ToString,3:N}: {msg}", Logger.LogLevel.ERR)
+        _forceStopProgram = True
     End Sub
 
     Private Sub _eSyntaxError(line As Integer, msg As String)
@@ -618,17 +672,21 @@ Friend Class ACLProgram
         Private _gotos As New Dictionary(Of String, List(Of Integer))
         Private _variables As New Dictionary(Of String, Variable)
         Private _tmpTp As New Dictionary(Of String, TeachPoint)
+
+        ' von Extern!
         Private _tp As List(Of TeachPoint)
         Private _progList As List(Of ProgramEntry)
+        Private _tcpVars As TCPVariables
 
         Friend Event CompileErrorEvent(ByVal line As Integer, ByVal msg As String)
-        Friend Sub New(ByRef tp As List(Of TeachPoint), ByRef progList As List(Of ProgramEntry), ByVal maxAcc As Double, ByVal maxSpeed As Double)
+        Friend Sub New(ByRef tp As List(Of TeachPoint), ByRef tcpVars As TCPVariables, ByRef progList As List(Of ProgramEntry), ByVal maxAcc As Double, ByVal maxSpeed As Double)
             _maxAcc = maxAcc
             _maxSpeed = maxSpeed
             _acc = maxAcc
             _speed = maxSpeed
             _tp = tp
             _progList = progList
+            _tcpVars = tcpVars
         End Sub
 
         Public Overrides Sub EnterMove(<NotNull> context As ACLParser.MoveContext)
@@ -742,7 +800,7 @@ Friend Class ACLProgram
             If IsNumeric(val1) Then
                 progEntry.val1 = CInt(val1)
             Else
-                If Not _variables.ContainsKey(val1) Then
+                If Not _variables.ContainsKey(val1) And Not _tcpVars.Exists(val1) Then
                     RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Variable ""{val1}"" wurde nicht definiert")
                 Else
                     progEntry.var1 = val1
@@ -755,7 +813,7 @@ Friend Class ACLProgram
                 progEntry.val2 = If(context.BOOL.GetText = "FALSE", 0, 1)
             Else
                 ' Variable
-                If Not _variables.ContainsKey(val2) Then
+                If Not _variables.ContainsKey(val2) And Not _tcpVars.Exists(val2) Then
                     RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Variable ""{val2}"" wurde nicht definiert")
                 Else
                     progEntry.var2 = val2
@@ -942,16 +1000,17 @@ Friend Class ACLProgram
             MyBase.EnterDelay(context)
         End Sub
         Public Overrides Sub EnterWait(<NotNull> context As ACLParser.WaitContext)
-            'TODO
-            ' Soll nur bei TCP Variablen funktionieren: evtl neuer Befehl
-
-            ' NOOP hinzufügen
-            Dim progEntry As New ProgramEntry
-            progEntry.func = progFunc.noop
-            progEntry.lineNr = context.WAIT.Symbol.Line
+            Dim thisIndex As Int32 = _progList.Count
+            ' Bedingter Sprung hinzufügen (Bedingung wird bei "EnterCondition" hinzugefügt)
+            Dim progEntry As New ProgramEntry With {
+                .func = progFunc.cjump,
+                .lineNr = context.WAIT.Symbol.Line,
+                .VKEFirst = True,
+                .jumpTrueTarget = thisIndex + 1, ' Weiter bei True
+                .jumpFalseTarget = thisIndex ' Auf sich selbst setzen solange false
+            }
             _progList.Add(progEntry)
 
-            RaiseEvent CompileErrorEvent(context.WAIT.Symbol.Line, """WAIT"" noch nicht implementiert")
             MyBase.EnterWait(context)
         End Sub
         Public Overrides Sub EnterDefine(<NotNull> context As ACLParser.DefineContext)
@@ -962,6 +1021,8 @@ Friend Class ACLProgram
                 'Prüfen ob es diese Variable schon gibt
                 If _variables.ContainsKey(varName) Then
                     RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{varName}"" wurde schon in Zeile {_variables(varName).defLine} definiert")
+                ElseIf _tcpVars.Exists(varName) Then
+                    RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{varName}"" wurde bereits als TCP-Variable definiert")
                 Else
                     ' Variable hinzufügen
                     _variables.Add(varName, New Variable(varType.int, lineNr))
@@ -1000,7 +1061,7 @@ Friend Class ACLProgram
             Dim varName As String = context.IDENTIFIER(0).GetText()
 
             'Prüfen ob es diese Variable gibt und vom Typ Int ist
-            If _variables.ContainsKey(varName) Then
+            If _variables.ContainsKey(varName) Or _tcpVars.Exists(varName) Then
                 Dim progEntry As New ProgramEntry
                 progEntry.lineNr = lineNr
                 progEntry.varName = varName
@@ -1042,7 +1103,7 @@ Friend Class ACLProgram
             If IsNumeric(val1) Then
                 progEntry.val1 = CInt(val1)
             Else
-                If Not _variables.ContainsKey(val1) Then
+                If Not _variables.ContainsKey(val1) And Not _tcpVars.Exists(val1) Then
                     RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{val1}"" wurde nicht definiert")
                 Else
                     progEntry.var1 = val1
@@ -1051,7 +1112,7 @@ Friend Class ACLProgram
             If IsNumeric(val2) Then
                 progEntry.val2 = CInt(val2)
             Else
-                If Not _variables.ContainsKey(val2) Then
+                If Not _variables.ContainsKey(val2) And Not _tcpVars.Exists(val2) Then
                     RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{val2}"" wurde nicht definiert")
                 Else
                     progEntry.var2 = val2

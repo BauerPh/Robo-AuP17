@@ -38,6 +38,10 @@
         End If
     End Sub
 
+    Private Sub btnRename_Click(sender As Object, e As EventArgs) Handles btnRename.Click
+        frmMain.ACLProgram.RenameTeachPoint(lbTeachPoints.SelectedIndex, tbName.Text, CInt(numNr.Value))
+    End Sub
+
     Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
         frmMain.ACLProgram.DeleteTeachPoint(lbTeachPoints.SelectedIndex)
         If lbTeachPoints.SelectedIndex = -1 Then _enableDisableElements()
@@ -63,6 +67,10 @@
     End Sub
     Private Sub lbTeachPoints_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbTeachPoints.SelectedIndexChanged
         _enableDisableElements()
+
+        Dim tp As TeachPoint = frmMain.ACLProgram.GetTeachpointByIndex(lbTeachPoints.SelectedIndex)
+        tbName.Text = tp.name
+        numNr.Value = tp.nr
     End Sub
 
     ' -----------------------------------------------------------------------------

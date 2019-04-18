@@ -106,7 +106,7 @@ delay
 	;
 
 wait
-	: WAIT IDENTIFIER (COMPAREOPERATOR | EQUAL) (SIGNEDINT | INTEGER | IDENTIFIER | BOOL)
+	: WAIT condition
 	;
 
 defp

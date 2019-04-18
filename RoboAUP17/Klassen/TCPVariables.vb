@@ -34,12 +34,16 @@
         If Not _variables.ContainsKey(name) Then Return False
         _variables(name) = val
         _tcpCom.Send($"{name};{val}")
+        RaiseEvent VariableChanged(name, val)
         Return True
     End Function
     Friend Function GetVariable(name As String, ByRef val As Integer) As Boolean
         If Not _variables.ContainsKey(name) Then Return False
         val = _variables(name)
         Return True
+    End Function
+    Friend Function Exists(name As String) As Boolean
+        Return _variables.ContainsKey(name)
     End Function
 
     Friend Function GetGridViewDataSource() As Object
