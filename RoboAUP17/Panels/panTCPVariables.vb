@@ -1,9 +1,8 @@
 ﻿Option Strict On
-Public Class panVariables
+Public Class panTCPVariables
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' Variablen anlegen, bearbeiten, löschen
     ' TCP Variablen anlegen, bearbeiten, löschen
 
     ' -----------------------------------------------------------------------------

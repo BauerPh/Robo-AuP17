@@ -26,7 +26,7 @@ Public Class frmMain
     Private _dckPanLog As New panLog
     Private _dckPanComLogSerial As New panLog
     Private _dckPanComLogTCPIP As New panLog
-    Private _dckPanVariables As New panVariables
+    Private _dckPanVariables As New panTCPVariables
     Private _dckPanTeachpoints As New panTeachPoints
     Private _dckPanRoboStatus As New panRoboStatus
     Private _dckPanProgramTools As New panProgramTools

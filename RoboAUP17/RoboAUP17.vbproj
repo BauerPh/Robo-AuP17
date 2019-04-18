@@ -220,10 +220,10 @@
     <Compile Include="Panels\panTeachPoints.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Panels\panVariables.Designer.vb">
-      <DependentUpon>panVariables.vb</DependentUpon>
+    <Compile Include="Panels\panTCPVariables.Designer.vb">
+      <DependentUpon>panTCPVariables.vb</DependentUpon>
     </Compile>
-    <Compile Include="Panels\panVariables.vb">
+    <Compile Include="Panels\panTCPVariables.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Klassen\Settings.vb" />
@@ -268,8 +268,8 @@
     <EmbeddedResource Include="Panels\panTeachPoints.resx">
       <DependentUpon>panTeachPoints.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Panels\panVariables.resx">
-      <DependentUpon>panVariables.vb</DependentUpon>
+    <EmbeddedResource Include="Panels\panTCPVariables.resx">
+      <DependentUpon>panTCPVariables.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

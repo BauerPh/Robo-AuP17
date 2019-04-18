@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class panVariables
+Partial Class panTCPVariables
     Inherits WeifenLuo.WinFormsUI.Docking.DockContent
 
     'Das Formular überschreibt den Löschvorgang, um die Komponentenliste zu bereinigen.

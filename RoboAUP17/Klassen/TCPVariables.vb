@@ -42,6 +42,11 @@
         Return True
     End Function
 
+    Friend Function GetGridViewDataSource() As Object
+        Dim _varDataArray = From row In _variables Select New With {.Variable = row.Key, .Wert = row.Value}
+        Return _varDataArray.ToArray
+    End Function
+
 
     Private Sub _eMsgReceived(msg As String) Handles _tcpCom.MessageReceived
         Dim tmpSplit() As String = msg.Split(";"c)
