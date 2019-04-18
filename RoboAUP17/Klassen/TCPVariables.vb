@@ -1,4 +1,7 @@
 ﻿Public Class TCPVariables
+    ' -----------------------------------------------------------------------------
+    ' Definitions
+    ' -----------------------------------------------------------------------------
     Private WithEvents _tcpCom As New TCPCommunication
     Private _variables As New Dictionary(Of String, Integer)
 
@@ -7,6 +10,11 @@
     Friend Event ConnectError()
     Friend Event VariableChanged(ByVal name As String, ByVal val As Integer)
 
+
+    ' -----------------------------------------------------------------------------
+    ' Public
+    ' -----------------------------------------------------------------------------
+    ' Connection
     Friend Function Listen(port As Integer) As Boolean
         Return _tcpCom.Listen(port)
     End Function
@@ -20,6 +28,7 @@
         _tcpCom.Terminate()
     End Sub
 
+    ' Variables
     Friend Function AddVariable(name As String) As Boolean
         If _variables.ContainsKey(name) Then Return False
         _variables.Add(name, 0)
@@ -51,7 +60,9 @@
         Return _varDataArray.ToArray
     End Function
 
-
+    ' -----------------------------------------------------------------------------
+    ' Private
+    ' -----------------------------------------------------------------------------
     Private Sub _eMsgReceived(msg As String) Handles _tcpCom.MessageReceived
         Dim tmpSplit() As String = msg.Split(";"c)
         If tmpSplit.Length = 2 Then

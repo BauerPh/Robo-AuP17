@@ -1,9 +1,4 @@
 ﻿Namespace Matrizen
-    ' -----------------------------------------------------------------------------
-    ' TODO
-    ' -----------------------------------------------------------------------------
-    ' fertig
-
     Friend Class Matrix4x4
         Implements ICloneable
         Friend val(3, 3) As Double

@@ -3,6 +3,9 @@ Imports System.IO
 Imports System.Threading
 
 Public Class TCPCommunication
+    ' -----------------------------------------------------------------------------
+    ' Definitions
+    ' -----------------------------------------------------------------------------
     Private _threadHandle As New Thread(AddressOf _handle)
     Private _tcpListener As TcpListener
     Private _tcpClient As TcpClient
@@ -21,6 +24,9 @@ Public Class TCPCommunication
     Friend Event ConnectError()
     Friend Event MessageReceived(msg As String)
 
+    ' -----------------------------------------------------------------------------
+    ' Public
+    ' -----------------------------------------------------------------------------
     Friend Function Listen(port As Integer) As Boolean
         If _connected Or _client Then Return False
         _server = True
@@ -53,6 +59,9 @@ Public Class TCPCommunication
         End If
     End Sub
 
+    ' -----------------------------------------------------------------------------
+    ' Private
+    ' -----------------------------------------------------------------------------
     ' Stellt eine Verbindung zu einem TCP Server her
     Private Async Sub _connect()
         If _connecting Then Return
