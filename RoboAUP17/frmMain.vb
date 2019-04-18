@@ -7,7 +7,6 @@ Public Class frmMain
     'Test
     Friend dictTest As New Dictionary(Of String, Double)
     Friend settingsTest As New DHParameter
-    Friend tcpCom As New TCPCommunication
 
     'Robotersteuerung
     Private WithEvents _aclProgram As New ACLProgram
@@ -106,10 +105,6 @@ Public Class frmMain
 
 #Region "Private"
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        'TCP Test
-        tcpCom.Listen(5000)
-
-
         'Prüfen ob Konfigdatei geladen wurde
         If Not _roboControl.Pref.ConfigFileLoaded Then
             Application.Exit()
