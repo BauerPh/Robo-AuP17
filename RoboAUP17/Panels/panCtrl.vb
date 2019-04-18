@@ -10,18 +10,16 @@
     Private _tcpMode As Boolean = False
     Private _moveModeDirect As Boolean = False
     Private _posReceived As Boolean = False
-    Private _servoAngleOld() As Double = {-1.0, -1.0, -1.0}
     Private _doMoveAfterServoMove As Boolean = False
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
     Private Sub PanCtrl_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        cbJointOrTCP.SelectedIndex = 0
         cbJogMode.SelectedIndex = 0
         cbMoveMode.SelectedIndex = 0
 
-        _setMinMaxValues()
+        _refreshJointTcpMode()
         _hideShowServo()
 
         AddHandler frmMain.RoboControl.RoboPositionChanged, AddressOf _eNewPos
@@ -99,6 +97,21 @@
             _doMove()
         End If
     End Sub
+    Private Sub tbServ1_MouseUp(sender As Object, e As MouseEventArgs) Handles tbServ1.MouseUp
+        If _moveModeDirect Then
+            _doServo(1, numServ1.Value)
+        End If
+    End Sub
+    Private Sub tbServ2_MouseUp(sender As Object, e As MouseEventArgs) Handles tbServ2.MouseUp
+        If _moveModeDirect Then
+            _doServo(2, numServ2.Value)
+        End If
+    End Sub
+    Private Sub tbServ3_MouseUp(sender As Object, e As MouseEventArgs) Handles tbServ3.MouseUp
+        If _moveModeDirect Then
+            _doServo(3, numServ3.Value)
+        End If
+    End Sub
     Private Sub btnServ1Inc_Click(sender As Object, e As EventArgs) Handles btnServ1Inc.Click
         _doJogServo(1, numServ1, numJogInterval1.Value)
     End Sub
@@ -132,6 +145,9 @@
             tbCtrl4.BackColor = Color.FromKnownColor(KnownColor.ControlLightLight)
             tbCtrl5.BackColor = Color.FromKnownColor(KnownColor.ControlLightLight)
             tbCtrl6.BackColor = Color.FromKnownColor(KnownColor.ControlLightLight)
+            tbServ1.BackColor = Color.FromKnownColor(KnownColor.ControlLightLight)
+            tbServ2.BackColor = Color.FromKnownColor(KnownColor.ControlLightLight)
+            tbServ3.BackColor = Color.FromKnownColor(KnownColor.ControlLightLight)
         Else
             ' direkt
             _moveModeDirect = True
@@ -142,20 +158,91 @@
             tbCtrl4.BackColor = Color.Yellow
             tbCtrl5.BackColor = Color.Yellow
             tbCtrl6.BackColor = Color.Yellow
+            tbServ1.BackColor = Color.Yellow
+            tbServ2.BackColor = Color.Yellow
+            tbServ3.BackColor = Color.Yellow
         End If
         _enableDisableElements()
     End Sub
 
-    Private Sub cbJointOrTCP_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbJointOrTCP.SelectedIndexChanged
-        If cbJointOrTCP.SelectedIndex = 0 Then
-            ' Joint Mode
-            _tcpMode = False
-            btnMoveStart.Visible = Not _moveModeDirect
-        Else
-            ' TCP Mode
-            _tcpMode = True
-            btnMoveStart.Visible = True
-        End If
+    Private Sub btnJointMode_Click(sender As Object, e As EventArgs) Handles btnJointMode.Click
+        _tcpMode = False
+        btnMoveStart.Visible = Not _moveModeDirect
+        _refreshJointTcpMode()
+    End Sub
+    Private Sub btnTCPMode_Click(sender As Object, e As EventArgs) Handles btnTCPMode.Click
+        _tcpMode = True
+        btnMoveStart.Visible = True
+        _refreshJointTcpMode()
+    End Sub
+    Private Sub cbJogMode_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbJogMode.SelectedIndexChanged
+        numJogInterval1.DecimalPlaces = If(cbJogMode.SelectedIndex = 0, 1, 0)
+        numJogInterval1.Maximum = If(cbJogMode.SelectedIndex = 0, 100, 10000)
+    End Sub
+    ' Trackbars
+    Private Sub tbCtrl1_Scroll(sender As Object, e As EventArgs) Handles tbCtrl1.Scroll
+        numCtrl1.Value = CDec(tbCtrl1.Value) / CDec(100)
+    End Sub
+    Private Sub tbCtrl2_Scroll(sender As Object, e As EventArgs) Handles tbCtrl2.Scroll
+        numCtrl2.Value = CDec(tbCtrl2.Value) / CDec(100)
+    End Sub
+    Private Sub tbCtrl3_Scroll(sender As Object, e As EventArgs) Handles tbCtrl3.Scroll
+        numCtrl3.Value = CDec(tbCtrl3.Value) / CDec(100)
+    End Sub
+    Private Sub tbCtrl4_Scroll(sender As Object, e As EventArgs) Handles tbCtrl4.Scroll
+        numCtrl4.Value = CDec(tbCtrl4.Value) / CDec(100)
+    End Sub
+    Private Sub tbCtrl5_Scroll(sender As Object, e As EventArgs) Handles tbCtrl5.Scroll
+        numCtrl5.Value = CDec(tbCtrl5.Value) / CDec(100)
+    End Sub
+    Private Sub tbCtrl6_Scroll(sender As Object, e As EventArgs) Handles tbCtrl6.Scroll
+        numCtrl6.Value = CDec(tbCtrl6.Value) / CDec(100)
+    End Sub
+    Private Sub tbServ1_Scroll(sender As Object, e As EventArgs) Handles tbServ1.Scroll
+        numServ1.Value = CDec(tbServ1.Value) / CDec(100)
+    End Sub
+    Private Sub tbServ2_Scroll(sender As Object, e As EventArgs) Handles tbServ2.Scroll
+        numServ2.Value = CDec(tbServ2.Value) / CDec(100)
+    End Sub
+    Private Sub tbServ3_Scroll(sender As Object, e As EventArgs) Handles tbServ3.Scroll
+        numServ3.Value = CDec(tbServ3.Value) / CDec(100)
+    End Sub
+
+    ' Num UpDowns
+    Private Sub numCtrl1_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl1.ValueChanged
+        If Not _tcpMode Then tbCtrl1.Value = CInt(numCtrl1.Value * 100.0)
+    End Sub
+    Private Sub numCtrl2_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl2.ValueChanged
+        If Not _tcpMode Then tbCtrl2.Value = CInt(numCtrl2.Value * 100.0)
+    End Sub
+    Private Sub numCtrl3_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl3.ValueChanged
+        If Not _tcpMode Then tbCtrl3.Value = CInt(numCtrl3.Value * 100.0)
+    End Sub
+    Private Sub numCtrl4_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl4.ValueChanged
+        If Not _tcpMode Then tbCtrl4.Value = CInt(numCtrl4.Value * 100.0)
+    End Sub
+    Private Sub numCtrl5_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl5.ValueChanged
+        If Not _tcpMode Then tbCtrl5.Value = CInt(numCtrl5.Value * 100.0)
+    End Sub
+    Private Sub numCtrl6_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl6.ValueChanged
+        If Not _tcpMode Then tbCtrl6.Value = CInt(numCtrl6.Value * 100.0)
+    End Sub
+    Private Sub numServ1_ValueChanged(sender As Object, e As EventArgs) Handles numServ1.ValueChanged
+        tbServ1.Value = CInt(numServ1.Value * 100.0)
+    End Sub
+    Private Sub numServ2_ValueChanged(sender As Object, e As EventArgs) Handles numServ2.ValueChanged
+        tbServ2.Value = CInt(numServ2.Value * 100.0)
+    End Sub
+    Private Sub numServ3_ValueChanged(sender As Object, e As EventArgs) Handles numServ3.ValueChanged
+        tbServ3.Value = CInt(numServ3.Value * 100.0)
+    End Sub
+
+    ' -----------------------------------------------------------------------------
+    ' Private
+    ' -----------------------------------------------------------------------------
+    Private Sub _refreshJointTcpMode()
+        btnJointMode.Visible = _tcpMode
+        btnTCPMode.Visible = Not _tcpMode
 
         lblCtrl1.Text = If(_tcpMode, "X:", "J1:")
         lblCtrl2.Text = If(_tcpMode, "Y:", "J2:")
@@ -196,79 +283,6 @@
         'Felder aktualisieren
         _enableDisableElements()
     End Sub
-    Private Sub cbJogMode_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbJogMode.SelectedIndexChanged
-        numJogInterval1.DecimalPlaces = If(cbJogMode.SelectedIndex = 0, 1, 0)
-    End Sub
-    ' Trackbars
-    Private Sub tbCtrl1_Scroll(sender As Object, e As EventArgs) Handles tbCtrl1.Scroll
-        numCtrl1.Value = CDec(tbCtrl1.Value) / CDec(100)
-    End Sub
-    Private Sub tbCtrl2_Scroll(sender As Object, e As EventArgs) Handles tbCtrl2.Scroll
-        numCtrl2.Value = CDec(tbCtrl2.Value) / CDec(100)
-    End Sub
-    Private Sub tbCtrl3_Scroll(sender As Object, e As EventArgs) Handles tbCtrl3.Scroll
-        numCtrl3.Value = CDec(tbCtrl3.Value) / CDec(100)
-    End Sub
-    Private Sub tbCtrl4_Scroll(sender As Object, e As EventArgs) Handles tbCtrl4.Scroll
-        numCtrl4.Value = CDec(tbCtrl4.Value) / CDec(100)
-    End Sub
-    Private Sub tbCtrl5_Scroll(sender As Object, e As EventArgs) Handles tbCtrl5.Scroll
-        numCtrl5.Value = CDec(tbCtrl5.Value) / CDec(100)
-    End Sub
-    Private Sub tbCtrl6_Scroll(sender As Object, e As EventArgs) Handles tbCtrl6.Scroll
-        numCtrl6.Value = CDec(tbCtrl6.Value) / CDec(100)
-    End Sub
-    Private Sub tbServ1_Scroll(sender As Object, e As EventArgs) Handles tbServ1.Scroll
-        numServ1.Value = CDec(tbServ1.Value) / CDec(100)
-        If _moveModeDirect Then
-            _doServo(1, numServ1.Value)
-        End If
-    End Sub
-    Private Sub tbServ2_Scroll(sender As Object, e As EventArgs) Handles tbServ2.Scroll
-        numServ2.Value = CDec(tbServ2.Value) / CDec(100)
-        If _moveModeDirect Then
-            _doServo(2, numServ2.Value)
-        End If
-    End Sub
-    Private Sub tbServ3_Scroll(sender As Object, e As EventArgs) Handles tbServ3.Scroll
-        numServ3.Value = CDec(tbServ3.Value) / CDec(100)
-        If _moveModeDirect Then
-            _doServo(3, numServ3.Value)
-        End If
-    End Sub
-
-    ' Num UpDowns
-    Private Sub numCtrl1_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl1.ValueChanged
-        If Not _tcpMode Then tbCtrl1.Value = CInt(numCtrl1.Value * 100.0)
-    End Sub
-    Private Sub numCtrl2_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl2.ValueChanged
-        If Not _tcpMode Then tbCtrl2.Value = CInt(numCtrl2.Value * 100.0)
-    End Sub
-    Private Sub numCtrl3_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl3.ValueChanged
-        If Not _tcpMode Then tbCtrl3.Value = CInt(numCtrl3.Value * 100.0)
-    End Sub
-    Private Sub numCtrl4_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl4.ValueChanged
-        If Not _tcpMode Then tbCtrl4.Value = CInt(numCtrl4.Value * 100.0)
-    End Sub
-    Private Sub numCtrl5_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl5.ValueChanged
-        If Not _tcpMode Then tbCtrl5.Value = CInt(numCtrl5.Value * 100.0)
-    End Sub
-    Private Sub numCtrl6_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl6.ValueChanged
-        If Not _tcpMode Then tbCtrl6.Value = CInt(numCtrl6.Value * 100.0)
-    End Sub
-    Private Sub numServ1_ValueChanged(sender As Object, e As EventArgs) Handles numServ1.ValueChanged
-        tbServ1.Value = CInt(numServ1.Value * 100.0)
-    End Sub
-    Private Sub numServ2_ValueChanged(sender As Object, e As EventArgs) Handles numServ2.ValueChanged
-        tbServ2.Value = CInt(numServ2.Value * 100.0)
-    End Sub
-    Private Sub numServ3_ValueChanged(sender As Object, e As EventArgs) Handles numServ3.ValueChanged
-        tbServ3.Value = CInt(numServ3.Value * 100.0)
-    End Sub
-
-    ' -----------------------------------------------------------------------------
-    ' Private
-    ' -----------------------------------------------------------------------------
     Private Sub _setMinMaxValues()
         If _tcpMode Then
             numCtrl1.Minimum = -1000
@@ -497,11 +511,8 @@
     End Sub
 
     Private Function _doServo(nr As Int32, prc As Double) As Boolean
-        If frmMain.RoboControl.Pref.ServoParameter(nr - 1).Available And _servoAngleOld(0) <> prc Then
-            If frmMain.RoboControl.MoveServoPrc(nr, prc) Then
-                _servoAngleOld(nr - 1) = prc
-                Return True
-            End If
+        If frmMain.RoboControl.Pref.ServoParameter(nr - 1).Available And frmMain.RoboControl.PosServo(nr - 1) <> prc Then
+            If frmMain.RoboControl.MoveServoPrc(nr, prc) Then Return True
         End If
         Return False
     End Function
@@ -559,4 +570,5 @@
         End If
         _enableDisableElements()
     End Sub
+
 End Class

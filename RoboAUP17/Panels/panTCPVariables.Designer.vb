@@ -121,8 +121,8 @@ Partial Class panTCPVariables
         'lblConnectStatusTitle
         '
         Me.lblConnectStatusTitle.Name = "lblConnectStatusTitle"
-        Me.lblConnectStatusTitle.Size = New System.Drawing.Size(41, 22)
-        Me.lblConnectStatusTitle.Text = "Client:"
+        Me.lblConnectStatusTitle.Size = New System.Drawing.Size(67, 22)
+        Me.lblConnectStatusTitle.Text = "TCP-Client:"
         '
         'lblConnectStatus
         '
@@ -140,7 +140,7 @@ Partial Class panTCPVariables
         Me.Controls.Add(Me.ToolStripContainer)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panTCPVariables"
-        Me.Text = "Variablen"
+        Me.Text = "TCP-Variablen"
         CType(Me.dataGridView, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ToolStripContainer.ContentPanel.ResumeLayout(False)
         Me.ToolStripContainer.TopToolStripPanel.ResumeLayout(False)

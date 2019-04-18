@@ -30,7 +30,7 @@
 
     ' Variables
     Friend Function AddVariable(name As String) As Boolean
-        If _variables.ContainsKey(name) Then Return False
+        If _variables.ContainsKey(name) Or name.Length <= 0 Then Return False
         _variables.Add(name, 0)
         Return True
     End Function

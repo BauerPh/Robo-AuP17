@@ -4,6 +4,7 @@ Public Class panTCPVariables
     ' Init Panel
     ' -----------------------------------------------------------------------------
     Private Sub panVariables_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect
 
         AddHandler frmMain.ACLProgram.TcpVariables.Connected, AddressOf _eConnected
         AddHandler frmMain.ACLProgram.TcpVariables.Disconnected, AddressOf _eDisconnected
@@ -20,8 +21,10 @@ Public Class panTCPVariables
     End Sub
 
     Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
-        frmMain.ACLProgram.TcpVariables.RemoveVariable(tbName.Text)
-        _refreshDataGridView()
+        If dataGridView.SelectedRows.Count > 0 Then
+            frmMain.ACLProgram.TcpVariables.RemoveVariable(CStr(dataGridView.SelectedRows.Item(0).Cells(0).Value))
+            _refreshDataGridView()
+        End If
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -32,7 +35,6 @@ Public Class panTCPVariables
             Invoke(Sub() _refreshDataGridView())
             Return
         End If
-
         dataGridView.DataSource = frmMain.ACLProgram.TcpVariables.GetGridViewDataSource
     End Sub
 

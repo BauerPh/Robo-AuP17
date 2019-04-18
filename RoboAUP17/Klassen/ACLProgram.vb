@@ -141,7 +141,7 @@ Friend Class ACLProgram
 
     Friend Sub RenameTeachPoint(index As Int32, name As String, nr As Integer)
         If _teachPoints.Count > index And index >= 0 Then
-            If _teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = nr) >= 0 Then
+            If _teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = nr) >= 0 And nr <> _teachPoints(index).nr Then
                 MessageBox.Show($"Nummer existiert bereits.", "Umbenennen fehlgeschlagen", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return
             End If
