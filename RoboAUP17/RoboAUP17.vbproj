@@ -138,6 +138,7 @@
     <Compile Include="Calculations.vb" />
     <Compile Include="globalVars.vb" />
     <Compile Include="Klassen\ACLProgram.vb" />
+    <Compile Include="Klassen\TCPCommunication.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
