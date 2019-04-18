@@ -2,8 +2,7 @@
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' TCP-Server Einstellungen hinzufügen
-    ' Toolframe Einstellungen hinzufügen
+    ' fertig?
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
@@ -88,7 +87,7 @@
                     frmMain.RoboControl.Pref.SetWorkframe(CType(propGridRoboPar.SelectedObject, CartCoords))
                 End If
             Case selectedSetting.TCPServer
-                'TODO
+                frmMain.RoboControl.Pref.SetTCPServerParameter(CType(propGridRoboPar.SelectedObject, TCPServerParameter))
         End Select
     End Sub
     Private Sub btnJ1_Click(sender As Object, e As EventArgs) Handles btnJ1.Click
@@ -215,7 +214,7 @@
                     propGridRoboPar.SelectedObject = frmMain.RoboControl.Pref.Workframe
                 End If
             Case selectedSetting.TCPServer
-                propGridRoboPar.SelectedObject = Nothing
+                propGridRoboPar.SelectedObject = frmMain.RoboControl.Pref.TCPServerParameter
         End Select
     End Sub
     Private Sub _refreshButtons()

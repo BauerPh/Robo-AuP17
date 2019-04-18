@@ -4,10 +4,6 @@ Imports WeifenLuo.WinFormsUI.Docking
 
 Public Class frmMain
 #Region "Definitions"
-    'Test
-    Friend dictTest As New Dictionary(Of String, Double)
-    Friend settingsTest As New DHParameter
-
     'Robotersteuerung
     Private WithEvents _aclProgram As New ACLProgram
     Private WithEvents _roboControl As New RobotControl

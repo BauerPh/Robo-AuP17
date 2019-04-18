@@ -18,6 +18,7 @@ Friend Class ACLProgram
 
     Private _teachPoints As New List(Of TeachPoint)
     Private _listBox As ListBox
+    Friend ReadOnly Property TcpVariables As New TCPVariables
 
     Private _progThread As Thread
     Private _compiledTeachPoints As New List(Of TeachPoint)
@@ -29,7 +30,7 @@ Friend Class ACLProgram
 
     Private _filename As String = Nothing
     Private _unsavedChanges As Boolean = False
-    Public Property UnsavedChanges As Boolean
+    Friend Property UnsavedChanges As Boolean
         Get
             Return _unsavedChanges
         End Get
@@ -54,6 +55,10 @@ Friend Class ACLProgram
 #Region "Allgemein"
     Friend Sub SetSettingsObject(ByRef settings As Settings)
         _settings = settings
+    End Sub
+
+    Friend Sub New()
+
     End Sub
 
 #End Region

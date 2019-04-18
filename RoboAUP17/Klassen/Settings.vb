@@ -16,6 +16,7 @@
     Private _denavitHartenbergParameter(5) As DHParameter
     Private _toolframe As CartCoords
     Private _workframe As CartCoords
+    Private _tcpServerParameter As TCPServerParameter
     Private _unsavedChanges As Boolean = False
 
     ' Properties
@@ -44,6 +45,11 @@
             Return _workframe
         End Get
     End Property
+    Friend ReadOnly Property TCPServerParameter As TCPServerParameter
+        Get
+            Return _tcpServerParameter
+        End Get
+    End Property
     Public ReadOnly Property ConfigFileLoaded As Boolean
         Get
             Return _configFileLoaded
@@ -63,6 +69,7 @@
         DenavitHartenbergParameter
         Toolframe
         Workframe
+        TCPServerParameter
     End Enum
     Friend Event ParameterChanged(ByVal changedParameter As ParameterChangedParameter)
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
@@ -115,6 +122,11 @@
         _workframe = workframe
         _unsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.Workframe)
+    End Sub
+    Friend Sub SetTCPServerParameter(tcpServerParameter As TCPServerParameter)
+        _tcpServerParameter = tcpServerParameter
+        _unsavedChanges = True
+        RaiseEvent ParameterChanged(ParameterChangedParameter.TCPServerParameter)
     End Sub
     Friend Function LoadDefaulSettings() As Boolean
         If System.IO.File.Exists(cDefaultConfigFile) Then
@@ -268,6 +280,11 @@
             .WriteAttributeString("pitch", _workframe.Pitch.ToString)
             .WriteAttributeString("roll", _workframe.Roll.ToString)
             .WriteEndElement()
+            'TCP
+            .WriteStartElement("tcpServerParameter")
+            .WriteAttributeString("listen", _tcpServerParameter.Listen.ToString)
+            .WriteAttributeString("port", _tcpServerParameter.Port.ToString)
+            .WriteEndElement()
             'Settings
             .WriteEndElement()
             .Close()
@@ -303,6 +320,8 @@
                         setting = 3
                     ElseIf e = "workframe" Then
                         setting = 4
+                    ElseIf e = "tcpServerParameter" Then
+                        setting = 5
                     End If
                     If .AttributeCount > 0 Then 'sind überhaupt Attribute vorhanden?
                         While .MoveToNextAttribute 'Attribute durchlaufen
@@ -409,6 +428,14 @@
                                         _workframe.Pitch = CDbl(.Value)
                                     Case "roll"
                                         _workframe.Roll = CDbl(.Value)
+                                End Select
+                            ElseIf setting = 5 Then
+                                '********** TCP Server Parameter **********
+                                Select Case .Name
+                                    Case "listen"
+                                        _tcpServerParameter.Listen = CBool(.Value)
+                                    Case "port"
+                                        _tcpServerParameter.Port = CInt(.Value)
                                 End Select
                             End If
                         End While

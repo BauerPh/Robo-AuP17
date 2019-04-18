@@ -217,6 +217,15 @@ Module dataStructs
             DisplayName("Maximaler Winkel")>
         Public Property MaxAngle As Double
     End Structure
+
+    Friend Structure TCPServerParameter
+        <Category("Allgemein"),
+            DisplayName("Aktiv")>
+        Public Property Listen As Boolean
+        <Category("Allgemein"),
+            DisplayName("Port")>
+        Public Property Port As Integer
+    End Structure
 #End Region
 
 #Region "ACL"
