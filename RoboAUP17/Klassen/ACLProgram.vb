@@ -7,7 +7,7 @@ Friend Class ACLProgram
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' ACL-Programm (wip...)
+    ' ACL-Programm (wip...) / FOR und Teachpunktfunktionen fehlen noch
     ' Speichern und Laden (wip...) / TCP-Variablen fehlen noch!
 
     ' -----------------------------------------------------------------------------

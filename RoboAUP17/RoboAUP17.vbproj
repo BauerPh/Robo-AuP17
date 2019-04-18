@@ -135,8 +135,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
-    <Compile Include="Calculations.vb" />
-    <Compile Include="globalVars.vb" />
+    <Compile Include="Module\Calculations.vb" />
+    <Compile Include="Module\globalVars.vb" />
     <Compile Include="Klassen\ACLProgram.vb" />
     <Compile Include="Klassen\TCPCommunication.vb" />
     <Compile Include="Klassen\TCPVariables.vb" />
@@ -164,7 +164,7 @@
     <Compile Include="Klassen\MovementCalculations.vb" />
     <Compile Include="Klassen\RobotControl.vb" />
     <Compile Include="Klassen\SerialCommunication.vb" />
-    <Compile Include="dataStructs.vb" />
+    <Compile Include="Module\dataStructs.vb" />
     <Compile Include="Klassen\Logger.vb" />
     <Compile Include="Klassen\Matrizen.vb" />
     <Compile Include="frmMain.vb">
