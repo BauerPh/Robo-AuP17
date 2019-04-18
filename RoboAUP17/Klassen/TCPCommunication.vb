@@ -17,17 +17,22 @@ Public Class TCPCommunication
     Friend Event Disconnected()
     Friend Event MessageReceived(msg As String)
 
-    Friend Sub Listen(port As Integer)
-        If _tcpListener Is Nothing And Not _connected And Not _client Then
-            _server = True
-            _tcpListener = New TcpListener(Net.IPAddress.Any, port)
-            _waitForConnection()
-        End If
-    End Sub
-    Friend Sub Connect(ip As Net.IPAddress, port As Integer)
+    Friend Function Listen(port As Integer) As Boolean
+        If _connected Or _client Then Return False
+
+        _server = True
+        _tcpListener = New TcpListener(Net.IPAddress.Any, port)
+        _waitForConnection()
+
+        Return True
+    End Function
+    Friend Function Connect(ip As Net.IPAddress, port As Integer) As Boolean
+        If _connected Or _server Then Return False
         _client = True
-    End Sub
-    Friend Sub StopListen()
+
+        Return True
+    End Function
+    Friend Sub Terminate()
         _terminate()
     End Sub
     Friend Sub Send(msg As String)
@@ -35,6 +40,8 @@ Public Class TCPCommunication
             _networkStreamW.WriteLine(msg)
         End If
     End Sub
+
+
 
 
 
@@ -51,11 +58,13 @@ Public Class TCPCommunication
         _server = False
         _connected = False
     End Sub
+
     ' Startet den Listener und wartet auf eine Verbindung
     Private Sub _waitForConnection()
         _tcpListener.Start()
         _tcpListener.BeginAcceptTcpClient(AddressOf _connectedCallback, _tcpListener)
     End Sub
+
     ' Stopt den Listener (da Client verbunden) und erstellt die Datenstreams und den Handlethread
     Private Sub _connectedCallback(result As IAsyncResult)
         _tcpClient = _tcpListener.EndAcceptTcpClient(result)
@@ -71,6 +80,7 @@ Public Class TCPCommunication
         _connected = True
         RaiseEvent ListenerClientConnected()
     End Sub
+
     ' Wartet auf eingehende Daten
     Private Async Sub _handle()
         While True
