@@ -4,12 +4,14 @@ Public Class panCodeEditor
     ' TODO
     ' -----------------------------------------------------------------------------
     ' Syntax Highlighting
+    ' Rückgängig / Wiederholen Funktion
+
     Private _lastHighlightedLineIndex As Int32 = 0
+    Private _maxLineNumberCharLength As Int32
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
-    Private maxLineNumberCharLength As Int32
     Private Sub panCodeEditor_Load(sender As Object, e As EventArgs) Handles Me.Load
         sciCodeEditor.Margins(0).Width = sciCodeEditor.TextWidth(Style.LineNumber, "99")
         sciCodeEditor.Styles(Style.Default).Font = "Courier New"
@@ -34,11 +36,11 @@ Public Class panCodeEditor
     Private Sub sciCodeEditor_TextChanged(sender As Object, e As EventArgs) Handles sciCodeEditor.TextChanged
         ' Calculate Line Number Width
         Dim maxLineNumberCharLength = sciCodeEditor.Lines.Count.ToString().Length
-        If (maxLineNumberCharLength = Me.maxLineNumberCharLength) Then
+        If (maxLineNumberCharLength = Me._maxLineNumberCharLength) Then
             Return
         End If
         sciCodeEditor.Margins(0).Width = sciCodeEditor.TextWidth(ScintillaNET.Style.LineNumber, New String("9"c, maxLineNumberCharLength + 1))
-        Me.maxLineNumberCharLength = maxLineNumberCharLength
+        Me._maxLineNumberCharLength = maxLineNumberCharLength
 
         ' Remove error marker
         _removeMarker()

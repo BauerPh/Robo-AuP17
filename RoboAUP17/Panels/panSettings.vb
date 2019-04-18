@@ -1,10 +1,5 @@
 ﻿Friend Class panSettings
     ' -----------------------------------------------------------------------------
-    ' TODO
-    ' -----------------------------------------------------------------------------
-    ' fertig?
-
-    ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
     Private _selectedSetting As selectedSetting = selectedSetting.RoboPar
@@ -14,6 +9,7 @@
         _setPropView(PropView.J1)
         _refreshButtons()
     End Sub
+
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
@@ -23,7 +19,7 @@
         Frames
         TCPServer
     End Enum
-    Friend Sub SetSelecteSetting(setting As selectedSetting)
+    Friend Sub SetSelectedSetting(setting As selectedSetting)
         _selectedSetting = setting
 
         Select Case _selectedSetting
@@ -51,23 +47,24 @@
 
         _refreshButtons()
     End Sub
+
     ' -----------------------------------------------------------------------------
     ' Form Control
     ' -----------------------------------------------------------------------------
     Private Sub btnDenHartPar_Click(sender As Object, e As EventArgs) Handles btnDenHartPar.Click
-        SetSelecteSetting(selectedSetting.DenHartPar)
+        SetSelectedSetting(selectedSetting.DenHartPar)
     End Sub
 
     Private Sub btnFrames_Click(sender As Object, e As EventArgs) Handles btnFrames.Click
-        SetSelecteSetting(selectedSetting.Frames)
+        SetSelectedSetting(selectedSetting.Frames)
     End Sub
 
     Private Sub btnRoboPar_Click(sender As Object, e As EventArgs) Handles btnRoboPar.Click
-        SetSelecteSetting(selectedSetting.RoboPar)
+        SetSelectedSetting(selectedSetting.RoboPar)
     End Sub
 
     Private Sub btnTCPServer_Click(sender As Object, e As EventArgs) Handles btnTCPServer.Click
-        SetSelecteSetting(selectedSetting.TCPServer)
+        SetSelectedSetting(selectedSetting.TCPServer)
     End Sub
     Private Sub propGridRoboPar_PropertyValueChanged(sender As Object, e As EventArgs) Handles propGridRoboPar.PropertyValueChanged
         'Objekte aktualisieren
@@ -142,7 +139,7 @@
     End Sub
 
     ' -----------------------------------------------------------------------------
-    ' Help Functions
+    ' Private
     ' -----------------------------------------------------------------------------
     Private Enum PropView
         J1

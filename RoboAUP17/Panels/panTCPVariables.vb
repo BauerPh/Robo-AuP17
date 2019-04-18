@@ -1,11 +1,6 @@
 ﻿Option Strict On
 Public Class panTCPVariables
     ' -----------------------------------------------------------------------------
-    ' TODO
-    ' -----------------------------------------------------------------------------
-
-
-    ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
     Private Sub panVariables_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -16,6 +11,9 @@ Public Class panTCPVariables
         AddHandler frmMain.RoboControl.RoboParameterChanged, AddressOf _eRoboParameterChanged
     End Sub
 
+    ' -----------------------------------------------------------------------------
+    ' Form Control
+    ' -----------------------------------------------------------------------------
     Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
         frmMain.ACLProgram.TcpVariables.AddVariable(tbName.Text)
         _refreshDataGridView()
@@ -27,9 +25,6 @@ Public Class panTCPVariables
     End Sub
 
     ' -----------------------------------------------------------------------------
-    ' Form Control
-    ' -----------------------------------------------------------------------------
-    ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
     Private Sub _refreshDataGridView()
@@ -40,6 +35,7 @@ Public Class panTCPVariables
 
         dataGridView.DataSource = frmMain.ACLProgram.TcpVariables.GetGridViewDataSource
     End Sub
+
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
@@ -52,7 +48,6 @@ Public Class panTCPVariables
         lblConnectStatus.Text = "Verbunden"
         lblConnectStatus.ForeColor = Color.Green
     End Sub
-
     Private Sub _eDisconnected()
         If InvokeRequired Then
             Invoke(Sub() _eDisconnected())
@@ -62,11 +57,9 @@ Public Class panTCPVariables
         lblConnectStatus.Text = "nicht verbunden"
         lblConnectStatus.ForeColor = Color.Red
     End Sub
-
     Private Sub _eVariableChanged(name As String, value As Integer)
         _refreshDataGridView()
     End Sub
-
     Private Sub _eRoboParameterChanged(parameterChanged As Settings.ParameterChangedParameter)
         Dim all As Boolean = parameterChanged = Settings.ParameterChangedParameter.All
         If parameterChanged = Settings.ParameterChangedParameter.TCPServerParameter Or all Then

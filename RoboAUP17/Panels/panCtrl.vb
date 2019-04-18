@@ -33,6 +33,7 @@
         AddHandler frmMain.RoboControl.RoboRefStateChanged, AddressOf _eRefresh
         AddHandler frmMain.ACLProgram.ProgramFinished, AddressOf _eRefresh
     End Sub
+
     ' -----------------------------------------------------------------------------
     ' Robot Control
     ' -----------------------------------------------------------------------------
@@ -266,7 +267,7 @@
     End Sub
 
     ' -----------------------------------------------------------------------------
-    ' Helper Functions
+    ' Private
     ' -----------------------------------------------------------------------------
     Private Sub _setMinMaxValues()
         If _tcpMode Then

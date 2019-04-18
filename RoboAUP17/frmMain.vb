@@ -64,42 +64,9 @@ Public Class frmMain
 #End Region
 
     ' -----------------------------------------------------------------------------
-    ' Private
+    ' Form Control
     ' -----------------------------------------------------------------------------
-#Region "Robo Steuerung"
-    Private Sub tsBtnEStop_Click(sender As Object, e As EventArgs) Handles tsBtnEStop.Click
-        _roboControl.FastStop()
-        _aclProgram.StopProgram()
-    End Sub
-    Private Sub RoboAUP17_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
-        If e.KeyCode = Keys.Space Then
-            _roboControl.FastStop()
-            _aclProgram.StopProgram()
-        End If
-    End Sub
-#End Region
-
-#Region "ACL Programm"
-    ' ACL Program
-    Private Sub tsBtnProgCheck_Click(sender As Object, e As EventArgs) Handles tsBtnProgCheck.Click
-        _aclProgram.CompileProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
-    End Sub
-    Private Sub tsBtnProgRun_Click(sender As Object, e As EventArgs) Handles tsBtnProgRun.Click
-        _aclProgram.RunProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
-    End Sub
-    Private Sub tsBtnProgStop_Click(sender As Object, e As EventArgs) Handles tsBtnProgStop.Click
-        tsBtnProgStop.Enabled = False
-        _aclProgram.StopProgram()
-    End Sub
-    Private Sub tsBtnSave_Click(sender As Object, e As EventArgs) Handles tsBtnSave.Click
-        _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text)
-    End Sub
-    Private Sub tsBtnOpen_Click(sender As Object, e As EventArgs) Handles tsBtnOpen.Click
-        _aclProgram.Load(_dckPanCodeEditor.sciCodeEditor.Text)
-    End Sub
-#End Region
-
-#Region "Private"
+#Region "Form"
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'Prüfen ob Konfigdatei geladen wurde
         If Not _roboControl.Pref.ConfigFileLoaded Then
@@ -118,11 +85,11 @@ Public Class frmMain
         KeyPreview = True
 
         'Set Log Lvl
-        SetLogLevel(My.Settings.LogLvl)
+        _setLogLevel(My.Settings.LogLvl)
 
         'Configure Dock Panel
         Me.SuspendLayout()
-        ConfigureDockPanel()
+        _configureDockPanel()
         Me.ResumeLayout()
 
         'Pass Settings Object to ACLProgram Object
@@ -160,6 +127,42 @@ Public Class frmMain
             End If
         End If
     End Sub
+#End Region
+
+#Region "Robo Steuerung"
+    Private Sub tsBtnEStop_Click(sender As Object, e As EventArgs) Handles tsBtnEStop.Click
+        _roboControl.FastStop()
+        _aclProgram.StopProgram()
+    End Sub
+    Private Sub RoboAUP17_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.KeyCode = Keys.Space Then
+            _roboControl.FastStop()
+            _aclProgram.StopProgram()
+        End If
+    End Sub
+#End Region
+
+#Region "ACL Programm"
+    ' ACL Program
+    Private Sub tsBtnProgCheck_Click(sender As Object, e As EventArgs) Handles tsBtnProgCheck.Click
+        _aclProgram.CompileProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
+    End Sub
+    Private Sub tsBtnProgRun_Click(sender As Object, e As EventArgs) Handles tsBtnProgRun.Click
+        _aclProgram.RunProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
+    End Sub
+    Private Sub tsBtnProgStop_Click(sender As Object, e As EventArgs) Handles tsBtnProgStop.Click
+        tsBtnProgStop.Enabled = False
+        _aclProgram.StopProgram()
+    End Sub
+    Private Sub tsBtnSave_Click(sender As Object, e As EventArgs) Handles tsBtnSave.Click
+        _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text)
+    End Sub
+    Private Sub tsBtnOpen_Click(sender As Object, e As EventArgs) Handles tsBtnOpen.Click
+        _aclProgram.Load(_dckPanCodeEditor.sciCodeEditor.Text)
+    End Sub
+#End Region
+
+#Region "Serial Connection"
     Private Sub tsBtnConnect_Click(sender As Object, e As EventArgs) Handles tsBtnConnect.Click
         _roboControl.SerialConnect(tsCbComPort.Text)
     End Sub
@@ -218,21 +221,21 @@ Public Class frmMain
 #Region "MenuStrip Einstellungen"
     Private Sub msRoboParameter_Click(sender As Object, e As EventArgs) Handles msRoboParameter.Click
         _dckPanSettings.Show()
-        _dckPanSettings.SetSelecteSetting(panSettings.selectedSetting.RoboPar)
+        _dckPanSettings.SetSelectedSetting(panSettings.selectedSetting.RoboPar)
     End Sub
 
     Private Sub msTCPServer_Click(sender As Object, e As EventArgs) Handles msTCPServer.Click
         _dckPanSettings.Show()
-        _dckPanSettings.SetSelecteSetting(panSettings.selectedSetting.TCPServer)
+        _dckPanSettings.SetSelectedSetting(panSettings.selectedSetting.TCPServer)
     End Sub
 
     Private Sub msDenavitHartPar_Click(sender As Object, e As EventArgs) Handles msDenavitHartPar.Click
         _dckPanSettings.Show()
-        _dckPanSettings.SetSelecteSetting(panSettings.selectedSetting.DenHartPar)
+        _dckPanSettings.SetSelectedSetting(panSettings.selectedSetting.DenHartPar)
     End Sub
     Private Sub msFrames_Click(sender As Object, e As EventArgs) Handles msFrames.Click
         _dckPanSettings.Show()
-        _dckPanSettings.SetSelecteSetting(panSettings.selectedSetting.Frames)
+        _dckPanSettings.SetSelectedSetting(panSettings.selectedSetting.Frames)
     End Sub
 #End Region
 
@@ -306,10 +309,14 @@ Public Class frmMain
     End Sub
 
     Private Sub SetLogLevel(lvl As Logger.LogLevel)
-        SetLogLevel(lvl.ToInteger())
+        _setLogLevel(lvl.ToInteger())
     End Sub
+#End Region
 
-    Private Sub SetLogLevel(lvl As Integer)
+    ' -----------------------------------------------------------------------------
+    ' Private
+    ' -----------------------------------------------------------------------------
+    Private Sub _setLogLevel(lvl As Integer)
         _logger.SetLogLvl(lvl)
         msSetLogLvlDebug.Image = Nothing
         msSetLogLvlInfo.Image = Nothing
@@ -328,12 +335,7 @@ Public Class frmMain
 
         My.Settings.LogLvl = lvl
     End Sub
-#End Region
-
-    ' -----------------------------------------------------------------------------
-    ' Helper Functions
-    ' -----------------------------------------------------------------------------
-    Private Sub ConfigureDockPanel()
+    Private Sub _configureDockPanel()
         ' Create & Configure DockPanel
         With dckPanel
             .Theme = New VS2015LightTheme
@@ -366,7 +368,7 @@ Public Class frmMain
 
         'Check for saved View Settings
         If (File.Exists(_viewSettingsFilename)) Then
-            dckPanel.LoadFromXml(_viewSettingsFilename, AddressOf GetContent)
+            dckPanel.LoadFromXml(_viewSettingsFilename, AddressOf _getContent)
             _logger.Log($"[MAIN] ""{_viewSettingsFilename}"" geladen", Logger.LogLevel.DEBUG)
         Else
             ' Add Panels
@@ -394,7 +396,7 @@ Public Class frmMain
         _dckPanLog.Activate()
     End Sub
 
-    Private Function GetContent(persist As String) As IDockContent
+    Private Function _getContent(persist As String) As IDockContent
         If persist.EndsWith("CodeEditor") Then
             Return _dckPanCodeEditor
         ElseIf persist.EndsWith("Ctrl") Then
@@ -537,7 +539,6 @@ Public Class frmMain
         tsLblTcpServerStatus.Text = "verbunden"
         tsLblTcpServerStatus.ForeColor = Color.Green
     End Sub
-
     Private Sub _eTCPDisconnected()
         If InvokeRequired Then
             Invoke(Sub() _eTCPDisconnected())

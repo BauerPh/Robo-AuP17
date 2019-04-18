@@ -1,10 +1,5 @@
 ﻿Friend Class panReference
     ' -----------------------------------------------------------------------------
-    ' TODO
-    ' -----------------------------------------------------------------------------
-    ' fertig?
-
-    ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
     Private Sub panReference_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -45,8 +40,9 @@
     Private Sub btnRefJ6_Click(sender As Object, e As EventArgs) Handles btnRefJ6.Click
         frmMain.RoboControl.DoRef(6)
     End Sub
+
     ' -----------------------------------------------------------------------------
-    ' Helper Functions
+    ' Private
     ' -----------------------------------------------------------------------------
     Private Sub _enableDisableElements()
         If InvokeRequired Then
@@ -64,6 +60,7 @@
         btnRefJ6.Enabled = tmpEnabled
         btnRefStart.Enabled = tmpEnabled And (cbSelJ1.Checked Or cbSelJ2.Checked Or cbSelJ3.Checked Or cbSelJ4.Checked Or cbSelJ5.Checked Or cbSelJ6.Checked)
     End Sub
+
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
