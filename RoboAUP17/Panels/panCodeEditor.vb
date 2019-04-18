@@ -47,9 +47,6 @@ Public Class panCodeEditor
     End Sub
 
     Private Sub sciCodeEditor_TextEdited(sender As Object, e As EventArgs) Handles sciCodeEditor.CharAdded, sciCodeEditor.Delete
-        ' Ungespeicherte Änderungen!
-        frmMain.ACLProgram.UnsavedChanges = True
-
         ' Remove error marker
         _removeMarker()
     End Sub

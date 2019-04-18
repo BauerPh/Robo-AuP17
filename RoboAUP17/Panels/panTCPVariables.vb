@@ -10,20 +10,25 @@ Public Class panTCPVariables
         AddHandler frmMain.ACLProgram.TcpVariables.Disconnected, AddressOf _eDisconnected
         AddHandler frmMain.ACLProgram.TcpVariables.VariableChanged, AddressOf _eVariableChanged
         AddHandler frmMain.RoboControl.RoboParameterChanged, AddressOf _eRoboParameterChanged
+        AddHandler frmMain.ACLProgram.ProgramUpdatedEvent, AddressOf _eNewFileLoaded
     End Sub
 
     ' -----------------------------------------------------------------------------
     ' Form Control
     ' -----------------------------------------------------------------------------
     Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
-        frmMain.ACLProgram.TcpVariables.AddVariable(tbName.Text)
-        _refreshDataGridView()
+        If frmMain.ACLProgram.TcpVariables.AddVariable(tbName.Text) Then
+            frmMain.ACLProgram.UnsavedChanges = True
+            _refreshDataGridView()
+        End If
     End Sub
 
     Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
         If dataGridView.SelectedRows.Count > 0 Then
-            frmMain.ACLProgram.TcpVariables.RemoveVariable(CStr(dataGridView.SelectedRows.Item(0).Cells(0).Value))
-            _refreshDataGridView()
+            If frmMain.ACLProgram.TcpVariables.RemoveVariable(CStr(dataGridView.SelectedRows.Item(0).Cells(0).Value)) Then
+                frmMain.ACLProgram.UnsavedChanges = True
+                _refreshDataGridView()
+            End If
         End If
     End Sub
 
@@ -73,5 +78,8 @@ Public Class panTCPVariables
                 lblConnectStatus.ForeColor = Color.Red
             End If
         End If
+    End Sub
+    Private Sub _eNewFileLoaded()
+        _refreshDataGridView()
     End Sub
 End Class

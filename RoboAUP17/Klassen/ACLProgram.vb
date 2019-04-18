@@ -8,12 +8,13 @@ Friend Class ACLProgram
     ' TODO
     ' -----------------------------------------------------------------------------
     ' ACL-Programm (wip...) / FOR und Teachpunktfunktionen fehlen noch
-    ' Speichern und Laden (wip...) / TCP-Variablen fehlen noch!
 
     ' -----------------------------------------------------------------------------
     ' Definitions
     ' -----------------------------------------------------------------------------
 #Region "Definitions"
+    Private _savedProgram As String
+
     Private _settings As Settings
 
     Private _teachPoints As New List(Of TeachPoint)
@@ -48,28 +49,37 @@ Friend Class ACLProgram
     Friend Event ProgramFinished()
     Friend Event ProgramLineChanged(line As Int32)
     Friend Event ErrorLine(line As Int32)
+    Friend Event ProgramUpdatedEvent()
 #End Region
 
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
 #Region "Allgemein"
-    Friend Sub SetSettingsObject(ByRef settings As Settings)
-        _settings = settings
-    End Sub
     Friend Sub Init()
         TcpVariables.TerminateConnection()
         If _settings.TCPServerParameter.Listen Then
             TcpVariables.Listen(_settings.TCPServerParameter.Port)
         End If
     End Sub
+    Friend Sub SetSettingsObject(ByRef settings As Settings)
+        _settings = settings
+    End Sub
+    Friend Sub ClearProgram()
+        _teachPoints.Clear()
+        TcpVariables.Items.Clear()
+        _printTeachpointToListBox()
+        _savedProgram = ""
+        RaiseEvent ProgramUpdatedEvent()
+    End Sub
+    Friend Sub CheckUnsavedChanges(prog As String)
+        If _savedProgram <> prog Then
+            _unsavedChanges = True
+        End If
+    End Sub
 #End Region
 
 #Region "Teachpunkte"
-    Friend Sub ClearTeachpoints()
-        _teachPoints.Clear()
-        _printTeachpointToListBox()
-    End Sub
     Friend Function GetTeachpointByIndex(index As Int32) As TeachPoint
         If _teachPoints.Count > index And index >= 0 Then
             Return _teachPoints(index)
@@ -225,12 +235,17 @@ Friend Class ACLProgram
             End If
             objStreamWriter.WriteLine()
         Next
+        'Variablen
+        For Each var As KeyValuePair(Of String, Integer) In TcpVariables.Items
+            objStreamWriter.WriteLine($"<var>;{var.Key}")
+        Next
         'Programm
         objStreamWriter.WriteLine("<program>")
         objStreamWriter.Write(prog)
         objStreamWriter.Close()
         _filename = tmpFilename
         _unsavedChanges = False
+        _savedProgram = prog
         Return True
     End Function
     Public Function Load(ByRef prog As String) As Boolean
@@ -240,8 +255,9 @@ Friend Class ACLProgram
            .Filter = "RoboAUP17-Dateien (*.aup17)|*.aup17"
         }
         If openFileDialog.ShowDialog() = DialogResult.OK Then
-            ' Teachpunkte leeren
+            ' Teachpunkte & Variablen leeren
             _teachPoints.Clear()
+            TcpVariables.Items.Clear()
 
             Dim objStreamReader As StreamReader
             objStreamReader = New StreamReader(openFileDialog.FileName)
@@ -268,6 +284,9 @@ Friend Class ACLProgram
                                 Next
                             End If
                             _teachPoints.Add(item)
+                        ElseIf tmpSplit(0) = "<var>" Then
+                            'Variable
+                            TcpVariables.AddVariable(tmpSplit(1))
                         ElseIf tmpSplit(0) = "<program>" Then
                             ' Programm einlesen
                             prog = objStreamReader.ReadToEnd()
@@ -278,8 +297,11 @@ Friend Class ACLProgram
                 _printTeachpointToListBox()
                 _filename = openFileDialog.FileName
                 _unsavedChanges = False
+                _savedProgram = prog
+                RaiseEvent ProgramUpdatedEvent()
             Catch ex As Exception
                 _teachPoints.Clear()
+                TcpVariables.Items.Clear()
                 prog = ""
                 erg = False
             Finally

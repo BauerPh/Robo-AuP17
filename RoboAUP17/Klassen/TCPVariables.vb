@@ -4,11 +4,17 @@
     ' -----------------------------------------------------------------------------
     Private WithEvents _tcpCom As New TCPCommunication
     Private _variables As New Dictionary(Of String, Integer)
+    Friend ReadOnly Property Items As Dictionary(Of String, Integer)
+        Get
+            Return _variables
+        End Get
+    End Property
 
     Friend Event Connected()
     Friend Event Disconnected()
     Friend Event ConnectError()
     Friend Event VariableChanged(ByVal name As String, ByVal val As Integer)
+
 
 
     ' -----------------------------------------------------------------------------

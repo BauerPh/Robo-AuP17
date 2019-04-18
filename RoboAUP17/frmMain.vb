@@ -116,15 +116,8 @@ Public Class frmMain
                 End If
             End If
         End If
-        If _aclProgram.UnsavedChanges Then
-            Dim erg As DialogResult = MessageBox.Show($"Programm wurde geändert und nicht gespeichert. Wollen Sie die Änderungen vor dem Beenden speichern?", "Ungespeicherte Änderungen", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
-            If erg = DialogResult.Cancel Then
-                e.Cancel = True
-            ElseIf erg = DialogResult.Yes Then
-                If Not _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text) Then
-                    e.Cancel = True
-                End If
-            End If
+        If _checkUnsavedChanges() Then
+            e.Cancel = True
         End If
     End Sub
 #End Region
@@ -158,7 +151,9 @@ Public Class frmMain
         _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text)
     End Sub
     Private Sub tsBtnOpen_Click(sender As Object, e As EventArgs) Handles tsBtnOpen.Click
-        _aclProgram.Load(_dckPanCodeEditor.sciCodeEditor.Text)
+        If Not _checkUnsavedChanges() Then
+            _aclProgram.Load(_dckPanCodeEditor.sciCodeEditor.Text)
+        End If
     End Sub
 #End Region
 
@@ -173,24 +168,15 @@ Public Class frmMain
 
 #Region "MenuStrip Datei"
     Private Sub msNew_Click(sender As Object, e As EventArgs) Handles msNew.Click
-        Dim cancel As Boolean = False
-        If _aclProgram.UnsavedChanges Then
-            Dim erg As DialogResult = MessageBox.Show($"Programm wurde geändert und nicht gespeichert. Wollen Sie jetzt speichern?", "Ungespeicherte Änderungen", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
-            If erg = DialogResult.Cancel Then
-                cancel = True
-            ElseIf erg = DialogResult.Yes Then
-                If Not _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text) Then
-                    cancel = True
-                End If
-            End If
-        End If
-        If Not cancel Then
-            _aclProgram.ClearTeachpoints()
+        If Not _checkUnsavedChanges() Then
+            _aclProgram.ClearProgram()
             _dckPanCodeEditor.sciCodeEditor.ClearAll()
         End If
     End Sub
     Private Sub msOpen_Click(sender As Object, e As EventArgs) Handles msOpen.Click
-        _aclProgram.Load(_dckPanCodeEditor.sciCodeEditor.Text)
+        If Not _checkUnsavedChanges() Then
+            _aclProgram.Load(_dckPanCodeEditor.sciCodeEditor.Text)
+        End If
     End Sub
     Private Sub msSave_Click(sender As Object, e As EventArgs) Handles msSave.Click
         _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text)
@@ -316,6 +302,23 @@ Public Class frmMain
     ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
+    Private Function _checkUnsavedChanges() As Boolean
+        _aclProgram.CheckUnsavedChanges(_dckPanCodeEditor.sciCodeEditor.Text)
+
+        Dim cancel As Boolean = False
+        If _aclProgram.UnsavedChanges Then
+            Dim erg As DialogResult = MessageBox.Show($"Sollen die Änderungen am Programm noch gespeichert werden?", "Ungespeicherte Änderungen", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
+            If erg = DialogResult.Cancel Then
+                cancel = True
+            ElseIf erg = DialogResult.Yes Then
+                If Not _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text) Then
+                    cancel = True
+                End If
+            End If
+        End If
+
+        Return cancel
+    End Function
     Private Sub _setLogLevel(lvl As Integer)
         _logger.SetLogLvl(lvl)
         msSetLogLvlDebug.Image = Nothing
