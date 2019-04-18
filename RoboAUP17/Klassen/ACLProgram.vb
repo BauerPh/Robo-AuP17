@@ -56,11 +56,12 @@ Friend Class ACLProgram
     Friend Sub SetSettingsObject(ByRef settings As Settings)
         _settings = settings
     End Sub
-
-    Friend Sub New()
-
+    Friend Sub Init()
+        TcpVariables.TerminateConnection()
+        If _settings.TCPServerParameter.Listen Then
+            TcpVariables.Listen(_settings.TCPServerParameter.Port)
+        End If
     End Sub
-
 #End Region
 
 #Region "Teachpunkte"

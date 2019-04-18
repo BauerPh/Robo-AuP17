@@ -127,10 +127,14 @@ Public Class frmMain
 
         'Pass Settings Object to ACLProgram Object
         _aclProgram.SetSettingsObject(_roboControl.Pref)
+        _aclProgram.Init()
 
         'Welcome Log
         ShowStatusStripHint("Anwendung gestartet...")
         _logger.Log("[MAIN] Hi!", Logger.LogLevel.INFO)
+
+        AddHandler _aclProgram.TcpVariables.Connected, AddressOf _eTCPConnected
+        AddHandler _aclProgram.TcpVariables.Disconnected, AddressOf _eTCPDisconnected
     End Sub
     Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         My.Settings.Save()
@@ -491,6 +495,21 @@ Public Class frmMain
     Private Sub _eRefresh() Handles _aclProgram.ProgramStarted, _aclProgram.ProgramFinished, _roboControl.RoboRefStateChanged
         _enableDisableElements()
     End Sub
+    Private Sub _eRoboParameterChanged(parameterChanged As Settings.ParameterChangedParameter) Handles _roboControl.RoboParameterChanged
+        Dim all As Boolean = parameterChanged = Settings.ParameterChangedParameter.All
+        If parameterChanged = Settings.ParameterChangedParameter.TCPServerParameter Or all Then
+            If _roboControl.Pref.TCPServerParameter.Listen Then
+                tsLblTcpServerStatus.Visible = True
+                tsLblTCPServerStatusTitle.Visible = True
+                tsSepTCPServerStatus.Visible = True
+            Else
+                tsLblTcpServerStatus.Visible = False
+                tsLblTCPServerStatusTitle.Visible = False
+                tsSepTCPServerStatus.Visible = False
+            End If
+            _aclProgram.Init()
+        End If
+    End Sub
 
     ' ACL-Program
     Private Sub _eDoJointMove(jointAngles As JointAngles, acc As Double, speed As Double) Handles _aclProgram.DoJointMove
@@ -506,5 +525,26 @@ Public Class frmMain
     End Sub
     Private Sub _eDoDelay(delay As Int32) Handles _aclProgram.DoDelay
         _roboControl.DoDelay(delay)
+    End Sub
+
+    ' TCP Server
+    Private Sub _eTCPConnected()
+        If InvokeRequired Then
+            Invoke(Sub() _eTCPConnected())
+            Return
+        End If
+
+        tsLblTcpServerStatus.Text = "verbunden"
+        tsLblTcpServerStatus.ForeColor = Color.Green
+    End Sub
+
+    Private Sub _eTCPDisconnected()
+        If InvokeRequired Then
+            Invoke(Sub() _eTCPDisconnected())
+            Return
+        End If
+
+        tsLblTcpServerStatus.Text = "getrennt"
+        tsLblTcpServerStatus.ForeColor = Color.Red
     End Sub
 End Class
