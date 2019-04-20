@@ -67,7 +67,11 @@ Public Class panTCPVariables
         frmMain.Log("[TCP] Getrennt!", Logger.LogLevel.INFO)
     End Sub
     Private Sub _eVariableChanged(name As String, value As Integer)
-        frmMain.Log($"[TCP] neue Variable erhalten: {name} = {value}", Logger.LogLevel.INFO)
+        If InvokeRequired Then
+            Invoke(Sub() _eVariableChanged(name, value))
+            Return
+        End If
+        frmMain.Log($"[TCP] Variable empfangen: {name} = {value}", Logger.LogLevel.INFO)
         _refreshDataGridView()
     End Sub
     Private Sub _eRoboParameterChanged(parameterChanged As Settings.ParameterChangedParameter)
