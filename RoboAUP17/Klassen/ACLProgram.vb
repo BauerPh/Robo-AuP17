@@ -59,7 +59,8 @@ Friend Class ACLProgram
     Friend Sub Init()
         TcpVariables.TerminateConnection()
         If _settings.TCPServerParameter.Listen Then
-            TcpVariables.Listen(_settings.TCPServerParameter.Port)
+            TcpVariables.Connect("localhost", 2019)
+            'TcpVariables.Listen(_settings.TCPServerParameter.Port)
         End If
     End Sub
     Friend Sub SetSettingsObject(ByRef settings As Settings)
@@ -368,11 +369,6 @@ Friend Class ACLProgram
         aclParser.AddErrorListener(aclErrorListener)
         ' Parser starten
         Dim rootContext As ACLParser.RootContext = aclParser.root()
-
-        'Debug print Tokens
-        For i = 0 To comTokenStream.Size - 1
-            RaiseEvent Log($"[ACL-LEXER] {If(comTokenStream.Get(i).Text.StartsWith(vbCrLf), "", comTokenStream.Get(i).Text)} => {aclLexer.Vocabulary.GetSymbolicName(comTokenStream.Get(i).Type)}", Logger.LogLevel.DEBUG)
-        Next
 
         ' ACL Programm kompilieren, wenn Syntax okay
         If _programSyntaxOkay Then

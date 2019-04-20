@@ -68,12 +68,18 @@ Public Class TCPCommunication
     Friend Sub Terminate()
         _terminate()
     End Sub
-    Friend Sub Send(msg As String)
+    Friend Function Send(msg As String) As Boolean
         If _connected Then
-            _networkStreamW.Write(msg)
-            _networkStreamW.Flush()
+            Try
+                _networkStreamW.Write(msg)
+                _networkStreamW.Flush()
+            Catch ex As IO.IOException
+                Return False
+            End Try
+            Return True
         End If
-    End Sub
+        Return False
+    End Function
 
     ' -----------------------------------------------------------------------------
     ' Private
@@ -165,15 +171,19 @@ Public Class TCPCommunication
                         _waitForConnection()
                     End If
                 End If
-                ' eingehende Nachricht
-                While Not _networkStreamR.EndOfStream
-                    Dim c As Char = ChrW(_networkStreamR.Read)
-                    msg &= c
-                    If msg.EndsWith(_msgEnding) Then
-                        RaiseEvent MessageReceived(msg.Substring(0, msg.Length - _msgEnding.Length))
-                        msg = ""
-                    End If
-                End While
+                Try
+                    ' eingehende Nachricht
+                    While Not _networkStreamR.EndOfStream
+                        Dim c As Char = ChrW(_networkStreamR.Read)
+                        msg &= c
+                        If msg.EndsWith(_msgEnding) Then
+                            RaiseEvent MessageReceived(msg.Substring(0, msg.Length - _msgEnding.Length))
+                            msg = ""
+                        End If
+                    End While
+                Catch e As IO.IOException ' Wird geworfen, wenn auf _networkStreamR zugegriffen wird und gleichzeitig die Verbindung vom Partner getrennt wird
+                    msg = ""
+                End Try
             End If
         End While
     End Sub

@@ -92,9 +92,9 @@ Public Class frmMain
         _setLogLevel(My.Settings.LogLvl)
 
         'Configure Dock Panel
-        Me.SuspendLayout()
+        SuspendLayout()
         _configureDockPanel()
-        Me.ResumeLayout()
+        ResumeLayout()
 
         'Pass Settings Object to ACLProgram Object
         _aclProgram.SetSettingsObject(_roboControl.Pref)

@@ -307,6 +307,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\icons8-error-96.png" />
+    <None Include="Resources\icons8-ok-100.png" />
+    <None Include="Resources\button_green.png" />
+    <None Include="Resources\button_red.png" />
     <Content Include="RoboParameterDefault.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
