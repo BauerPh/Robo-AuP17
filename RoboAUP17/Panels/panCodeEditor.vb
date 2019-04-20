@@ -8,14 +8,34 @@ Public Class panCodeEditor
 
     Private _lastHighlightedLineIndex As Int32 = 0
     Private _maxLineNumberCharLength As Int32
+    Private _ACLLexer As New ACLSyntaxHighlighting(
+        "MOVE OPEN CLOSE JAW ACC SPEED HOME PARK 
+        DELAY WAIT DEFP DELP UNDEF HERER HERE 
+        TEACHR TEACH SETPVC SETPV SHIFTC SHIFT BY 
+        SETP BY PVAL PVALC PSTATUS DEFINE GLOBAL 
+        DELVAR SET IF ANDIF ORIF ELSE ENDIF FOR 
+        TO ENDFOR LABEL GOTO PRINT")
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
     Private Sub panCodeEditor_Load(sender As Object, e As EventArgs) Handles Me.Load
-        sciCodeEditor.Margins(0).Width = sciCodeEditor.TextWidth(Style.LineNumber, "99")
-        sciCodeEditor.Styles(Style.Default).Font = "Courier New"
+        sciCodeEditor.StyleResetDefault()
+        sciCodeEditor.Styles(Style.Default).Font = "Consolas" '"Courier New"
         sciCodeEditor.Styles(Style.Default).Size = 12
+        sciCodeEditor.StyleClearAll()
+
+        sciCodeEditor.Styles(ACLSyntaxHighlighting.StyleDefault).ForeColor = Color.Black
+        sciCodeEditor.Styles(ACLSyntaxHighlighting.StyleIdentifier).ForeColor = Color.Black
+        sciCodeEditor.Styles(ACLSyntaxHighlighting.StyleKeyword).ForeColor = Color.Blue
+        sciCodeEditor.Styles(ACLSyntaxHighlighting.StyleNumber).ForeColor = Color.LightCoral
+        sciCodeEditor.Styles(ACLSyntaxHighlighting.StyleString).ForeColor = Color.Red
+        sciCodeEditor.Styles(ACLSyntaxHighlighting.StyleComment).ForeColor = Color.Green
+        sciCodeEditor.Styles(ACLSyntaxHighlighting.StyleComment).Italic = True
+
+        sciCodeEditor.Lexer = Lexer.Container
+
+        sciCodeEditor.Margins(0).Width = sciCodeEditor.TextWidth(Style.LineNumber, "99")
 
         sciCodeEditor.Markers(0).Symbol = MarkerSymbol.Arrow
         sciCodeEditor.Markers(0).SetBackColor(Color.Yellow)
@@ -63,6 +83,14 @@ Public Class panCodeEditor
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
+    Private Sub sciCodeEditor_StyleNeeded(sender As Object, e As StyleNeededEventArgs) Handles sciCodeEditor.StyleNeeded
+        Dim startPos As Integer = sciCodeEditor.GetEndStyled()
+        Dim endPos As Integer = e.Position
+
+        _ACLLexer.Style(sciCodeEditor, startPos, endPos)
+    End Sub
+
+
     Private Sub _eProgramStarted()
         If InvokeRequired Then
             Invoke(Sub() _eProgramStarted())
@@ -101,4 +129,6 @@ Public Class panCodeEditor
 
         sciCodeEditor.Lines(line - 1).MarkerAdd(2)
     End Sub
+
+
 End Class

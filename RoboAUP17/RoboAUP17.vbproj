@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="Klassen\ACLSyntaxHighlighting.vb" />
     <Compile Include="Module\Calculations.vb" />
     <Compile Include="Module\globalVars.vb" />
     <Compile Include="Klassen\ACLProgram.vb" />
