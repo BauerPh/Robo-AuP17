@@ -126,7 +126,7 @@ Public Class TCPCommunication
             _networkStreamW = New StreamWriter(_networkStream)
             'Start Thread (wenn noch nicht gestartet)
             If _threadHandle.ThreadState = ThreadState.Unstarted Then
-                '_threadHandle.IsBackground = True
+                _threadHandle.IsBackground = True
                 _threadHandle.Start()
             End If
             _connected = True
