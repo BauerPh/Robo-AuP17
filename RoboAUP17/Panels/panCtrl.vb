@@ -564,7 +564,7 @@
     End Sub
     Private Sub _eRoboBusy(busy As Boolean)
         ' Achsen Bewegen falls Servos erst angesteuert wurden
-        If _doMoveAfterServoMove And busy Then
+        If _doMoveAfterServoMove And Not busy Then
             _doMoveAfterServoMove = False
             _doMove()
         End If
