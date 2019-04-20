@@ -144,7 +144,7 @@ Public Class TCPCommunication
         End If
     End Sub
 
-    ' Wartet auf eingehende Daten
+    ' Prüft die Verbindung und wartet auf eingehende Daten
     Private Sub _handle()
         Dim msg As String = ""
         While True
