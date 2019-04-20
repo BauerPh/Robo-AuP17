@@ -63,11 +63,6 @@ Public Class frmMain
     End Sub
 
     Friend Sub Log(msg As String, lvl As Logger.LogLevel)
-        If InvokeRequired Then
-            Invoke(Sub() Log(msg, lvl))
-            Return
-        End If
-
         _logger.Log(msg, lvl)
     End Sub
 #End Region

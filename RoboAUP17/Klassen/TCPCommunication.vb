@@ -126,7 +126,7 @@ Public Class TCPCommunication
             _networkStreamW = New StreamWriter(_networkStream)
             'Start Thread (wenn noch nicht gestartet)
             If _threadHandle.ThreadState = ThreadState.Unstarted Then
-                _threadHandle.IsBackground = True
+                '_threadHandle.IsBackground = True
                 _threadHandle.Start()
             End If
             _connected = True
@@ -135,12 +135,12 @@ Public Class TCPCommunication
     End Sub
 
     ' Wartet auf eingehende Daten
-    Private Async Sub _handle()
+    Private Sub _handle()
         While True
             ' Check for received Message
             If _connected Then
                 Try
-                    Dim msg As String = Await _networkStreamR.ReadLineAsync()
+                    Dim msg As String = _networkStreamR.ReadLine()
                     If msg IsNot Nothing Then
                         If msg.Length > 0 Then
                             RaiseEvent MessageReceived(msg)
