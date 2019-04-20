@@ -59,8 +59,7 @@ Friend Class ACLProgram
     Friend Sub Init()
         TcpVariables.TerminateConnection()
         If _settings.TCPServerParameter.Listen Then
-            TcpVariables.Connect("localhost", 2019)
-            'TcpVariables.Listen(_settings.TCPServerParameter.Port)
+            TcpVariables.Listen(_settings.TCPServerParameter.Port)
         End If
     End Sub
     Friend Sub SetSettingsObject(ByRef settings As Settings)

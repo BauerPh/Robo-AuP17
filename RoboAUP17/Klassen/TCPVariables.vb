@@ -47,9 +47,11 @@
     Friend Function SetVariable(name As String, val As Integer) As Boolean
         If Not _variables.ContainsKey(name) Then Return False
         _variables(name) = val
-        _tcpCom.Send($"{name};{val}$")
-        RaiseEvent VariableChanged(name, val)
-        Return True
+        If _tcpCom.Send($"{name};{val}$") Then
+            RaiseEvent VariableChanged(name, val)
+            Return True
+        End If
+        Return False
     End Function
     Friend Function GetVariable(name As String, ByRef val As Integer) As Boolean
         If Not _variables.ContainsKey(name) Then Return False
