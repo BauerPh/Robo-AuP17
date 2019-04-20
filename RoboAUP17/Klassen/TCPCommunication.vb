@@ -148,7 +148,6 @@ Public Class TCPCommunication
     Private Sub _handle()
         Dim msg As String = ""
         While True
-            ' Check for received Message
             If _connected Then
                 ' Verbindung prüfen
                 If Not _isConnected(_tcpClient) Then
