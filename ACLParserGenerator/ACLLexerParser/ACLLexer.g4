@@ -74,10 +74,10 @@ NEWLINE:			('\r'? '\n')+;
 IDENTIFIER:			[a-zA-Z] [a-zA-Z0-9]*;
 
 // Comment
-LINE_COMMENT:		'//' ~[\r\n]*	-> skip;
+LINE_COMMENT:		'//' ~[\r\n]* NEWLINE	-> skip;
 
 // Skip Whitespaces
-WS:					[ \t\f]+		-> skip;
+WS:					[ \t\f]+				-> skip;
 
 // Unknown token
 ERROR_RECONGNIGION: .;				//-> channel(HIDDEN);

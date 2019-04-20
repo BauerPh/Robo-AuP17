@@ -444,20 +444,28 @@ Friend Class ACLProgram
                         val2 = cmd.val2
                     End If
                     ' Berechnen
-                    Select Case cmd.mathOperator
-                        Case progMathOperator.plus
-                            calcBuffer = val1 + val2
-                        Case progMathOperator.minus
-                            calcBuffer = val1 - val2
-                        Case progMathOperator.mult
-                            calcBuffer = val1 * val2
-                        Case progMathOperator.div
-                            calcBuffer = val1 \ val2
-                        Case progMathOperator.exp
-                            calcBuffer = CInt(val1 ^ val2)
-                        Case progMathOperator.mod
-                            calcBuffer = val1 Mod val2
-                    End Select
+                    Try
+                        Select Case cmd.mathOperator
+                            Case progMathOperator.plus
+                                calcBuffer = val1 + val2
+                            Case progMathOperator.minus
+                                calcBuffer = val1 - val2
+                            Case progMathOperator.mult
+                                calcBuffer = val1 * val2
+                            Case progMathOperator.div
+                                calcBuffer = val1 \ val2
+                            Case progMathOperator.exp
+                                calcBuffer = CInt(val1 ^ val2)
+                            Case progMathOperator.mod
+                                calcBuffer = val1 Mod val2
+                        End Select
+                    Catch e As OverflowException
+                        _runtimeError(cmd.lineNr, $"Die Berechnung hat zu einem Überlauf geführt")
+                        Exit While 'Programm beenden
+                    Catch e As DivideByZeroException
+                        _runtimeError(cmd.lineNr, $"Durch ""0"" Teilen ist leider bis heute (Stand: 20.04.2019) noch nicht möglich")
+                        Exit While 'Programm beenden
+                    End Try
                     i += 1
                 Case progFunc.cjump
                     ' -------------------------------------
@@ -686,7 +694,7 @@ Friend Class ACLProgram
     Private Class _ACLListener
         Inherits ACLParserBaseListener
         Private _maxAcc, _maxSpeed, _acc, _speed As Double
-        Private _ifStack As New Stack(Of Integer)
+        Private _stack As New Stack(Of Integer)
         Private _labels As New Dictionary(Of String, Integer)
         Private _gotos As New Dictionary(Of String, List(Of Integer))
         Private _variables As New Dictionary(Of String, Variable)
@@ -718,7 +726,11 @@ Friend Class ACLProgram
             Dim oper As String = context.GetChild(1).GetText()
             Dim val2 As String = context.GetChild(2).GetText()
             If IsNumeric(val1) Then
-                progEntry.val1 = CInt(val1)
+                Try
+                    progEntry.val1 = CInt(val1)
+                Catch e As OverflowException
+                    RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
+                End Try
             Else
                 If Not _variables.ContainsKey(val1) And Not _tcpVars.Exists(val1) Then
                     RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Variable ""{val1}"" wurde nicht definiert")
@@ -727,7 +739,11 @@ Friend Class ACLProgram
                 End If
             End If
             If IsNumeric(val2) Then
-                progEntry.val2 = CInt(val2)
+                Try
+                    progEntry.val2 = CInt(val2)
+                Catch e As OverflowException
+                    RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
+                End Try
             ElseIf context.BOOL IsNot Nothing Then
                 ' Bool
                 progEntry.val2 = If(context.BOOL.GetText = "FALSE", 0, 1)
@@ -775,7 +791,11 @@ Friend Class ACLProgram
             Dim oper As String = context.GetChild(1).GetText()
             Dim val2 As String = context.GetChild(2).GetText()
             If IsNumeric(val1) Then
-                progEntry.val1 = CInt(val1)
+                Try
+                    progEntry.val1 = CInt(val1)
+                Catch e As OverflowException
+                    RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
+                End Try
             Else
                 If Not _variables.ContainsKey(val1) And Not _tcpVars.Exists(val1) Then
                     RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{val1}"" wurde nicht definiert")
@@ -784,7 +804,11 @@ Friend Class ACLProgram
                 End If
             End If
             If IsNumeric(val2) Then
-                progEntry.val2 = CInt(val2)
+                Try
+                    progEntry.val2 = CInt(val2)
+                Catch e As OverflowException
+                    RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
+                End Try
             Else
                 If Not _variables.ContainsKey(val2) And Not _tcpVars.Exists(val2) Then
                     RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{val2}"" wurde nicht definiert")
@@ -932,7 +956,7 @@ Friend Class ACLProgram
             _progList.Add(progEntry)
 
             ' Index von diesem IF auf den Stack legen
-            _ifStack.Push(thisIndex)
+            _stack.Push(thisIndex)
 
             MyBase.EnterIf(context)
         End Sub
@@ -954,12 +978,12 @@ Friend Class ACLProgram
             _progList.Add(progEntry)
 
             ' Eintrag vom IF vom Stack holen und durch Condition ersetzen
-            Dim progListIfEntryNum = _ifStack.Pop
+            Dim progListIfEntryNum = _stack.Pop
             progEntry = _progList(progListIfEntryNum)
             progEntry.func = progFunc.condition
             _progList(progListIfEntryNum) = progEntry
 
-            _ifStack.Push(thisIndex) ' Index von diesem IF auf den Stack legen
+            _stack.Push(thisIndex) ' Index von diesem IF auf den Stack legen
 
             MyBase.EnterAnd_or_if(context)
         End Sub
@@ -975,13 +999,13 @@ Friend Class ACLProgram
             _progList.Add(progEntry)
 
             ' Eintrag vom IF vom Stack holen und bearbeiten
-            Dim progListIfEntryNum = _ifStack.Pop
+            Dim progListIfEntryNum = _stack.Pop
             progEntry = _progList(progListIfEntryNum)
             progEntry.jumpFalseTarget = thisIndex + 1
             _progList(progListIfEntryNum) = progEntry
 
             ' Index von diesem ELSE auf den Stack legen
-            _ifStack.Push(thisIndex)
+            _stack.Push(thisIndex)
 
             MyBase.EnterElse(context)
         End Sub
@@ -996,7 +1020,7 @@ Friend Class ACLProgram
             _progList.Add(progEntry)
 
             ' Eintrag vom IF vom Stack holen und bearbeiten
-            Dim progListIfOrElseEntryNum = _ifStack.Pop
+            Dim progListIfOrElseEntryNum = _stack.Pop
             progEntry = _progList(progListIfOrElseEntryNum)
             If progEntry.func = progFunc.cjump Then
                 progEntry.jumpFalseTarget = thisIndex
@@ -1007,11 +1031,93 @@ Friend Class ACLProgram
 
             MyBase.ExitIf(context)
         End Sub
-        'FOR (TODO!)
+        'FOR
         Public Overrides Sub EnterFor(<NotNull> context As ACLParser.ForContext)
-            'TODO
-            RaiseEvent CompileErrorEvent(context.FOR.Symbol.Line, """FOR"" noch nicht implementiert")
+            Dim lineNr As Integer = context.FOR.Symbol.Line
+            Dim countVarName As String = context.GetChild(1).GetText()
+            Dim valFrom As Integer = 0
+            Dim varFrom As String = Nothing
+            Dim valVarTo As String
+
+            ' Startwert
+            If IsNumeric(context.GetChild(3).GetText()) Then
+                ' Integer
+                valFrom = CInt(context.GetChild(3).GetText())
+            Else
+                ' Variable
+                varFrom = context.GetChild(3).GetText()
+            End If
+            ' Endwert
+            valVarTo = context.GetChild(5).GetText()
+
+            '-----------------------------------------------
+            ' Variable mit Startwert initialisieren
+            _setVar(countVarName, lineNr, valFrom, varFrom, False)
+
+            ' Bedingter Sprung erstellen (Bedingung: Zählvariable <= Ende)
+            Dim thisIndex As Int32 = _progList.Count
+            Dim progEntry As New ProgramEntry With {
+                .func = progFunc.cjump,
+                .lineNr = lineNr,
+                .VKEFirst = True,
+                .jumpTrueTarget = thisIndex + 1, ' Auf nächsten Eintrag, wenn dieser hier hinzugefügt wurde
+                .jumpFalseTarget = -1, ' Wird bei ENDFOR gesetzt!
+                .var1 = countVarName,
+                .compareOperator = progCompOperator.lessOrEqual
+            }
+            If IsNumeric(valVarTo) Then
+                progEntry.val2 = CInt(valVarTo)
+            Else
+                If Not _variables.ContainsKey(valVarTo) And Not _tcpVars.Exists(valVarTo) Then
+                    RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Variable ""{valVarTo}"" wurde nicht definiert")
+                Else
+                    progEntry.var2 = valVarTo
+                End If
+            End If
+            _progList.Add(progEntry)
+            ' Index von diesem Sprung auf den Stack legen
+            _stack.Push(thisIndex)
+
             MyBase.EnterFor(context)
+        End Sub
+        'ENDFOR
+        Public Overrides Sub ExitFor(<NotNull> context As ACLParser.ForContext)
+            Dim lineNr As Integer = context.ENDFOR.Symbol.Line
+            Dim countVarName As String = context.GetChild(1).GetText()
+
+            ' Zählvariable hochzählen
+            Dim progEntry As New ProgramEntry
+            progEntry.func = progFunc.calculation
+            progEntry.lineNr = lineNr
+            progEntry.var1 = countVarName
+            progEntry.val2 = 1
+            progEntry.mathOperator = progMathOperator.plus
+            _progList.Add(progEntry)
+            progEntry = New ProgramEntry
+            progEntry.func = progFunc.setVarToBuffer
+            progEntry.varName = countVarName
+            progEntry.lineNr = lineNr
+            _progList.Add(progEntry)
+
+            ' Sprungziel für FOR setzen
+            Dim thisIndex As Int32 = _progList.Count
+            Dim progListForEntryNum = _stack.Pop ' For index vom Stack holen
+            ' Rücksprung setzen
+            progEntry = New ProgramEntry
+            progEntry.func = progFunc.jump
+            progEntry.lineNr = lineNr
+            progEntry.jumpTarget = progListForEntryNum
+            _progList.Add(progEntry)
+            progEntry = New ProgramEntry
+            progEntry.func = progFunc.noop
+            progEntry.lineNr = lineNr
+
+            ' For Sprungziel bearbeiten
+            progEntry = _progList(progListForEntryNum)
+            progEntry.jumpFalseTarget = thisIndex + 1
+            _progList(progListForEntryNum) = progEntry
+
+            MyBase.ExitFor(context)
         End Sub
         'LABEL
         Public Overrides Sub EnterLabel(<NotNull> context As ACLParser.LabelContext)
@@ -1072,12 +1178,19 @@ Friend Class ACLProgram
         End Sub
         'DELAY
         Public Overrides Sub EnterDelay(<NotNull> context As ACLParser.DelayContext)
-            Dim delay As Int32 = CInt(context.GetChild(1).GetText())
+            Dim lineNr As Integer = context.DELAY.Symbol.Line
+            Dim delay As Int32 = 1
+            Try
+                delay = CInt(context.GetChild(1).GetText())
+                If delay < 1 Or delay > 360000 Then Throw New Exception
+            Catch e As Exception
+                RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen 1 und 360.000 (1 Stunde) möglich")
+            End Try
 
             ' Delay hinzufügen
             Dim progEntry As New ProgramEntry With {
                 .func = progFunc.delay,
-                .lineNr = context.DELAY.Symbol.Line,
+                .lineNr = lineNr,
                 .delayTimeMS = delay * 10 ' Hundertstel werden angegeben!
             }
             _progList.Add(progEntry)
@@ -1104,22 +1217,7 @@ Friend Class ACLProgram
             Dim lineNr As Integer = CType(context.GetChild(0), Tree.ITerminalNode).Symbol.Line
 
             For i = 0 To context.IDENTIFIER.Length - 1
-                Dim varName As String = context.IDENTIFIER(i).GetText()
-                'Prüfen ob es diese Variable schon gibt
-                If _variables.ContainsKey(varName) Then
-                    RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{varName}"" wurde schon in Zeile {_variables(varName).defLine} definiert")
-                ElseIf _tcpVars.Exists(varName) Then
-                    RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{varName}"" wurde bereits als TCP-Variable definiert")
-                Else
-                    ' Variable hinzufügen
-                    _variables.Add(varName, New Variable(varType.int, lineNr))
-                    ' DEFVAR hinzufügen
-                    Dim progEntry As New ProgramEntry
-                    progEntry.func = progFunc.defVar
-                    progEntry.lineNr = lineNr
-                    progEntry.varName = varName
-                    _progList.Add(progEntry)
-                End If
+                _defineVar(context.IDENTIFIER(i).GetText(), lineNr)
             Next
 
             MyBase.EnterDefine(context)
@@ -1148,32 +1246,30 @@ Friend Class ACLProgram
         Public Overrides Sub ExitSetvar(<NotNull> context As ACLParser.SetvarContext)
             Dim lineNr As Integer = context.SET.Symbol.Line
             Dim varName As String = context.IDENTIFIER(0).GetText()
+            Dim val As Integer = 0
+            Dim var As String = Nothing
+            Dim calculation As Boolean = False
 
-            'Prüfen ob es diese Variable gibt und vom Typ Int ist
-            If _variables.ContainsKey(varName) Or _tcpVars.Exists(varName) Then
-                Dim progEntry As New ProgramEntry
-                progEntry.lineNr = lineNr
-                progEntry.varName = varName
-                progEntry.func = progFunc.setVar
-                ' Prüfen welcher Wert zugewiesen werden soll
-                If context.SIGNEDINT IsNot Nothing Or context.INTEGER IsNot Nothing Then
-                    ' Integer
-                    progEntry.varValue = CInt(context.GetChild(3).GetText)
-                ElseIf context.BOOL IsNot Nothing Then
-                    ' Bool
-                    progEntry.varValue = If(context.BOOL.GetText = "FALSE", 0, 1)
-                ElseIf context.calculation IsNot Nothing Then
-                    ' Calculation
-                    progEntry.func = progFunc.setVarToBuffer
-                Else
-                    ' Variable
-                    progEntry.varVariable = context.GetChild(3).GetText
-                End If
-
-                _progList.Add(progEntry)
+            ' Prüfen welcher Wert zugewiesen werden soll
+            If context.SIGNEDINT IsNot Nothing Or context.INTEGER IsNot Nothing Then
+                ' Integer
+                Try
+                    val = CInt(context.GetChild(3).GetText)
+                Catch e As OverflowException
+                    RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
+                End Try
+            ElseIf context.BOOL IsNot Nothing Then
+                ' Bool
+                val = If(context.BOOL.GetText = "FALSE", 0, 1)
+            ElseIf context.calculation IsNot Nothing Then
+                ' Calculation
+                calculation = True
             Else
-                RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{varName}"" wurde nicht definiert")
+                ' Variable
+                var = context.GetChild(3).GetText
             End If
+
+            _setVar(varName, lineNr, val, var, calculation)
 
             MyBase.EnterSetvar(context)
         End Sub
@@ -1188,6 +1284,51 @@ Friend Class ACLProgram
 
             MyBase.ExitRoot(context)
         End Sub
+
+
+        'Private
+        Private Function _defineVar(name As String, lineNr As Integer) As Boolean
+            'Prüfen ob es diese Variable schon gibt
+            If _variables.ContainsKey(name) Then
+                RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{name}"" wurde schon in Zeile {_variables(name).defLine} definiert")
+                Return False
+            ElseIf _tcpVars.Exists(name) Then
+                RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{name}"" wurde bereits als TCP-Variable definiert")
+                Return False
+            Else
+                ' Variable hinzufügen
+                _variables.Add(name, New Variable(varType.int, lineNr))
+                ' DEFVAR hinzufügen
+                Dim progEntry As New ProgramEntry
+                progEntry.func = progFunc.defVar
+                progEntry.lineNr = lineNr
+                progEntry.varName = name
+                _progList.Add(progEntry)
+                Return True
+            End If
+        End Function
+
+        Private Function _setVar(name As String, lineNr As Integer, val As Integer, var As String, calculation As Boolean) As Boolean
+            If _variables.ContainsKey(name) Or _tcpVars.Exists(name) Then
+                Dim progEntry As New ProgramEntry
+                progEntry.lineNr = lineNr
+                progEntry.varName = name
+                progEntry.func = progFunc.setVar
+                ' Prüfen welcher Wert zugewiesen werden soll
+                If calculation Then
+                    progEntry.func = progFunc.setVarToBuffer
+                ElseIf var IsNot Nothing Then
+                    progEntry.varVariable = var
+                Else
+                    progEntry.varValue = val
+                End If
+                _progList.Add(progEntry)
+            Else
+                RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{name}"" wurde nicht definiert")
+                Return False
+            End If
+            Return True
+        End Function
     End Class
 #End Region
 

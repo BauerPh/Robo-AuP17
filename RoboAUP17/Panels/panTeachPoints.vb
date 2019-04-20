@@ -89,7 +89,7 @@
     Private Sub _eRefresh()
         _enableDisableElements()
     End Sub
-    Private Sub _eRoboBusy(busy As Boolean)
+    Private Sub _eRoboBusy(busy As Boolean, delay As Boolean)
         _enableDisableElements()
     End Sub
 End Class

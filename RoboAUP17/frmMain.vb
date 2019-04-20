@@ -496,7 +496,7 @@ Public Class frmMain
         _aclProgram.ForceStopProgram() ' Kill Thread
         _enableDisableElements()
     End Sub
-    Private Sub _eRoboBusy(busy As Boolean) Handles _roboControl.RoboBusy
+    Private Sub _eRoboBusy(busy As Boolean, delay As Boolean) Handles _roboControl.RoboBusy
         RobotBusy = busy
 
         _enableDisableElements()
