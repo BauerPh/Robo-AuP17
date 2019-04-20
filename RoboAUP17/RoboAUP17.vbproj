@@ -307,9 +307,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\icons8-error-96.png" />
-    <None Include="Resources\icons8-ok-100.png" />
     <None Include="Resources\icons8-emergency-stop-button-100.png" />
-    <None Include="Resources\icons8-cancel-100.png" />
+    <None Include="Resources\icon_actuated.png" />
+    <None Include="Resources\icon_not_actuated.png" />
+    <None Include="Resources\icon_unknown.png" />
+    <None Include="Resources\icons8-help-96.png" />
     <Content Include="RoboParameterDefault.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

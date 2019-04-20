@@ -478,7 +478,7 @@ Partial Class panRoboStatus
         Me.lblLimitJ1Heading.Size = New System.Drawing.Size(39, 25)
         Me.lblLimitJ1Heading.TabIndex = 32
         Me.lblLimitJ1Heading.Text = "J1:"
-        Me.lblLimitJ1Heading.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblLimitJ1Heading.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'lblLimitJ2Heading
         '
@@ -492,7 +492,7 @@ Partial Class panRoboStatus
         Me.lblLimitJ2Heading.Size = New System.Drawing.Size(39, 25)
         Me.lblLimitJ2Heading.TabIndex = 33
         Me.lblLimitJ2Heading.Text = "J2:"
-        Me.lblLimitJ2Heading.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblLimitJ2Heading.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'lblLimitJ3Heading
         '
@@ -506,7 +506,7 @@ Partial Class panRoboStatus
         Me.lblLimitJ3Heading.Size = New System.Drawing.Size(39, 25)
         Me.lblLimitJ3Heading.TabIndex = 34
         Me.lblLimitJ3Heading.Text = "J3:"
-        Me.lblLimitJ3Heading.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblLimitJ3Heading.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'lblLimitJ4Heading
         '
@@ -520,7 +520,7 @@ Partial Class panRoboStatus
         Me.lblLimitJ4Heading.Size = New System.Drawing.Size(39, 25)
         Me.lblLimitJ4Heading.TabIndex = 35
         Me.lblLimitJ4Heading.Text = "J4:"
-        Me.lblLimitJ4Heading.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblLimitJ4Heading.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'lblLimitJ5Heading
         '
@@ -534,7 +534,7 @@ Partial Class panRoboStatus
         Me.lblLimitJ5Heading.Size = New System.Drawing.Size(39, 25)
         Me.lblLimitJ5Heading.TabIndex = 36
         Me.lblLimitJ5Heading.Text = "J5:"
-        Me.lblLimitJ5Heading.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblLimitJ5Heading.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'lblLimitJ6Heading
         '
@@ -548,7 +548,7 @@ Partial Class panRoboStatus
         Me.lblLimitJ6Heading.Size = New System.Drawing.Size(39, 25)
         Me.lblLimitJ6Heading.TabIndex = 37
         Me.lblLimitJ6Heading.Text = "J6:"
-        Me.lblLimitJ6Heading.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblLimitJ6Heading.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label18
         '
@@ -584,6 +584,7 @@ Partial Class panRoboStatus
         '
         Me.lblJ1LSState.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblJ1LSState.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblJ1LSState.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.lblJ1LSState.Location = New System.Drawing.Point(42, 176)
         Me.lblJ1LSState.Margin = New System.Windows.Forms.Padding(1)
         Me.lblJ1LSState.Name = "lblJ1LSState"
@@ -766,6 +767,7 @@ Partial Class panRoboStatus
         '
         Me.lblJ2LSState.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblJ2LSState.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblJ2LSState.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.lblJ2LSState.Location = New System.Drawing.Point(124, 176)
         Me.lblJ2LSState.Margin = New System.Windows.Forms.Padding(1)
         Me.lblJ2LSState.Name = "lblJ2LSState"
@@ -777,6 +779,7 @@ Partial Class panRoboStatus
         '
         Me.lblJ3LSState.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblJ3LSState.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblJ3LSState.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.lblJ3LSState.Location = New System.Drawing.Point(206, 176)
         Me.lblJ3LSState.Margin = New System.Windows.Forms.Padding(1)
         Me.lblJ3LSState.Name = "lblJ3LSState"
@@ -788,6 +791,7 @@ Partial Class panRoboStatus
         '
         Me.lblJ4LSState.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblJ4LSState.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblJ4LSState.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.lblJ4LSState.Location = New System.Drawing.Point(288, 176)
         Me.lblJ4LSState.Margin = New System.Windows.Forms.Padding(1)
         Me.lblJ4LSState.Name = "lblJ4LSState"
@@ -799,6 +803,7 @@ Partial Class panRoboStatus
         '
         Me.lblJ5LSState.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblJ5LSState.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblJ5LSState.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.lblJ5LSState.Location = New System.Drawing.Point(370, 176)
         Me.lblJ5LSState.Margin = New System.Windows.Forms.Padding(1)
         Me.lblJ5LSState.Name = "lblJ5LSState"
@@ -810,6 +815,7 @@ Partial Class panRoboStatus
         '
         Me.lblJ6LSState.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblJ6LSState.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblJ6LSState.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.lblJ6LSState.Location = New System.Drawing.Point(452, 176)
         Me.lblJ6LSState.Margin = New System.Windows.Forms.Padding(1)
         Me.lblJ6LSState.Name = "lblJ6LSState"

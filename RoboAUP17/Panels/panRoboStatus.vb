@@ -3,32 +3,35 @@
     ' TODO
     ' -----------------------------------------------------------------------------
     ' Servos / Greifer
+    Private Const _constInRefTooltipText As String = "Achse referenziert"
+    Private Const _constNoRefTooltipText As String = "Achse nicht referenziert"
+    Private Const _constLimitSwitchActuated As String = "Endschalter betätigt oder nicht angeschlossen"
+    Private Const _constLimitSwitchNotActuated As String = "Endschalter nicht betätigt"
+    Private Const _constLimitEstopActuated As String = "Nothalt betätigt"
+    Private Const _constLimitEstopNotActuated As String = "Nothalt nicht betätigt"
+
+    Private _limitSwitchToolTip As New ToolTip
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
     ' -----------------------------------------------------------------------------
     Private Sub panRoboStatus_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim ImgRef As New ImageList
-        ImgRef.ImageSize = New Size(20, 20)
+        ImgRef.ImageSize = New Size(22, 22)
         ImgRef.Images.Add(My.Resources.ico_error)
-        ImgRef.Images.Add(My.Resources.ico_ok)
+        ImgRef.Images.Add(My.Resources.ico_checked)
         lblJ1HeadingImg.ImageList = ImgRef
-        lblJ1HeadingImg.ImageIndex = 0
         lblJ2HeadingImg.ImageList = ImgRef
-        lblJ2HeadingImg.ImageIndex = 1
         lblJ3HeadingImg.ImageList = ImgRef
-        lblJ3HeadingImg.ImageIndex = 0
         lblJ4HeadingImg.ImageList = ImgRef
-        lblJ4HeadingImg.ImageIndex = 0
         lblJ5HeadingImg.ImageList = ImgRef
-        lblJ5HeadingImg.ImageIndex = 0
         lblJ6HeadingImg.ImageList = ImgRef
-        lblJ6HeadingImg.ImageIndex = 0
 
         Dim ImgListLS As New ImageList
-        ImgListLS.ImageSize = New Size(20, 20)
-        ImgListLS.Images.Add(My.Resources.ico_nok)
-        ImgListLS.Images.Add(My.Resources.ico_ok)
+        ImgListLS.ImageSize = New Size(17, 17)
+        ImgListLS.Images.Add(My.Resources.ico_unknown)
+        ImgListLS.Images.Add(My.Resources.ico_not_actuated)
+        ImgListLS.Images.Add(My.Resources.ico_actuated)
         lblJ1LSState.ImageList = ImgListLS
         lblJ1LSState.ImageIndex = 0
         lblJ2LSState.ImageList = ImgListLS
@@ -43,9 +46,10 @@
         lblJ6LSState.ImageIndex = 0
 
         Dim ImgListES As New ImageList
-        ImgListES.ImageSize = New Size(20, 20)
+        ImgListES.ImageSize = New Size(22, 22)
+        ImgListES.Images.Add(My.Resources.ico_help)
         ImgListES.Images.Add(My.Resources.ico_estop)
-        ImgListES.Images.Add(My.Resources.ico_ok)
+        ImgListES.Images.Add(My.Resources.ico_checked)
         lblESState.ImageList = ImgListES
         lblESState.ImageIndex = 0
 
@@ -88,18 +92,40 @@
             Return
         End If
 
-        lblJ1Val.Text = CStr(frmMain.RoboControl.PosJoint.J1)
-        lblJ2Val.Text = CStr(frmMain.RoboControl.PosJoint.J2)
-        lblJ3Val.Text = CStr(frmMain.RoboControl.PosJoint.J3)
-        lblJ4Val.Text = CStr(frmMain.RoboControl.PosJoint.J4)
-        lblJ5Val.Text = CStr(frmMain.RoboControl.PosJoint.J5)
-        lblJ6Val.Text = CStr(frmMain.RoboControl.PosJoint.J6)
-        lblXVal.Text = CStr(frmMain.RoboControl.PosCart.X)
-        lblYVal.Text = CStr(frmMain.RoboControl.PosCart.Y)
-        lblZVal.Text = CStr(frmMain.RoboControl.PosCart.Z)
-        lblYawVal.Text = CStr(frmMain.RoboControl.PosCart.Yaw)
-        lblPitchVal.Text = CStr(frmMain.RoboControl.PosCart.Pitch)
-        lblRollVal.Text = CStr(frmMain.RoboControl.PosCart.Roll)
+        lblJ1Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J1, 2))
+        lblJ2Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J2, 2))
+        lblJ3Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J3, 2))
+        lblJ4Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J4, 2))
+        lblJ5Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J5, 2))
+        lblJ6Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J6, 2))
+        lblXVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.X, 2))
+        lblYVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Y, 2))
+        lblZVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Z, 2))
+        lblYawVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Yaw, 2))
+        lblPitchVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Pitch, 2))
+        lblRollVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Roll, 2))
+    End Sub
+
+    Private Sub _refreshRefState()
+        If InvokeRequired Then
+            Invoke(Sub() _eRoboRefStateChanged())
+            Return
+        End If
+
+        lblJ1HeadingImg.ImageIndex = If(frmMain.RoboControl.RefOkay(0), 1, 0)
+        lblJ2HeadingImg.ImageIndex = If(frmMain.RoboControl.RefOkay(1), 1, 0)
+        lblJ3HeadingImg.ImageIndex = If(frmMain.RoboControl.RefOkay(2), 1, 0)
+        lblJ4HeadingImg.ImageIndex = If(frmMain.RoboControl.RefOkay(3), 1, 0)
+        lblJ5HeadingImg.ImageIndex = If(frmMain.RoboControl.RefOkay(4), 1, 0)
+        lblJ6HeadingImg.ImageIndex = If(frmMain.RoboControl.RefOkay(5), 1, 0)
+
+        Dim tt As ToolTip = New ToolTip()
+        tt.SetToolTip(lblJ1HeadingImg, If(frmMain.RoboControl.RefOkay(0), _constInRefTooltipText, _constNoRefTooltipText))
+        tt.SetToolTip(lblJ2HeadingImg, If(frmMain.RoboControl.RefOkay(1), _constInRefTooltipText, _constNoRefTooltipText))
+        tt.SetToolTip(lblJ3HeadingImg, If(frmMain.RoboControl.RefOkay(2), _constInRefTooltipText, _constNoRefTooltipText))
+        tt.SetToolTip(lblJ4HeadingImg, If(frmMain.RoboControl.RefOkay(3), _constInRefTooltipText, _constNoRefTooltipText))
+        tt.SetToolTip(lblJ5HeadingImg, If(frmMain.RoboControl.RefOkay(4), _constInRefTooltipText, _constNoRefTooltipText))
+        tt.SetToolTip(lblJ6HeadingImg, If(frmMain.RoboControl.RefOkay(5), _constInRefTooltipText, _constNoRefTooltipText))
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -125,17 +151,7 @@
 
     ' Referenz
     Private Sub _eRoboRefStateChanged()
-        If InvokeRequired Then
-            Invoke(Sub() _eRoboRefStateChanged())
-            Return
-        End If
-
-        lblJ1HeadingImg.ImageIndex = If(frmMain.RoboControl.RefOkay(0), 1, 0)
-        lblJ2HeadingImg.ImageIndex = If(frmMain.RoboControl.RefOkay(1), 1, 0)
-        lblJ3HeadingImg.ImageIndex = If(frmMain.RoboControl.RefOkay(2), 1, 0)
-        lblJ4HeadingImg.ImageIndex = If(frmMain.RoboControl.RefOkay(3), 1, 0)
-        lblJ5HeadingImg.ImageIndex = If(frmMain.RoboControl.RefOkay(4), 1, 0)
-        lblJ6HeadingImg.ImageIndex = If(frmMain.RoboControl.RefOkay(5), 1, 0)
+        _refreshRefState()
     End Sub
 
     ' Serial
@@ -147,6 +163,25 @@
 
         lblSerialState.Text = If(SerialConnected, "verbunden", "nicht verbunden")
         lblSerialState.ForeColor = If(SerialConnected, Color.Green, Color.Red)
+
+        If Not SerialConnected Then
+            lblJ1LSState.ImageIndex = 0
+            lblJ2LSState.ImageIndex = 0
+            lblJ3LSState.ImageIndex = 0
+            lblJ4LSState.ImageIndex = 0
+            lblJ5LSState.ImageIndex = 0
+            lblJ6LSState.ImageIndex = 0
+            _limitSwitchToolTip.RemoveAll()
+
+            lblJ1HeadingImg.ImageIndex = -1
+            lblJ2HeadingImg.ImageIndex = -1
+            lblJ3HeadingImg.ImageIndex = -1
+            lblJ4HeadingImg.ImageIndex = -1
+            lblJ5HeadingImg.ImageIndex = -1
+            lblJ6HeadingImg.ImageIndex = -1
+        Else
+            _refreshRefState()
+        End If
     End Sub
 
     ' Endschalter
@@ -156,12 +191,19 @@
             Return
         End If
 
-        lblJ1LSState.ImageIndex = If(lssState(0), 1, 0)
-        lblJ2LSState.ImageIndex = If(lssState(1), 1, 0)
-        lblJ3LSState.ImageIndex = If(lssState(2), 1, 0)
-        lblJ4LSState.ImageIndex = If(lssState(3), 1, 0)
-        lblJ5LSState.ImageIndex = If(lssState(4), 1, 0)
-        lblJ6LSState.ImageIndex = If(lssState(5), 1, 0)
+        lblJ1LSState.ImageIndex = If(lssState(0), 2, 1)
+        lblJ2LSState.ImageIndex = If(lssState(1), 2, 1)
+        lblJ3LSState.ImageIndex = If(lssState(2), 2, 1)
+        lblJ4LSState.ImageIndex = If(lssState(3), 2, 1)
+        lblJ5LSState.ImageIndex = If(lssState(4), 2, 1)
+        lblJ6LSState.ImageIndex = If(lssState(5), 2, 1)
+
+        _limitSwitchToolTip.SetToolTip(lblJ1LSState, If(lssState(0), _constLimitSwitchActuated, _constLimitSwitchNotActuated))
+        _limitSwitchToolTip.SetToolTip(lblJ2LSState, If(lssState(1), _constLimitSwitchActuated, _constLimitSwitchNotActuated))
+        _limitSwitchToolTip.SetToolTip(lblJ3LSState, If(lssState(2), _constLimitSwitchActuated, _constLimitSwitchNotActuated))
+        _limitSwitchToolTip.SetToolTip(lblJ4LSState, If(lssState(3), _constLimitSwitchActuated, _constLimitSwitchNotActuated))
+        _limitSwitchToolTip.SetToolTip(lblJ5LSState, If(lssState(4), _constLimitSwitchActuated, _constLimitSwitchNotActuated))
+        _limitSwitchToolTip.SetToolTip(lblJ6LSState, If(lssState(5), _constLimitSwitchActuated, _constLimitSwitchNotActuated))
     End Sub
 
     ' Nothalt
@@ -171,7 +213,7 @@
             Return
         End If
 
-        lblESState.ImageIndex = If(essState, 1, 0)
+        lblESState.ImageIndex = If(essState, 2, 1)
     End Sub
 
 End Class
