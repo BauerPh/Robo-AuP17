@@ -54,6 +54,7 @@ Public Class panTCPVariables
 
         lblConnectStatus.Text = "Verbunden"
         lblConnectStatus.ForeColor = Color.Green
+        frmMain.Log("[TCP] Verbunden!", Logger.LogLevel.INFO)
     End Sub
     Private Sub _eDisconnected()
         If InvokeRequired Then
@@ -63,8 +64,10 @@ Public Class panTCPVariables
 
         lblConnectStatus.Text = "nicht verbunden"
         lblConnectStatus.ForeColor = Color.Red
+        frmMain.Log("[TCP] Getrennt!", Logger.LogLevel.INFO)
     End Sub
     Private Sub _eVariableChanged(name As String, value As Integer)
+        frmMain.Log($"[TCP] neue Variable erhalten: {name} = {value}", Logger.LogLevel.DEBUG)
         _refreshDataGridView()
     End Sub
     Private Sub _eRoboParameterChanged(parameterChanged As Settings.ParameterChangedParameter)

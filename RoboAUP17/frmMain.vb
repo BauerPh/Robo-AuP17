@@ -61,6 +61,10 @@ Public Class frmMain
         _ssHintTimer.Interval = _ssHintTimerInterval
         _ssHintTimer.Start()
     End Sub
+
+    Friend Sub Log(msg As String, lvl As Logger.LogLevel)
+        _logger.Log(msg, lvl)
+    End Sub
 #End Region
 
     ' -----------------------------------------------------------------------------
