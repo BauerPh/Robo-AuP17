@@ -70,7 +70,7 @@
             Invoke(Sub() _eVariableChanged(name, value))
             Return
         End If
-        frmMain.Log($"[TCP] Variable empfangen: {name} = {value}", Logger.LogLevel.INFO)
+        frmMain.Log($"[TCP] Variable geändert: {name} = {value}", Logger.LogLevel.INFO)
         _refreshDataGridView()
     End Sub
     Private Sub _eRoboParameterChanged(parameterChanged As Settings.ParameterChangedParameter)
