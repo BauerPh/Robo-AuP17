@@ -2,7 +2,7 @@
     ' -----------------------------------------------------------------------------
     ' Definitions
     ' -----------------------------------------------------------------------------
-    Private WithEvents _tcpCom As New TCPCommunication
+    Private WithEvents _tcpCom As New TCPCommunication("$")
     Private _variables As New Dictionary(Of String, Integer)
     Friend ReadOnly Property Items As Dictionary(Of String, Integer)
         Get
@@ -14,7 +14,6 @@
     Friend Event Disconnected()
     Friend Event ConnectError()
     Friend Event VariableChanged(ByVal name As String, ByVal val As Integer)
-
 
 
     ' -----------------------------------------------------------------------------
@@ -48,7 +47,7 @@
     Friend Function SetVariable(name As String, val As Integer) As Boolean
         If Not _variables.ContainsKey(name) Then Return False
         _variables(name) = val
-        _tcpCom.Send($"{name};{val}")
+        _tcpCom.Send($"{name};{val}$")
         RaiseEvent VariableChanged(name, val)
         Return True
     End Function

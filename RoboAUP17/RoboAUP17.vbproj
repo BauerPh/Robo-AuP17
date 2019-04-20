@@ -306,6 +306,7 @@
     <Content Include="icon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\icons8-error-96.png" />
     <Content Include="RoboParameterDefault.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

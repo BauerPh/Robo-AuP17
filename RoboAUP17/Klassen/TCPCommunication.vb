@@ -37,6 +37,12 @@ Public Class TCPCommunication
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
+    Friend Sub New()
+
+    End Sub
+    Friend Sub New(endString As String)
+        _msgEnding = endString
+    End Sub
     Friend Function Listen(port As Integer) As Boolean
         If _connected Or _client Then Return False
         _server = True
@@ -64,7 +70,7 @@ Public Class TCPCommunication
     End Sub
     Friend Sub Send(msg As String)
         If _connected Then
-            _networkStreamW.WriteLine(msg)
+            _networkStreamW.Write(msg)
             _networkStreamW.Flush()
         End If
     End Sub
@@ -164,7 +170,7 @@ Public Class TCPCommunication
                     Dim c As Char = ChrW(_networkStreamR.Read)
                     msg &= c
                     If msg.EndsWith(_msgEnding) Then
-                        RaiseEvent MessageReceived(msg)
+                        RaiseEvent MessageReceived(msg.Substring(0, msg.Length - _msgEnding.Length))
                         msg = ""
                     End If
                 End While
