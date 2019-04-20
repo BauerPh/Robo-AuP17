@@ -16,6 +16,16 @@ Public Class TCPCommunication
     Private _ip As Net.IPAddress
     Private _port As Integer
     Private _host As String
+    Private _msgEnding As String = vbCrLf
+
+    Friend Property MessageEndString As String
+        Get
+            Return _msgEnding
+        End Get
+        Set(value As String)
+            _msgEnding = value
+        End Set
+    End Property
 
     Friend Event ListenerClientConnected()
     Friend Event ListenerClientDisconnected()
@@ -136,20 +146,12 @@ Public Class TCPCommunication
 
     ' Wartet auf eingehende Daten
     Private Sub _handle()
+        Dim msg As String = ""
         While True
             ' Check for received Message
             If _connected Then
-                Try
-                    Dim msg As String = _networkStreamR.ReadLine()
-                    If msg IsNot Nothing Then
-                        If msg.Length > 0 Then
-                            RaiseEvent MessageReceived(msg)
-                            msg = Nothing
-                        End If
-                    Else
-                        Throw New Exception 'Disconnected
-                    End If
-                Catch
+                ' Verbindung prüfen
+                If Not _isConnected(_tcpClient) Then
                     _connected = False
                     If _client Then
                         RaiseEvent Disconnected()
@@ -157,8 +159,30 @@ Public Class TCPCommunication
                         RaiseEvent ListenerClientDisconnected()
                         _waitForConnection()
                     End If
-                End Try
+                End If
+                ' eingehende Nachricht
+                While Not _networkStreamR.EndOfStream
+                    Dim c As Char = ChrW(_networkStreamR.Read)
+                    msg &= c
+                    If msg.EndsWith(_msgEnding) Then
+                        RaiseEvent MessageReceived(msg)
+                        msg = ""
+                    End If
+                End While
             End If
         End While
     End Sub
+
+    ' Prüft on Client noch verbunden ist
+    Private Function _isConnected(client As TcpClient) As Boolean
+        Try
+            ' Poll(1, SelectMode.SelectRead) ist true, wenn:
+            ' Verbindung noch nicht aufgebaut oder
+            ' Daten verfügbar oder
+            ' Verbindung unterbrochen
+            Return Not (client.Client.Poll(1, SelectMode.SelectRead) And (client.Available = 0))
+        Catch e As SocketException
+            Return False
+        End Try
+    End Function
 End Class
