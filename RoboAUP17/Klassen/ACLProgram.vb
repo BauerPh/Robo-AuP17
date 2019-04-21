@@ -7,7 +7,7 @@ Friend Class ACLProgram
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' ACL-Programm (wip...) / FOR und Teachpunktfunktionen fehlen noch
+    ' ACL-Programm (wip...) / Teachpunktfunktionen fehlen noch
 
     ' -----------------------------------------------------------------------------
     ' Definitions

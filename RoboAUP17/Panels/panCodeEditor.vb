@@ -3,7 +3,6 @@ Public Class panCodeEditor
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' Syntax Highlighting
     ' Rückgängig / Wiederholen Funktion
 
     Private _lastHighlightedLineIndex As Int32 = 0
