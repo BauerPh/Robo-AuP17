@@ -6,7 +6,7 @@ options { tokenVocab=ACLLexer; }
 // Top Level Description
 
 root
-	: statement+ EOF
+	: NEWLINE? statement+ EOF
 	;
 
 statement

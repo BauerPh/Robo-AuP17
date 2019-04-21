@@ -70,14 +70,15 @@ OPENCURLYBRACKET:	'{';
 CLOSECURLYBRACKET:	'}';
 COMMA:				',';
 STRING:				'"' ~[\r\n\t\f"]* '"';
-NEWLINE:			('\r'? '\n')+;
 IDENTIFIER:			[a-zA-Z] [a-zA-Z0-9]*;
 
+NEWLINE:			(COMMENT? ('\r'? '\n')+)+;
+
 // Comment
-LINE_COMMENT:		'//' ~[\r\n]* NEWLINE	-> skip;
+COMMENT:			'//' ~[\r\n]*				-> skip;
 
 // Skip Whitespaces
-WS:					[ \t\f]+				-> skip;
+WS:					[ \t\f]+					-> skip;
 
 // Unknown token
 ERROR_RECONGNIGION: .;				//-> channel(HIDDEN);

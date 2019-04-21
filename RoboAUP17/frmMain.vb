@@ -142,9 +142,11 @@ Public Class frmMain
 #Region "ACL Programm"
     ' ACL Program
     Private Sub tsBtnProgCheck_Click(sender As Object, e As EventArgs) Handles tsBtnProgCheck.Click
+        _dckPanCodeEditor.RemoveMarker()
         _aclProgram.CompileProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
     End Sub
     Private Sub tsBtnProgRun_Click(sender As Object, e As EventArgs) Handles tsBtnProgRun.Click
+        _dckPanCodeEditor.RemoveMarker()
         _aclProgram.RunProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
     End Sub
     Private Sub tsBtnProgStop_Click(sender As Object, e As EventArgs) Handles tsBtnProgStop.Click

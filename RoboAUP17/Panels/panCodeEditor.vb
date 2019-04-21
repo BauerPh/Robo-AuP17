@@ -63,21 +63,19 @@ Public Class panCodeEditor
         Me._maxLineNumberCharLength = maxLineNumberCharLength
 
         ' Remove error marker
-        _removeMarker()
+        RemoveMarker()
     End Sub
 
     Private Sub sciCodeEditor_TextEdited(sender As Object, e As EventArgs) Handles sciCodeEditor.CharAdded, sciCodeEditor.Delete
         ' Remove error marker
-        _removeMarker()
+        RemoveMarker()
     End Sub
 
     ' -----------------------------------------------------------------------------
-    ' Private
+    ' Public
     ' -----------------------------------------------------------------------------
-    Private Sub _removeMarker()
-        For i = 0 To sciCodeEditor.Lines.Count - 1
-            sciCodeEditor.Lines(i).MarkerDelete(2)
-        Next
+    Friend Sub RemoveMarker()
+        sciCodeEditor.MarkerDeleteAll(2)
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -129,6 +127,5 @@ Public Class panCodeEditor
 
         sciCodeEditor.Lines(line - 1).MarkerAdd(2)
     End Sub
-
 
 End Class
