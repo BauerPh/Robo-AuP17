@@ -48,6 +48,9 @@ Public Class frmMain
         End Get
     End Property
 
+    Friend Event RefreshEvent()
+    Friend Event SerialConnectionStateChanged()
+
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
@@ -96,8 +99,8 @@ Public Class frmMain
         _configureDockPanel()
         ResumeLayout()
 
-        'Pass Settings Object to ACLProgram Object
-        _aclProgram.SetSettingsObject(_roboControl.Pref)
+        'Pass RoboControl Object to ACLProgram Object
+        _aclProgram.SetRoboControlObject(_roboControl)
         _aclProgram.Init()
 
         'Welcome Log
@@ -488,6 +491,8 @@ Public Class frmMain
     Private Sub _eComSerialConnected() Handles _roboControl.SerialConnected
         SerialConnected = True
         RobotBusy = False
+        RaiseEvent SerialConnectionStateChanged()
+        RaiseEvent RefreshEvent()
 
         _enableDisableElements()
     End Sub
@@ -496,14 +501,20 @@ Public Class frmMain
         RobotBusy = False
 
         _aclProgram.ForceStopProgram() ' Kill Thread
+        RaiseEvent SerialConnectionStateChanged()
+        RaiseEvent RefreshEvent()
+
         _enableDisableElements()
     End Sub
     Private Sub _eRoboBusy(busy As Boolean, delay As Boolean) Handles _roboControl.RoboBusy
         RobotBusy = busy
+        RaiseEvent RefreshEvent()
 
         _enableDisableElements()
     End Sub
     Private Sub _eRefresh() Handles _aclProgram.ProgramStarted, _aclProgram.ProgramFinished, _roboControl.RoboRefStateChanged
+        RaiseEvent RefreshEvent()
+
         _enableDisableElements()
     End Sub
     Private Sub _eRoboParameterChanged(parameterChanged As Settings.ParameterChangedParameter) Handles _roboControl.RoboParameterChanged

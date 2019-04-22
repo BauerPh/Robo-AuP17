@@ -25,11 +25,8 @@
         AddHandler frmMain.RoboControl.RoboPositionChanged, AddressOf _eNewPos
         AddHandler frmMain.RoboControl.RoboServoChanged, AddressOf _eNewServo
         AddHandler frmMain.RoboControl.RoboParameterChanged, AddressOf _eRoboParameterChanged
-        AddHandler frmMain.RoboControl.SerialConnected, AddressOf _eRefresh
-        AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eRefresh
+        AddHandler frmMain.RefreshEvent, AddressOf _eRefresh
         AddHandler frmMain.RoboControl.RoboBusy, AddressOf _eRoboBusy
-        AddHandler frmMain.RoboControl.RoboRefStateChanged, AddressOf _eRefresh
-        AddHandler frmMain.ACLProgram.ProgramFinished, AddressOf _eRefresh
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -568,7 +565,6 @@
             _doMoveAfterServoMove = False
             _doMove()
         End If
-        _enableDisableElements()
     End Sub
 
 End Class

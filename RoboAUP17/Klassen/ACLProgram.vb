@@ -15,7 +15,7 @@ Friend Class ACLProgram
 #Region "Definitions"
     Private _savedProgram As String
 
-    Private _settings As Settings
+    Private _robotControl As RobotControl
 
     Private _teachPoints As New List(Of TeachPoint)
     Private _listBox As ListBox
@@ -58,12 +58,12 @@ Friend Class ACLProgram
 #Region "Allgemein"
     Friend Sub Init()
         TcpVariables.TerminateConnection()
-        If _settings.TCPServerParameter.Listen Then
-            TcpVariables.Listen(_settings.TCPServerParameter.Port)
+        If _robotControl.Pref.TCPServerParameter.Listen Then
+            TcpVariables.Listen(_robotControl.Pref.TCPServerParameter.Port)
         End If
     End Sub
-    Friend Sub SetSettingsObject(ByRef settings As Settings)
-        _settings = settings
+    Friend Sub SetRoboControlObject(ByRef roboControl As RobotControl)
+        _robotControl = roboControl
     End Sub
     Friend Sub ClearProgram()
         _teachPoints.Clear()
@@ -490,7 +490,7 @@ Friend Class ACLProgram
                     ' -------------------------------------
                     ' SERVO
                     ' -------------------------------------
-                    If Not _settings.ServoParameter(cmd.servoNum - 1).Available Then
+                    If Not _robotControl.Pref.ServoParameter(cmd.servoNum - 1).Available Then
                         _runtimeError(cmd.lineNr, $"Servo {cmd.servoNum} ist nicht aktiviert")
                         Exit While 'Programm beenden
                     End If
@@ -502,16 +502,24 @@ Friend Class ACLProgram
                     ' -------------------------------------
                     ' Teachpoint suchen und anfahren
                     Dim tpIndex As Integer = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.tp.nr = cmd.moveTpNr)
-                    If tpIndex > 0 Then
+                    If tpIndex >= 0 Then
                         Dim tp As TeachPoint = _runtimeTeachPoints(tpIndex).tp
                         If tp.type Then
-                            RaiseEvent DoCartMove(tp.cartCoords, cmd.moveSpeed, cmd.moveAcc)
+                            If Not _robotControl.CheckCartCoords(tp.cartCoords) Then
+                                _runtimeError(cmd.lineNr, $"Koordinaten nicht erreichbar. Entweder ergab die kinematische Berechnung nicht für jede Achse ein Ergebnis oder das Achslimit einer oder mehrerer Achsen wurde überschritten.")
+                            Else
+                                RaiseEvent DoCartMove(tp.cartCoords, cmd.moveSpeed, cmd.moveAcc)
+                            End If
                         Else
-                            RaiseEvent DoJointMove(tp.jointAngles, cmd.moveSpeed, cmd.moveAcc)
+                            If Not _robotControl.CheckJointAngles(tp.jointAngles) Then
+                                _runtimeError(cmd.lineNr, $"Koordinaten nicht erreichbar. Das Achslimit einer oder mehrerer Achsen wurde überschritten.")
+                            Else
+                                RaiseEvent DoJointMove(tp.jointAngles, cmd.moveSpeed, cmd.moveAcc)
+                            End If
                         End If
                     Else
-                        ' Dürfte niemals passieren, da beim compilen schon abgefragt!
-                        StopProgram()
+                            ' Dürfte niemals passieren, da beim compilen schon abgefragt!
+                            StopProgram()
                     End If
                     i += 1
                 Case progFunc.delay
@@ -591,6 +599,85 @@ Friend Class ACLProgram
                             Exit While 'Programm beenden
                         End If
                     End If
+                    i += 1
+                Case progFunc.setVarToPosition
+                    ' -------------------------------------
+                    ' SET VARIABLE TO POSITION
+                    ' -------------------------------------
+                    i += 1
+                Case progFunc.defPos
+                    ' -------------------------------------
+                    ' DEFINE POSITION
+                    ' -------------------------------------
+                    If _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = cmd.posName) >= 0 Then
+                        _runtimeError(cmd.lineNr, $"Teachpunkt {cmd.posName} wurde bereits definiert")
+                        Exit While 'Programm beenden
+                    End If
+                    Dim tp As New RuntimeTeachPoint
+                    tp.identifier = cmd.posName
+                    tp.initialized = False
+                    tp.tp.nr = -1
+                    _runtimeTeachPoints.Add(tp)
+                    i += 1
+                Case progFunc.delPos
+                    ' -------------------------------------
+                    ' DELETE POSITION
+                    ' -------------------------------------
+                    Dim index As Integer = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = cmd.posName)
+                    If index = 0 Then
+                        _runtimeError(cmd.lineNr, $"Teachpunkt {cmd.posName} wurde nicht definiert")
+                        Exit While 'Programm beenden
+                    End If
+                    _runtimeTeachPoints.RemoveAt(index)
+                    i += 1
+                Case progFunc.undefPos
+                    ' -------------------------------------
+                    ' UNDEFINE POSITION
+                    ' -------------------------------------
+                    Dim index As Integer = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = cmd.posName)
+                    If index = 0 Then
+                        _runtimeError(cmd.lineNr, $"Teachpunkt {cmd.posName} wurde nicht definiert")
+                        Exit While 'Programm beenden
+                    End If
+                    Dim tp As RuntimeTeachPoint = _runtimeTeachPoints(index)
+                    tp.initialized = False
+                    _runtimeTeachPoints(index) = tp
+                    i += 1
+                Case progFunc.recordPos
+                    ' -------------------------------------
+                    ' RECORD POSITION
+                    ' -------------------------------------
+                    Dim index As Integer = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = cmd.posName)
+                    If index = 0 Then
+                        _runtimeError(cmd.lineNr, $"Teachpunkt {cmd.posName} wurde nicht definiert")
+                        Exit While 'Programm beenden
+                    End If
+                    Dim tp As RuntimeTeachPoint = _runtimeTeachPoints(index)
+
+                    tp.initialized = True
+                    tp.tp.type = cmd.posType
+
+                    ' Aktuelle Position speichern
+                    If cmd.posType Then
+                        tp.tp.cartCoords = _robotControl.PosCart
+                        If Not _robotControl.CheckCartCoords(tp.tp.cartCoords) Then
+                            _runtimeError(cmd.lineNr, $"Koordinaten nicht erreichbar. Entweder ergab die kinematische Berechnung nicht für jede Achse ein Ergebnis oder das Achslimit einer oder mehrerer Achsen wurde überschritten.")
+                        End If
+                    Else
+                        tp.tp.jointAngles = _robotControl.PosJoint
+                    End If
+
+                    _runtimeTeachPoints(index) = tp
+                    i += 1
+                Case progFunc.changePos
+                    ' -------------------------------------
+                    ' CHANGE POSITION
+                    ' -------------------------------------
+                    i += 1
+                Case progFunc.copyPos
+                    ' -------------------------------------
+                    ' COPY POSITION
+                    ' -------------------------------------
                     i += 1
             End Select
 
@@ -852,7 +939,7 @@ Friend Class ACLProgram
 
             ' Teachpunkt suchen und move Befehl hinzufgen
             Dim tpIndex As Integer = _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.tp.nr = tpNr)
-            If tpIndex > 0 Then
+            If tpIndex >= 0 Then
                 ' Move hinzufügen
                 Dim progEntry As New ProgramEntry With {
                     .func = progFunc.move,
@@ -1375,6 +1462,7 @@ Friend Class ACLProgram
                 progEntry.func = progFunc.recordPos
                 progEntry.lineNr = lineNr
                 progEntry.posName = identifier
+                progEntry.posType = False
                 _progList.Add(progEntry)
             Else
                 RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
@@ -1382,10 +1470,10 @@ Friend Class ACLProgram
 
             MyBase.EnterHere(context)
         End Sub
-        'HERER
-        Public Overrides Sub EnterHerer(<NotNull> context As ACLParser.HererContext)
-            Dim lineNr As Integer = context.HERER.Symbol.Line
-            Dim identifier As String = context.IDENTIFIER(0).GetText()
+        'TEACH
+        Public Overrides Sub EnterTeach(<NotNull> context As ACLParser.TeachContext)
+            Dim lineNr As Integer = context.TEACH.Symbol.Line
+            Dim identifier As String = context.IDENTIFIER.GetText()
             ' Prüfen ob Position schon erstellt wurde
             Dim index As Integer = _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = identifier)
             If index >= 0 Then
@@ -1393,56 +1481,18 @@ Friend Class ACLProgram
                 Dim tp As RuntimeTeachPoint = _tp(index)
                 tp.initialized = True
                 _tp(index) = tp
-                ' other Position
-                Dim otherPos As String = context.IDENTIFIER(1)?.GetText()
-                If otherPos Is Nothing Then
-                    otherPos = context.INTEGER?.GetText()
-                End If
                 ' recordPos erstellen
                 Dim progEntry As New ProgramEntry
-                    progEntry.func = progFunc.recordPos
-                    progEntry.lineNr = lineNr
-                    progEntry.posName = identifier
-                    progEntry.posRecordOffsetToAnotherPosition = otherPos IsNot Nothing
-                    progEntry.posRecordOffsetToCurrent = Not progEntry.posRecordOffsetToAnotherPosition
-                    If progEntry.posRecordOffsetToAnotherPosition Then
-                        If IsNumeric(otherPos) Then
-                            Try
-                                progEntry.posOtherPositionVal = CInt(otherPos)
-                            Catch e As OverflowException
-                                RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
-                            End Try
-                            ' Prüfen ob dieser Teachpunkt existiert
-                            If _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.tp.nr = progEntry.posOtherPositionVal) = -1 Then
-                                RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {progEntry.posOtherPositionVal} nicht gefunden")
-                            End If
-                        Else
-                            progEntry.posOtherPositionVar = otherPos
-                            ' Prüfen ob dieser Teachpunkt existiert
-                            If _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = progEntry.posOtherPositionVar) = -1 Then
-                                RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt ""{progEntry.posOtherPositionVar}"" nicht gefunden")
-                            End If
-                        End If
-                    End If
-
-                    _progList.Add(progEntry)
-                Else
-                    RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
+                progEntry.func = progFunc.recordPos
+                progEntry.lineNr = lineNr
+                progEntry.posName = identifier
+                progEntry.posType = True
+                _progList.Add(progEntry)
+            Else
+                RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
             End If
 
-            MyBase.EnterHerer(context)
-        End Sub
-        'TEACH (TODO)
-        Public Overrides Sub EnterTeach(<NotNull> context As ACLParser.TeachContext)
-            RaiseEvent CompileErrorEvent(context.TEACH.Symbol.Line, $"TEACH noch nicht implementiert")
-
             MyBase.EnterTeach(context)
-        End Sub
-        'TEACHR (TODO)
-        Public Overrides Sub EnterTeachr(<NotNull> context As ACLParser.TeachrContext)
-            RaiseEvent CompileErrorEvent(context.TEACHR.Symbol.Line, $"TEACHR noch nicht implementiert")
-
-            MyBase.EnterTeachr(context)
         End Sub
         'SETPV (TODO)
         Public Overrides Sub EnterSetpv(<NotNull> context As ACLParser.SetpvContext)

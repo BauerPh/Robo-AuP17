@@ -39,9 +39,7 @@ posmanipulation
 	: defp
 	| delp
 	| undef
-	| herer
 	| here
-	| teachr
 	| teach
 	| setpvc
 	| setpv
@@ -121,16 +119,8 @@ undef
 	: UNDEF IDENTIFIER
 	;
 
-herer
-	: HERER IDENTIFIER (IDENTIFIER | INTEGER)?
-	;
-
 here
 	: HERE IDENTIFIER
-	;
-
-teachr
-	: TEACHR IDENTIFIER (IDENTIFIER | INTEGER)?
 	;
 
 teach

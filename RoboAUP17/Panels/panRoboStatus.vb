@@ -58,8 +58,7 @@
         AddHandler frmMain.RoboControl.RoboServoChanged, AddressOf _eNewServo
         AddHandler frmMain.RoboControl.RoboParameterChanged, AddressOf _eRoboParameterChanged
         AddHandler frmMain.RoboControl.RoboRefStateChanged, AddressOf _eRoboRefStateChanged
-        AddHandler frmMain.RoboControl.SerialConnected, AddressOf _eSerialConnectionStateChanged
-        AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eSerialConnectionStateChanged
+        AddHandler frmMain.SerialConnectionStateChanged, AddressOf _eSerialConnectionStateChanged
         AddHandler frmMain.RoboControl.LimitSwitchStateChanged, AddressOf _eLimitSwitchStateChanged
         AddHandler frmMain.RoboControl.EmergencyStopStateChanged, AddressOf _eEmergencyStopStateChanged
     End Sub

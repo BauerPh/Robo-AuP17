@@ -114,6 +114,22 @@ Friend Class RobotControl
         _actV = speed
         _actA = acc
     End Sub
+    Friend Function CheckCartCoords(cartCoords As CartCoords) As Boolean
+        Dim jointAngles As JointAngles = _kin.InversKin(cartCoords)
+        'Check inverse Kin Ergebnis
+        If Double.IsNaN(jointAngles.J1) Or Double.IsNaN(jointAngles.J2) Or Double.IsNaN(jointAngles.J3) Or Double.IsNaN(jointAngles.J4) Or Double.IsNaN(jointAngles.J5) Or Double.IsNaN(jointAngles.J6) Then
+            Return False
+        End If
+        'Check Limits
+        If Not _checkJointAngleLimits(jointAngles) Then
+            Return False
+        End If
+        Return True
+    End Function
+    Friend Function CheckJointAngles(jointAngles As JointAngles) As Boolean
+        'Check Limits
+        Return _checkJointAngleLimits(jointAngles)
+    End Function
     Friend Function DoJog(nr As Int32, jogval As Double) As Boolean
         ' Jog Angle
         Dim tmpV(5) As Double
@@ -194,7 +210,7 @@ Friend Class RobotControl
             Return False
         End If
         'Check Limits
-        If _checkJointAngleLimits(jointAngles) Then
+        If Not _checkJointAngleLimits(jointAngles) Then
             RaiseEvent Log("[Robo Control] Bewegung nicht möglich, Achslimit erreicht", Logger.LogLevel.ERR)
             RaiseEvent RoboPositionChanged()
             Return False
@@ -297,7 +313,7 @@ Friend Class RobotControl
     ' Private
     ' -----------------------------------------------------------------------------
     Private Function _checkJointAngleLimits(jointAngles As JointAngles) As Boolean
-        Return _
+        Return Not _
             jointAngles.J1 > _pref.JointParameter(0).MechMaxAngle Or
             jointAngles.J1 < _pref.JointParameter(0).MechMinAngle Or
             jointAngles.J2 > _pref.JointParameter(1).MechMaxAngle Or

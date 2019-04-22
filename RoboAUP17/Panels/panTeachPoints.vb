@@ -9,11 +9,7 @@
 
         _enableDisableElements()
 
-        AddHandler frmMain.RoboControl.SerialConnected, AddressOf _eRefresh
-        AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eRefresh
-        AddHandler frmMain.RoboControl.RoboBusy, AddressOf _eRoboBusy
-        AddHandler frmMain.RoboControl.RoboRefStateChanged, AddressOf _eRefresh
-        AddHandler frmMain.ACLProgram.ProgramFinished, AddressOf _eRefresh
+        AddHandler frmMain.RefreshEvent, AddressOf _eRefresh
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -87,9 +83,6 @@
     ' Events
     ' -----------------------------------------------------------------------------
     Private Sub _eRefresh()
-        _enableDisableElements()
-    End Sub
-    Private Sub _eRoboBusy(busy As Boolean, delay As Boolean)
         _enableDisableElements()
     End Sub
 End Class

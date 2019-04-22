@@ -3,10 +3,7 @@
     ' Init Panel
     ' -----------------------------------------------------------------------------
     Private Sub panReference_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        AddHandler frmMain.RoboControl.SerialConnected, AddressOf _eRefresh
-        AddHandler frmMain.RoboControl.SerialDisconnected, AddressOf _eRefresh
-        AddHandler frmMain.RoboControl.RoboBusy, AddressOf _eRoboBusy
-        AddHandler frmMain.ACLProgram.ProgramFinished, AddressOf _eRefresh
+        AddHandler frmMain.RefreshEvent, AddressOf _eRefresh
     End Sub
 
     ' -----------------------------------------------------------------------------

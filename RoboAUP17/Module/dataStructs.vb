@@ -67,6 +67,22 @@ Module dataStructs
             Next
             Return coords
         End Function
+
+        Public Shared Operator +(ByVal coords1 As CartCoords, ByVal coords2 As CartCoords) As CartCoords
+            Dim erg As CartCoords
+            For i = 0 To 5
+                erg.SetByIndex(i, coords1.Items(i) + coords2.Items(i))
+            Next
+            Return erg
+        End Operator
+        Public Shared Operator -(ByVal coords1 As CartCoords, ByVal coords2 As CartCoords) As CartCoords
+            Dim erg As CartCoords
+            For i = 0 To 5
+                erg.SetByIndex(i, coords1.Items(i) - coords2.Items(i))
+            Next
+            Return erg
+        End Operator
+
     End Structure
 
     Friend Structure JointAngles
@@ -119,6 +135,21 @@ Module dataStructs
         Friend Function Clone() As Object Implements ICloneable.Clone
             Return New JointAngles(J1, J2, J3, J4, J5, J6)
         End Function
+
+        Public Shared Operator +(ByVal coords1 As JointAngles, ByVal coords2 As JointAngles) As JointAngles
+            Dim erg As JointAngles
+            For i = 0 To 5
+                erg.SetByIndex(i, coords1.Items(i) + coords2.Items(i))
+            Next
+            Return erg
+        End Operator
+        Public Shared Operator -(ByVal coords1 As JointAngles, ByVal coords2 As JointAngles) As JointAngles
+            Dim erg As JointAngles
+            For i = 0 To 5
+                erg.SetByIndex(i, coords1.Items(i) - coords2.Items(i))
+            Next
+            Return erg
+        End Operator
     End Structure
 #End Region
 
@@ -380,10 +411,6 @@ Module dataStructs
         ' Positionen
         Friend posName As String
         Friend posType As Boolean
-        Friend posRecordOffsetToCurrent As Boolean
-        Friend posRecordOffsetToAnotherPosition As Boolean
-        Friend posOtherPositionVar As String
-        Friend posOtherPositionVal As Int32
         Friend posChangeAxisOrCoord As Int32 ' X = 1, Y = 2, Z = 3, yaw = 4, pitch = 5, roll = 6
         Friend posChangeVar As String
         Friend posChangeVal As Int32
