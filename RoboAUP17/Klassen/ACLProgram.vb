@@ -7,7 +7,7 @@ Friend Class ACLProgram
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' ACL-Programm (wip...) / Teachpunktfunktionen fehlen noch
+    ' ACL-Programm (wip...) / Teachpunktfunktionen, Print, HOME, PARK fehlen noch
 
     ' -----------------------------------------------------------------------------
     ' Definitions
@@ -22,7 +22,7 @@ Friend Class ACLProgram
     Friend ReadOnly Property TcpVariables As New TCPVariables
 
     Private _progThread As Thread
-    Private _compiledTeachPoints As New List(Of TeachPoint)
+    Private _runtimeTeachPoints As New List(Of RuntimeTeachPoint)
     Private _progList As New List(Of ProgramEntry)
     Private _programSyntaxOkay As Boolean = False
     Private _programCompiled As Boolean = False
@@ -88,15 +88,17 @@ Friend Class ACLProgram
     End Function
     Friend Function AddTeachPoint(name As String, cartCoords As CartCoords, tpNr As Int32) As Boolean
         Dim tp As TeachPoint
-        tp.cart = True
+        tp.type = True
         tp.cartCoords = cartCoords.Round(2)
         tp.name = name
+
         tp.nr = tpNr
+
         Return _addTeachPoint(tp)
     End Function
     Friend Function AddTeachPoint(name As String, jointAngles As JointAngles, tpNr As Int32) As Boolean
         Dim tp As TeachPoint
-        tp.cart = False
+        tp.type = False
         tp.jointAngles = jointAngles
         tp.name = name
         tp.nr = tpNr
@@ -151,7 +153,7 @@ Friend Class ACLProgram
 
     Friend Sub RenameTeachPoint(index As Int32, name As String, nr As Integer)
         If _teachPoints.Count > index And index >= 0 Then
-            If _teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = nr) >= 0 And nr <> _teachPoints(index).nr Then
+            If TeachpointExists(nr) And nr <> _teachPoints(index).nr Then
                 MessageBox.Show($"Nummer existiert bereits.", "Umbenennen fehlgeschlagen", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return
             End If
@@ -170,6 +172,10 @@ Friend Class ACLProgram
         End If
     End Sub
 
+    Friend Function TeachpointExists(tpNr As Integer) As Boolean
+        Return _teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = tpNr) >= 0
+    End Function
+
 #End Region
 
 #Region "ACL-Programm"
@@ -178,6 +184,8 @@ Friend Class ACLProgram
     End Function
     Friend Sub RunProgram(input As String, acc As Double, speed As Double)
         If _compileProgram(input, acc, speed) Then
+            ' Runtime Teachpoints nochmals kopieren
+            _runtimeTeachPoints = _teachPoints.Select(Function(item) item.GetRuntimeTeachPoint()).ToList()
             ' Los gehts!
             _progThread = New Thread(AddressOf _runProgram)
             _progThread.IsBackground = True
@@ -223,8 +231,8 @@ Friend Class ACLProgram
         objStreamWriter = New StreamWriter(tmpFilename)
         'Teachpunkte
         For Each tp As TeachPoint In _teachPoints
-            objStreamWriter.Write($"<tp>;{tp.nr};{tp.name};{tp.cart}")
-            If tp.cart Then
+            objStreamWriter.Write($"<tp>;{tp.nr};{tp.name};{tp.type}")
+            If tp.type Then
                 For i = 0 To 5
                     objStreamWriter.Write($";{tp.cartCoords.Items(i)}")
                 Next
@@ -273,8 +281,8 @@ Friend Class ACLProgram
                             Dim item As New TeachPoint
                             item.nr = CInt(tmpSplit(1))
                             item.name = tmpSplit(2)
-                            item.cart = CBool(tmpSplit(3))
-                            If item.cart Then
+                            item.type = CBool(tmpSplit(3))
+                            If item.type Then
                                 For i = 0 To 5
                                     item.cartCoords.SetByIndex(i, CDbl(tmpSplit(4 + i)))
                                 Next
@@ -372,8 +380,8 @@ Friend Class ACLProgram
         ' ACL Programm kompilieren, wenn Syntax okay
         If _programSyntaxOkay Then
             ' Teachpoints kopieren (deep copy!)
-            _compiledTeachPoints = _teachPoints.Select(Function(item) CType(item.Clone(), TeachPoint)).ToList()
-            Dim aclListener As New _ACLListener(_compiledTeachPoints, TcpVariables, _progList, acc, speed) ' Eigentlicher Compiler
+            _runtimeTeachPoints = _teachPoints.Select(Function(item) item.GetRuntimeTeachPoint()).ToList()
+            Dim aclListener As New _ACLListener(_runtimeTeachPoints, TcpVariables, _progList, acc, speed) ' Eigentlicher Compiler
             AddHandler aclListener.CompileErrorEvent, AddressOf _eCompileError
             _programCompiled = True
             _progList.Clear()
@@ -435,17 +443,17 @@ Friend Class ACLProgram
                     ' -------------------------------------
                     'Get val1
                     Dim val1 As Int32
-                    If Not GetCmdVal(cmd.var1, cmd.lineNr, rtVariables, val1) Then
-                        val1 = cmd.val1
+                    If Not _getCmdVal(cmd.calcVar1, cmd.lineNr, rtVariables, val1) Then
+                        val1 = cmd.calcVal1
                     End If
                     'Get val2
                     Dim val2 As Int32
-                    If Not GetCmdVal(cmd.var2, cmd.lineNr, rtVariables, val2) Then
-                        val2 = cmd.val2
+                    If Not _getCmdVal(cmd.calcVar2, cmd.lineNr, rtVariables, val2) Then
+                        val2 = cmd.calcVal2
                     End If
                     ' Berechnen
                     Try
-                        Select Case cmd.mathOperator
+                        Select Case cmd.calcMathOp
                             Case progMathOperator.plus
                                 calcBuffer = val1 + val2
                             Case progMathOperator.minus
@@ -493,20 +501,16 @@ Friend Class ACLProgram
                     ' MOVE
                     ' -------------------------------------
                     ' Teachpoint suchen und anfahren
-                    Dim found As Boolean = False
-                    For Each tp As TeachPoint In _compiledTeachPoints
-                        If cmd.teachPoint = tp.nr Then
-                            If tp.cart Then
-                                RaiseEvent DoCartMove(tp.cartCoords, cmd.speed, cmd.acc)
-                            Else
-                                RaiseEvent DoJointMove(tp.jointAngles, cmd.speed, cmd.acc)
-                            End If
-                            found = True
-                            Exit For
+                    Dim tpIndex As Integer = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.tp.nr = cmd.moveTpNr)
+                    If tpIndex > 0 Then
+                        Dim tp As TeachPoint = _runtimeTeachPoints(tpIndex).tp
+                        If tp.type Then
+                            RaiseEvent DoCartMove(tp.cartCoords, cmd.moveSpeed, cmd.moveAcc)
+                        Else
+                            RaiseEvent DoJointMove(tp.jointAngles, cmd.moveSpeed, cmd.moveAcc)
                         End If
-                    Next
-                    If Not found Then
-                        ' Dürfte niemanls passieren!
+                    Else
+                        ' Dürfte niemals passieren, da beim compilen schon abgefragt!
                         StopProgram()
                     End If
                     i += 1
@@ -604,18 +608,18 @@ Friend Class ACLProgram
     Private Function _checkCondition(cmd As ProgramEntry, ByRef rtVariables As Dictionary(Of String, Variable), ByRef vke As Boolean) As Boolean
         'Get val1
         Dim val1 As Int32
-        If Not GetCmdVal(cmd.var1, cmd.lineNr, rtVariables, val1) Then
-            val1 = cmd.val1
+        If Not _getCmdVal(cmd.calcVar1, cmd.lineNr, rtVariables, val1) Then
+            val1 = cmd.calcVal1
         End If
         'Get val2
         Dim val2 As Int32
-        If Not GetCmdVal(cmd.var2, cmd.lineNr, rtVariables, val2) Then
-            val2 = cmd.val2
+        If Not _getCmdVal(cmd.calcVar2, cmd.lineNr, rtVariables, val2) Then
+            val2 = cmd.calcVal2
         End If
 
         ' VKE Berechnen
         Dim tmpVKE As Boolean
-        Select Case cmd.compareOperator
+        Select Case cmd.calcCompareOp
             Case progCompOperator.equal
                 tmpVKE = (val1 = val2)
             Case progCompOperator.greater
@@ -632,7 +636,7 @@ Friend Class ACLProgram
 
         ' Mit vorherigem VKE verknüpfen
         If Not cmd.VKEFirst Then
-            Select Case cmd.booleanOperator
+            Select Case cmd.calcBoolOp
                 Case progBoolOperator.and
                     tmpVKE = tmpVKE And vke
                 Case progBoolOperator.or
@@ -641,7 +645,7 @@ Friend Class ACLProgram
         End If
         Return tmpVKE
     End Function
-    Private Function GetCmdVal(var As String, line As Integer, ByRef rtVariables As Dictionary(Of String, Variable), ByRef val As Integer) As Boolean
+    Private Function _getCmdVal(var As String, line As Integer, ByRef rtVariables As Dictionary(Of String, Variable), ByRef val As Integer) As Boolean
         If var IsNot Nothing Then
             ' RT Var
             If rtVariables.ContainsKey(var) Then
@@ -700,13 +704,13 @@ Friend Class ACLProgram
         Private _variables As New Dictionary(Of String, Variable)
 
         ' von Extern!
-        Private _tp As List(Of TeachPoint)
+        Private _tp As List(Of RuntimeTeachPoint)
         Private _tcpVars As TCPVariables
         Private _progList As List(Of ProgramEntry)
 
         Friend Event CompileErrorEvent(ByVal line As Integer, ByVal msg As String)
 
-        Friend Sub New(ByRef tp As List(Of TeachPoint), ByRef tcpVars As TCPVariables, ByRef progList As List(Of ProgramEntry), ByVal maxAcc As Double, ByVal maxSpeed As Double)
+        Friend Sub New(ByRef tp As List(Of RuntimeTeachPoint), ByRef tcpVars As TCPVariables, ByRef progList As List(Of ProgramEntry), ByVal maxAcc As Double, ByVal maxSpeed As Double)
             _maxAcc = maxAcc
             _maxSpeed = maxSpeed
             _acc = maxAcc
@@ -727,7 +731,7 @@ Friend Class ACLProgram
             Dim val2 As String = context.GetChild(2).GetText()
             If IsNumeric(val1) Then
                 Try
-                    progEntry.val1 = CInt(val1)
+                    progEntry.calcVal1 = CInt(val1)
                 Catch e As OverflowException
                     RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
                 End Try
@@ -735,41 +739,41 @@ Friend Class ACLProgram
                 If Not _variables.ContainsKey(val1) And Not _tcpVars.Exists(val1) Then
                     RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Variable ""{val1}"" wurde nicht definiert")
                 Else
-                    progEntry.var1 = val1
+                    progEntry.calcVar1 = val1
                 End If
             End If
             If IsNumeric(val2) Then
                 Try
-                    progEntry.val2 = CInt(val2)
+                    progEntry.calcVal2 = CInt(val2)
                 Catch e As OverflowException
                     RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
                 End Try
             ElseIf context.BOOL IsNot Nothing Then
                 ' Bool
-                progEntry.val2 = If(context.BOOL.GetText = "FALSE", 0, 1)
+                progEntry.calcVal2 = If(context.BOOL.GetText = "FALSE", 0, 1)
             Else
                 ' Variable
                 If Not _variables.ContainsKey(val2) And Not _tcpVars.Exists(val2) Then
                     RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Variable ""{val2}"" wurde nicht definiert")
                 Else
-                    progEntry.var2 = val2
+                    progEntry.calcVar2 = val2
                 End If
             End If
 
             ' Operator
             Select Case oper
                 Case ">"
-                    progEntry.compareOperator = progCompOperator.greater
+                    progEntry.calcCompareOp = progCompOperator.greater
                 Case "<"
-                    progEntry.compareOperator = progCompOperator.less
+                    progEntry.calcCompareOp = progCompOperator.less
                 Case ">="
-                    progEntry.compareOperator = progCompOperator.greaterOrEqual
+                    progEntry.calcCompareOp = progCompOperator.greaterOrEqual
                 Case "<="
-                    progEntry.compareOperator = progCompOperator.lessOrEqual
+                    progEntry.calcCompareOp = progCompOperator.lessOrEqual
                 Case "="
-                    progEntry.compareOperator = progCompOperator.equal
+                    progEntry.calcCompareOp = progCompOperator.equal
                 Case "<>"
-                    progEntry.compareOperator = progCompOperator.notEqual
+                    progEntry.calcCompareOp = progCompOperator.notEqual
             End Select
 
             ' Zurückspeichern
@@ -792,7 +796,7 @@ Friend Class ACLProgram
             Dim val2 As String = context.GetChild(2).GetText()
             If IsNumeric(val1) Then
                 Try
-                    progEntry.val1 = CInt(val1)
+                    progEntry.calcVal1 = CInt(val1)
                 Catch e As OverflowException
                     RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
                 End Try
@@ -800,12 +804,12 @@ Friend Class ACLProgram
                 If Not _variables.ContainsKey(val1) And Not _tcpVars.Exists(val1) Then
                     RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{val1}"" wurde nicht definiert")
                 Else
-                    progEntry.var1 = val1
+                    progEntry.calcVar1 = val1
                 End If
             End If
             If IsNumeric(val2) Then
                 Try
-                    progEntry.val2 = CInt(val2)
+                    progEntry.calcVal2 = CInt(val2)
                 Catch e As OverflowException
                     RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
                 End Try
@@ -813,24 +817,24 @@ Friend Class ACLProgram
                 If Not _variables.ContainsKey(val2) And Not _tcpVars.Exists(val2) Then
                     RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{val2}"" wurde nicht definiert")
                 Else
-                    progEntry.var2 = val2
+                    progEntry.calcVar2 = val2
                 End If
             End If
 
             ' Operator
             Select Case oper
                 Case "+"
-                    progEntry.mathOperator = progMathOperator.plus
+                    progEntry.calcMathOp = progMathOperator.plus
                 Case "-"
-                    progEntry.mathOperator = progMathOperator.minus
+                    progEntry.calcMathOp = progMathOperator.minus
                 Case "*"
-                    progEntry.mathOperator = progMathOperator.mult
+                    progEntry.calcMathOp = progMathOperator.mult
                 Case "/"
-                    progEntry.mathOperator = progMathOperator.div
+                    progEntry.calcMathOp = progMathOperator.div
                 Case "EXP"
-                    progEntry.mathOperator = progMathOperator.exp
+                    progEntry.calcMathOp = progMathOperator.exp
                 Case "MOD"
-                    progEntry.mathOperator = progMathOperator.mod
+                    progEntry.calcMathOp = progMathOperator.mod
             End Select
 
             _progList.Add(progEntry)
@@ -838,31 +842,28 @@ Friend Class ACLProgram
             MyBase.EnterCalculation(context)
         End Sub
 
+        ' ********************************************************
+        ' Axis Control
+        ' ********************************************************
         'MOVE
         Public Overrides Sub EnterMove(<NotNull> context As ACLParser.MoveContext)
             Dim lineNr As Integer = context.MOVE.Symbol.Line
             Dim tpNr As Integer = CInt(context.INTEGER.GetText)
 
             ' Teachpunkt suchen und move Befehl hinzufgen
-            Dim found As Boolean = False
-            For Each tp As TeachPoint In _tp
-                If tp.nr = tpNr Then
-                    ' Move hinzufügen
-                    Dim progEntry As New ProgramEntry With {
-                        .func = progFunc.move,
-                        .lineNr = lineNr,
-                        .sync = True,
-                        .acc = _acc,
-                        .speed = _speed,
-                        .teachPoint = tp.nr
-                    }
-                    _progList.Add(progEntry)
-                    found = True
-                    Exit For
-                End If
-            Next
-
-            If Not found Then
+            Dim tpIndex As Integer = _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.tp.nr = tpNr)
+            If tpIndex > 0 Then
+                ' Move hinzufügen
+                Dim progEntry As New ProgramEntry With {
+                    .func = progFunc.move,
+                    .lineNr = lineNr,
+                    .moveSync = True,
+                    .moveAcc = _acc,
+                    .moveSpeed = _speed,
+                    .moveTpNr = tpNr
+                }
+                _progList.Add(progEntry)
+            Else
                 RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {tpNr} nicht gefunden")
             End If
 
@@ -942,6 +943,10 @@ Friend Class ACLProgram
 
             MyBase.EnterSpeed(context)
         End Sub
+
+        ' ********************************************************
+        ' Program Flow
+        ' ********************************************************
         'IF
         Public Overrides Sub EnterIf(<NotNull> context As ACLParser.IfContext)
             Dim thisIndex As Int32 = _progList.Count
@@ -968,9 +973,9 @@ Friend Class ACLProgram
             progEntry.func = progFunc.cjump
             progEntry.lineNr = CType(context.GetChild(0), Tree.ITerminalNode).Symbol.Line
             If CType(context.GetChild(0), Tree.ITerminalNode).Symbol.Type = ACLLexer.ANDIF Then
-                progEntry.booleanOperator = progBoolOperator.and
+                progEntry.calcBoolOp = progBoolOperator.and
             Else
-                progEntry.booleanOperator = progBoolOperator.or
+                progEntry.calcBoolOp = progBoolOperator.or
             End If
             progEntry.VKEFirst = False
             progEntry.jumpTrueTarget = thisIndex + 1 ' Auf nächsten Eintrag, wenn dieser hier hinzugefügt wurde
@@ -1062,16 +1067,16 @@ Friend Class ACLProgram
                 .VKEFirst = True,
                 .jumpTrueTarget = thisIndex + 1, ' Auf nächsten Eintrag, wenn dieser hier hinzugefügt wurde
                 .jumpFalseTarget = -1, ' Wird bei ENDFOR gesetzt!
-                .var1 = countVarName,
-                .compareOperator = progCompOperator.lessOrEqual
+                .calcVar1 = countVarName,
+                .calcCompareOp = progCompOperator.lessOrEqual
             }
             If IsNumeric(valVarTo) Then
-                progEntry.val2 = CInt(valVarTo)
+                progEntry.calcVal2 = CInt(valVarTo)
             Else
                 If Not _variables.ContainsKey(valVarTo) And Not _tcpVars.Exists(valVarTo) Then
                     RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Variable ""{valVarTo}"" wurde nicht definiert")
                 Else
-                    progEntry.var2 = valVarTo
+                    progEntry.calcVar2 = valVarTo
                 End If
             End If
             _progList.Add(progEntry)
@@ -1089,9 +1094,9 @@ Friend Class ACLProgram
             Dim progEntry As New ProgramEntry
             progEntry.func = progFunc.calculation
             progEntry.lineNr = lineNr
-            progEntry.var1 = countVarName
-            progEntry.val2 = 1
-            progEntry.mathOperator = progMathOperator.plus
+            progEntry.calcVar1 = countVarName
+            progEntry.calcVal2 = 1
+            progEntry.calcMathOp = progMathOperator.plus
             _progList.Add(progEntry)
             progEntry = New ProgramEntry
             progEntry.func = progFunc.setVarToBuffer
@@ -1176,6 +1181,10 @@ Friend Class ACLProgram
 
             MyBase.EnterGoto(context)
         End Sub
+
+        ' ********************************************************
+        ' Program Control
+        ' ********************************************************
         'DELAY
         Public Overrides Sub EnterDelay(<NotNull> context As ACLParser.DelayContext)
             Dim lineNr As Integer = context.DELAY.Symbol.Line
@@ -1212,6 +1221,10 @@ Friend Class ACLProgram
 
             MyBase.EnterWait(context)
         End Sub
+
+        ' ********************************************************
+        ' Variable Definition and Manipulation
+        ' ********************************************************
         'DEFINE / GLOBAL
         Public Overrides Sub EnterDefine(<NotNull> context As ACLParser.DefineContext)
             Dim lineNr As Integer = CType(context.GetChild(0), Tree.ITerminalNode).Symbol.Line
@@ -1272,6 +1285,210 @@ Friend Class ACLProgram
             _setVar(varName, lineNr, val, var, calculation)
 
             MyBase.EnterSetvar(context)
+        End Sub
+
+        ' ********************************************************
+        ' Position Definition and Manipulation
+        ' ********************************************************
+        'DEFP
+        Public Overrides Sub EnterDefp(<NotNull> context As ACLParser.DefpContext)
+            Dim lineNr As Integer = context.DEFP.Symbol.Line
+            Dim identifier As String = context.IDENTIFIER.GetText()
+            ' Prüfen ob Position schon erstellt wurde
+            If _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = identifier) = -1 Then
+                ' Teachpunkt anlegen
+                Dim tp As New RuntimeTeachPoint
+                tp.identifier = identifier
+                tp.tp.nr = -1
+                _tp.Add(tp)
+
+                ' defPos erstellen
+                Dim progEntry As New ProgramEntry
+                progEntry.func = progFunc.defPos
+                progEntry.lineNr = lineNr
+                progEntry.posName = identifier
+                _progList.Add(progEntry)
+
+            Else
+                RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde bereits definiert.")
+            End If
+
+            MyBase.EnterDefp(context)
+        End Sub
+        'DELP
+        Public Overrides Sub EnterDelp(<NotNull> context As ACLParser.DelpContext)
+            Dim lineNr As Integer = context.DELP.Symbol.Line
+            Dim identifier As String = context.IDENTIFIER.GetText()
+            ' Prüfen ob Position schon erstellt wurde
+            Dim index As Integer = _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = identifier)
+            If index >= 0 Then
+                ' Teachpunkt löschen
+                _tp.RemoveAt(index)
+                ' delPos erstellen
+                Dim progEntry As New ProgramEntry
+                progEntry.func = progFunc.delPos
+                progEntry.lineNr = lineNr
+                progEntry.posName = identifier
+                _progList.Add(progEntry)
+            Else
+                RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
+            End If
+
+            MyBase.EnterDelp(context)
+        End Sub
+        'UNDEF
+        Public Overrides Sub EnterUndef(<NotNull> context As ACLParser.UndefContext)
+            Dim lineNr As Integer = context.UNDEF.Symbol.Line
+            Dim identifier As String = context.IDENTIFIER.GetText()
+            ' Prüfen ob Position schon erstellt wurde
+            Dim index As Integer = _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = identifier)
+            If index >= 0 Then
+                ' Teachpunkt initialized wegnehmen
+                Dim tp As RuntimeTeachPoint = _tp(index)
+                tp.initialized = False
+                _tp(index) = tp
+                ' undefPos erstellen
+                Dim progEntry As New ProgramEntry
+                progEntry.func = progFunc.undefPos
+                progEntry.lineNr = lineNr
+                progEntry.posName = identifier
+                _progList.Add(progEntry)
+            Else
+                RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
+            End If
+
+            MyBase.EnterUndef(context)
+        End Sub
+        'HERE
+        Public Overrides Sub EnterHere(<NotNull> context As ACLParser.HereContext)
+            Dim lineNr As Integer = context.HERE.Symbol.Line
+            Dim identifier As String = context.IDENTIFIER.GetText()
+            ' Prüfen ob Position schon erstellt wurde
+            Dim index As Integer = _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = identifier)
+            If index >= 0 Then
+                ' Teachpunkt initialisieren
+                Dim tp As RuntimeTeachPoint = _tp(index)
+                tp.initialized = True
+                _tp(index) = tp
+                ' recordPos erstellen
+                Dim progEntry As New ProgramEntry
+                progEntry.func = progFunc.recordPos
+                progEntry.lineNr = lineNr
+                progEntry.posName = identifier
+                _progList.Add(progEntry)
+            Else
+                RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
+            End If
+
+            MyBase.EnterHere(context)
+        End Sub
+        'HERER
+        Public Overrides Sub EnterHerer(<NotNull> context As ACLParser.HererContext)
+            Dim lineNr As Integer = context.HERER.Symbol.Line
+            Dim identifier As String = context.IDENTIFIER(0).GetText()
+            ' Prüfen ob Position schon erstellt wurde
+            Dim index As Integer = _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = identifier)
+            If index >= 0 Then
+                ' Teachpunkt initialisieren
+                Dim tp As RuntimeTeachPoint = _tp(index)
+                tp.initialized = True
+                _tp(index) = tp
+                ' other Position
+                Dim otherPos As String = context.IDENTIFIER(1)?.GetText()
+                If otherPos Is Nothing Then
+                    otherPos = context.INTEGER?.GetText()
+                End If
+                ' recordPos erstellen
+                Dim progEntry As New ProgramEntry
+                    progEntry.func = progFunc.recordPos
+                    progEntry.lineNr = lineNr
+                    progEntry.posName = identifier
+                    progEntry.posRecordOffsetToAnotherPosition = otherPos IsNot Nothing
+                    progEntry.posRecordOffsetToCurrent = Not progEntry.posRecordOffsetToAnotherPosition
+                    If progEntry.posRecordOffsetToAnotherPosition Then
+                        If IsNumeric(otherPos) Then
+                            Try
+                                progEntry.posOtherPositionVal = CInt(otherPos)
+                            Catch e As OverflowException
+                                RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
+                            End Try
+                            ' Prüfen ob dieser Teachpunkt existiert
+                            If _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.tp.nr = progEntry.posOtherPositionVal) = -1 Then
+                                RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {progEntry.posOtherPositionVal} nicht gefunden")
+                            End If
+                        Else
+                            progEntry.posOtherPositionVar = otherPos
+                            ' Prüfen ob dieser Teachpunkt existiert
+                            If _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = progEntry.posOtherPositionVar) = -1 Then
+                                RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt ""{progEntry.posOtherPositionVar}"" nicht gefunden")
+                            End If
+                        End If
+                    End If
+
+                    _progList.Add(progEntry)
+                Else
+                    RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
+            End If
+
+            MyBase.EnterHerer(context)
+        End Sub
+        'TEACH (TODO)
+        Public Overrides Sub EnterTeach(<NotNull> context As ACLParser.TeachContext)
+            RaiseEvent CompileErrorEvent(context.TEACH.Symbol.Line, $"TEACH noch nicht implementiert")
+
+            MyBase.EnterTeach(context)
+        End Sub
+        'TEACHR (TODO)
+        Public Overrides Sub EnterTeachr(<NotNull> context As ACLParser.TeachrContext)
+            RaiseEvent CompileErrorEvent(context.TEACHR.Symbol.Line, $"TEACHR noch nicht implementiert")
+
+            MyBase.EnterTeachr(context)
+        End Sub
+        'SETPV (TODO)
+        Public Overrides Sub EnterSetpv(<NotNull> context As ACLParser.SetpvContext)
+            RaiseEvent CompileErrorEvent(context.SETPV.Symbol.Line, $"SETPV noch nicht implementiert")
+
+            MyBase.EnterSetpv(context)
+        End Sub
+        'SETPVC (TODO)
+        Public Overrides Sub EnterSetpvc(<NotNull> context As ACLParser.SetpvcContext)
+            RaiseEvent CompileErrorEvent(context.SETPVC.Symbol.Line, $"SETPVC noch nicht implementiert")
+
+            MyBase.EnterSetpvc(context)
+        End Sub
+        'SHIFT (TODO)
+        Public Overrides Sub EnterShift(<NotNull> context As ACLParser.ShiftContext)
+            RaiseEvent CompileErrorEvent(context.SHIFT.Symbol.Line, $"SHIFT noch nicht implementiert")
+
+            MyBase.EnterShift(context)
+        End Sub
+        'SHIFTC (TODO)
+        Public Overrides Sub EnterShiftc(<NotNull> context As ACLParser.ShiftcContext)
+            RaiseEvent CompileErrorEvent(context.SHIFTC.Symbol.Line, $"SHIFTC noch nicht implementiert")
+
+            MyBase.EnterShiftc(context)
+        End Sub
+        'SETP (TODO)
+        Public Overrides Sub EnterSetp(<NotNull> context As ACLParser.SetpContext)
+            RaiseEvent CompileErrorEvent(context.SETP.Symbol.Line, $"SETP noch nicht implementiert")
+
+            MyBase.EnterSetp(context)
+        End Sub
+        'SET (TODO)
+        Public Overrides Sub EnterSetpos(<NotNull> context As ACLParser.SetposContext)
+            RaiseEvent CompileErrorEvent(context.SET.Symbol.Line, $"SET für Positionen noch nicht implementiert")
+
+            MyBase.EnterSetpos(context)
+        End Sub
+
+        ' ********************************************************
+        ' User Interface
+        ' ********************************************************
+        'PRINT (TODO)
+        Public Overrides Sub EnterPrint(<NotNull> context As ACLParser.PrintContext)
+            RaiseEvent CompileErrorEvent(context.PRINT.Symbol.Line, $"PRINT noch nicht implementiert")
+
+            MyBase.EnterPrint(context)
         End Sub
 
         'Ende

@@ -54,7 +54,7 @@
 
         frmMain.RoboControl.SetSpeedAndAcc(numSpeed.Value, numAcc.Value)
 
-        If tp.cart Then
+        If tp.type Then
             frmMain.RoboControl.DoTCPMov(tp.cartCoords)
         Else
             frmMain.RoboControl.DoJointMov(True, tp.jointAngles)

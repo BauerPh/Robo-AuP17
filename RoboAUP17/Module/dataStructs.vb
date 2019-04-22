@@ -238,7 +238,7 @@ Module dataStructs
 
         Friend nr As Int32
         Friend name As String
-        Friend cart As Boolean
+        Friend type As Boolean 'True = Kartesisch; False = JointAngles
         Friend jointAngles As JointAngles
         Friend cartCoords As CartCoords
 
@@ -249,7 +249,7 @@ Module dataStructs
         End Function
 
         Public Overrides Function ToString() As String
-            If cart Then
+            If type Then
                 Return $"{nr}: {name} (X: {cartCoords.X}; Y: {cartCoords.Y}; Z: {cartCoords.Z}; yaw: {cartCoords.Yaw}; pitch: {cartCoords.Pitch}; roll: {cartCoords.Roll})"
             Else
                 Return $"{nr}: {name} (J1: {jointAngles.J1}; J2: {jointAngles.J2}; J3: {jointAngles.J3}; J4: {jointAngles.J4}; J5: {jointAngles.J5}; J6: {jointAngles.J6})"
@@ -260,9 +260,33 @@ Module dataStructs
             Return New TeachPoint With {
                 .nr = nr,
                 .name = name,
-                .cart = cart,
+                .type = type,
                 .jointAngles = jointAngles,
-                .cartCoords = cartCoords}
+                .cartCoords = cartCoords
+            }
+        End Function
+
+        Friend Function GetRuntimeTeachPoint() As RuntimeTeachPoint
+            Return New RuntimeTeachPoint With {
+                .tp = CType(Clone(), TeachPoint),
+                .initialized = True,
+                .identifier = Nothing
+            }
+        End Function
+    End Structure
+
+    Friend Structure RuntimeTeachPoint
+        Implements ICloneable
+        Friend tp As TeachPoint
+        Friend initialized As Boolean
+        Friend identifier As String
+
+        Friend Function Clone() As Object Implements ICloneable.Clone
+            Return New RuntimeTeachPoint With {
+                .tp = CType(tp.Clone(), TeachPoint),
+                .initialized = initialized,
+                .identifier = identifier
+            }
         End Function
     End Structure
 
@@ -293,6 +317,13 @@ Module dataStructs
         delVar
         setVar
         setVarToBuffer
+        setVarToPosition
+        defPos
+        delPos
+        undefPos
+        recordPos
+        changePos
+        copyPos
     End Enum
     Friend Enum progCompOperator
         equal = 0
@@ -318,24 +349,25 @@ Module dataStructs
     Friend Structure ProgramEntry
         Friend lineNr As Int32
         Friend func As progFunc
-        ' Position
-        Friend teachPoint As Int32
-        Friend speed As Double
-        Friend acc As Double
-        Friend sync As Boolean
+        ' Axis Control
+        Friend moveTpNr As Int32
+        Friend moveTpName As String
+        Friend moveSpeed As Double
+        Friend moveAcc As Double
+        Friend moveSync As Boolean
         ' Servo
         Friend servoNum As Int32
         Friend servoVal As Int32
         ' Delay
         Friend delayTimeMS As Int32
-        ' Condition & Calculation
-        Friend var1 As String
-        Friend var2 As String
-        Friend val1 As Int32
-        Friend val2 As Int32
-        Friend compareOperator As progCompOperator
-        Friend booleanOperator As progBoolOperator
-        Friend mathOperator As progMathOperator
+        ' Bedingungen und Berechnungen
+        Friend calcVar1 As String
+        Friend calcVar2 As String
+        Friend calcVal1 As Int32
+        Friend calcVal2 As Int32
+        Friend calcCompareOp As progCompOperator
+        Friend calcBoolOp As progBoolOperator
+        Friend calcMathOp As progMathOperator
         Friend VKEFirst As Boolean
         ' Jumps
         Friend jumpTarget As Int32
@@ -343,8 +375,19 @@ Module dataStructs
         Friend jumpFalseTarget As Int32
         ' Variablen
         Friend varName As String
-        Friend varValue As Integer
+        Friend varValue As Int32
         Friend varVariable As String
+        ' Positionen
+        Friend posName As String
+        Friend posType As Boolean
+        Friend posRecordOffsetToCurrent As Boolean
+        Friend posRecordOffsetToAnotherPosition As Boolean
+        Friend posOtherPositionVar As String
+        Friend posOtherPositionVal As Int32
+        Friend posChangeAxisOrCoord As Int32 ' X = 1, Y = 2, Z = 3, yaw = 4, pitch = 5, roll = 6
+        Friend posChangeVar As String
+        Friend posChangeVal As Int32
+        Friend posCopyPos As String
     End Structure
 #End Region
 End Module
