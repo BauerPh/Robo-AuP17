@@ -501,7 +501,13 @@ Friend Class ACLProgram
                     ' MOVE
                     ' -------------------------------------
                     ' Teachpoint suchen und anfahren
-                    Dim tpIndex As Integer = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.tp.nr = cmd.moveTpNr)
+                    Dim tpIndex As Integer
+                    If cmd.moveTpName IsNot Nothing Then
+                        tpIndex = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = cmd.moveTpName)
+                    Else
+                        tpIndex = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.tp.nr = cmd.moveTpNr)
+                    End If
+
                     If tpIndex >= 0 Then
                         Dim tp As TeachPoint = _runtimeTeachPoints(tpIndex).tp
                         If tp.type Then
@@ -518,8 +524,8 @@ Friend Class ACLProgram
                             End If
                         End If
                     Else
-                            ' Dürfte niemals passieren, da beim compilen schon abgefragt!
-                            StopProgram()
+                        ' Dürfte niemals passieren, da beim compilen schon abgefragt!
+                        StopProgram()
                     End If
                     i += 1
                 Case progFunc.delay
@@ -935,10 +941,21 @@ Friend Class ACLProgram
         'MOVE
         Public Overrides Sub EnterMove(<NotNull> context As ACLParser.MoveContext)
             Dim lineNr As Integer = context.MOVE.Symbol.Line
-            Dim tpNr As Integer = CInt(context.INTEGER.GetText)
+            Dim tpNr As Integer = -1
+            Dim tpIdentifier As String = Nothing
+            If context.INTEGER IsNot Nothing Then
+                tpNr = CInt(context.INTEGER.GetText)
+            Else
+                tpIdentifier = context.IDENTIFIER.GetText()
+            End If
 
             ' Teachpunkt suchen und move Befehl hinzufgen
-            Dim tpIndex As Integer = _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.tp.nr = tpNr)
+            Dim tpIndex As Integer
+            If tpNr >= 0 Then
+                tpIndex = _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.tp.nr = tpNr)
+            Else
+                tpIndex = _tp.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = tpIdentifier)
+            End If
             If tpIndex >= 0 Then
                 ' Move hinzufügen
                 Dim progEntry As New ProgramEntry With {
@@ -946,9 +963,13 @@ Friend Class ACLProgram
                     .lineNr = lineNr,
                     .moveSync = True,
                     .moveAcc = _acc,
-                    .moveSpeed = _speed,
-                    .moveTpNr = tpNr
+                    .moveSpeed = _speed
                 }
+                If tpNr >= 0 Then
+                    progEntry.moveTpNr = tpNr
+                Else
+                    progEntry.moveTpName = tpIdentifier
+                End If
                 _progList.Add(progEntry)
             Else
                 RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {tpNr} nicht gefunden")

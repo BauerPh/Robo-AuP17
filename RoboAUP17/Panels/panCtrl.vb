@@ -26,7 +26,6 @@
         AddHandler frmMain.RoboControl.RoboServoChanged, AddressOf _eNewServo
         AddHandler frmMain.RoboControl.RoboParameterChanged, AddressOf _eRoboParameterChanged
         AddHandler frmMain.RefreshEvent, AddressOf _eRefresh
-        AddHandler frmMain.RoboControl.RoboBusy, AddressOf _eRoboBusy
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -558,10 +557,8 @@
     End Sub
     Private Sub _eRefresh()
         _enableDisableElements()
-    End Sub
-    Private Sub _eRoboBusy(busy As Boolean, delay As Boolean)
         ' Achsen Bewegen falls Servos erst angesteuert wurden
-        If _doMoveAfterServoMove And Not busy Then
+        If _doMoveAfterServoMove And Not RobotBusy Then
             _doMoveAfterServoMove = False
             _doMove()
         End If
