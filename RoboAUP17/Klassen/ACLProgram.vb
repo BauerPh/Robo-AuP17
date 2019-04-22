@@ -509,6 +509,10 @@ Friend Class ACLProgram
                     End If
 
                     If tpIndex >= 0 Then
+                        If Not _runtimeTeachPoints(tpIndex).initialized Then
+                            _runtimeError(cmd.lineNr, $"Teachpunkt ""{_runtimeTeachPoints(tpIndex).identifier}"" ist definiert wurde aber nicht mit einer Position beschrieben")
+                            Exit While 'Programm beenden
+                        End If
                         Dim tp As TeachPoint = _runtimeTeachPoints(tpIndex).tp
                         If tp.type Then
                             If Not _robotControl.CheckCartCoords(tp.cartCoords) Then
@@ -539,11 +543,11 @@ Friend Class ACLProgram
                     ' DEFINE VARIABLE
                     ' -------------------------------------
                     If rtVariables.ContainsKey(cmd.varName) Then
-                        _runtimeError(cmd.lineNr, $"Variable {cmd.varName} wurde nochmals definiert")
+                        _runtimeError(cmd.lineNr, $"Variable ""{cmd.varName}"" wurde nochmals definiert")
                         Exit While 'Programm beenden
                     End If
                     If TcpVariables.Exists(cmd.varName) Then
-                        _runtimeError(cmd.lineNr, $"Variable {cmd.varName} wurde bereits als TCP-Variable definiert")
+                        _runtimeError(cmd.lineNr, $"Variable ""{cmd.varName}"" wurde bereits als TCP-Variable definiert")
                         Exit While 'Programm beenden
                     End If
                     rtVariables.Add(cmd.varName, New Variable(varType.int, cmd.lineNr))
@@ -553,7 +557,7 @@ Friend Class ACLProgram
                     ' DELETE VARIABLE
                     ' -------------------------------------
                     If Not rtVariables.ContainsKey(cmd.varName) Then
-                        _runtimeError(cmd.lineNr, $"Variable {cmd.varName} ist an dieser Stelle nicht definiert")
+                        _runtimeError(cmd.lineNr, $"Variable ""{cmd.varName}"" ist an dieser Stelle nicht definiert")
                         Exit While 'Programm beenden
                     End If
                     rtVariables.Remove(cmd.varName)
@@ -563,7 +567,7 @@ Friend Class ACLProgram
                     ' SET VARIABLE
                     ' -------------------------------------
                     If Not rtVariables.ContainsKey(cmd.varName) And Not TcpVariables.Exists(cmd.varName) Then
-                        _runtimeError(cmd.lineNr, $"Variable {cmd.varName} ist an dieser Stelle nicht definiert")
+                        _runtimeError(cmd.lineNr, $"Variable ""{cmd.varName}"" ist an dieser Stelle nicht definiert")
                         Exit While 'Programm beenden
                     End If
                     ' Wert holen
@@ -581,7 +585,7 @@ Friend Class ACLProgram
                     Else
                         ' TCP-Variable
                         If Not TcpVariables.SetVariable(cmd.varName, val) Then
-                            _runtimeError(cmd.lineNr, $"TCP-Variable {cmd.varName} wurde nicht gefunden")
+                            _runtimeError(cmd.lineNr, $"TCP-Variable ""{cmd.varName}"" wurde nicht gefunden")
                             Exit While 'Programm beenden
                         End If
                     End If
@@ -591,7 +595,7 @@ Friend Class ACLProgram
                     ' SET VARIABLE TO BUFFER
                     ' -------------------------------------
                     If Not rtVariables.ContainsKey(cmd.varName) And Not TcpVariables.Exists(cmd.varName) Then
-                        _runtimeError(cmd.lineNr, $"Variable {cmd.varName} ist an dieser Stelle nicht definiert")
+                        _runtimeError(cmd.lineNr, $"Variable ""{cmd.varName}"" ist an dieser Stelle nicht definiert")
                         Exit While 'Programm beenden
                     End If
                     If rtVariables.ContainsKey(cmd.varName) Then
@@ -601,7 +605,7 @@ Friend Class ACLProgram
                     Else
                         ' TCP-Variable
                         If Not TcpVariables.SetVariable(cmd.varName, calcBuffer) Then
-                            _runtimeError(cmd.lineNr, $"TCP-Variable {cmd.varName} wurde nicht gefunden")
+                            _runtimeError(cmd.lineNr, $"TCP-Variable ""{cmd.varName}"" wurde nicht gefunden")
                             Exit While 'Programm beenden
                         End If
                     End If
@@ -616,7 +620,7 @@ Friend Class ACLProgram
                     ' DEFINE POSITION
                     ' -------------------------------------
                     If _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = cmd.posName) >= 0 Then
-                        _runtimeError(cmd.lineNr, $"Teachpunkt {cmd.posName} wurde bereits definiert")
+                        _runtimeError(cmd.lineNr, $"Teachpunkt ""{cmd.posName}"" wurde bereits definiert")
                         Exit While 'Programm beenden
                     End If
                     Dim tp As New RuntimeTeachPoint
@@ -630,8 +634,8 @@ Friend Class ACLProgram
                     ' DELETE POSITION
                     ' -------------------------------------
                     Dim index As Integer = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = cmd.posName)
-                    If index = 0 Then
-                        _runtimeError(cmd.lineNr, $"Teachpunkt {cmd.posName} wurde nicht definiert")
+                    If index = -1 Then
+                        _runtimeError(cmd.lineNr, $"Teachpunkt ""{cmd.posName}"" wurde nicht definiert")
                         Exit While 'Programm beenden
                     End If
                     _runtimeTeachPoints.RemoveAt(index)
@@ -641,8 +645,8 @@ Friend Class ACLProgram
                     ' UNDEFINE POSITION
                     ' -------------------------------------
                     Dim index As Integer = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = cmd.posName)
-                    If index = 0 Then
-                        _runtimeError(cmd.lineNr, $"Teachpunkt {cmd.posName} wurde nicht definiert")
+                    If index = -1 Then
+                        _runtimeError(cmd.lineNr, $"Teachpunkt ""{cmd.posName}"" wurde nicht definiert")
                         Exit While 'Programm beenden
                     End If
                     Dim tp As RuntimeTeachPoint = _runtimeTeachPoints(index)
@@ -654,8 +658,8 @@ Friend Class ACLProgram
                     ' RECORD POSITION
                     ' -------------------------------------
                     Dim index As Integer = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = cmd.posName)
-                    If index = 0 Then
-                        _runtimeError(cmd.lineNr, $"Teachpunkt {cmd.posName} wurde nicht definiert")
+                    If index = -1 Then
+                        _runtimeError(cmd.lineNr, $"Teachpunkt ""{cmd.posName}"" wurde nicht definiert")
                         Exit While 'Programm beenden
                     End If
                     Dim tp As RuntimeTeachPoint = _runtimeTeachPoints(index)
@@ -972,7 +976,11 @@ Friend Class ACLProgram
                 End If
                 _progList.Add(progEntry)
             Else
-                RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {tpNr} nicht gefunden")
+                If tpNr >= 0 Then
+                    RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {tpNr} nicht gefunden")
+                Else
+                    RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt ""{tpIdentifier}"" nicht gefunden")
+                End If
             End If
 
             MyBase.EnterMove(context)
@@ -1302,7 +1310,7 @@ Friend Class ACLProgram
                 If delay < 1 Or delay > 360000 Then Throw New Exception
             Catch e As Exception
                 RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen 1 und 360.000 (1 Stunde) möglich")
-            End Try
+                End Try
 
             ' Delay hinzufügen
             Dim progEntry As New ProgramEntry With {
