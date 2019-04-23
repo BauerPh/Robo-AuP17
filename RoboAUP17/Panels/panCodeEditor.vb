@@ -7,13 +7,25 @@ Public Class panCodeEditor
 
     Private _lastHighlightedLineIndex As Int32 = 0
     Private _maxLineNumberCharLength As Int32
-    Private _ACLLexer As New ACLSyntaxHighlighting(
-        "MOVE OPEN CLOSE JAW ACC SPEED HOME PARK 
+    Private Const _keywords As String = "MOVE OPEN CLOSE JAW ACC SPEED HOME PARK 
         DELAY WAIT DEFP DELP UNDEF HERE TEACH 
-        SETPVC SETPV SHIFTC SHIFT BY SETP
+        SETPVC SETPV SHIFTC SHIFT SETP 
         BY PVAL PVALC PSTATUS DEFINE GLOBAL 
         DELVAR SET IF ANDIF ORIF ELSE ENDIF FOR 
-        TO ENDFOR LABEL GOTO PRINT")
+        TO ENDFOR LABEL GOTO PRINT"
+    Private _keywordsExtended As String() = {
+        "MOVE <tp/pos>", "OPEN <servo>", "CLOSE <servo>",
+        "JAW <%>", "SPEED <%>", "HOME", "PARK", "DELAY <time>", " WAIT <cond>", "DEFP <pos>",
+        "DELP <pos>", "UNDEF <pos>", "HERE <pos>", "TEACH <pos>", "SETPVC <pos> <X/Y/Z/yaw/pitch/roll> <val/var>",
+        "SETPV <pos> <axis> <val/var>", "SHIFTC <pos> BY <X/Y/Z/yaw/pitch/roll> <val/var>",
+        "SHIFT <pos> BY <axis> <val/var>", "BY", "SETP", "PVAL", "PVALC", "PSTATUS", "DEFINE <var1> <var2> ...",
+        "GLOBAL <var1> <var2> ...", "DELVAR <var>", "SET <var> = <val/var/calculation>",
+        $"IF <cond>{vbCrLf}ANDIF <cond>{vbCrLf}ORIF <cond>{vbCrLf + vbCrLf}ELSE{vbCrLf + vbCrLf}ENDIF",
+        $"ANDIF <cond>{vbCrLf}", $"ORIF <cond>{vbCrLf}", $"ELSE{vbCrLf}", "ENDIF",
+        $"FOR <var> = <val/var> TO <val/var>{vbCrLf + vbCrLf}ENDFOR", "TO", "ENDFOR",
+        "LABEL <label>", "GOTO <label>; PRINT <string/var>"
+    }
+    Private _ACLLexer As New ACLSyntaxHighlighting(_keywords)
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
@@ -42,6 +54,10 @@ Public Class panCodeEditor
         sciCodeEditor.Markers(1).SetBackColor(Color.LightGoldenrodYellow)
         sciCodeEditor.Markers(2).Symbol = MarkerSymbol.Background
         sciCodeEditor.Markers(2).SetBackColor(Color.IndianRed)
+
+        ' Autocompletemenu Wrapper
+        AutocompleteMenu.Items = _keywordsExtended
+        AutocompleteMenu.TargetControlWrapper = New ScintillaWrapper(sciCodeEditor)
 
         AddHandler frmMain.ACLProgram.ProgramStarted, AddressOf _eProgramStarted
         AddHandler frmMain.ACLProgram.ProgramFinished, AddressOf _eProgramFinished

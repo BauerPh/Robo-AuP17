@@ -109,6 +109,7 @@ Public Class frmMain
 
         AddHandler _aclProgram.TcpVariables.Connected, AddressOf _eTCPConnected
         AddHandler _aclProgram.TcpVariables.Disconnected, AddressOf _eTCPDisconnected
+        AddHandler _dckPanCodeEditor.sciCodeEditor.TextChanged, AddressOf _eEditorTextChanged
     End Sub
     Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         My.Settings.Save()
@@ -195,6 +196,15 @@ Public Class frmMain
     End Sub
     Private Sub msExit_Click(sender As Object, e As EventArgs) Handles msExit.Click
         Application.Exit()
+    End Sub
+#End Region
+
+#Region "MenuStrip Bearbeiten"
+    Private Sub Undo_Click(sender As Object, e As EventArgs) Handles msUndo.Click, tsBtnUndo.Click
+        _dckPanCodeEditor.sciCodeEditor.Undo()
+    End Sub
+    Private Sub Redo_Click(sender As Object, e As EventArgs) Handles msRedo.Click, tsBtnRedo.Click
+        _dckPanCodeEditor.sciCodeEditor.Redo()
     End Sub
 #End Region
 
@@ -488,6 +498,12 @@ Public Class frmMain
 
         _enableDisableElements()
     End Sub
+    Private Sub _eEditorTextChanged(sender As Object, e As EventArgs)
+        tsBtnUndo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanUndo
+        msUndo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanUndo
+        tsBtnRedo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanRedo
+        msRedo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanRedo
+    End Sub
     Private Sub _eComSerialConnected() Handles _roboControl.SerialConnected
         SerialConnected = True
         RobotBusy = False
@@ -568,4 +584,5 @@ Public Class frmMain
         tsLblTcpServerStatus.Text = "getrennt"
         tsLblTcpServerStatus.ForeColor = Color.Red
     End Sub
+
 End Class

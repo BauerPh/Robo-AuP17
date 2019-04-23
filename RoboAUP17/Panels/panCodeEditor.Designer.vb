@@ -22,7 +22,9 @@ Partial Class panCodeEditor
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(panCodeEditor))
         Me.sciCodeEditor = New ScintillaNET.Scintilla()
+        Me.AutocompleteMenu = New AutocompleteMenuNS.AutocompleteMenu()
         Me.SuspendLayout()
         '
         'sciCodeEditor
@@ -34,6 +36,17 @@ Partial Class panCodeEditor
         Me.sciCodeEditor.ScrollWidth = 23
         Me.sciCodeEditor.Size = New System.Drawing.Size(884, 561)
         Me.sciCodeEditor.TabIndex = 0
+        '
+        'AutocompleteMenu
+        '
+        Me.AutocompleteMenu.AllowsTabKey = True
+        Me.AutocompleteMenu.AppearInterval = 200
+        Me.AutocompleteMenu.Colors = CType(resources.GetObject("AutocompleteMenu.Colors"), AutocompleteMenuNS.Colors)
+        Me.AutocompleteMenu.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!)
+        Me.AutocompleteMenu.ImageList = Nothing
+        Me.AutocompleteMenu.Items = New String(-1) {}
+        Me.AutocompleteMenu.MinFragmentLength = 1
+        Me.AutocompleteMenu.TargetControlWrapper = Nothing
         '
         'panCodeEditor
         '
@@ -51,4 +64,5 @@ Partial Class panCodeEditor
     End Sub
 
     Friend WithEvents sciCodeEditor As ScintillaNET.Scintilla
+    Friend WithEvents AutocompleteMenu As AutocompleteMenuNS.AutocompleteMenu
 End Class
