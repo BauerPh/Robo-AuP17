@@ -409,11 +409,11 @@ Module dataStructs
         Friend varValue As Int32
         Friend varVariable As String
         ' Positionen
-        Friend posName As String
+        Friend posIdentifer As String
+        Friend posNum As Integer
         Friend posType As Boolean
         Friend posChangeAxisOrCoord As Int32 ' X = 1, Y = 2, Z = 3, yaw = 4, pitch = 5, roll = 6
-        Friend posChangeVar As String
-        Friend posChangeVal As Int32
+        Friend posShift As Boolean
         Friend posCopyPos As String
     End Structure
 #End Region
