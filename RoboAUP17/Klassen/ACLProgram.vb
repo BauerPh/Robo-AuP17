@@ -502,8 +502,8 @@ Friend Class ACLProgram
                     ' -------------------------------------
                     ' Teachpoint suchen und anfahren
                     Dim tpIndex As Integer
-                    If cmd.moveTpName IsNot Nothing Then
-                        tpIndex = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = cmd.moveTpName)
+                    If cmd.moveTpIdentifier IsNot Nothing Then
+                        tpIndex = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = cmd.moveTpIdentifier)
                     Else
                         tpIndex = _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.tp.nr = cmd.moveTpNr)
                     End If
@@ -529,6 +529,7 @@ Friend Class ACLProgram
                         End If
                     Else
                         ' Dürfte niemals passieren, da beim compilen schon abgefragt!
+                        _runtimeError(cmd.lineNr, "Unmöglicher Fehler ist aufgetreten.... ohje.")
                         StopProgram()
                     End If
                     i += 1
@@ -576,16 +577,8 @@ Friend Class ACLProgram
                         val = cmd.varValue
                     End If
                     ' Variable setzen
-                    If rtVariables.ContainsKey(cmd.varName) Then
-                        Dim var As Variable = rtVariables(cmd.varName)
-                        var.intVal = val
-                        rtVariables(cmd.varName) = var
-                    Else
-                        ' TCP-Variable
-                        If Not TcpVariables.SetVariable(cmd.varName, val) Then
-                            _runtimeError(cmd.lineNr, $"TCP-Variable ""{cmd.varName}"" wurde nicht gefunden")
-                            Exit While 'Programm beenden
-                        End If
+                    If Not _setVar(cmd.varName, val, cmd.lineNr, rtVariables) Then
+                        Exit While 'Programm beenden
                     End If
                     i += 1
                 Case progFunc.setVarToBuffer
@@ -596,16 +589,9 @@ Friend Class ACLProgram
                         _runtimeError(cmd.lineNr, $"Variable ""{cmd.varName}"" ist an dieser Stelle nicht definiert")
                         Exit While 'Programm beenden
                     End If
-                    If rtVariables.ContainsKey(cmd.varName) Then
-                        Dim var As Variable = rtVariables(cmd.varName)
-                        var.intVal = calcBuffer
-                        rtVariables(cmd.varName) = var
-                    Else
-                        ' TCP-Variable
-                        If Not TcpVariables.SetVariable(cmd.varName, calcBuffer) Then
-                            _runtimeError(cmd.lineNr, $"TCP-Variable ""{cmd.varName}"" wurde nicht gefunden")
-                            Exit While 'Programm beenden
-                        End If
+                    ' Variable setzen
+                    If Not _setVar(cmd.varName, calcBuffer, cmd.lineNr, rtVariables) Then
+                        Exit While 'Programm beenden
                     End If
                     i += 1
                 Case progFunc.setVarToPosition
@@ -698,22 +684,9 @@ Friend Class ACLProgram
                     End If
 
                     ' Position bearbeiten
-                    Dim tp As RuntimeTeachPoint = _runtimeTeachPoints(index)
-                    If Not tp.initialized Then
-                        tp.initialized = True
-                        tp.tp.type = cmd.posType
-                    Else
-                        If tp.tp.type <> cmd.posType Then
-                            _runtimeError(cmd.lineNr, $"Der Teachpunkt ({If(tp.tp.type, "Kartesisch", "Achswinkel")}) und die ausgeführte Operation ({If(cmd.posType, "Kartesisch", "Achswinkel")}) sind nicht vom gleichen Typ")
-                            Exit While 'Programm beenden
-                        End If
+                    If Not _editPos(index, cmd, val) Then
+                        Exit While
                     End If
-                    If cmd.posType Then
-                        tp.tp.cartCoords.SetByIndex(cmd.posChangeAxisOrCoord - 1, val)
-                    Else
-                        tp.tp.jointAngles.SetByIndex(cmd.posChangeAxisOrCoord - 1, val)
-                    End If
-                    _runtimeTeachPoints(index) = tp
                     i += 1
                 Case progFunc.copyPos
                     ' -------------------------------------
@@ -789,11 +762,24 @@ Friend Class ACLProgram
             Return False
         End If
     End Function
-    Private Sub _runtimeError(lineNr As Integer, msg As String)
-        RaiseEvent ErrorLine(lineNr)
-        RaiseEvent Log($"[ACL-RT] Zeile {lineNr.ToString,3:N}: {msg}", Logger.LogLevel.ERR)
-        _forceStopProgram = True
-    End Sub
+    Private Function _checkVar(name As String, ByRef rtvars As Dictionary(Of String, Variable)) As Boolean
+        Return rtvars.ContainsKey(name) Or TcpVariables.Exists(name)
+    End Function
+    Private Function _setVar(ByVal name As String, ByVal val As Integer, ByVal lineNr As Integer, ByRef vars As Dictionary(Of String, Variable)) As Boolean
+        ' Variable setzen
+        If vars.ContainsKey(name) Then
+            Dim var As Variable = vars(name)
+            var.intVal = val
+            vars(name) = var
+        Else
+            ' TCP-Variable
+            If Not TcpVariables.SetVariable(name, val) Then
+                _runtimeError(lineNr, $"TCP-Variable ""{name}"" wurde nicht gefunden")
+                Return False
+            End If
+        End If
+        Return True
+    End Function
     Private Function _getPosIndex(identifier As String, lineNr As Integer) As Integer
         If IsNumeric(identifier) Then
             Try
@@ -806,9 +792,40 @@ Friend Class ACLProgram
             Return _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = identifier)
         End If
     End Function
-    Private Function _checkVar(name As String, ByRef rtvars As Dictionary(Of String, Variable)) As Boolean
-        Return rtvars.ContainsKey(name) Or TcpVariables.Exists(name)
+    Private Function _editPos(ByVal index As Integer, ByRef cmd As ProgramEntry, val As Integer) As Boolean
+        Dim tp As RuntimeTeachPoint = _runtimeTeachPoints(index)
+        If Not tp.initialized Then
+            tp.initialized = True
+            tp.tp.type = cmd.posType
+        Else
+            If tp.tp.type <> cmd.posType Then
+                _runtimeError(cmd.lineNr, $"Der Teachpunkt ({If(tp.tp.type, "Kartesisch", "Achswinkel")}) und die ausgeführte Operation ({If(cmd.posType, "Kartesisch", "Achswinkel")}) sind nicht vom gleichen Typ")
+                Return False
+            End If
+        End If
+        Dim axis As Integer = cmd.posChangeAxisOrCoord - 1
+        If cmd.posType Then
+            If cmd.posShift Then
+                tp.tp.cartCoords.SetByIndex(axis, tp.tp.cartCoords.Items(axis) + val)
+            Else
+                tp.tp.cartCoords.SetByIndex(axis, val)
+            End If
+        Else
+            If cmd.posShift Then
+                tp.tp.jointAngles.SetByIndex(axis, tp.tp.jointAngles.Items(axis) + val)
+            Else
+                tp.tp.jointAngles.SetByIndex(axis, val)
+            End If
+        End If
+        _runtimeTeachPoints(index) = tp
+        Return True
     End Function
+
+    Private Sub _runtimeError(lineNr As Integer, msg As String)
+        RaiseEvent ErrorLine(lineNr)
+        RaiseEvent Log($"[ACL-RT] Zeile {lineNr.ToString,3:N}: {msg}", Logger.LogLevel.ERR)
+        _forceStopProgram = True
+    End Sub
 
     Private Sub _eSyntaxError(line As Integer, msg As String)
         If _programSyntaxOkay Then
@@ -1018,7 +1035,7 @@ Friend Class ACLProgram
                 If tpNr >= 0 Then
                     progEntry.moveTpNr = tpNr
                 Else
-                    progEntry.moveTpName = tpIdentifier
+                    progEntry.moveTpIdentifier = tpIdentifier
                 End If
                 _progList.Add(progEntry)
             Else
@@ -1641,15 +1658,89 @@ Friend Class ACLProgram
 
             MyBase.EnterSetpvc(context)
         End Sub
-        'SHIFT (TODO)
+        'SHIFT (TEST)
         Public Overrides Sub EnterShift(<NotNull> context As ACLParser.ShiftContext)
-            RaiseEvent CompileErrorEvent(context.SHIFT.Symbol.Line, $"SHIFT noch nicht implementiert")
+            Dim lineNr As Integer = context.SHIFT.Symbol.Line
+            Dim identifier As String = context.GetChild(1).GetText()
+            Dim val As Integer = 0
+            Dim var As String = Nothing
+            Dim axis As Integer
+            Try
+                axis = CInt(context.GetChild(3).GetText())
+            Catch e As OverflowException
+                RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
+            End Try
+
+            _getVarVal(context.GetChild(4).GetText(), lineNr, val, var)
+
+            ' Prüfen ob Position schon erstellt wurde
+            Dim index As Integer = _getPosIndex(identifier, lineNr)
+            If index >= 0 Then
+                ' changePos erstellen
+                If axis > 6 Or axis < 1 Then
+                    RaiseEvent CompileErrorEvent(lineNr, "Achsennummer muss zwischen 1 und 6 liegen")
+                Else
+                    Dim progEntry As New ProgramEntry
+                    progEntry.func = progFunc.changePos
+                    progEntry.lineNr = lineNr
+                    progEntry.posShift = True
+                    progEntry.posIdentifer = identifier
+                    progEntry.posType = False
+                    progEntry.varValue = val
+                    progEntry.varVariable = var
+                    progEntry.posChangeAxisOrCoord = axis
+                    _progList.Add(progEntry)
+                End If
+            Else
+                If IsNumeric(identifier) Then
+                    RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {identifier} wurde nicht definiert.")
+                Else
+                    RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
+                End If
+            End If
 
             MyBase.EnterShift(context)
         End Sub
-        'SHIFTC (TODO)
+        'SHIFTC (TEST)
         Public Overrides Sub EnterShiftc(<NotNull> context As ACLParser.ShiftcContext)
-            RaiseEvent CompileErrorEvent(context.SHIFTC.Symbol.Line, $"SHIFTC noch nicht implementiert")
+            '   0                   1       2      3                       4
+            ' SHIFTC (IDENTIFIER | INTEGER) BY IDENTIFIER (SIGNEDINT | INTEGER | IDENTIFIER)
+            Dim lineNr As Integer = context.SHIFTC.Symbol.Line
+            Dim identifier As String = context.GetChild(1).GetText()
+            Dim val As Integer = 0
+            Dim var As String = Nothing
+            Dim coord As Integer = 0
+            Try
+                coord = CType([Enum].Parse(GetType(enumCoord), context.GetChild(3).GetText(), False), enumCoord)
+            Catch e As ArgumentException
+                RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur die Werte: ""X, Y, Z, yaw, pitch, roll"" gültig.")
+            End Try
+
+            _getVarVal(context.GetChild(4).GetText(), lineNr, val, var)
+
+            ' Prüfen ob Position schon erstellt wurde
+            Dim index As Integer = _getPosIndex(identifier, lineNr)
+            If index >= 0 Then
+                If coord > 0 Then
+                    ' changePos erstellen
+                    Dim progEntry As New ProgramEntry
+                    progEntry.func = progFunc.changePos
+                    progEntry.lineNr = lineNr
+                    progEntry.posShift = True
+                    progEntry.posIdentifer = identifier
+                    progEntry.posType = True
+                    progEntry.varValue = val
+                    progEntry.varVariable = var
+                    progEntry.posChangeAxisOrCoord = coord
+                    _progList.Add(progEntry)
+                End If
+            Else
+                If IsNumeric(identifier) Then
+                    RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {identifier} wurde nicht definiert.")
+                Else
+                    RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
+                End If
+            End If
 
             MyBase.EnterShiftc(context)
         End Sub

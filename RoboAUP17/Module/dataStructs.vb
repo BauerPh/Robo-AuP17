@@ -382,7 +382,7 @@ Module dataStructs
         Friend func As progFunc
         ' Axis Control
         Friend moveTpNr As Int32
-        Friend moveTpName As String
+        Friend moveTpIdentifier As String
         Friend moveSpeed As Double
         Friend moveAcc As Double
         Friend moveSync As Boolean

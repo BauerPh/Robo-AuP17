@@ -52,10 +52,10 @@ GOTO:			'GOTO';
 PRINT:			'PRINT';
 
 // expressions
-BOOL:				'TRUE' | 'FALSE';
 DECIMAL:			SIGNEDINT '.' [0-9]+;
 INTEGER:			'0' | ( [1-9] [0-9]* );
 SIGNEDINT:			( '+' | '-' )? INTEGER;
+BOOL:				'TRUE' | 'FALSE';
 SUMOPERATOR:		'+' | '-';
 FACTOROPERATOR:		'*' | '/' | 'EXP' | 'MOD';
 BOOLOPERATOR:		'AND' | 'OR';
