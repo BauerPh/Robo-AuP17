@@ -14,11 +14,6 @@
     ' -----------------------------------------------------------------------------
     ' Public
     ' -----------------------------------------------------------------------------
-    Friend Structure movCalcResult
-        Friend v_min As Double
-        Friend v As Double
-        Friend a As Double
-    End Structure
     Friend Function SetValues(index As Integer, v_max As Double, v_min As Double, a_max As Double) As Boolean
         If index < 0 OrElse index > 5 Then Return False
         _v_min(index) = v_min
