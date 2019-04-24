@@ -95,54 +95,58 @@ Friend Class SerialCommunication
     Friend Sub ClearMsgDataSend()
         _clearMsgData(_msgDataSend)
     End Sub
-    Friend Sub AddMOVDataSet(add As Boolean, nr As Int32, target As Int32, speed As Int32, accel As Int32, stopAccel As Int32)
+    Friend Sub AddMOVDataSet(add As Boolean, nr As Int32, target As Int32, minSpeed As Int32, speed As Int32, accel As Int32, stopAccel As Int32)
         If speed = 0 Then speed = 1
-        If accel = 0 Then accel = 1
+        'If accel = 0 Then accel = 1
         If add Then
             'Achs-Nr
             _msgDataSend.Parset(_msgDataSend.Cnt)(0) = nr
             'Ziel
             _msgDataSend.Parset(_msgDataSend.Cnt)(1) = target
+            'minimale Geschwindigkeit
+            _msgDataSend.Parset(_msgDataSend.Cnt)(2) = minSpeed
             'Geschwindigkeit
-            _msgDataSend.Parset(_msgDataSend.Cnt)(2) = speed
+            _msgDataSend.Parset(_msgDataSend.Cnt)(3) = speed
             'Beschleunigung
-            _msgDataSend.Parset(_msgDataSend.Cnt)(3) = accel
+            _msgDataSend.Parset(_msgDataSend.Cnt)(4) = accel
             'Beschleunigung für Stop
-            _msgDataSend.Parset(_msgDataSend.Cnt)(4) = stopAccel
+            _msgDataSend.Parset(_msgDataSend.Cnt)(5) = stopAccel
             _msgDataSend.Cnt += 1S
         End If
     End Sub
     Friend Function SendMOV() As Boolean
         If _connected Then
-            _sendDataSets("mov", 4)
+            _sendDataSets("mov", 5)
             _movWaitACK = True
             _tWaitACK.Start()
             Return True
         End If
         Return False
     End Function
-    Friend Sub AddREFDataSet(add As Boolean, nr As Int32, dir As Int32, speedFast As Int32, speedSlow As Int32, accel As Int32, maxStepsBack As Int32, stopAccel As Int32)
+    Friend Sub AddREFDataSet(add As Boolean, nr As Int32, dir As Int32, minSpeed As Int32, speedFast As Int32, speedSlow As Int32, accel As Int32, maxStepsBack As Int32, stopAccel As Int32)
         If add Then
             'Achs-Nr
             _msgDataSend.Parset(_msgDataSend.Cnt)(0) = nr
             'Richtung
             _msgDataSend.Parset(_msgDataSend.Cnt)(1) = dir
+            'minimale Geschwindigkeit
+            _msgDataSend.Parset(_msgDataSend.Cnt)(2) = minSpeed
             'Geschwindigkeit schnell
-            _msgDataSend.Parset(_msgDataSend.Cnt)(2) = speedFast
+            _msgDataSend.Parset(_msgDataSend.Cnt)(3) = speedFast
             'Geschwindigkeit langsam
-            _msgDataSend.Parset(_msgDataSend.Cnt)(3) = speedSlow
+            _msgDataSend.Parset(_msgDataSend.Cnt)(4) = speedSlow
             'Beschleunigung
-            _msgDataSend.Parset(_msgDataSend.Cnt)(4) = accel
+            _msgDataSend.Parset(_msgDataSend.Cnt)(5) = accel
             'Maximale Schritte bei Referenz für zurück
-            _msgDataSend.Parset(_msgDataSend.Cnt)(5) = maxStepsBack
+            _msgDataSend.Parset(_msgDataSend.Cnt)(6) = maxStepsBack
             'Beschleunigung für Stop
-            _msgDataSend.Parset(_msgDataSend.Cnt)(6) = stopAccel
+            _msgDataSend.Parset(_msgDataSend.Cnt)(7) = stopAccel
             _msgDataSend.Cnt += 1S
         End If
     End Sub
     Friend Function SendREF() As Boolean
         If _connected Then
-            _sendDataSets("ref", 6)
+            _sendDataSets("ref", 7)
             _refWaitACK = True
             _tWaitACK.Start()
             Return True

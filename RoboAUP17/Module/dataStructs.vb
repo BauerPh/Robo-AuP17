@@ -224,6 +224,10 @@ Module dataStructs
             Description("Beschleunigung während einer Referenzfahrt")>
         Public Property CalAcc As Double
         <Category("Fahrprofil"),
+            DisplayName("minimaleGeschwindigkeit"),
+            Description("die minimale Geschwindigkeit dieser Achse")>
+        Public Property ProfileMinSpeed As Double
+        <Category("Fahrprofil"),
             DisplayName("maximale Geschwindigkeit"),
             Description("die maximal mögliche Geschwindigkeit dieser Achse")>
         Public Property ProfileMaxSpeed As Double

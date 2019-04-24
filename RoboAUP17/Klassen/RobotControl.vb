@@ -141,7 +141,7 @@ Friend Class RobotControl
         Dim tmpNr As Int32 = nr - 1
         Dim target As Double
         target = Constrain(_posJoint.Items(tmpNr) + jogval, _pref.JointParameter(tmpNr).MechMinAngle, _pref.JointParameter(tmpNr).MechMaxAngle)
-        _com.AddMOVDataSet(True, nr, _calcTargetToSteps(target, nr), _calcSpeedAccToSteps(tmpV(tmpNr), nr), _calcSpeedAccToSteps(tmpA(tmpNr), nr), _calcSpeedAccToSteps(_pref.JointParameter(tmpNr).ProfileStopAcc, nr))
+        _com.AddMOVDataSet(True, nr, _calcTargetToSteps(target, nr), _calcSpeedAccToSteps(_pref.JointParameter(tmpNr).ProfileMinSpeed, nr), _calcSpeedAccToSteps(tmpV(tmpNr), nr), _calcSpeedAccToSteps(tmpA(tmpNr), nr), _calcSpeedAccToSteps(_pref.JointParameter(tmpNr).ProfileStopAcc, nr))
         'Telegramm senden
         If _com.SendMOV() Then
             RaiseEvent RoboBusy(True, False)
@@ -187,7 +187,7 @@ Friend Class RobotControl
         Dim enabled() As Boolean = {J1, J2, J3, J4, J5, J6}
         For i = 0 To 5
             Dim tmpMaxStepsBack As Int32 = AngleToSteps(_constRefMaxAngleBack, _pref.JointParameter(i).MotGear, _pref.JointParameter(i).MechGear, _pref.JointParameter(i).MotStepsPerRot << _pref.JointParameter(i).MotMode, 0)
-            _com.AddREFDataSet(enabled(i), i + 1, _pref.JointParameter(i).CalDir Xor _pref.JointParameter(i).MotDir, _calcSpeedAccToSteps(_pref.JointParameter(i).CalSpeedFast, i + 1), _calcSpeedAccToSteps(_pref.JointParameter(i).CalSpeedSlow, i + 1), _calcSpeedAccToSteps(_pref.JointParameter(i).CalAcc, i + 1), tmpMaxStepsBack, _calcSpeedAccToSteps(_pref.JointParameter(i).ProfileStopAcc, i + 1))
+            _com.AddREFDataSet(enabled(i), i + 1, _pref.JointParameter(i).CalDir Xor _pref.JointParameter(i).MotDir, _calcSpeedAccToSteps(_pref.JointParameter(i).ProfileMinSpeed, i + 1), _calcSpeedAccToSteps(_pref.JointParameter(i).CalSpeedFast, i + 1), _calcSpeedAccToSteps(_pref.JointParameter(i).CalSpeedSlow, i + 1), _calcSpeedAccToSteps(_pref.JointParameter(i).CalAcc, i + 1), tmpMaxStepsBack, _calcSpeedAccToSteps(_pref.JointParameter(i).ProfileStopAcc, i + 1))
         Next
         'Telegram senden
         If _com.SendREF() Then
@@ -224,6 +224,7 @@ Friend Class RobotControl
 
     Friend Function DoJointMov(sync As Boolean, jointAngles As JointAngles) As Boolean
         'Daten aufbereiten
+        Dim tmpVmin(5) As Double
         Dim tmpV(5) As Double
         Dim tmpA(5) As Double
         Dim atLeasOneJointMove As Boolean = False
@@ -248,23 +249,23 @@ Friend Class RobotControl
         'Synchronisierte Bewegung berechnen, falls gewünscht
         If sync Then
             For i = 0 To 5
-                _oSyncMov.v_max(i) = tmpV(i)
-                _oSyncMov.a_max(i) = tmpA(i)
-                _oSyncMov.s(i) = If(enabled(i), Math.Abs(targetJoint.Items(i) - _posJoint.Items(i)), 0)
+                _oSyncMov.SetValues(i, tmpV(i), _pref.JointParameter(i).ProfileMinSpeed, tmpA(i))
+                _oSyncMov.SetDistance(i, If(enabled(i), Math.Abs(targetJoint.Items(i) - _posJoint.Items(i)), 0))
             Next
-            If Not _oSyncMov.calculate() Then
+            If Not _oSyncMov.Calculate() Then
                 RaiseEvent Log("[Robo Control] Berechnung für synchrone Bewegung fehlgeschlagen", Logger.LogLevel.ERR)
                 targetJoint = CType(_posJoint.Clone(), JointAngles) ' Ziel auf aktuelle Position setzen
             Else
                 'Geschwindigkeit und Beschleunigung zuweisen
-                Array.Copy(_oSyncMov.v, tmpV, _oSyncMov.v.Length)
-                Array.Copy(_oSyncMov.a, tmpA, _oSyncMov.a.Length)
+                tmpVmin = _oSyncMov.GetVmin
+                tmpV = _oSyncMov.GetV
+                tmpA = _oSyncMov.GetA
             End If
         End If
         'Datensätze sammeln
         _com.ClearMsgDataSend()
         For i = 0 To 5
-            _com.AddMOVDataSet(enabled(i), i + 1, _calcTargetToSteps(targetJoint.Items(i), i + 1), _calcSpeedAccToSteps(tmpV(i), i + 1), _calcSpeedAccToSteps(tmpA(i), i + 1), _calcSpeedAccToSteps(_pref.JointParameter(i).ProfileStopAcc, i + 1))
+            _com.AddMOVDataSet(enabled(i), i + 1, _calcTargetToSteps(targetJoint.Items(i), i + 1), _calcSpeedAccToSteps(_pref.JointParameter(i).ProfileMinSpeed, i + 1), _calcSpeedAccToSteps(tmpV(i), i + 1), _calcSpeedAccToSteps(tmpA(i), i + 1), _calcSpeedAccToSteps(_pref.JointParameter(i).ProfileStopAcc, i + 1))
         Next
         'Telegram senden
         If _com.SendMOV() Then

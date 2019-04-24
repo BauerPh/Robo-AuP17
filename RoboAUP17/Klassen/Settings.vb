@@ -230,6 +230,7 @@
                     .WriteEndElement()
 
                     .WriteStartElement("profile")
+                    .WriteAttributeString("minSpeed", _jointParameter(i).ProfileMinSpeed.ToString)
                     .WriteAttributeString("maxSpeed", _jointParameter(i).ProfileMaxSpeed.ToString)
                     .WriteAttributeString("maxAcc", _jointParameter(i).ProfileMaxAcc.ToString)
                     .WriteAttributeString("stopAcc", _jointParameter(i).ProfileStopAcc.ToString)
@@ -360,6 +361,8 @@
                                             End Select
                                         Case "profile"
                                             Select Case .Name
+                                                Case "minSpeed"
+                                                    _jointParameter(i).ProfileMinSpeed = CDbl(.Value)
                                                 Case "maxSpeed"
                                                     _jointParameter(i).ProfileMaxSpeed = CDbl(.Value)
                                                 Case "maxAcc"
