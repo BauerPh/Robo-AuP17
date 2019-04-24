@@ -75,8 +75,8 @@ move
 	;
 
 openclose
-	: OPEN INTEGER
-	| CLOSE INTEGER
+	: OPEN INTEGER?
+	| CLOSE INTEGER?
 	;
 
 jaw

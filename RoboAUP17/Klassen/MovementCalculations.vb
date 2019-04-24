@@ -3,6 +3,7 @@
     ' Definitions
     ' -----------------------------------------------------------------------------
     Friend v_max(5) As Double
+    Friend v_min(5) As Double
     Friend a_max(5) As Double
     Friend s(5) As Double
     Friend a(5) As Double

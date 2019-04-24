@@ -1051,7 +1051,12 @@ Friend Class ACLProgram
         'OPEN / CLOSE
         Public Overrides Sub EnterOpenclose(<NotNull> context As ACLParser.OpencloseContext)
             Dim lineNr As Integer = CType(context.GetChild(0), Tree.ITerminalNode).Symbol.Line
-            Dim servoNr As Int32 = CInt(context.GetChild(1).GetText())
+            Dim servoNr As Int32
+            If context.INTEGER Is Nothing Then
+                servoNr = 1
+            Else
+                servoNr = CInt(context.INTEGER.GetText())
+            End If
             If servoNr < 1 Or servoNr > 3 Then
                 RaiseEvent CompileErrorEvent(lineNr, $"Servonummer muss zwischen 1 und 3 liegen")
             End If

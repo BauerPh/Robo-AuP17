@@ -7,10 +7,11 @@
     Private Const _constNoRefTooltipText As String = "Achse nicht referenziert"
     Private Const _constLimitSwitchActuated As String = "Endschalter betätigt oder nicht angeschlossen"
     Private Const _constLimitSwitchNotActuated As String = "Endschalter nicht betätigt"
-    Private Const _constLimitEstopActuated As String = "Nothalt betätigt"
-    Private Const _constLimitEstopNotActuated As String = "Nothalt nicht betätigt"
+    Private Const _constEstopActuated As String = "Nothalt betätigt"
+    Private Const _constEstopNotActuated As String = "Nothalt nicht betätigt"
 
     Private _limitSwitchToolTip As New ToolTip
+    Private _eStopToolTip As New ToolTip
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
@@ -190,12 +191,12 @@
             Return
         End If
 
-        lblJ1LSState.ImageIndex = If(lssState(0), 2, 1)
-        lblJ2LSState.ImageIndex = If(lssState(1), 2, 1)
-        lblJ3LSState.ImageIndex = If(lssState(2), 2, 1)
-        lblJ4LSState.ImageIndex = If(lssState(3), 2, 1)
-        lblJ5LSState.ImageIndex = If(lssState(4), 2, 1)
-        lblJ6LSState.ImageIndex = If(lssState(5), 2, 1)
+        lblJ1LSState.ImageIndex = If(lssState(0), 1, 2)
+        lblJ2LSState.ImageIndex = If(lssState(1), 1, 2)
+        lblJ3LSState.ImageIndex = If(lssState(2), 1, 2)
+        lblJ4LSState.ImageIndex = If(lssState(3), 1, 2)
+        lblJ5LSState.ImageIndex = If(lssState(4), 1, 2)
+        lblJ6LSState.ImageIndex = If(lssState(5), 1, 2)
 
         _limitSwitchToolTip.SetToolTip(lblJ1LSState, If(lssState(0), _constLimitSwitchActuated, _constLimitSwitchNotActuated))
         _limitSwitchToolTip.SetToolTip(lblJ2LSState, If(lssState(1), _constLimitSwitchActuated, _constLimitSwitchNotActuated))
@@ -212,7 +213,9 @@
             Return
         End If
 
-        lblESState.ImageIndex = If(essState, 2, 1)
+        lblESState.ImageIndex = If(essState, 1, 2)
+
+        _eStopToolTip.SetToolTip(lblESState, If(essState, _constEstopActuated, _constEstopNotActuated))
     End Sub
 
 End Class
