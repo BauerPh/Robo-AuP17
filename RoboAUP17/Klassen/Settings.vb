@@ -197,248 +197,249 @@
     ' -----------------------------------------------------------------------------
     Private Sub _XMLWriter(filename As String)
         Dim enc As New System.Text.UnicodeEncoding
-        Dim XMLTextWriter As Xml.XmlTextWriter = New Xml.XmlTextWriter(filename, enc)
+        Using XMLTextWriter As New Xml.XmlTextWriter(filename, enc)
+            With XMLTextWriter
+                .Formatting = Xml.Formatting.Indented
+                .Indentation = 4
+                .WriteStartDocument()
+                .WriteStartElement("Settings")
+                'Joints
+                For i = 0 To 5
+                    .WriteStartElement("J" & (i + 1).ToString())
 
-        With XMLTextWriter
-            .Formatting = Xml.Formatting.Indented
-            .Indentation = 4
-            .WriteStartDocument()
-            .WriteStartElement("Settings")
-            'Joints
-            For i = 0 To 5
-                .WriteStartElement("J" & (i + 1).ToString())
+                    .WriteStartElement("mot")
+                    .WriteAttributeString("stepsPerRot", _jointParameter(i).MotStepsPerRot.ToString)
+                    .WriteAttributeString("gear", _jointParameter(i).MotGear.ToString)
+                    .WriteAttributeString("mode", _jointParameter(i).MotMode.ToString)
+                    .WriteAttributeString("dir", _jointParameter(i).MotDir.ToString)
+                    .WriteEndElement()
 
-                .WriteStartElement("mot")
-                .WriteAttributeString("stepsPerRot", _jointParameter(i).MotStepsPerRot.ToString)
-                .WriteAttributeString("gear", _jointParameter(i).MotGear.ToString)
-                .WriteAttributeString("mode", _jointParameter(i).MotMode.ToString)
-                .WriteAttributeString("dir", _jointParameter(i).MotDir.ToString)
+                    .WriteStartElement("mech")
+                    .WriteAttributeString("gear", _jointParameter(i).MechGear.ToString)
+                    .WriteAttributeString("minAngle", _jointParameter(i).MechMinAngle.ToString)
+                    .WriteAttributeString("maxAngle", _jointParameter(i).MechMaxAngle.ToString)
+                    .WriteAttributeString("homePosAngle", _jointParameter(i).MechHomePosAngle.ToString)
+                    .WriteAttributeString("parkPosAngle", _jointParameter(i).MechParkPosAngle.ToString)
+                    .WriteEndElement()
+
+                    .WriteStartElement("cal")
+                    .WriteAttributeString("dir", _jointParameter(i).CalDir.ToString)
+                    .WriteAttributeString("speedFast", _jointParameter(i).CalSpeedFast.ToString)
+                    .WriteAttributeString("speedSlow", _jointParameter(i).CalSpeedSlow.ToString)
+                    .WriteAttributeString("acc", _jointParameter(i).CalAcc.ToString)
+                    .WriteEndElement()
+
+                    .WriteStartElement("profile")
+                    .WriteAttributeString("maxSpeed", _jointParameter(i).ProfileMaxSpeed.ToString)
+                    .WriteAttributeString("maxAcc", _jointParameter(i).ProfileMaxAcc.ToString)
+                    .WriteAttributeString("stopAcc", _jointParameter(i).ProfileStopAcc.ToString)
+                    .WriteEndElement()
+
+                    .WriteStartElement("denavitHartenbergParameter")
+                    .WriteAttributeString("alpha", _denavitHartenbergParameter(i).alpha.ToString)
+                    .WriteAttributeString("d", _denavitHartenbergParameter(i).d.ToString)
+                    .WriteAttributeString("a", _denavitHartenbergParameter(i).a.ToString)
+                    .WriteEndElement()
+
+                    .WriteEndElement()
+                Next
+                'Servos
+                For i = 0 To 2
+                    .WriteStartElement("SRV" & (i + 1).ToString())
+
+                    .WriteAttributeString("available", _servoParameter(i).Available.ToString)
+
+                    .WriteStartElement("angles")
+                    .WriteAttributeString("minAngle", _servoParameter(i).MinAngle.ToString)
+                    .WriteAttributeString("maxAngle", _servoParameter(i).MaxAngle.ToString)
+                    .WriteEndElement()
+
+                    .WriteEndElement()
+                Next
+                'Toolframe
+                .WriteStartElement("toolframe")
+                .WriteAttributeString("x", _toolframe.X.ToString)
+                .WriteAttributeString("y", _toolframe.Y.ToString)
+                .WriteAttributeString("z", _toolframe.Z.ToString)
+                .WriteAttributeString("yaw", _toolframe.Yaw.ToString)
+                .WriteAttributeString("pitch", _toolframe.Pitch.ToString)
+                .WriteAttributeString("roll", _toolframe.Roll.ToString)
                 .WriteEndElement()
-
-                .WriteStartElement("mech")
-                .WriteAttributeString("gear", _jointParameter(i).MechGear.ToString)
-                .WriteAttributeString("minAngle", _jointParameter(i).MechMinAngle.ToString)
-                .WriteAttributeString("maxAngle", _jointParameter(i).MechMaxAngle.ToString)
-                .WriteAttributeString("homePosAngle", _jointParameter(i).MechHomePosAngle.ToString)
-                .WriteAttributeString("parkPosAngle", _jointParameter(i).MechParkPosAngle.ToString)
+                'Workframe
+                .WriteStartElement("workframe")
+                .WriteAttributeString("x", _workframe.X.ToString)
+                .WriteAttributeString("y", _workframe.Y.ToString)
+                .WriteAttributeString("z", _workframe.Z.ToString)
+                .WriteAttributeString("yaw", _workframe.Yaw.ToString)
+                .WriteAttributeString("pitch", _workframe.Pitch.ToString)
+                .WriteAttributeString("roll", _workframe.Roll.ToString)
                 .WriteEndElement()
-
-                .WriteStartElement("cal")
-                .WriteAttributeString("dir", _jointParameter(i).CalDir.ToString)
-                .WriteAttributeString("speedFast", _jointParameter(i).CalSpeedFast.ToString)
-                .WriteAttributeString("speedSlow", _jointParameter(i).CalSpeedSlow.ToString)
-                .WriteAttributeString("acc", _jointParameter(i).CalAcc.ToString)
+                'TCP
+                .WriteStartElement("tcpServerParameter")
+                .WriteAttributeString("listen", _tcpServerParameter.Listen.ToString)
+                .WriteAttributeString("port", _tcpServerParameter.Port.ToString)
                 .WriteEndElement()
-
-                .WriteStartElement("profile")
-                .WriteAttributeString("maxSpeed", _jointParameter(i).ProfileMaxSpeed.ToString)
-                .WriteAttributeString("maxAcc", _jointParameter(i).ProfileMaxAcc.ToString)
-                .WriteAttributeString("stopAcc", _jointParameter(i).ProfileStopAcc.ToString)
+                'Settings
                 .WriteEndElement()
-
-                .WriteStartElement("denavitHartenbergParameter")
-                .WriteAttributeString("alpha", _denavitHartenbergParameter(i).alpha.ToString)
-                .WriteAttributeString("d", _denavitHartenbergParameter(i).d.ToString)
-                .WriteAttributeString("a", _denavitHartenbergParameter(i).a.ToString)
-                .WriteEndElement()
-
-                .WriteEndElement()
-            Next
-            'Servos
-            For i = 0 To 2
-                .WriteStartElement("SRV" & (i + 1).ToString())
-
-                .WriteAttributeString("available", _servoParameter(i).Available.ToString)
-
-                .WriteStartElement("angles")
-                .WriteAttributeString("minAngle", _servoParameter(i).MinAngle.ToString)
-                .WriteAttributeString("maxAngle", _servoParameter(i).MaxAngle.ToString)
-                .WriteEndElement()
-
-                .WriteEndElement()
-            Next
-            'Toolframe
-            .WriteStartElement("toolframe")
-            .WriteAttributeString("x", _toolframe.X.ToString)
-            .WriteAttributeString("y", _toolframe.Y.ToString)
-            .WriteAttributeString("z", _toolframe.Z.ToString)
-            .WriteAttributeString("yaw", _toolframe.Yaw.ToString)
-            .WriteAttributeString("pitch", _toolframe.Pitch.ToString)
-            .WriteAttributeString("roll", _toolframe.Roll.ToString)
-            .WriteEndElement()
-            'Workframe
-            .WriteStartElement("workframe")
-            .WriteAttributeString("x", _workframe.X.ToString)
-            .WriteAttributeString("y", _workframe.Y.ToString)
-            .WriteAttributeString("z", _workframe.Z.ToString)
-            .WriteAttributeString("yaw", _workframe.Yaw.ToString)
-            .WriteAttributeString("pitch", _workframe.Pitch.ToString)
-            .WriteAttributeString("roll", _workframe.Roll.ToString)
-            .WriteEndElement()
-            'TCP
-            .WriteStartElement("tcpServerParameter")
-            .WriteAttributeString("listen", _tcpServerParameter.Listen.ToString)
-            .WriteAttributeString("port", _tcpServerParameter.Port.ToString)
-            .WriteEndElement()
-            'Settings
-            .WriteEndElement()
-            .Close()
-        End With
+                .Close()
+            End With
+        End Using
     End Sub
 
     Private Function _XMLReader(filename As String) As Boolean
         'Prüfe ob Datei existiert
         If Not System.IO.File.Exists(filename) Then Return False
 
-        Dim XMLReader As Xml.XmlReader = New Xml.XmlTextReader(filename)
-        Dim i As Int32 'Index
-        Dim setting As Integer = 0
-        Dim valid As Boolean = False
+        Using XMLReader As New Xml.XmlTextReader(filename)
+            Dim i As Int32 'Index
+            Dim setting As Integer = 0
+            Dim valid As Boolean = False
 
-        With XMLReader
-            Do While .Read ' Es sind noch Daten vorhanden 
-                If .NodeType = Xml.XmlNodeType.Element Then
-                    Dim e As String = .Name 'Elementname
-                    If e = "Settings" And Not valid Then valid = True
-                    If Not valid Then
-                        .Close()
-                        RaiseEvent Log($"[Parameter] Dies ist keine korrekte Parameterdatei oder die Datei ist beschädigt", Logger.LogLevel.ERR)
-                        Return False
+            With XMLReader
+                Do While .Read ' Es sind noch Daten vorhanden 
+                    If .NodeType = Xml.XmlNodeType.Element Then
+                        Dim e As String = .Name 'Elementname
+                        If e = "Settings" And Not valid Then valid = True
+                        If Not valid Then
+                            .Close()
+                            RaiseEvent Log($"[Parameter] Dies ist keine korrekte Parameterdatei oder die Datei ist beschädigt", Logger.LogLevel.ERR)
+                            Return False
+                        End If
+                        If e.Substring(0, 1) = "J" Then
+                            i = CInt(e.Substring(1)) - 1 'Joint Nr
+                            setting = 1
+                        ElseIf e.Substring(0, 3) = "SRV" Then
+                            i = CInt(e.Substring(3)) - 1
+                            setting = 2
+                        ElseIf e = "toolframe" Then
+                            setting = 3
+                        ElseIf e = "workframe" Then
+                            setting = 4
+                        ElseIf e = "tcpServerParameter" Then
+                            setting = 5
+                        End If
+                        If .AttributeCount > 0 Then 'sind überhaupt Attribute vorhanden?
+                            While .MoveToNextAttribute 'Attribute durchlaufen
+                                If setting = 1 Then
+                                    '********** JOINTS **********
+                                    Select Case e
+                                        Case "mot"
+                                            Select Case .Name
+                                                Case "stepsPerRot"
+                                                    _jointParameter(i).MotStepsPerRot = CInt(.Value)
+                                                Case "gear"
+                                                    _jointParameter(i).MotGear = CDbl(.Value)
+                                                Case "mode"
+                                                    _jointParameter(i).MotMode = CType([Enum].Parse(GetType(MotMode), .Value), MotMode)  'CType(CInt(.Value), motMode)
+                                                Case "dir"
+                                                    _jointParameter(i).MotDir = CType([Enum].Parse(GetType(MotDir), .Value), MotDir)
+                                            End Select
+                                        Case "mech"
+                                            Select Case .Name
+                                                Case "gear"
+                                                    _jointParameter(i).MechGear = CDbl(.Value)
+                                                Case "minAngle"
+                                                    _jointParameter(i).MechMinAngle = CDbl(.Value)
+                                                Case "maxAngle"
+                                                    _jointParameter(i).MechMaxAngle = CDbl(.Value)
+                                                Case "homePosAngle"
+                                                    _jointParameter(i).MechHomePosAngle = CDbl(.Value)
+                                                Case "parkPosAngle"
+                                                    _jointParameter(i).MechParkPosAngle = CDbl(.Value)
+                                            End Select
+                                        Case "cal"
+                                            Select Case .Name
+                                                Case "dir"
+                                                    _jointParameter(i).CalDir = CType([Enum].Parse(GetType(CalDir), .Value), CalDir)
+                                                Case "speedFast"
+                                                    _jointParameter(i).CalSpeedFast = CDbl(.Value)
+                                                Case "speedSlow"
+                                                    _jointParameter(i).CalSpeedSlow = CDbl(.Value)
+                                                Case "acc"
+                                                    _jointParameter(i).CalAcc = CDbl(.Value)
+                                            End Select
+                                        Case "profile"
+                                            Select Case .Name
+                                                Case "maxSpeed"
+                                                    _jointParameter(i).ProfileMaxSpeed = CDbl(.Value)
+                                                Case "maxAcc"
+                                                    _jointParameter(i).ProfileMaxAcc = CDbl(.Value)
+                                                Case "stopAcc"
+                                                    _jointParameter(i).ProfileStopAcc = CDbl(.Value)
+                                            End Select
+                                        Case "denavitHartenbergParameter"
+                                            Select Case .Name
+                                                Case "alpha"
+                                                    _denavitHartenbergParameter(i).alpha = CDbl(.Value)
+                                                Case "d"
+                                                    _denavitHartenbergParameter(i).d = CDbl(.Value)
+                                                Case "a"
+                                                    _denavitHartenbergParameter(i).a = CDbl(.Value)
+                                            End Select
+                                    End Select
+                                ElseIf setting = 2 Then
+                                    '********** SERVOS **********
+                                    Select Case e
+                                        Case "angles"
+                                            Select Case .Name
+                                                Case "minAngle"
+                                                    _servoParameter(i).MinAngle = CDbl(.Value)
+                                                Case "maxAngle"
+                                                    _servoParameter(i).MaxAngle = CDbl(.Value)
+                                            End Select
+                                        Case Else
+                                            If .Name = "available" Then
+                                                _servoParameter(i).Available = CBool(.Value)
+                                            End If
+                                    End Select
+                                ElseIf setting = 3 Then
+                                    '********** WORKFRAME **********
+                                    Select Case .Name
+                                        Case "x"
+                                            _toolframe.X = CDbl(.Value)
+                                        Case "y"
+                                            _toolframe.Y = CDbl(.Value)
+                                        Case "z"
+                                            _toolframe.Z = CDbl(.Value)
+                                        Case "yaw"
+                                            _toolframe.Yaw = CDbl(.Value)
+                                        Case "pitch"
+                                            _toolframe.Pitch = CDbl(.Value)
+                                        Case "roll"
+                                            _toolframe.Roll = CDbl(.Value)
+                                    End Select
+                                ElseIf setting = 4 Then
+                                    '********** TOOLFRAME **********
+                                    Select Case .Name
+                                        Case "x"
+                                            _workframe.X = CDbl(.Value)
+                                        Case "y"
+                                            _workframe.Y = CDbl(.Value)
+                                        Case "z"
+                                            _workframe.Z = CDbl(.Value)
+                                        Case "yaw"
+                                            _workframe.Yaw = CDbl(.Value)
+                                        Case "pitch"
+                                            _workframe.Pitch = CDbl(.Value)
+                                        Case "roll"
+                                            _workframe.Roll = CDbl(.Value)
+                                    End Select
+                                ElseIf setting = 5 Then
+                                    '********** TCP Server Parameter **********
+                                    Select Case .Name
+                                        Case "listen"
+                                            _tcpServerParameter.Listen = CBool(.Value)
+                                        Case "port"
+                                            _tcpServerParameter.Port = CInt(.Value)
+                                    End Select
+                                End If
+                            End While
+                        End If
                     End If
-                    If e.Substring(0, 1) = "J" Then
-                        i = CInt(e.Substring(1)) - 1 'Joint Nr
-                        setting = 1
-                    ElseIf e.Substring(0, 3) = "SRV" Then
-                        i = CInt(e.Substring(3)) - 1
-                        setting = 2
-                    ElseIf e = "toolframe" Then
-                        setting = 3
-                    ElseIf e = "workframe" Then
-                        setting = 4
-                    ElseIf e = "tcpServerParameter" Then
-                        setting = 5
-                    End If
-                    If .AttributeCount > 0 Then 'sind überhaupt Attribute vorhanden?
-                        While .MoveToNextAttribute 'Attribute durchlaufen
-                            If setting = 1 Then
-                                '********** JOINTS **********
-                                Select Case e
-                                    Case "mot"
-                                        Select Case .Name
-                                            Case "stepsPerRot"
-                                                _jointParameter(i).MotStepsPerRot = CInt(.Value)
-                                            Case "gear"
-                                                _jointParameter(i).MotGear = CDbl(.Value)
-                                            Case "mode"
-                                                _jointParameter(i).MotMode = CType([Enum].Parse(GetType(MotMode), .Value), MotMode)  'CType(CInt(.Value), motMode)
-                                            Case "dir"
-                                                _jointParameter(i).MotDir = CType([Enum].Parse(GetType(MotDir), .Value), MotDir)
-                                        End Select
-                                    Case "mech"
-                                        Select Case .Name
-                                            Case "gear"
-                                                _jointParameter(i).MechGear = CDbl(.Value)
-                                            Case "minAngle"
-                                                _jointParameter(i).MechMinAngle = CDbl(.Value)
-                                            Case "maxAngle"
-                                                _jointParameter(i).MechMaxAngle = CDbl(.Value)
-                                            Case "homePosAngle"
-                                                _jointParameter(i).MechHomePosAngle = CDbl(.Value)
-                                            Case "parkPosAngle"
-                                                _jointParameter(i).MechParkPosAngle = CDbl(.Value)
-                                        End Select
-                                    Case "cal"
-                                        Select Case .Name
-                                            Case "dir"
-                                                _jointParameter(i).CalDir = CType([Enum].Parse(GetType(CalDir), .Value), CalDir)
-                                            Case "speedFast"
-                                                _jointParameter(i).CalSpeedFast = CDbl(.Value)
-                                            Case "speedSlow"
-                                                _jointParameter(i).CalSpeedSlow = CDbl(.Value)
-                                            Case "acc"
-                                                _jointParameter(i).CalAcc = CDbl(.Value)
-                                        End Select
-                                    Case "profile"
-                                        Select Case .Name
-                                            Case "maxSpeed"
-                                                _jointParameter(i).ProfileMaxSpeed = CDbl(.Value)
-                                            Case "maxAcc"
-                                                _jointParameter(i).ProfileMaxAcc = CDbl(.Value)
-                                            Case "stopAcc"
-                                                _jointParameter(i).ProfileStopAcc = CDbl(.Value)
-                                        End Select
-                                    Case "denavitHartenbergParameter"
-                                        Select Case .Name
-                                            Case "alpha"
-                                                _denavitHartenbergParameter(i).alpha = CDbl(.Value)
-                                            Case "d"
-                                                _denavitHartenbergParameter(i).d = CDbl(.Value)
-                                            Case "a"
-                                                _denavitHartenbergParameter(i).a = CDbl(.Value)
-                                        End Select
-                                End Select
-                            ElseIf setting = 2 Then
-                                '********** SERVOS **********
-                                Select Case e
-                                    Case "angles"
-                                        Select Case .Name
-                                            Case "minAngle"
-                                                _servoParameter(i).MinAngle = CDbl(.Value)
-                                            Case "maxAngle"
-                                                _servoParameter(i).MaxAngle = CDbl(.Value)
-                                        End Select
-                                    Case Else
-                                        If .Name = "available" Then
-                                            _servoParameter(i).Available = CBool(.Value)
-                                        End If
-                                End Select
-                            ElseIf setting = 3 Then
-                                '********** WORKFRAME **********
-                                Select Case .Name
-                                    Case "x"
-                                        _toolframe.X = CDbl(.Value)
-                                    Case "y"
-                                        _toolframe.Y = CDbl(.Value)
-                                    Case "z"
-                                        _toolframe.Z = CDbl(.Value)
-                                    Case "yaw"
-                                        _toolframe.Yaw = CDbl(.Value)
-                                    Case "pitch"
-                                        _toolframe.Pitch = CDbl(.Value)
-                                    Case "roll"
-                                        _toolframe.Roll = CDbl(.Value)
-                                End Select
-                            ElseIf setting = 4 Then
-                                '********** TOOLFRAME **********
-                                Select Case .Name
-                                    Case "x"
-                                        _workframe.X = CDbl(.Value)
-                                    Case "y"
-                                        _workframe.Y = CDbl(.Value)
-                                    Case "z"
-                                        _workframe.Z = CDbl(.Value)
-                                    Case "yaw"
-                                        _workframe.Yaw = CDbl(.Value)
-                                    Case "pitch"
-                                        _workframe.Pitch = CDbl(.Value)
-                                    Case "roll"
-                                        _workframe.Roll = CDbl(.Value)
-                                End Select
-                            ElseIf setting = 5 Then
-                                '********** TCP Server Parameter **********
-                                Select Case .Name
-                                    Case "listen"
-                                        _tcpServerParameter.Listen = CBool(.Value)
-                                    Case "port"
-                                        _tcpServerParameter.Port = CInt(.Value)
-                                End Select
-                            End If
-                        End While
-                    End If
-                End If
-            Loop
-            .Close()
-        End With
+                Loop
+                .Close()
+            End With
+        End Using
         Return True
     End Function
 End Class

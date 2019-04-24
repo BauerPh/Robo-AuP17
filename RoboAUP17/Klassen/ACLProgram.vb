@@ -227,30 +227,30 @@ Friend Class ACLProgram
             tmpFilename = _filename
         End If
 
-        Dim objStreamWriter As StreamWriter
-        objStreamWriter = New StreamWriter(tmpFilename)
-        'Teachpunkte
-        For Each tp As TeachPoint In _teachPoints
-            objStreamWriter.Write($"<tp>;{tp.nr};{tp.name};{tp.type}")
-            If tp.type Then
-                For i = 0 To 5
-                    objStreamWriter.Write($";{tp.cartCoords.Items(i)}")
-                Next
-            Else
-                For i = 0 To 5
-                    objStreamWriter.Write($";{tp.jointAngles.Items(i)}")
-                Next
-            End If
-            objStreamWriter.WriteLine()
-        Next
-        'Variablen
-        For Each var As KeyValuePair(Of String, Integer) In TcpVariables.Items
-            objStreamWriter.WriteLine($"<var>;{var.Key}")
-        Next
-        'Programm
-        objStreamWriter.WriteLine("<program>")
-        objStreamWriter.Write(prog)
-        objStreamWriter.Close()
+        Using objStreamWriter As New StreamWriter(tmpFilename)
+            'Teachpunkte
+            For Each tp As TeachPoint In _teachPoints
+                objStreamWriter.Write($"<tp>;{tp.nr};{tp.name};{tp.type}")
+                If tp.type Then
+                    For i = 0 To 5
+                        objStreamWriter.Write($";{tp.cartCoords.Items(i)}")
+                    Next
+                Else
+                    For i = 0 To 5
+                        objStreamWriter.Write($";{tp.jointAngles.Items(i)}")
+                    Next
+                End If
+                objStreamWriter.WriteLine()
+            Next
+            'Variablen
+            For Each var As KeyValuePair(Of String, Integer) In TcpVariables.Items
+                objStreamWriter.WriteLine($"<var>;{var.Key}")
+            Next
+            'Programm
+            objStreamWriter.WriteLine("<program>")
+            objStreamWriter.Write(prog)
+            objStreamWriter.Close()
+        End Using
         _filename = tmpFilename
         _unsavedChanges = False
         _savedProgram = prog
@@ -267,55 +267,55 @@ Friend Class ACLProgram
             _teachPoints.Clear()
             TcpVariables.Items.Clear()
 
-            Dim objStreamReader As StreamReader
-            objStreamReader = New StreamReader(openFileDialog.FileName)
-            Try
-                'Jede Zeile der Datei einlesen
-                Dim strLine As String
-                Do
-                    strLine = objStreamReader.ReadLine
-                    If Not strLine Is Nothing Then
-                        Dim tmpSplit As String() = strLine.Split(";"c)
-                        If tmpSplit(0) = "<tp>" Then
-                            'TeachPunkt
-                            Dim item As New TeachPoint
-                            item.nr = CInt(tmpSplit(1))
-                            item.name = tmpSplit(2)
-                            item.type = CBool(tmpSplit(3))
-                            If item.type Then
-                                For i = 0 To 5
-                                    item.cartCoords.SetByIndex(i, CDbl(tmpSplit(4 + i)))
-                                Next
-                            Else
-                                For i = 0 To 5
-                                    item.jointAngles.SetByIndex(i, CDbl(tmpSplit(4 + i)))
-                                Next
+            Using objStreamReader As New StreamReader(openFileDialog.FileName)
+                Try
+                    'Jede Zeile der Datei einlesen
+                    Dim strLine As String
+                    Do
+                        strLine = objStreamReader.ReadLine
+                        If Not strLine Is Nothing Then
+                            Dim tmpSplit As String() = strLine.Split(";"c)
+                            If tmpSplit(0) = "<tp>" Then
+                                'TeachPunkt
+                                Dim item As New TeachPoint
+                                item.nr = CInt(tmpSplit(1))
+                                item.name = tmpSplit(2)
+                                item.type = CBool(tmpSplit(3))
+                                If item.type Then
+                                    For i = 0 To 5
+                                        item.cartCoords.SetByIndex(i, CDbl(tmpSplit(4 + i)))
+                                    Next
+                                Else
+                                    For i = 0 To 5
+                                        item.jointAngles.SetByIndex(i, CDbl(tmpSplit(4 + i)))
+                                    Next
+                                End If
+                                _teachPoints.Add(item)
+                            ElseIf tmpSplit(0) = "<var>" Then
+                                'Variable
+                                TcpVariables.AddVariable(tmpSplit(1))
+                            ElseIf tmpSplit(0) = "<program>" Then
+                                ' Programm einlesen
+                                prog = objStreamReader.ReadToEnd()
                             End If
-                            _teachPoints.Add(item)
-                        ElseIf tmpSplit(0) = "<var>" Then
-                            'Variable
-                            TcpVariables.AddVariable(tmpSplit(1))
-                        ElseIf tmpSplit(0) = "<program>" Then
-                            ' Programm einlesen
-                            prog = objStreamReader.ReadToEnd()
                         End If
-                    End If
-                Loop Until strLine Is Nothing
+                    Loop Until strLine Is Nothing
 
-                _printTeachpointToListBox()
-                _filename = openFileDialog.FileName
-                _unsavedChanges = False
-                _savedProgram = prog
-                RaiseEvent ProgramUpdatedEvent()
-            Catch ex As Exception
-                _teachPoints.Clear()
-                TcpVariables.Items.Clear()
-                prog = ""
-                erg = False
-            Finally
-                'StreamReader schließen
-                objStreamReader.Close()
-            End Try
+                    _printTeachpointToListBox()
+                    _filename = openFileDialog.FileName
+                    _unsavedChanges = False
+                    _savedProgram = prog
+                    RaiseEvent ProgramUpdatedEvent()
+                Catch ex As Exception
+                    _teachPoints.Clear()
+                    TcpVariables.Items.Clear()
+                    prog = ""
+                    erg = False
+                Finally
+                    'StreamReader schließen
+                    objStreamReader.Close()
+                End Try
+            End Using
         Else
             erg = False
         End If
