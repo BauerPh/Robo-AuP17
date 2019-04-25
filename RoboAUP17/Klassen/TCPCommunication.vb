@@ -141,18 +141,22 @@ Public Class TCPCommunication
     ' Stopt den Listener (da Client verbunden) und erstellt die Datenstreams und den Handlethread
     Private Sub _connectedCallback(result As IAsyncResult)
         If _listen Then
-            _tcpClient = _tcpListener.EndAcceptTcpClient(result)
-            _tcpListener.Stop()
-            _networkStream = _tcpClient.GetStream()
-            _networkStreamR = New StreamReader(_networkStream)
-            _networkStreamW = New StreamWriter(_networkStream)
-            'Start Thread (wenn noch nicht gestartet)
-            If _threadHandle.ThreadState = ThreadState.Unstarted Then
-                _threadHandle.IsBackground = True
-                _threadHandle.Start()
-            End If
-            _connected = True
-            RaiseEvent ListenerClientConnected()
+            Try
+                _tcpClient = _tcpListener.EndAcceptTcpClient(result)
+                _tcpListener.Stop()
+                _networkStream = _tcpClient.GetStream()
+                _networkStreamR = New StreamReader(_networkStream)
+                _networkStreamW = New StreamWriter(_networkStream)
+                'Start Thread (wenn noch nicht gestartet)
+                If _threadHandle.ThreadState = ThreadState.Unstarted Then
+                    _threadHandle.IsBackground = True
+                    _threadHandle.Start()
+                End If
+                _connected = True
+                RaiseEvent ListenerClientConnected()
+            Catch e As ObjectDisposedException
+                _waitForConnection()
+            End Try
         End If
     End Sub
 

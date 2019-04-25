@@ -158,11 +158,17 @@ Public Class frmMain
         _aclProgram.StopProgram()
     End Sub
     Private Sub tsBtnSave_Click(sender As Object, e As EventArgs) Handles tsBtnSave.Click
-        _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text)
+        If _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text) Then
+            _dckPanCodeEditor.sciCodeEditor.EmptyUndoBuffer()
+            _updateUndoRedoButtons()
+        End If
     End Sub
     Private Sub tsBtnOpen_Click(sender As Object, e As EventArgs) Handles tsBtnOpen.Click
         If Not _checkUnsavedChanges() Then
-            _aclProgram.Load(_dckPanCodeEditor.sciCodeEditor.Text)
+            If _aclProgram.Load(_dckPanCodeEditor.sciCodeEditor.Text) Then
+                _dckPanCodeEditor.sciCodeEditor.EmptyUndoBuffer()
+                _updateUndoRedoButtons()
+            End If
         End If
     End Sub
 #End Region
@@ -181,18 +187,29 @@ Public Class frmMain
         If Not _checkUnsavedChanges() Then
             _aclProgram.ClearProgram()
             _dckPanCodeEditor.sciCodeEditor.ClearAll()
+            _dckPanCodeEditor.sciCodeEditor.EmptyUndoBuffer()
+            _updateUndoRedoButtons()
         End If
     End Sub
     Private Sub msOpen_Click(sender As Object, e As EventArgs) Handles msOpen.Click
         If Not _checkUnsavedChanges() Then
-            _aclProgram.Load(_dckPanCodeEditor.sciCodeEditor.Text)
+            If _aclProgram.Load(_dckPanCodeEditor.sciCodeEditor.Text) Then
+                _dckPanCodeEditor.sciCodeEditor.EmptyUndoBuffer()
+                _updateUndoRedoButtons()
+            End If
         End If
     End Sub
     Private Sub msSave_Click(sender As Object, e As EventArgs) Handles msSave.Click
-        _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text)
+        If _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text) Then
+            _dckPanCodeEditor.sciCodeEditor.EmptyUndoBuffer()
+            _updateUndoRedoButtons()
+        End If
     End Sub
     Private Sub msSaveAs_Click(sender As Object, e As EventArgs) Handles msSaveAs.Click
-        _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text, True)
+        If _aclProgram.Save(_dckPanCodeEditor.sciCodeEditor.Text, True) Then
+            _dckPanCodeEditor.sciCodeEditor.EmptyUndoBuffer()
+            _updateUndoRedoButtons()
+        End If
     End Sub
     Private Sub msExit_Click(sender As Object, e As EventArgs) Handles msExit.Click
         Application.Exit()
@@ -469,6 +486,13 @@ Public Class frmMain
         tsBtnProgStop.Enabled = ProgramRunning
     End Sub
 
+    Private Sub _updateUndoRedoButtons()
+        tsBtnUndo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanUndo
+        msUndo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanUndo
+        tsBtnRedo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanRedo
+        msRedo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanRedo
+    End Sub
+
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
@@ -499,10 +523,7 @@ Public Class frmMain
         _enableDisableElements()
     End Sub
     Private Sub _eEditorTextChanged(sender As Object, e As EventArgs)
-        tsBtnUndo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanUndo
-        msUndo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanUndo
-        tsBtnRedo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanRedo
-        msRedo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanRedo
+        _updateUndoRedoButtons()
     End Sub
     Private Sub _eComSerialConnected() Handles _roboControl.SerialConnected
         SerialConnected = True

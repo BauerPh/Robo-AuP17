@@ -313,9 +313,9 @@ Friend Class RobotControl
     ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
+    ' True = okay
     Private Function _checkJointAngleLimits(jointAngles As JointAngles) As Boolean
-        Return Not _
-            jointAngles.J1 > _pref.JointParameter(0).MechMaxAngle Or
+        Dim limit As Boolean = (jointAngles.J1 > _pref.JointParameter(0).MechMaxAngle Or
             jointAngles.J1 < _pref.JointParameter(0).MechMinAngle Or
             jointAngles.J2 > _pref.JointParameter(1).MechMaxAngle Or
             jointAngles.J2 < _pref.JointParameter(1).MechMinAngle Or
@@ -326,7 +326,9 @@ Friend Class RobotControl
             jointAngles.J5 > _pref.JointParameter(4).MechMaxAngle Or
             jointAngles.J5 < _pref.JointParameter(4).MechMinAngle Or
             jointAngles.J6 > _pref.JointParameter(5).MechMaxAngle Or
-            jointAngles.J6 < _pref.JointParameter(5).MechMinAngle
+            jointAngles.J6 < _pref.JointParameter(5).MechMinAngle)
+
+        Return Not limit
     End Function
     Private Sub _checkRefState(Optional reset As Boolean = False)
         Static refOkayOld(5) As Boolean
