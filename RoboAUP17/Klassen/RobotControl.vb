@@ -291,19 +291,20 @@ Friend Class RobotControl
         _delayRunning = True
         Return _com.SendWAI(delay)
     End Function
-    Friend Function MoveServoAngle(srvNr As Int32, angle As Int32) As Boolean
-        If _com.SendSRV(srvNr, angle) Then
+    Friend Function MoveServoAngle(srvNr As Int32, angle As Int32, speed As Int32) As Boolean
+        If speed <= 0 Or speed > 100 Then speed = 100
+        If _com.SendSRV(srvNr, angle, speed) Then
             RaiseEvent RoboBusy(True, False)
             'Log
-            RaiseEvent Log($"[Robo Control] Bewege Servo {srvNr}, Ziel: {angle}", Logger.LogLevel.INFO)
+            RaiseEvent Log($"[Robo Control] Bewege Servo {srvNr}, Ziel: {angle}, Geschwindigkeit: {speed}%", Logger.LogLevel.INFO)
             Return True
         Else
             RaiseEvent Log($"[Robo Control] Servobewegung fehlgeschlagen", Logger.LogLevel.ERR)
             Return False
         End If
     End Function
-    Friend Function MoveServoPrc(srvNr As Int32, prc As Double) As Boolean
-        Return MoveServoAngle(srvNr, _calcServoAngle(srvNr, prc))
+    Friend Function MoveServoPrc(srvNr As Int32, prc As Double, speed As Int32) As Boolean
+        Return MoveServoAngle(srvNr, _calcServoAngle(srvNr, prc), speed)
     End Function
 
     Friend Sub FastStop()

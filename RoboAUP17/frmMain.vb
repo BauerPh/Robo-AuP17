@@ -579,8 +579,8 @@ Public Class frmMain
         _roboControl.SetSpeedAndAcc(speed, acc)
         _roboControl.DoTCPMov(cartCoords)
     End Sub
-    Private Sub _eDoServoMove(srvNr As Integer, prc As Double) Handles _aclProgram.DoServoMove
-        _roboControl.MoveServoPrc(srvNr, prc)
+    Private Sub _eDoServoMove(srvNr As Int32, prc As Double, speed As Int32) Handles _aclProgram.DoServoMove
+        _roboControl.MoveServoPrc(srvNr, prc, speed)
     End Sub
     Private Sub _eDoDelay(delay As Int32) Handles _aclProgram.DoDelay
         _roboControl.DoDelay(delay)

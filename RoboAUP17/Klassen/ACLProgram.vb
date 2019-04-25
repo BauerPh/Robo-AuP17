@@ -43,7 +43,7 @@ Friend Class ACLProgram
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
     Friend Event DoJointMove(ByVal jointAngles As JointAngles, acc As Double, speed As Double)
     Friend Event DoCartMove(ByVal cartCoords As CartCoords, acc As Double, speed As Double)
-    Friend Event DoServoMove(ByVal srvNr As Int32, prc As Double)
+    Friend Event DoServoMove(ByVal srvNr As Int32, prc As Double, speed As Int32)
     Friend Event DoDelay(ByVal delay As Int32)
     Friend Event ProgramStarted()
     Friend Event ProgramFinished()
@@ -494,7 +494,7 @@ Friend Class ACLProgram
                         _runtimeError(cmd.lineNr, $"Servo {cmd.servoNum} ist nicht aktiviert")
                         Exit While 'Programm beenden
                     End If
-                    RaiseEvent DoServoMove(cmd.servoNum, cmd.servoVal)
+                    RaiseEvent DoServoMove(cmd.servoNum, cmd.servoVal, cmd.servoSpeed)
                     i += 1
                 Case progFunc.move
                     ' -------------------------------------
@@ -1080,11 +1080,20 @@ Friend Class ACLProgram
             Dim lineNr As Integer = context.JAW.Symbol.Line
             Dim servoNr As Int32 = CInt(context.GetChild(1).GetText())
             Dim servoVal As Int32 = CInt(context.GetChild(2).GetText())
+            Dim servoSpeed As Int32
+            If context.GetChild(3) IsNot Nothing Then
+                servoSpeed = CInt(context.GetChild(3).GetText())
+            Else
+                servoSpeed = 100
+            End If
             If servoNr < 1 Or servoNr > 3 Then
                 RaiseEvent CompileErrorEvent(lineNr, $"Servonummer muss zwischen 1 und 3 liegen")
             End If
             If servoVal < 1 Or servoVal > 100 Then
                 RaiseEvent CompileErrorEvent(lineNr, $"Servowert muss zwischen 1 und 100 liegen")
+            End If
+            If servoSpeed < 1 Or servoSpeed > 100 Then
+                RaiseEvent CompileErrorEvent(lineNr, $"Servogeschwindigkeit muss zwischen 1 und 100 liegen")
             End If
             ' Servomove hinzufügen
             Dim thisIndex As Int32 = _progList.Count
@@ -1093,6 +1102,7 @@ Friend Class ACLProgram
             progEntry.lineNr = lineNr
             progEntry.servoNum = servoNr
             progEntry.servoVal = servoVal
+            progEntry.servoSpeed = servoSpeed
             _progList.Add(progEntry)
 
             MyBase.EnterJaw(context)

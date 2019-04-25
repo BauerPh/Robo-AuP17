@@ -393,6 +393,7 @@ Module dataStructs
         ' Servo
         Friend servoNum As Int32
         Friend servoVal As Int32
+        Friend servoSpeed As Int32
         ' Delay
         Friend delayTimeMS As Int32
         ' Bedingungen und Berechnungen

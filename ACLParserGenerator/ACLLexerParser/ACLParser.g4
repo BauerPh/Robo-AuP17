@@ -80,7 +80,7 @@ openclose
 	;
 
 jaw
-	: JAW INTEGER INTEGER
+	: JAW INTEGER INTEGER INTEGER?
 	;
 
 acc

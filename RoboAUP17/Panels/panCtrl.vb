@@ -508,7 +508,7 @@
 
     Private Function _doServo(nr As Int32, prc As Double) As Boolean
         If frmMain.RoboControl.Pref.ServoParameter(nr - 1).Available And frmMain.RoboControl.PosServo(nr - 1) <> prc Then
-            If frmMain.RoboControl.MoveServoPrc(nr, prc) Then Return True
+            If frmMain.RoboControl.MoveServoPrc(nr, prc, 100) Then Return True
         End If
         Return False
     End Function

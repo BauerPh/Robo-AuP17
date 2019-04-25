@@ -153,9 +153,9 @@ Friend Class SerialCommunication
         End If
         Return False
     End Function
-    Friend Function SendSRV(srvNr As Int32, angle As Int32) As Boolean
+    Friend Function SendSRV(srvNr As Int32, angle As Int32, speed As Int32) As Boolean
         If _connected Then
-            _sendMsg($"<srv#{srvNr},{angle}>")
+            _sendMsg($"<srv#{srvNr},{angle},{speed}>")
             Return True
         End If
         Return False
