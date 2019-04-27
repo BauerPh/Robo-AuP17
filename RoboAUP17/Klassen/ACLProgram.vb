@@ -1060,11 +1060,9 @@ Friend Class ACLProgram
             Dim tpNr As Integer = -1
             Dim tpIdentifier As String = Nothing
             If context.INTEGER IsNot Nothing Then
-                Try
-                    tpNr = CInt(context.INTEGER.GetText)
-                Catch e As OverflowException
-                    RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
-                End Try
+                If Not _getAndCheckInt(context.INTEGER.GetText, tpNr) Then
+                    RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {[Int32].MinValue} und {[Int32].MaxValue} möglich (32-Bit Integer)")
+                End If
             Else
                 tpIdentifier = context.IDENTIFIER.GetText()
             End If
@@ -1105,17 +1103,13 @@ Friend Class ACLProgram
                 If context.INTEGER.Length > 6 Then
                     RaiseEvent CompileErrorEvent(lineNr, $"Es sind maximal 6 Werte erlaubt")
                 Else
-                    For i = 0 To context.INTEGER.Length
-                        Try
-                            Dim num As Integer = CInt(context.INTEGER(i).GetText)
-                            If num >= 1 And num <= 6 Then
-                                axis(num - 1) = True
-                            Else
-                                RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen 1 und 6 erlaubt")
-                            End If
-                        Catch e As OverflowException
+                    For i = 0 To context.INTEGER.Length - 1
+                        Dim num As Integer
+                        If _getAndCheckInt(context.INTEGER(i).GetText, num, 1, 6) Then
+                            axis(num - 1) = True
+                        Else
                             RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen 1 und 6 erlaubt")
-                        End Try
+                        End If
                     Next
                 End If
             End If
@@ -1136,10 +1130,9 @@ Friend Class ACLProgram
             If context.INTEGER Is Nothing Then
                 servoNr = 1
             Else
-                servoNr = CInt(context.INTEGER.GetText())
-            End If
-            If servoNr < 1 Or servoNr > 3 Then
-                RaiseEvent CompileErrorEvent(lineNr, $"Servonummer muss zwischen 1 und 3 liegen")
+                If Not _getAndCheckInt(context.INTEGER.GetText, servoNr, 1, 3) Then
+                    RaiseEvent CompileErrorEvent(lineNr, $"Servonummer muss zwischen 1 und 3 liegen")
+                End If
             End If
             ' Servomove hinzufügen
             Dim thisIndex As Int32 = _progList.Count
@@ -1159,22 +1152,21 @@ Friend Class ACLProgram
         'JAW
         Public Overrides Sub EnterJaw(<NotNull> context As ACLParser.JawContext)
             Dim lineNr As Integer = context.JAW.Symbol.Line
-            Dim servoNr As Int32 = CInt(context.GetChild(1).GetText())
-            Dim servoVal As Int32 = CInt(context.GetChild(2).GetText())
-            Dim servoSpeed As Int32
-            If context.GetChild(3) IsNot Nothing Then
-                servoSpeed = CInt(context.GetChild(3).GetText())
-            Else
-                servoSpeed = 100
-            End If
-            If servoNr < 1 Or servoNr > 3 Then
+            Dim servoNr As Int32
+            If Not _getAndCheckInt(context.GetChild(1).GetText(), servoNr, 1, 3) Then
                 RaiseEvent CompileErrorEvent(lineNr, $"Servonummer muss zwischen 1 und 3 liegen")
             End If
-            If servoVal < 0 Or servoVal > 100 Then
-                RaiseEvent CompileErrorEvent(lineNr, $"Servowert muss zwischen 1 und 100 liegen")
+            Dim servoVal As Int32
+            If Not _getAndCheckInt(context.GetChild(2).GetText(), servoVal, 0, 100) Then
+                RaiseEvent CompileErrorEvent(lineNr, $"Servonummer muss zwischen 1 und 3 liegen")
             End If
-            If servoSpeed < 1 Or servoSpeed > 100 Then
-                RaiseEvent CompileErrorEvent(lineNr, $"Servogeschwindigkeit muss zwischen 1 und 100 liegen")
+            Dim servoSpeed As Int32
+            If context.GetChild(3) IsNot Nothing Then
+                If Not _getAndCheckInt(context.GetChild(3).GetText(), servoSpeed, 1, 100) Then
+                    RaiseEvent CompileErrorEvent(lineNr, $"Servogeschwindigkeit muss zwischen 1 und 100 liegen")
+                End If
+            Else
+                servoSpeed = 100
             End If
             ' Servomove hinzufügen
             Dim thisIndex As Int32 = _progList.Count
@@ -1191,13 +1183,10 @@ Friend Class ACLProgram
         'ACC
         Public Overrides Sub EnterAcc(<NotNull> context As ACLParser.AccContext)
             Dim lineNr As Integer = context.ACC.Symbol.Line
-            Dim acc As Integer = CInt(context.INTEGER.GetText)
-
-            ' Acc prüfen
-            If acc > 100 Or acc < 1 Then
+            Dim acc As Integer
+            If Not _getAndCheckInt(context.INTEGER.GetText, acc, 1, 100) Then
                 RaiseEvent CompileErrorEvent(lineNr, $"ACC muss zwischen 1 und 100 liegen")
             Else
-                ' Speed
                 _acc = (acc / 100) * _maxAcc
             End If
 
@@ -1206,13 +1195,10 @@ Friend Class ACLProgram
         'SPEED
         Public Overrides Sub EnterSpeed(<NotNull> context As ACLParser.SpeedContext)
             Dim lineNr As Integer = context.SPEED.Symbol.Line
-            Dim speed As Integer = CInt(context.INTEGER.GetText)
-
-            ' Speed prüfen
-            If speed > 100 Or speed < 1 Then
+            Dim speed As Integer
+            If Not _getAndCheckInt(context.INTEGER.GetText, speed, 1, 100) Then
                 RaiseEvent CompileErrorEvent(lineNr, $"SPEED muss zwischen 1 und 100 liegen")
             Else
-                ' Speed
                 _speed = (speed / 100) * _maxSpeed
             End If
 
@@ -1458,12 +1444,9 @@ Friend Class ACLProgram
         Public Overrides Sub EnterDelay(<NotNull> context As ACLParser.DelayContext)
             Dim lineNr As Integer = context.DELAY.Symbol.Line
             Dim delay As Int32 = 1
-            Try
-                delay = CInt(context.GetChild(1).GetText())
-                If delay < 1 Or delay > 360000 Then Throw New Exception
-            Catch e As Exception
+            If Not _getAndCheckInt(context.INTEGER.GetText(), delay, 1, 360000) Then
                 RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen 1 und 360.000 (1 Stunde) möglich")
-            End Try
+            End If
 
             ' Delay hinzufügen
             Dim progEntry As New ProgramEntry With {
@@ -1670,22 +1653,18 @@ Friend Class ACLProgram
             Dim identifier As String = context.GetChild(1).GetText()
             Dim val As Double = 0
             Dim var As String = Nothing
-            Dim axis As Integer
-            Try
-                axis = CInt(context.GetChild(2).GetText())
-            Catch e As OverflowException
-                RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
-            End Try
+            Dim axis As Integer = 0
+            If Not _getAndCheckInt(context.GetChild(2).GetText(), axis, 1, 6) Then
+                RaiseEvent CompileErrorEvent(lineNr, "Achsennummer muss zwischen 1 und 6 liegen")
+            End If
 
             _getVarVal(context.GetChild(3).GetText(), lineNr, val, var)
 
             ' Prüfen ob Position schon erstellt wurde
             Dim index As Integer = _getPosIndex(identifier, lineNr)
             If index >= 0 Then
-                ' changePos erstellen
-                If axis > 6 Or axis < 1 Then
-                    RaiseEvent CompileErrorEvent(lineNr, "Achsennummer muss zwischen 1 und 6 liegen")
-                Else
+                If axis > 0 Then
+                    ' changePos erstellen
                     Dim progEntry As New ProgramEntry
                     progEntry.func = ProgFunc.changePos
                     progEntry.lineNr = lineNr
@@ -1752,22 +1731,18 @@ Friend Class ACLProgram
             Dim identifier As String = context.GetChild(1).GetText()
             Dim val As Double = 0
             Dim var As String = Nothing
-            Dim axis As Integer
-            Try
-                axis = CInt(context.GetChild(3).GetText())
-            Catch e As OverflowException
-                RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
-            End Try
+            Dim axis As Integer = 0
+            If Not _getAndCheckInt(context.GetChild(3).GetText(), axis, 1, 6) Then
+                RaiseEvent CompileErrorEvent(lineNr, "Achsennummer muss zwischen 1 und 6 liegen")
+            End If
 
             _getVarVal(context.GetChild(4).GetText(), lineNr, val, var)
 
             ' Prüfen ob Position schon erstellt wurde
             Dim index As Integer = _getPosIndex(identifier, lineNr)
             If index >= 0 Then
-                ' changePos erstellen
-                If axis > 6 Or axis < 1 Then
-                    RaiseEvent CompileErrorEvent(lineNr, "Achsennummer muss zwischen 1 und 6 liegen")
-                Else
+                If axis > 0 Then
+                    ' changePos erstellen
                     Dim progEntry As New ProgramEntry
                     progEntry.func = ProgFunc.changePos
                     progEntry.lineNr = lineNr
@@ -1869,11 +1844,9 @@ Friend Class ACLProgram
                 'Function
                 If context.PVAL IsNot Nothing Then
                     progEntry.varSetVarToPosFunc = VarToPosFunc.joint
-                    Try
-                        progEntry.posAxisOrCoord = CInt(context.GetChild(5).GetText)
-                    Catch e As OverflowException
-                        RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
-                    End Try
+                    If Not _getAndCheckInt(context.GetChild(5).GetText(), progEntry.posAxisOrCoord, 1, 6) Then
+                        RaiseEvent CompileErrorEvent(lineNr, "Achsennummer muss zwischen 1 und 6 liegen")
+                    End If
                 ElseIf context.PVALC IsNot Nothing Then
                     progEntry.varSetVarToPosFunc = VarToPosFunc.cart
                     Try
@@ -1999,13 +1972,8 @@ Friend Class ACLProgram
         Private Sub _getVarVal(ByVal text As String, ByVal lineNr As Integer, ByRef val As Double, ByRef var As String)
             If IsNumeric(text) Then
                 ' Integer or Double
-                Try
-                    val = _getDouble(text)
-                Catch e As OverflowException
-                    RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
-                Finally
-                    var = Nothing
-                End Try
+                val = _getDouble(text)
+                var = Nothing
             Else
                 ' Variable
                 var = text
@@ -2017,6 +1985,21 @@ Friend Class ACLProgram
 
         Private Function _getDouble(ByVal text As String) As Double
             Return CDbl(text.Replace(".", ","))
+        End Function
+
+        Private Function _getAndCheckInt(ByVal text As String, ByRef val As Integer, Optional ByVal min As Integer = [Int32].MinValue, Optional ByVal max As Integer = [Int32].MaxValue) As Boolean
+            Dim tmpVal As Integer
+            Try
+                tmpVal = CInt(text)
+            Catch e As OverflowException
+                Return False
+            End Try
+            If tmpVal > max Or tmpVal < min Then
+                Return False
+            Else
+                val = tmpVal
+            End If
+            Return True
         End Function
 
     End Class
