@@ -1729,7 +1729,7 @@ Friend Class ACLProgram
 
             MyBase.EnterSetpvc(context)
         End Sub
-        'SHIFT (TEST)
+        'SHIFT
         Public Overrides Sub EnterShift(<NotNull> context As ACLParser.ShiftContext)
             Dim lineNr As Integer = context.SHIFT.Symbol.Line
             Dim identifier As String = context.GetChild(1).GetText()
@@ -1772,7 +1772,7 @@ Friend Class ACLProgram
 
             MyBase.EnterShift(context)
         End Sub
-        'SHIFTC (TEST)
+        'SHIFTC
         Public Overrides Sub EnterShiftc(<NotNull> context As ACLParser.ShiftcContext)
             Dim lineNr As Integer = context.SHIFTC.Symbol.Line
             Dim identifier As String = context.GetChild(1).GetText()
