@@ -27,7 +27,6 @@ axisctrl
 	| acc
 	| speed
 	| home
-	| park
 	;
 
 progctrl
@@ -93,10 +92,6 @@ speed
 
 home
 	: HOME INTEGER+
-	;
-
-park
-	: PARK INTEGER+
 	;
 
 delay
