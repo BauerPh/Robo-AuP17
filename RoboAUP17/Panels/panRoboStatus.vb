@@ -1,8 +1,7 @@
 ﻿Public Class panRoboStatus
     ' -----------------------------------------------------------------------------
-    ' TODO
+    ' Definitions
     ' -----------------------------------------------------------------------------
-    ' Servos / Greifer
     Private Const _constInRefTooltipText As String = "Achse referenziert"
     Private Const _constNoRefTooltipText As String = "Achse nicht referenziert"
     Private Const _constLimitSwitchActuated As String = "Endschalter betätigt oder nicht angeschlossen"
