@@ -1,10 +1,5 @@
 ﻿Imports ScintillaNET
 Public Class panCodeEditor
-    ' -----------------------------------------------------------------------------
-    ' TODO
-    ' -----------------------------------------------------------------------------
-    ' Rückgängig / Wiederholen Funktion
-
     Private _lastHighlightedLineIndex As Int32 = 0
     Private _maxLineNumberCharLength As Int32
     Private Const _keywords As String = "MOVE OPEN CLOSE JAW ACC SPEED HOME PARK 

@@ -138,6 +138,7 @@ Partial Class panTCPVariables
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.ClientSize = New System.Drawing.Size(384, 361)
         Me.Controls.Add(Me.ToolStripContainer)
+        Me.DoubleBuffered = True
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panTCPVariables"
         Me.Text = "TCP-Variablen"

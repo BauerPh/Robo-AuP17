@@ -89,6 +89,7 @@ Partial Class panLog
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.ClientSize = New System.Drawing.Size(984, 161)
         Me.Controls.Add(Me.ToolStripContainer1)
+        Me.DoubleBuffered = True
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panLog"
         Me.Text = "Ausgabe"

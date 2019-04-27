@@ -1121,6 +1121,7 @@ Partial Class panCtrl
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.ClientSize = New System.Drawing.Size(615, 410)
         Me.Controls.Add(Me.ToolStripContainer)
+        Me.DoubleBuffered = True
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panCtrl"
         Me.Text = "Roboter Steuerung"

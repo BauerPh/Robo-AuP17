@@ -39,12 +39,12 @@ Partial Class panTeachPoints
         Me.numNr = New RoboAUP17.ToolStripNumericUpDown()
         Me.cbTPMode = New System.Windows.Forms.ToolStripComboBox()
         Me.btnAdd = New System.Windows.Forms.ToolStripButton()
+        Me.btnRename = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnDelete = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnUp = New System.Windows.Forms.ToolStripButton()
         Me.btnDown = New System.Windows.Forms.ToolStripButton()
-        Me.btnRename = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
         Me.ToolStripContainer.SuspendLayout()
@@ -190,6 +190,15 @@ Partial Class panTeachPoints
         Me.btnAdd.Size = New System.Drawing.Size(23, 23)
         Me.btnAdd.Text = "Hinzufügen"
         '
+        'btnRename
+        '
+        Me.btnRename.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnRename.Image = CType(resources.GetObject("btnRename.Image"), System.Drawing.Image)
+        Me.btnRename.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnRename.Name = "btnRename"
+        Me.btnRename.Size = New System.Drawing.Size(23, 23)
+        Me.btnRename.Text = "Umbenennen"
+        '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
@@ -227,15 +236,6 @@ Partial Class panTeachPoints
         Me.btnDown.Size = New System.Drawing.Size(23, 23)
         Me.btnDown.Text = "Runter"
         '
-        'btnRename
-        '
-        Me.btnRename.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnRename.Image = CType(resources.GetObject("btnRename.Image"), System.Drawing.Image)
-        Me.btnRename.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnRename.Name = "btnRename"
-        Me.btnRename.Size = New System.Drawing.Size(23, 23)
-        Me.btnRename.Text = "Umbenennen"
-        '
         'panTeachPoints
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -243,6 +243,7 @@ Partial Class panTeachPoints
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.ClientSize = New System.Drawing.Size(402, 414)
         Me.Controls.Add(Me.ToolStripContainer)
+        Me.DoubleBuffered = True
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panTeachPoints"
         Me.Text = "Teachpunkte"

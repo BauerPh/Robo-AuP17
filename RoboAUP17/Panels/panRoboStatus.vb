@@ -65,17 +65,21 @@
     End Sub
 
     Private Sub TableLayoutPanel_CellPaint(sender As Object, e As TableLayoutCellPaintEventArgs) Handles TableLayoutPanel.CellPaint
-        Dim lineRow() = {1, 2, 4, 5, 7}
+        SuspendLayout()
+        Dim lineRow() = {1, 2, 4, 5, 10}
+        Dim dottedLineRow() = {2, 5, 8}
         ' Rahmen Zeichnen
-        If e.Column Mod 2 = 0 And e.Column <> 0 _
-            And lineRow.Contains(e.Row) Then
+        If ((e.Column Mod 2 = 0 And lineRow.Contains(e.Row)) _
+            Or (e.Column Mod 4 = 0 And (e.Row = 7 Or e.Row = 8))) _
+             And e.Column <> 0 Then
             e.Graphics.DrawLine(Pens.Black, e.CellBounds.Location, New Point(e.CellBounds.Left, e.CellBounds.Bottom))
         End If
-        If e.Row = 2 Or e.Row = 5 Then
+        If dottedLineRow.Contains(e.Row) Then
             Dim pen As New Pen(Color.Black)
             pen.DashStyle = Drawing2D.DashStyle.Dot
             e.Graphics.DrawLine(pen, e.CellBounds.Location, New Point(e.CellBounds.Right, e.CellBounds.Top))
         End If
+        ResumeLayout()
     End Sub
 
     ' -----------------------------------------------------------------------------

@@ -77,6 +77,9 @@ Partial Class frmMain
         Me.tsBtnConnect = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnDisconnect = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.tsBtnUndo = New System.Windows.Forms.ToolStripButton()
+        Me.tsBtnRedo = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
         Me.lblSpeed = New System.Windows.Forms.ToolStripLabel()
         Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
@@ -91,9 +94,6 @@ Partial Class frmMain
         Me.tsSepTCPServerStatus = New System.Windows.Forms.ToolStripSeparator()
         Me.tsLblTCPServerStatusTitle = New System.Windows.Forms.ToolStripLabel()
         Me.tsLblTcpServerStatus = New System.Windows.Forms.ToolStripLabel()
-        Me.tsBtnUndo = New System.Windows.Forms.ToolStripButton()
-        Me.tsBtnRedo = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
@@ -182,7 +182,7 @@ Partial Class frmMain
         Me.msUndo.Enabled = False
         Me.msUndo.Image = CType(resources.GetObject("msUndo.Image"), System.Drawing.Image)
         Me.msUndo.Name = "msUndo"
-        Me.msUndo.Size = New System.Drawing.Size(180, 22)
+        Me.msUndo.Size = New System.Drawing.Size(141, 22)
         Me.msUndo.Text = "Rückgängig"
         '
         'msRedo
@@ -190,7 +190,7 @@ Partial Class frmMain
         Me.msRedo.Enabled = False
         Me.msRedo.Image = CType(resources.GetObject("msRedo.Image"), System.Drawing.Image)
         Me.msRedo.Name = "msRedo"
-        Me.msRedo.Size = New System.Drawing.Size(180, 22)
+        Me.msRedo.Size = New System.Drawing.Size(141, 22)
         Me.msRedo.Text = "Wiederholen"
         '
         'AnsichtToolStripMenuItem
@@ -460,6 +460,31 @@ Partial Class frmMain
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
         Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 26)
         '
+        'tsBtnUndo
+        '
+        Me.tsBtnUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.tsBtnUndo.Enabled = False
+        Me.tsBtnUndo.Image = CType(resources.GetObject("tsBtnUndo.Image"), System.Drawing.Image)
+        Me.tsBtnUndo.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsBtnUndo.Name = "tsBtnUndo"
+        Me.tsBtnUndo.Size = New System.Drawing.Size(23, 23)
+        Me.tsBtnUndo.Text = "Rückgängig"
+        '
+        'tsBtnRedo
+        '
+        Me.tsBtnRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.tsBtnRedo.Enabled = False
+        Me.tsBtnRedo.Image = CType(resources.GetObject("tsBtnRedo.Image"), System.Drawing.Image)
+        Me.tsBtnRedo.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsBtnRedo.Name = "tsBtnRedo"
+        Me.tsBtnRedo.Size = New System.Drawing.Size(23, 23)
+        Me.tsBtnRedo.Text = "Wiederholen"
+        '
+        'ToolStripSeparator9
+        '
+        Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
+        Me.ToolStripSeparator9.Size = New System.Drawing.Size(6, 26)
+        '
         'lblSpeed
         '
         Me.lblSpeed.Name = "lblSpeed"
@@ -559,31 +584,6 @@ Partial Class frmMain
         Me.tsLblTcpServerStatus.Size = New System.Drawing.Size(52, 23)
         Me.tsLblTcpServerStatus.Text = "getrennt"
         '
-        'tsBtnUndo
-        '
-        Me.tsBtnUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.tsBtnUndo.Enabled = False
-        Me.tsBtnUndo.Image = CType(resources.GetObject("tsBtnUndo.Image"), System.Drawing.Image)
-        Me.tsBtnUndo.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.tsBtnUndo.Name = "tsBtnUndo"
-        Me.tsBtnUndo.Size = New System.Drawing.Size(23, 23)
-        Me.tsBtnUndo.Text = "Rückgängig"
-        '
-        'tsBtnRedo
-        '
-        Me.tsBtnRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.tsBtnRedo.Enabled = False
-        Me.tsBtnRedo.Image = CType(resources.GetObject("tsBtnRedo.Image"), System.Drawing.Image)
-        Me.tsBtnRedo.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.tsBtnRedo.Name = "tsBtnRedo"
-        Me.tsBtnRedo.Size = New System.Drawing.Size(23, 23)
-        Me.tsBtnRedo.Text = "Wiederholen"
-        '
-        'ToolStripSeparator9
-        '
-        Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
-        Me.ToolStripSeparator9.Size = New System.Drawing.Size(6, 26)
-        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -593,6 +593,7 @@ Partial Class frmMain
         Me.Controls.Add(Me.ToolStrip1)
         Me.Controls.Add(Me.StatusStrip)
         Me.Controls.Add(Me.MenuStrip)
+        Me.DoubleBuffered = True
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.IsMdiContainer = True
         Me.MainMenuStrip = Me.MenuStrip

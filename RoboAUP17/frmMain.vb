@@ -21,12 +21,12 @@ Public Class frmMain
     Private _dckPanCodeEditor As New panCodeEditor
     Private _dckPanLog As New panLog
     Private _dckPanComLogSerial As New panLog
-    Private _dckPanComLogTCPIP As New panLog
+    Private _dckPanProgLog As New panLog
     Private _dckPanVariables As New panTCPVariables
     Private _dckPanTeachpoints As New panTeachPoints
     Private _dckPanRoboStatus As New panRoboStatus
     Private _dckPanProgramTools As New panProgramTools
-    Private _dckPanJointCtrl As New panCtrl
+    Private _dckPanCtrl As New panCtrl
     Private _dckPanReference As New panReference
     Private _dckPanSettings As New panSettings
 
@@ -34,7 +34,7 @@ Public Class frmMain
     Private WithEvents _ssHintTimer As New Timer
     Private _logger As New Logger(_dckPanLog.sciLog)
     Private _loggerComSerial As New Logger(_dckPanComLogSerial.sciLog)
-    Private _loggerComTCPIP As New Logger(_dckPanComLogTCPIP.sciLog)
+    Private _loggerComTCPIP As New Logger(_dckPanProgLog.sciLog)
 #End Region
     ' Properties
     Friend ReadOnly Property ACLProgram As ACLProgram
@@ -296,7 +296,7 @@ Public Class frmMain
     End Sub
 
     Private Sub msShowComLogTCPIP_Click(sender As Object, e As EventArgs) Handles msShowComLogTCPIP.Click
-        _dckPanComLogTCPIP.Show()
+        _dckPanProgLog.Show()
     End Sub
 
     Private Sub msShowRoboStatus_Click(sender As Object, e As EventArgs) Handles msShowRoboStatus.Click
@@ -308,7 +308,7 @@ Public Class frmMain
     End Sub
 
     Private Sub msShowRoboCtrl_Click(sender As Object, e As EventArgs) Handles msShowRoboCtrl.Click
-        _dckPanJointCtrl.Show()
+        _dckPanCtrl.Show()
     End Sub
 
 #End Region
@@ -383,27 +383,27 @@ Public Class frmMain
             .BringToFront()
             .Theme.Extender.FloatWindowFactory = New CustomFloatWindowFactory
             .DockLeftPortion = 0.22
-            .DockRightPortion = 0.24
-            .DockTopPortion = 0.25
-            .DockBottomPortion = 0.25
+            .DockRightPortion = 0.22
+            .DockTopPortion = 0.22
+            .DockBottomPortion = 0.22
         End With
 
         _dckPanCodeEditor.HideOnClose = True
         _dckPanLog.HideOnClose = True
         _dckPanComLogSerial.HideOnClose = True
-        _dckPanComLogTCPIP.HideOnClose = True
+        _dckPanProgLog.HideOnClose = True
         _dckPanVariables.HideOnClose = True
         _dckPanTeachpoints.HideOnClose = True
         _dckPanRoboStatus.HideOnClose = True
         _dckPanProgramTools.HideOnClose = True
-        _dckPanJointCtrl.HideOnClose = True
+        _dckPanCtrl.HideOnClose = True
         _dckPanReference.HideOnClose = True
         _dckPanSettings.HideOnClose = True
 
         'Edit Names
         _dckPanLog.Text = "Robo Log"
         _dckPanComLogSerial.Text = "Serial Log"
-        _dckPanComLogTCPIP.Text = "TCP/IP Log"
+        _dckPanProgLog.Text = "Programm Log"
 
         'Check for saved View Settings
         If (File.Exists(_viewSettingsFilename)) Then
@@ -411,22 +411,28 @@ Public Class frmMain
             _logger.Log($"[MAIN] ""{_viewSettingsFilename}"" geladen", Logger.LogLevel.DEBUG)
         Else
             ' Add Panels
+            ' Document
             _dckPanCodeEditor.Show(dckPanel, DockState.Document)
 
-            _dckPanRoboStatus.Show(dckPanel, DockState.DockLeft)
+            ' Right
+            _dckPanRoboStatus.Show(dckPanel, DockState.DockRight)
             _dckPanReference.Show(_dckPanRoboStatus.Pane, DockAlignment.Bottom, 0.16)
-            _dckPanJointCtrl.Show(_dckPanRoboStatus.Pane, DockAlignment.Bottom, 0.4)
+            _dckPanCtrl.Show(_dckPanRoboStatus.Pane, DockAlignment.Bottom, 0.5)
 
-            _dckPanVariables.Show(dckPanel, DockState.DockRight)
-            _dckPanTeachpoints.Show(dckPanel, DockState.DockRight)
+            ' Left
+            _dckPanTeachpoints.Show(dckPanel, DockState.DockLeft)
             _dckPanSettings.Show(_dckPanTeachpoints.Pane, DockAlignment.Bottom, 0.5)
+            _dckPanVariables.Show(_dckPanTeachpoints.Pane, DockAlignment.Bottom, 0.5)
+            _dckPanSettings.Hide()
 
-            _dckPanLog.Show(dckPanel, DockState.DockBottom)
-            _dckPanComLogSerial.Show(dckPanel, DockState.DockBottom)
-            _dckPanComLogTCPIP.Show(dckPanel, DockState.DockBottom)
-
+            ' Float
             _dckPanProgramTools.Show(dckPanel, DockState.Float)
             _dckPanProgramTools.Hide()
+
+            ' Bottom
+            _dckPanLog.Show(dckPanel, DockState.DockBottom)
+            _dckPanComLogSerial.Show(dckPanel, DockState.DockBottom)
+            _dckPanProgLog.Show(dckPanel, DockState.DockBottom)
 
             _logger.Log("[MAIN] Standardansicht geladen", Logger.LogLevel.DEBUG)
         End If
@@ -439,13 +445,13 @@ Public Class frmMain
         If persist.EndsWith("CodeEditor") Then
             Return _dckPanCodeEditor
         ElseIf persist.EndsWith("Ctrl") Then
-            Return _dckPanJointCtrl
+            Return _dckPanCtrl
         ElseIf persist.EndsWith("Robo Log") Then
             Return _dckPanLog
         ElseIf persist.EndsWith("Serial Log") Then
             Return _dckPanComLogSerial
-        ElseIf persist.EndsWith("TCP/IP Log") Then
-            Return _dckPanComLogTCPIP
+        ElseIf persist.EndsWith("Programm Log") Then
+            Return _dckPanProgLog
         ElseIf persist.EndsWith("ProgramTools") Then
             Return _dckPanProgramTools
         ElseIf persist.EndsWith("Reference") Then
@@ -578,6 +584,12 @@ Public Class frmMain
     Private Sub _eDoCartMove(cartCoords As CartCoords, acc As Double, speed As Double) Handles _aclProgram.DoCartMove
         _roboControl.SetSpeedAndAcc(speed, acc)
         _roboControl.DoTCPMov(cartCoords)
+    End Sub
+    Private Sub _eDoHome() Handles _aclProgram.DoHome
+        _roboControl.DoHome(True)
+    End Sub
+    Private Sub _eDoPark() Handles _aclProgram.DoPark
+        _roboControl.DoPark(True)
     End Sub
     Private Sub _eDoServoMove(srvNr As Int32, prc As Double, speed As Int32) Handles _aclProgram.DoServoMove
         _roboControl.MoveServoPrc(srvNr, prc, speed)

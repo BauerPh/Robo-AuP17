@@ -354,6 +354,7 @@ Partial Class panSettings
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(613, 442)
         Me.Controls.Add(Me.ToolStripContainer)
+        Me.DoubleBuffered = True
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panSettings"
         Me.Text = "Settings"

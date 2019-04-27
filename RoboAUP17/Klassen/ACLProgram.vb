@@ -7,7 +7,7 @@ Friend Class ACLProgram
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' ACL-Programm (wip...) / Teachpunktfunktionen, Print, HOME, PARK fehlen noch
+    ' ACL-Programm (wip...) / Teachpunktfunktionen, Print fehlen noch
 
     ' -----------------------------------------------------------------------------
     ' Definitions
@@ -43,6 +43,8 @@ Friend Class ACLProgram
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
     Friend Event DoJointMove(ByVal jointAngles As JointAngles, acc As Double, speed As Double)
     Friend Event DoCartMove(ByVal cartCoords As CartCoords, acc As Double, speed As Double)
+    Friend Event DoHome()
+    Friend Event DoPark()
     Friend Event DoServoMove(ByVal srvNr As Int32, prc As Double, speed As Int32)
     Friend Event DoDelay(ByVal delay As Int32)
     Friend Event ProgramStarted()
@@ -532,6 +534,18 @@ Friend Class ACLProgram
                         _runtimeError(cmd.lineNr, "Unmöglicher Fehler ist aufgetreten.... ohje.")
                         StopProgram()
                     End If
+                    i += 1
+                Case progFunc.home
+                    ' -------------------------------------
+                    ' HOME
+                    ' -------------------------------------
+                    RaiseEvent DoHome()
+                    i += 1
+                Case progFunc.park
+                    ' -------------------------------------
+                    ' PARK
+                    ' -------------------------------------
+                    RaiseEvent DoPark()
                     i += 1
                 Case progFunc.delay
                     ' -------------------------------------
@@ -1028,7 +1042,6 @@ Friend Class ACLProgram
                 Dim progEntry As New ProgramEntry With {
                     .func = progFunc.move,
                     .lineNr = lineNr,
-                    .moveSync = True,
                     .moveAcc = _acc,
                     .moveSpeed = _speed
                 }
@@ -1047,6 +1060,28 @@ Friend Class ACLProgram
             End If
 
             MyBase.EnterMove(context)
+        End Sub
+        'HOME
+        Public Overrides Sub EnterHome(<NotNull> context As ACLParser.HomeContext)
+            ' home hinzufügen
+            Dim progEntry As New ProgramEntry With {
+                    .func = progFunc.home,
+                    .lineNr = context.HOME.Symbol.Line
+            }
+            _progList.Add(progEntry)
+
+            MyBase.EnterHome(context)
+        End Sub
+        'PARK
+        Public Overrides Sub EnterPark(<NotNull> context As ACLParser.ParkContext)
+            ' park hinzufügen
+            Dim progEntry As New ProgramEntry With {
+                    .func = progFunc.park,
+                    .lineNr = context.PARK.Symbol.Line
+            }
+            _progList.Add(progEntry)
+
+            MyBase.EnterPark(context)
         End Sub
         'OPEN / CLOSE
         Public Overrides Sub EnterOpenclose(<NotNull> context As ACLParser.OpencloseContext)
@@ -1718,8 +1753,6 @@ Friend Class ACLProgram
         End Sub
         'SHIFTC (TEST)
         Public Overrides Sub EnterShiftc(<NotNull> context As ACLParser.ShiftcContext)
-            '   0                   1       2      3                       4
-            ' SHIFTC (IDENTIFIER | INTEGER) BY IDENTIFIER (SIGNEDINT | INTEGER | IDENTIFIER)
             Dim lineNr As Integer = context.SHIFTC.Symbol.Line
             Dim identifier As String = context.GetChild(1).GetText()
             Dim val As Integer = 0
@@ -1777,7 +1810,34 @@ Friend Class ACLProgram
         ' ********************************************************
         'PRINT (TODO)
         Public Overrides Sub EnterPrint(<NotNull> context As ACLParser.PrintContext)
-            RaiseEvent CompileErrorEvent(context.PRINT.Symbol.Line, $"PRINT noch nicht implementiert")
+            Dim lineNr As Integer = context.PRINT.Symbol.Line
+            ' PRINT hinzufügen
+            Dim progEntry As New ProgramEntry
+            progEntry.func = progFunc.calculation
+            progEntry.lineNr = lineNr
+
+            ' Prüfen ob Variable oder Wert
+            Dim val1 As String = context.GetChild(0).GetText()
+            Dim oper As String = context.GetChild(1).GetText()
+            Dim val2 As String = context.GetChild(2).GetText()
+            If IsNumeric(val1) Then
+                Try
+                    progEntry.calcVal1 = CInt(val1)
+                Catch e As OverflowException
+                    RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
+                End Try
+            Else
+                If Not _checkVar(val1) Then
+                    RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{val1}"" wurde nicht definiert")
+                Else
+                    progEntry.calcVar1 = val1
+                End If
+            End If
+
+
+
+
+
 
             MyBase.EnterPrint(context)
         End Sub

@@ -366,6 +366,7 @@ Partial Class panReference
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.ClientSize = New System.Drawing.Size(467, 262)
         Me.Controls.Add(Me.ToolStripContainer)
+        Me.DoubleBuffered = True
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panReference"
         Me.Text = "Referenzfahrt"

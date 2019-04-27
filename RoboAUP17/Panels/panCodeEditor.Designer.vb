@@ -40,7 +40,6 @@ Partial Class panCodeEditor
         'AutocompleteMenu
         '
         Me.AutocompleteMenu.AllowsTabKey = True
-        Me.AutocompleteMenu.AppearInterval = 200
         Me.AutocompleteMenu.Colors = CType(resources.GetObject("AutocompleteMenu.Colors"), AutocompleteMenuNS.Colors)
         Me.AutocompleteMenu.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!)
         Me.AutocompleteMenu.ImageList = Nothing
@@ -56,6 +55,7 @@ Partial Class panCodeEditor
         Me.ClientSize = New System.Drawing.Size(884, 561)
         Me.Controls.Add(Me.sciCodeEditor)
         Me.DockAreas = CType((WeifenLuo.WinFormsUI.Docking.DockAreas.Float Or WeifenLuo.WinFormsUI.Docking.DockAreas.Document), WeifenLuo.WinFormsUI.Docking.DockAreas)
+        Me.DoubleBuffered = True
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "panCodeEditor"
         Me.Text = "ACL Programm"
