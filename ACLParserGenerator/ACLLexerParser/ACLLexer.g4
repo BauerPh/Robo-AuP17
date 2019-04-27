@@ -8,7 +8,6 @@ JAW:			'JAW';
 ACC:			'ACC';	
 SPEED:			'SPEED';
 HOME:			'HOME';
-PARK:			'PARK';
 
 // Program Control
 DELAY:			'DELAY';

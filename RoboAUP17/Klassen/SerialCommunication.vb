@@ -279,9 +279,10 @@ Friend Class SerialCommunication
             _connected = True
             RaiseEvent SerialConnected()
             RaiseEvent Log($"[Serial] Verbindung über {_SerialPort.PortName} erfolgreich hergestellt", Logger.LogLevel.INFO)
-        ElseIf _movWaitACK Or _refWaitACK Then
+        ElseIf _movWaitACK Or _refWaitACK Or _srvWaitACK Then
             _movWaitACK = False
             _refWaitACK = False
+            _srvWaitACK = False
             _tWaitACK.Stop()
         End If
     End Sub

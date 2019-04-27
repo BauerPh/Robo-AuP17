@@ -341,7 +341,6 @@ Module dataStructs
         noop = 0
         move
         home
-        park
         servoMove
         delay
         cjump
@@ -399,6 +398,8 @@ Module dataStructs
         Friend moveTpIdentifier As String
         Friend moveSpeed As Double
         Friend moveAcc As Double
+        Friend refAll As Boolean
+        Friend refAxis As Boolean()
         ' Servo
         Friend servoNum As Int32
         Friend servoVal As Int32

@@ -10,7 +10,7 @@ Public Class panCodeEditor
         TO ENDFOR LABEL GOTO PRINT"
     Private _keywordsExtended As String() = {
         "MOVE <tp/pos>", "OPEN <servo>", "CLOSE <servo>",
-        "JAW <%>", "SPEED <%>", "HOME", "PARK", "DELAY <time>", " WAIT <cond>", "DEFP <pos>",
+        "JAW <servo> <%> <speed>", "SPEED <%>", "HOME", "PARK", "DELAY <time>", " WAIT <cond>", "DEFP <pos>",
         "DELP <pos>", "UNDEF <pos>", "HERE <pos>", "TEACH <pos>", "SETPVC <pos> <X/Y/Z/yaw/pitch/roll> <val/var>",
         "SETPV <pos> <axis> <val/var>", "SHIFTC <pos> BY <X/Y/Z/yaw/pitch/roll> <val/var>",
         "SHIFT <pos> BY <axis> <val/var>", "BY", "SETP <pos> = <tp/pos>", "PVAL", "PVALC", "PSTATUS", "DEFINE <var1> <var2> ...",

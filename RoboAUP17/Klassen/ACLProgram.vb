@@ -5,11 +5,6 @@ Imports ACLLexerParser
 Imports System.Threading
 Friend Class ACLProgram
     ' -----------------------------------------------------------------------------
-    ' TODO
-    ' -----------------------------------------------------------------------------
-    ' ACL-Programm (wip...) / SETP + SET (für Pos) fehlen noch
-
-    ' -----------------------------------------------------------------------------
     ' Definitions
     ' -----------------------------------------------------------------------------
 #Region "Definitions"
@@ -43,8 +38,7 @@ Friend Class ACLProgram
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
     Friend Event DoJointMove(ByVal jointAngles As JointAngles, acc As Double, speed As Double)
     Friend Event DoCartMove(ByVal cartCoords As CartCoords, acc As Double, speed As Double)
-    Friend Event DoHome()
-    Friend Event DoPark()
+    Friend Event DoRef(ByVal all As Boolean, ByVal axis() As Boolean)
     Friend Event DoServoMove(ByVal srvNr As Int32, prc As Double, speed As Int32)
     Friend Event DoDelay(ByVal delay As Int32)
     Friend Event DoPrint(ByVal msg As String)
@@ -414,7 +408,6 @@ Friend Class ACLProgram
         Dim vke As Boolean = False
         Dim calcBuffer As Double
         Dim rtVariables As New Dictionary(Of String, Variable)
-        Dim rtTeachpoints As New Dictionary(Of String, TeachPoint)
 
         Dim i As Integer = 0
         While i < _progList.Count
@@ -540,13 +533,7 @@ Friend Class ACLProgram
                     ' -------------------------------------
                     ' HOME
                     ' -------------------------------------
-                    RaiseEvent DoHome()
-                    i += 1
-                Case ProgFunc.park
-                    ' -------------------------------------
-                    ' PARK
-                    ' -------------------------------------
-                    RaiseEvent DoPark()
+                    RaiseEvent DoRef(cmd.refAll, cmd.refAxis)
                     i += 1
                 Case ProgFunc.delay
                     ' -------------------------------------
@@ -702,10 +689,6 @@ Friend Class ACLProgram
                     ' Aktuelle Position speichern
                     If cmd.posType Then
                         tp.tp.cartCoords = _robotControl.PosCart
-                        If Not _robotControl.CheckCartCoords(tp.tp.cartCoords) Then
-                            _runtimeError(cmd.lineNr, $"Koordinaten nicht erreichbar. Entweder ergab die kinematische Berechnung nicht für jede Achse ein Ergebnis oder das Achslimit einer oder mehrerer Achsen wurde überschritten.")
-                            Exit While 'Programm beenden
-                        End If
                     Else
                         tp.tp.jointAngles = _robotControl.PosJoint
                     End If
@@ -754,7 +737,6 @@ Friend Class ACLProgram
                     tp.tp.jointAngles = CType(copyTp.tp.jointAngles.Clone, JointAngles)
                     tp.tp.type = copyTp.tp.type
                     _runtimeTeachPoints(index1) = tp
-
                     i += 1
                 Case ProgFunc.print
                     ' -------------------------------------
@@ -973,11 +955,7 @@ Friend Class ACLProgram
             Dim oper As String = context.GetChild(1).GetText()
             Dim val2 As String = context.GetChild(2).GetText()
             If IsNumeric(val1) Then
-                Try
-                    progEntry.calcVal1 = _getDouble(val1)
-                Catch e As OverflowException
-                    RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
-                End Try
+                progEntry.calcVal1 = _getDouble(val1)
             Else
                 If Not _checkVar(val1) Then
                     RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Variable ""{val1}"" wurde nicht definiert")
@@ -986,11 +964,7 @@ Friend Class ACLProgram
                 End If
             End If
             If IsNumeric(val2) Then
-                Try
-                    progEntry.calcVal2 = _getDouble(val2)
-                Catch e As OverflowException
-                    RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
-                End Try
+                progEntry.calcVal2 = _getDouble(val2)
             ElseIf context.BOOL IsNot Nothing Then
                 ' Bool
                 progEntry.calcVal2 = If(context.BOOL.GetText = "FALSE", 0, 1)
@@ -1038,11 +1012,7 @@ Friend Class ACLProgram
             Dim oper As String = context.GetChild(1).GetText()
             Dim val2 As String = context.GetChild(2).GetText()
             If IsNumeric(val1) Then
-                Try
-                    progEntry.calcVal1 = _getDouble(val1)
-                Catch e As OverflowException
-                    RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
-                End Try
+                progEntry.calcVal1 = _getDouble(val1)
             Else
                 If Not _checkVar(val1) Then
                     RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{val1}"" wurde nicht definiert")
@@ -1051,11 +1021,7 @@ Friend Class ACLProgram
                 End If
             End If
             If IsNumeric(val2) Then
-                Try
-                    progEntry.calcVal2 = _getDouble(val2)
-                Catch e As OverflowException
-                    RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
-                End Try
+                progEntry.calcVal2 = _getDouble(val2)
             Else
                 If Not _checkVar(val2) Then
                     RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{val2}"" wurde nicht definiert")
@@ -1094,7 +1060,11 @@ Friend Class ACLProgram
             Dim tpNr As Integer = -1
             Dim tpIdentifier As String = Nothing
             If context.INTEGER IsNot Nothing Then
-                tpNr = CInt(context.INTEGER.GetText)
+                Try
+                    tpNr = CInt(context.INTEGER.GetText)
+                Catch e As OverflowException
+                    RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
+                End Try
             Else
                 tpIdentifier = context.IDENTIFIER.GetText()
             End If
@@ -1128,25 +1098,36 @@ Friend Class ACLProgram
         End Sub
         'HOME
         Public Overrides Sub EnterHome(<NotNull> context As ACLParser.HomeContext)
+            Dim lineNr As Integer = context.HOME.Symbol.Line
+            ' Achsennummer
+            Dim axis(5) As Boolean
+            If context.INTEGER IsNot Nothing Then
+                If context.INTEGER.Length > 6 Then
+                    RaiseEvent CompileErrorEvent(lineNr, $"Es sind maximal 6 Werte erlaubt")
+                Else
+                    For i = 0 To context.INTEGER.Length
+                        Try
+                            Dim num As Integer = CInt(context.INTEGER(i).GetText)
+                            If num >= 1 And num <= 6 Then
+                                axis(num - 1) = True
+                            Else
+                                RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen 1 und 6 erlaubt")
+                            End If
+                        Catch e As OverflowException
+                            RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen 1 und 6 erlaubt")
+                        End Try
+                    Next
+                End If
+            End If
             ' home hinzufügen
             Dim progEntry As New ProgramEntry With {
                     .func = ProgFunc.home,
+                    .refAxis = axis,
                     .lineNr = context.HOME.Symbol.Line
             }
             _progList.Add(progEntry)
 
             MyBase.EnterHome(context)
-        End Sub
-        'PARK
-        Public Overrides Sub EnterPark(<NotNull> context As ACLParser.ParkContext)
-            ' park hinzufügen
-            Dim progEntry As New ProgramEntry With {
-                    .func = ProgFunc.park,
-                    .lineNr = context.PARK.Symbol.Line
-            }
-            _progList.Add(progEntry)
-
-            MyBase.EnterPark(context)
         End Sub
         'OPEN / CLOSE
         Public Overrides Sub EnterOpenclose(<NotNull> context As ACLParser.OpencloseContext)
@@ -1189,7 +1170,7 @@ Friend Class ACLProgram
             If servoNr < 1 Or servoNr > 3 Then
                 RaiseEvent CompileErrorEvent(lineNr, $"Servonummer muss zwischen 1 und 3 liegen")
             End If
-            If servoVal < 1 Or servoVal > 100 Then
+            If servoVal < 0 Or servoVal > 100 Then
                 RaiseEvent CompileErrorEvent(lineNr, $"Servowert muss zwischen 1 und 100 liegen")
             End If
             If servoSpeed < 1 Or servoSpeed > 100 Then

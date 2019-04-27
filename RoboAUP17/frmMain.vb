@@ -585,11 +585,12 @@ Public Class frmMain
         _roboControl.SetSpeedAndAcc(speed, acc)
         _roboControl.DoTCPMov(cartCoords)
     End Sub
-    Private Sub _eDoHome() Handles _aclProgram.DoHome
-        _roboControl.DoHome(True)
-    End Sub
-    Private Sub _eDoPark() Handles _aclProgram.DoPark
-        _roboControl.DoPark(True)
+    Private Sub _eDoRef(all As Boolean, axis() As Boolean) Handles _aclProgram.DoRef
+        If all Then
+            _roboControl.DoRef(True, True, True, True, True, True)
+        Else
+            _roboControl.DoRef(axis(0), axis(1), axis(2), axis(3), axis(4), axis(5))
+        End If
     End Sub
     Private Sub _eDoServoMove(srvNr As Int32, prc As Double, speed As Int32) Handles _aclProgram.DoServoMove
         _roboControl.MoveServoPrc(srvNr, prc, speed)
