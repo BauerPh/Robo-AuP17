@@ -17,6 +17,8 @@ Friend Class SerialCommunication
     'Messages
     Private _movWaitACK As Boolean = False
     Private _refWaitACK As Boolean = False
+    Private _srvNr, _srvAngle, _srvSpeed As Int32
+    Private _srvWaitACK As Boolean = False
     Private WithEvents _tWaitACK As New Timer
 
     'Message Data
@@ -156,6 +158,11 @@ Friend Class SerialCommunication
     Friend Function SendSRV(srvNr As Int32, angle As Int32, speed As Int32) As Boolean
         If _connected Then
             _sendMsg($"<srv#{srvNr},{angle},{speed}>")
+            _srvNr = srvNr
+            _srvAngle = angle
+            _srvSpeed = speed
+            _srvWaitACK = True
+            _tWaitACK.Start()
             Return True
         End If
         Return False
@@ -231,6 +238,8 @@ Friend Class SerialCommunication
                 SendMOV()
             ElseIf _refWaitACK Then
                 SendREF()
+            ElseIf _srvWaitACK Then
+                SendSRV(_srvNr, _srvAngle, _srvSpeed)
             End If
         End If
     End Sub

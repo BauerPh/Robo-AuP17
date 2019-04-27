@@ -77,6 +77,9 @@ Partial Class panRoboStatus
         Me.lblServo1 = New System.Windows.Forms.Label()
         Me.lblServo2 = New System.Windows.Forms.Label()
         Me.lblServo3 = New System.Windows.Forms.Label()
+        Me.lblServo1Val = New System.Windows.Forms.Label()
+        Me.lblServo2Val = New System.Windows.Forms.Label()
+        Me.lblServo3Val = New System.Windows.Forms.Label()
         Me.TableLayoutPanel.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -283,6 +286,9 @@ Partial Class panRoboStatus
         Me.TableLayoutPanel.Controls.Add(Me.lblServo1, 0, 7)
         Me.TableLayoutPanel.Controls.Add(Me.lblServo2, 4, 7)
         Me.TableLayoutPanel.Controls.Add(Me.lblServo3, 8, 7)
+        Me.TableLayoutPanel.Controls.Add(Me.lblServo1Val, 0, 8)
+        Me.TableLayoutPanel.Controls.Add(Me.lblServo2Val, 4, 8)
+        Me.TableLayoutPanel.Controls.Add(Me.lblServo3Val, 8, 8)
         Me.TableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel.Location = New System.Drawing.Point(0, 0)
         Me.TableLayoutPanel.Name = "TableLayoutPanel"
@@ -894,6 +900,45 @@ Partial Class panRoboStatus
         Me.lblServo3.Text = "Servo 3"
         Me.lblServo3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'lblServo1Val
+        '
+        Me.lblServo1Val.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TableLayoutPanel.SetColumnSpan(Me.lblServo1Val, 4)
+        Me.lblServo1Val.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblServo1Val.Location = New System.Drawing.Point(1, 201)
+        Me.lblServo1Val.Margin = New System.Windows.Forms.Padding(1)
+        Me.lblServo1Val.Name = "lblServo1Val"
+        Me.lblServo1Val.Size = New System.Drawing.Size(166, 23)
+        Me.lblServo1Val.TabIndex = 63
+        Me.lblServo1Val.Text = "0 %"
+        Me.lblServo1Val.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'lblServo2Val
+        '
+        Me.lblServo2Val.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TableLayoutPanel.SetColumnSpan(Me.lblServo2Val, 4)
+        Me.lblServo2Val.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblServo2Val.Location = New System.Drawing.Point(169, 201)
+        Me.lblServo2Val.Margin = New System.Windows.Forms.Padding(1)
+        Me.lblServo2Val.Name = "lblServo2Val"
+        Me.lblServo2Val.Size = New System.Drawing.Size(166, 23)
+        Me.lblServo2Val.TabIndex = 64
+        Me.lblServo2Val.Text = "0 %"
+        Me.lblServo2Val.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'lblServo3Val
+        '
+        Me.lblServo3Val.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TableLayoutPanel.SetColumnSpan(Me.lblServo3Val, 4)
+        Me.lblServo3Val.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblServo3Val.Location = New System.Drawing.Point(337, 201)
+        Me.lblServo3Val.Margin = New System.Windows.Forms.Padding(1)
+        Me.lblServo3Val.Name = "lblServo3Val"
+        Me.lblServo3Val.Size = New System.Drawing.Size(174, 23)
+        Me.lblServo3Val.TabIndex = 65
+        Me.lblServo3Val.Text = "0 %"
+        Me.lblServo3Val.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'panRoboStatus
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -911,7 +956,6 @@ Partial Class panRoboStatus
     End Sub
 
     Friend WithEvents lblCoordsHeading As Label
-    Friend WithEvents TableLayoutPanel As TableLayoutPanel
     Friend WithEvents lblJ1Heading As Label
     Friend WithEvents lblJointsHeading As Label
     Friend WithEvents lblXHeading As Label
@@ -965,4 +1009,8 @@ Partial Class panRoboStatus
     Friend WithEvents lblServo1 As Label
     Friend WithEvents lblServo2 As Label
     Friend WithEvents lblServo3 As Label
+    Friend WithEvents TableLayoutPanel As TableLayoutPanel
+    Friend WithEvents lblServo1Val As Label
+    Friend WithEvents lblServo2Val As Label
+    Friend WithEvents lblServo3Val As Label
 End Class

@@ -37,11 +37,9 @@
         ' Move Servos
         If _doServo(1, numServ1.Value) Then
             ServoMoved = True
-        End If
-        If _doServo(2, numServ2.Value) Then
+        ElseIf _doServo(2, numServ2.Value) Then
             ServoMoved = True
-        End If
-        If _doServo(3, numServ3.Value) Then
+        ElseIf _doServo(3, numServ3.Value) Then
             ServoMoved = True
         End If
 
@@ -439,10 +437,10 @@
                 numServ1.Value = CDec(frmMain.RoboControl.PosServo(0))
             End If
             If frmMain.RoboControl.Pref.ServoParameter(1).Available Then
-                numServ1.Value = CDec(frmMain.RoboControl.PosServo(1))
+                numServ2.Value = CDec(frmMain.RoboControl.PosServo(1))
             End If
             If frmMain.RoboControl.Pref.ServoParameter(2).Available Then
-                numServ1.Value = CDec(frmMain.RoboControl.PosServo(2))
+                numServ3.Value = CDec(frmMain.RoboControl.PosServo(2))
             End If
         End If
     End Sub

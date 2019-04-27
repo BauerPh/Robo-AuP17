@@ -70,6 +70,8 @@ Friend Class RobotControl
             Dim pos(2) As Double
             For i = 0 To 2
                 pos(i) = _calcServoPrc(i + 1, _posServo(i))
+                If pos(i) < 0 Then pos(i) = 0
+                If pos(i) > 100 Then pos(i) = 100
             Next
             Return pos
         End Get

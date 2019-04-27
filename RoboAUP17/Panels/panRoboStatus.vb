@@ -64,8 +64,8 @@
         AddHandler frmMain.RoboControl.EmergencyStopStateChanged, AddressOf _eEmergencyStopStateChanged
     End Sub
 
+
     Private Sub TableLayoutPanel_CellPaint(sender As Object, e As TableLayoutCellPaintEventArgs) Handles TableLayoutPanel.CellPaint
-        SuspendLayout()
         Dim lineRow() = {1, 2, 4, 5, 10}
         Dim dottedLineRow() = {2, 5, 8}
         ' Rahmen Zeichnen
@@ -79,13 +79,7 @@
             pen.DashStyle = Drawing2D.DashStyle.Dot
             e.Graphics.DrawLine(pen, e.CellBounds.Location, New Point(e.CellBounds.Right, e.CellBounds.Top))
         End If
-        ResumeLayout()
     End Sub
-
-    ' -----------------------------------------------------------------------------
-    ' Form Control
-    ' -----------------------------------------------------------------------------
-    ' ...
 
     ' -----------------------------------------------------------------------------
     ' Private
@@ -96,18 +90,29 @@
             Return
         End If
 
-        lblJ1Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J1, 2))
-        lblJ2Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J2, 2))
-        lblJ3Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J3, 2))
-        lblJ4Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J4, 2))
-        lblJ5Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J5, 2))
-        lblJ6Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J6, 2))
+        lblJ1Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J1, 2)) & " °"
+        lblJ2Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J2, 2)) & " °"
+        lblJ3Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J3, 2)) & " °"
+        lblJ4Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J4, 2)) & " °"
+        lblJ5Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J5, 2)) & " °"
+        lblJ6Val.Text = CStr(Math.Round(frmMain.RoboControl.PosJoint.J6, 2)) & " °"
         lblXVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.X, 2))
         lblYVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Y, 2))
         lblZVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Z, 2))
-        lblYawVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Yaw, 2))
-        lblPitchVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Pitch, 2))
-        lblRollVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Roll, 2))
+        lblYawVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Yaw, 2)) & " °"
+        lblPitchVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Pitch, 2)) & " °"
+        lblRollVal.Text = CStr(Math.Round(frmMain.RoboControl.PosCart.Roll, 2)) & " °"
+    End Sub
+
+    Private Sub _setServoValues()
+        If InvokeRequired Then
+            Invoke(Sub() _setServoValues())
+            Return
+        End If
+
+        lblServo1Val.Text = If(frmMain.RoboControl.Pref.ServoParameter(0).Available, CStr(Math.Round(frmMain.RoboControl.PosServo(0), 2)) & " %", "n.V.")
+        lblServo2Val.Text = If(frmMain.RoboControl.Pref.ServoParameter(1).Available, CStr(Math.Round(frmMain.RoboControl.PosServo(1), 2)) & " %", "n.V.")
+        lblServo3Val.Text = If(frmMain.RoboControl.Pref.ServoParameter(2).Available, CStr(Math.Round(frmMain.RoboControl.PosServo(2), 2)) & " %", "n.V.")
     End Sub
 
     Private Sub _refreshRefState()
@@ -146,11 +151,14 @@
                 parameterChanged = Settings.ParameterChangedParameter.Workframe Or all Then
             _setPosValues()
         End If
+        If parameterChanged = Settings.ParameterChangedParameter.Servo Or all Then
+            _setServoValues()
+        End If
     End Sub
 
-    ' Greifer (TODO)
+    ' Greifer
     Private Sub _eNewServo()
-
+        _setServoValues()
     End Sub
 
     ' Referenz
@@ -221,5 +229,4 @@
 
         _eStopToolTip.SetToolTip(lblESState, If(essState, _constEstopActuated, _constEstopNotActuated))
     End Sub
-
 End Class
