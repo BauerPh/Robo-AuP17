@@ -56,7 +56,7 @@ INTEGER:			'0' | ( [1-9] [0-9]* );
 SIGNEDINT:			( '+' | '-' )? INTEGER;
 BOOL:				'TRUE' | 'FALSE';
 SUMOPERATOR:		'+' | '-';
-FACTOROPERATOR:		'*' | '/' | 'EXP' | 'MOD';
+FACTOROPERATOR:		'*' | '/' | '^' | '%';
 BOOLOPERATOR:		'AND' | 'OR';
 NOT:				'NOT';
 EQUAL:				'=';

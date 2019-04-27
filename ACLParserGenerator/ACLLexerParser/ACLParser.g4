@@ -91,7 +91,7 @@ speed
 	;
 
 home
-	: HOME INTEGER+
+	: HOME INTEGER*
 	;
 
 delay

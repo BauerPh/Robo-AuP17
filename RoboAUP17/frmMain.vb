@@ -295,7 +295,7 @@ Public Class frmMain
         _dckPanComLogSerial.Show()
     End Sub
 
-    Private Sub msShowComLogTCPIP_Click(sender As Object, e As EventArgs) Handles msShowComLogTCPIP.Click
+    Private Sub msShowComLogTCPIP_Click(sender As Object, e As EventArgs) Handles msShowProgLog.Click
         _dckPanProgLog.Show()
     End Sub
 
@@ -417,7 +417,7 @@ Public Class frmMain
             ' Right
             _dckPanRoboStatus.Show(dckPanel, DockState.DockRight)
             _dckPanReference.Show(_dckPanRoboStatus.Pane, DockAlignment.Bottom, 0.16)
-            _dckPanCtrl.Show(_dckPanRoboStatus.Pane, DockAlignment.Bottom, 0.5)
+            _dckPanCtrl.Show(_dckPanRoboStatus.Pane, DockAlignment.Bottom, 0.6)
 
             ' Left
             _dckPanTeachpoints.Show(dckPanel, DockState.DockLeft)

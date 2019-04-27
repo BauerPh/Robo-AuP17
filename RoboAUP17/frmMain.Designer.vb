@@ -51,7 +51,7 @@ Partial Class frmMain
         Me.msShowRoboCtrl = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowLog = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowComLogSerial = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msShowComLogTCPIP = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msShowProgLog = New System.Windows.Forms.ToolStripMenuItem()
         Me.EinstellungenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.msDenavitHartPar = New System.Windows.Forms.ToolStripMenuItem()
         Me.msRoboParameter = New System.Windows.Forms.ToolStripMenuItem()
@@ -134,40 +134,40 @@ Partial Class frmMain
         '
         Me.msNew.Image = CType(resources.GetObject("msNew.Image"), System.Drawing.Image)
         Me.msNew.Name = "msNew"
-        Me.msNew.Size = New System.Drawing.Size(166, 22)
+        Me.msNew.Size = New System.Drawing.Size(180, 22)
         Me.msNew.Text = "Neu"
         '
         'msOpen
         '
         Me.msOpen.Image = CType(resources.GetObject("msOpen.Image"), System.Drawing.Image)
         Me.msOpen.Name = "msOpen"
-        Me.msOpen.Size = New System.Drawing.Size(166, 22)
+        Me.msOpen.Size = New System.Drawing.Size(180, 22)
         Me.msOpen.Text = "Öffnen"
         '
         'msSave
         '
         Me.msSave.Image = CType(resources.GetObject("msSave.Image"), System.Drawing.Image)
         Me.msSave.Name = "msSave"
-        Me.msSave.Size = New System.Drawing.Size(166, 22)
+        Me.msSave.Size = New System.Drawing.Size(180, 22)
         Me.msSave.Text = "Speichern"
         '
         'msSaveAs
         '
         Me.msSaveAs.Image = CType(resources.GetObject("msSaveAs.Image"), System.Drawing.Image)
         Me.msSaveAs.Name = "msSaveAs"
-        Me.msSaveAs.Size = New System.Drawing.Size(166, 22)
+        Me.msSaveAs.Size = New System.Drawing.Size(180, 22)
         Me.msSaveAs.Text = "Speichern unter..."
         '
         'ToolStripSeparator4
         '
         Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(163, 6)
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(177, 6)
         '
         'msExit
         '
         Me.msExit.Image = CType(resources.GetObject("msExit.Image"), System.Drawing.Image)
         Me.msExit.Name = "msExit"
-        Me.msExit.Size = New System.Drawing.Size(166, 22)
+        Me.msExit.Size = New System.Drawing.Size(180, 22)
         Me.msExit.Text = "Beenden"
         '
         'BearbeitenToolStripMenuItem
@@ -182,7 +182,7 @@ Partial Class frmMain
         Me.msUndo.Enabled = False
         Me.msUndo.Image = CType(resources.GetObject("msUndo.Image"), System.Drawing.Image)
         Me.msUndo.Name = "msUndo"
-        Me.msUndo.Size = New System.Drawing.Size(141, 22)
+        Me.msUndo.Size = New System.Drawing.Size(180, 22)
         Me.msUndo.Text = "Rückgängig"
         '
         'msRedo
@@ -190,7 +190,7 @@ Partial Class frmMain
         Me.msRedo.Enabled = False
         Me.msRedo.Image = CType(resources.GetObject("msRedo.Image"), System.Drawing.Image)
         Me.msRedo.Name = "msRedo"
-        Me.msRedo.Size = New System.Drawing.Size(141, 22)
+        Me.msRedo.Size = New System.Drawing.Size(180, 22)
         Me.msRedo.Text = "Wiederholen"
         '
         'AnsichtToolStripMenuItem
@@ -219,7 +219,7 @@ Partial Class frmMain
         '
         'RoboterToolStripMenuItem
         '
-        Me.RoboterToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowVars, Me.msShowTeachpoints, Me.msShowACLEditor, Me.msShowACLToolbox, Me.RoboterToolStripMenuItem1, Me.msShowLog, Me.msShowComLogSerial, Me.msShowComLogTCPIP})
+        Me.RoboterToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowVars, Me.msShowTeachpoints, Me.msShowACLEditor, Me.msShowACLToolbox, Me.RoboterToolStripMenuItem1, Me.msShowLog, Me.msShowComLogSerial, Me.msShowProgLog})
         Me.RoboterToolStripMenuItem.Name = "RoboterToolStripMenuItem"
         Me.RoboterToolStripMenuItem.Size = New System.Drawing.Size(185, 22)
         Me.RoboterToolStripMenuItem.Text = "Anzeigen"
@@ -227,69 +227,70 @@ Partial Class frmMain
         'msShowVars
         '
         Me.msShowVars.Name = "msShowVars"
-        Me.msShowVars.Size = New System.Drawing.Size(169, 22)
+        Me.msShowVars.Size = New System.Drawing.Size(180, 22)
         Me.msShowVars.Text = "Variablen"
         '
         'msShowTeachpoints
         '
         Me.msShowTeachpoints.Name = "msShowTeachpoints"
-        Me.msShowTeachpoints.Size = New System.Drawing.Size(169, 22)
+        Me.msShowTeachpoints.Size = New System.Drawing.Size(180, 22)
         Me.msShowTeachpoints.Text = "Teachpunkte"
         '
         'msShowACLEditor
         '
         Me.msShowACLEditor.Name = "msShowACLEditor"
-        Me.msShowACLEditor.Size = New System.Drawing.Size(169, 22)
+        Me.msShowACLEditor.Size = New System.Drawing.Size(180, 22)
         Me.msShowACLEditor.Text = "ACL-Editor"
         '
         'msShowACLToolbox
         '
+        Me.msShowACLToolbox.Enabled = False
         Me.msShowACLToolbox.Name = "msShowACLToolbox"
-        Me.msShowACLToolbox.Size = New System.Drawing.Size(169, 22)
+        Me.msShowACLToolbox.Size = New System.Drawing.Size(180, 22)
         Me.msShowACLToolbox.Text = "ACL-Toolbox"
         '
         'RoboterToolStripMenuItem1
         '
         Me.RoboterToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowRoboStatus, Me.msShowRoboReference, Me.msShowRoboCtrl})
         Me.RoboterToolStripMenuItem1.Name = "RoboterToolStripMenuItem1"
-        Me.RoboterToolStripMenuItem1.Size = New System.Drawing.Size(169, 22)
+        Me.RoboterToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
         Me.RoboterToolStripMenuItem1.Text = "Robotersteuerung"
         '
         'msShowRoboStatus
         '
         Me.msShowRoboStatus.Name = "msShowRoboStatus"
-        Me.msShowRoboStatus.Size = New System.Drawing.Size(159, 22)
+        Me.msShowRoboStatus.Size = New System.Drawing.Size(180, 22)
         Me.msShowRoboStatus.Text = "Status"
         '
         'msShowRoboReference
         '
         Me.msShowRoboReference.Name = "msShowRoboReference"
-        Me.msShowRoboReference.Size = New System.Drawing.Size(159, 22)
+        Me.msShowRoboReference.Size = New System.Drawing.Size(180, 22)
         Me.msShowRoboReference.Text = "Referenz"
         '
         'msShowRoboCtrl
         '
         Me.msShowRoboCtrl.Name = "msShowRoboCtrl"
-        Me.msShowRoboCtrl.Size = New System.Drawing.Size(159, 22)
+        Me.msShowRoboCtrl.Size = New System.Drawing.Size(180, 22)
         Me.msShowRoboCtrl.Text = "Robo Steuerung"
         '
         'msShowLog
         '
         Me.msShowLog.Name = "msShowLog"
-        Me.msShowLog.Size = New System.Drawing.Size(169, 22)
-        Me.msShowLog.Text = "Logausgabe"
+        Me.msShowLog.Size = New System.Drawing.Size(180, 22)
+        Me.msShowLog.Text = "Allgemeines Log"
         '
         'msShowComLogSerial
         '
         Me.msShowComLogSerial.Name = "msShowComLogSerial"
-        Me.msShowComLogSerial.Size = New System.Drawing.Size(169, 22)
+        Me.msShowComLogSerial.Size = New System.Drawing.Size(180, 22)
         Me.msShowComLogSerial.Text = "Comlog (Serial)"
         '
-        'msShowComLogTCPIP
+        'msShowProgLog
         '
-        Me.msShowComLogTCPIP.Name = "msShowComLogTCPIP"
-        Me.msShowComLogTCPIP.Size = New System.Drawing.Size(169, 22)
-        Me.msShowComLogTCPIP.Text = "Comlog (TCP/IP)"
+        Me.msShowProgLog.Name = "msShowProgLog"
+        Me.msShowProgLog.Size = New System.Drawing.Size(180, 22)
+        Me.msShowProgLog.Text = "Programm Log"
         '
         'EinstellungenToolStripMenuItem1
         '
@@ -395,6 +396,7 @@ Partial Class frmMain
         '
         'msShowInfo
         '
+        Me.msShowInfo.Enabled = False
         Me.msShowInfo.Image = CType(resources.GetObject("msShowInfo.Image"), System.Drawing.Image)
         Me.msShowInfo.Name = "msShowInfo"
         Me.msShowInfo.Size = New System.Drawing.Size(200, 22)
@@ -655,7 +657,7 @@ Partial Class frmMain
     Friend WithEvents msShowRoboCtrl As ToolStripMenuItem
     Friend WithEvents msShowLog As ToolStripMenuItem
     Friend WithEvents msShowComLogSerial As ToolStripMenuItem
-    Friend WithEvents msShowComLogTCPIP As ToolStripMenuItem
+    Friend WithEvents msShowProgLog As ToolStripMenuItem
     Friend WithEvents LoggingLevelToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents msSetLogLvlDebug As ToolStripMenuItem
     Friend WithEvents msSetLogLvlInfo As ToolStripMenuItem

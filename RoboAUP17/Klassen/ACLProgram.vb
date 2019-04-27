@@ -448,28 +448,23 @@ Friend Class ACLProgram
                         val2 = cmd.calcVal2
                     End If
                     ' Berechnen
-                    Try
-                        Select Case cmd.calcMathOp
-                            Case ProgMathOperator.plus
-                                calcBuffer = val1 + val2
-                            Case ProgMathOperator.minus
-                                calcBuffer = val1 - val2
-                            Case ProgMathOperator.mult
-                                calcBuffer = val1 * val2
-                            Case ProgMathOperator.div
-                                calcBuffer = val1 / val2
-                            Case ProgMathOperator.exp
-                                calcBuffer = CInt(val1 ^ val2)
-                            Case ProgMathOperator.mod
-                                calcBuffer = val1 Mod val2
-                        End Select
-                    Catch e As OverflowException
-                        _runtimeError(cmd.lineNr, $"Die Berechnung hat zu einem Überlauf geführt")
-                        Exit While 'Programm beenden
-                    Catch e As DivideByZeroException
-                        _runtimeError(cmd.lineNr, $"Durch ""0"" Teilen ist leider bis heute (Stand: 20.04.2019) noch nicht möglich")
-                        Exit While 'Programm beenden
-                    End Try
+                    Select Case cmd.calcMathOp
+                        Case ProgMathOperator.plus
+                            calcBuffer = val1 + val2
+                        Case ProgMathOperator.minus
+                            calcBuffer = val1 - val2
+                        Case ProgMathOperator.mult
+                            calcBuffer = val1 * val2
+                        Case ProgMathOperator.div
+                            calcBuffer = val1 / val2
+                        Case ProgMathOperator.exp
+                            calcBuffer = val1 ^ val2
+                        Case ProgMathOperator.mod
+                            calcBuffer = val1 Mod val2
+                    End Select
+                    If [Double].IsInfinity(calcBuffer) Or [Double].IsNaN(calcBuffer) Then
+                        _runtimeError(cmd.lineNr, $"Die Berechnung hat zu einem Fehler geführt (Infinity oder NaN)")
+                    End If
                     i += 1
                 Case ProgFunc.cjump
                     ' -------------------------------------
@@ -1040,9 +1035,9 @@ Friend Class ACLProgram
                     progEntry.calcMathOp = ProgMathOperator.mult
                 Case "/"
                     progEntry.calcMathOp = ProgMathOperator.div
-                Case "EXP"
+                Case "^"
                     progEntry.calcMathOp = ProgMathOperator.exp
-                Case "MOD"
+                Case "%"
                     progEntry.calcMathOp = ProgMathOperator.mod
             End Select
 
@@ -1099,7 +1094,8 @@ Friend Class ACLProgram
             Dim lineNr As Integer = context.HOME.Symbol.Line
             ' Achsennummer
             Dim axis(5) As Boolean
-            If context.INTEGER IsNot Nothing Then
+            Dim refAll As Boolean = False
+            If context.INTEGER.Length > 0 Then
                 If context.INTEGER.Length > 6 Then
                     RaiseEvent CompileErrorEvent(lineNr, $"Es sind maximal 6 Werte erlaubt")
                 Else
@@ -1112,10 +1108,13 @@ Friend Class ACLProgram
                         End If
                     Next
                 End If
+            Else
+                refAll = True
             End If
             ' home hinzufügen
             Dim progEntry As New ProgramEntry With {
                     .func = ProgFunc.home,
+                    .refAll = refAll,
                     .refAxis = axis,
                     .lineNr = context.HOME.Symbol.Line
             }
