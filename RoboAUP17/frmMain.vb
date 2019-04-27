@@ -34,7 +34,7 @@ Public Class frmMain
     Private WithEvents _ssHintTimer As New Timer
     Private _logger As New Logger(_dckPanLog.sciLog)
     Private _loggerComSerial As New Logger(_dckPanComLogSerial.sciLog)
-    Private _loggerComTCPIP As New Logger(_dckPanProgLog.sciLog)
+    Private _loggerACLProg As New Logger(_dckPanProgLog.sciLog)
 #End Region
     ' Properties
     Friend ReadOnly Property ACLProgram As ACLProgram
@@ -596,6 +596,9 @@ Public Class frmMain
     End Sub
     Private Sub _eDoDelay(delay As Int32) Handles _aclProgram.DoDelay
         _roboControl.DoDelay(delay)
+    End Sub
+    Private Sub _eDoPrint(msg As String) Handles _aclProgram.DoPrint
+        _loggerACLProg.Log(msg, Logger.LogLevel.INFO)
     End Sub
 
     ' TCP Server

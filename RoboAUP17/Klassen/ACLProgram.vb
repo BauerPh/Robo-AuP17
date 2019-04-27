@@ -7,7 +7,7 @@ Friend Class ACLProgram
     ' -----------------------------------------------------------------------------
     ' TODO
     ' -----------------------------------------------------------------------------
-    ' ACL-Programm (wip...) / Teachpunktfunktionen, Print fehlen noch
+    ' ACL-Programm (wip...) / Teachpunktfunktionen fehlen noch
 
     ' -----------------------------------------------------------------------------
     ' Definitions
@@ -47,6 +47,7 @@ Friend Class ACLProgram
     Friend Event DoPark()
     Friend Event DoServoMove(ByVal srvNr As Int32, prc As Double, speed As Int32)
     Friend Event DoDelay(ByVal delay As Int32)
+    Friend Event DoPrint(ByVal msg As String)
     Friend Event ProgramStarted()
     Friend Event ProgramFinished()
     Friend Event ProgramLineChanged(line As Int32)
@@ -428,18 +429,18 @@ Friend Class ACLProgram
             RaiseEvent ProgramLineChanged(cmd.lineNr)
 
             Select Case cmd.func
-                Case progFunc.noop
+                Case ProgFunc.noop
                     ' -------------------------------------
                     ' NOOP
                     ' -------------------------------------
                     i += 1
-                Case progFunc.condition
+                Case ProgFunc.condition
                     ' -------------------------------------
                     ' CONDITION
                     ' -------------------------------------
                     vke = _checkCondition(cmd, rtVariables, vke)
                     i += 1
-                Case progFunc.calculation
+                Case ProgFunc.calculation
                     ' -------------------------------------
                     ' CALCULATION
                     ' -------------------------------------
@@ -456,17 +457,17 @@ Friend Class ACLProgram
                     ' Berechnen
                     Try
                         Select Case cmd.calcMathOp
-                            Case progMathOperator.plus
+                            Case ProgMathOperator.plus
                                 calcBuffer = val1 + val2
-                            Case progMathOperator.minus
+                            Case ProgMathOperator.minus
                                 calcBuffer = val1 - val2
-                            Case progMathOperator.mult
+                            Case ProgMathOperator.mult
                                 calcBuffer = val1 * val2
-                            Case progMathOperator.div
+                            Case ProgMathOperator.div
                                 calcBuffer = val1 \ val2
-                            Case progMathOperator.exp
+                            Case ProgMathOperator.exp
                                 calcBuffer = CInt(val1 ^ val2)
-                            Case progMathOperator.mod
+                            Case ProgMathOperator.mod
                                 calcBuffer = val1 Mod val2
                         End Select
                     Catch e As OverflowException
@@ -477,18 +478,18 @@ Friend Class ACLProgram
                         Exit While 'Programm beenden
                     End Try
                     i += 1
-                Case progFunc.cjump
+                Case ProgFunc.cjump
                     ' -------------------------------------
                     ' CONDITIONED JUMP
                     ' -------------------------------------
                     vke = _checkCondition(cmd, rtVariables, vke)
                     i = If(vke, cmd.jumpTrueTarget, cmd.jumpFalseTarget)
-                Case progFunc.jump
+                Case ProgFunc.jump
                     ' -------------------------------------
                     ' JUMP
                     ' -------------------------------------
                     i = cmd.jumpTarget
-                Case progFunc.servoMove
+                Case ProgFunc.servoMove
                     ' -------------------------------------
                     ' SERVO
                     ' -------------------------------------
@@ -498,7 +499,7 @@ Friend Class ACLProgram
                     End If
                     RaiseEvent DoServoMove(cmd.servoNum, cmd.servoVal, cmd.servoSpeed)
                     i += 1
-                Case progFunc.move
+                Case ProgFunc.move
                     ' -------------------------------------
                     ' MOVE
                     ' -------------------------------------
@@ -535,25 +536,25 @@ Friend Class ACLProgram
                         StopProgram()
                     End If
                     i += 1
-                Case progFunc.home
+                Case ProgFunc.home
                     ' -------------------------------------
                     ' HOME
                     ' -------------------------------------
                     RaiseEvent DoHome()
                     i += 1
-                Case progFunc.park
+                Case ProgFunc.park
                     ' -------------------------------------
                     ' PARK
                     ' -------------------------------------
                     RaiseEvent DoPark()
                     i += 1
-                Case progFunc.delay
+                Case ProgFunc.delay
                     ' -------------------------------------
                     ' DELAY
                     ' -------------------------------------
                     RaiseEvent DoDelay(cmd.delayTimeMS)
                     i += 1
-                Case progFunc.defVar
+                Case ProgFunc.defVar
                     ' -------------------------------------
                     ' DEFINE VARIABLE
                     ' -------------------------------------
@@ -565,9 +566,9 @@ Friend Class ACLProgram
                         _runtimeError(cmd.lineNr, $"Variable ""{cmd.varName}"" wurde bereits als TCP-Variable definiert")
                         Exit While 'Programm beenden
                     End If
-                    rtVariables.Add(cmd.varName, New Variable(varType.int, cmd.lineNr))
+                    rtVariables.Add(cmd.varName, New Variable(VarType.int, cmd.lineNr))
                     i += 1
-                Case progFunc.delVar
+                Case ProgFunc.delVar
                     ' -------------------------------------
                     ' DELETE VARIABLE
                     ' -------------------------------------
@@ -577,7 +578,7 @@ Friend Class ACLProgram
                     End If
                     rtVariables.Remove(cmd.varName)
                     i += 1
-                Case progFunc.setVar
+                Case ProgFunc.setVar
                     ' -------------------------------------
                     ' SET VARIABLE
                     ' -------------------------------------
@@ -595,7 +596,7 @@ Friend Class ACLProgram
                         Exit While 'Programm beenden
                     End If
                     i += 1
-                Case progFunc.setVarToBuffer
+                Case ProgFunc.setVarToBuffer
                     ' -------------------------------------
                     ' SET VARIABLE TO BUFFER
                     ' -------------------------------------
@@ -608,12 +609,12 @@ Friend Class ACLProgram
                         Exit While 'Programm beenden
                     End If
                     i += 1
-                Case progFunc.setVarToPosition
+                Case ProgFunc.setVarToPosition
                     ' -------------------------------------
                     ' !!! SET VARIABLE TO POSITION
                     ' -------------------------------------
                     i += 1
-                Case progFunc.defPos
+                Case ProgFunc.defPos
                     ' -------------------------------------
                     ' DEFINE POSITION
                     ' -------------------------------------
@@ -627,7 +628,7 @@ Friend Class ACLProgram
                     tp.tp.nr = -1
                     _runtimeTeachPoints.Add(tp)
                     i += 1
-                Case progFunc.delPos
+                Case ProgFunc.delPos
                     ' -------------------------------------
                     ' DELETE POSITION
                     ' -------------------------------------
@@ -638,7 +639,7 @@ Friend Class ACLProgram
                     End If
                     _runtimeTeachPoints.RemoveAt(index)
                     i += 1
-                Case progFunc.undefPos
+                Case ProgFunc.undefPos
                     ' -------------------------------------
                     ' UNDEFINE POSITION
                     ' -------------------------------------
@@ -651,7 +652,7 @@ Friend Class ACLProgram
                     tp.initialized = False
                     _runtimeTeachPoints(index) = tp
                     i += 1
-                Case progFunc.recordPos
+                Case ProgFunc.recordPos
                     ' -------------------------------------
                     ' RECORD POSITION
                     ' -------------------------------------
@@ -678,7 +679,7 @@ Friend Class ACLProgram
 
                     _runtimeTeachPoints(index) = tp
                     i += 1
-                Case progFunc.changePos
+                Case ProgFunc.changePos
                     ' -------------------------------------
                     ' CHANGE POSITION
                     ' -------------------------------------
@@ -702,10 +703,30 @@ Friend Class ACLProgram
                         Exit While
                     End If
                     i += 1
-                Case progFunc.copyPos
+                Case ProgFunc.copyPos
                     ' -------------------------------------
                     ' !!! COPY POSITION
                     ' -------------------------------------
+                    i += 1
+                Case ProgFunc.print
+                    ' -------------------------------------
+                    ' PRINT
+                    ' -------------------------------------
+                    Dim txt As String = ""
+                    For j = 0 To cmd.printVal.Count - 1
+                        Dim pv As PrintVal = cmd.printVal(j)
+                        Dim value As Integer
+                        If pv.isVar Then
+                            If Not _getCmdVal(pv.val, cmd.lineNr, rtVariables, value) Then
+                                _runtimeError(cmd.lineNr, $"Der Wert der Variable konnte nicht ermittelt werden.")
+                            Else
+                                txt = txt & value
+                            End If
+                        Else
+                            txt = txt & pv.val
+                        End If
+                    Next
+                    RaiseEvent DoPrint(txt)
                     i += 1
             End Select
 
@@ -735,26 +756,26 @@ Friend Class ACLProgram
         ' VKE Berechnen
         Dim tmpVKE As Boolean
         Select Case cmd.calcCompareOp
-            Case progCompOperator.equal
+            Case ProgCompOperator.equal
                 tmpVKE = (val1 = val2)
-            Case progCompOperator.greater
+            Case ProgCompOperator.greater
                 tmpVKE = (val1 > val2)
-            Case progCompOperator.less
+            Case ProgCompOperator.less
                 tmpVKE = (val1 < val2)
-            Case progCompOperator.greaterOrEqual
+            Case ProgCompOperator.greaterOrEqual
                 tmpVKE = (val1 >= val2)
-            Case progCompOperator.lessOrEqual
+            Case ProgCompOperator.lessOrEqual
                 tmpVKE = (val1 <= val2)
-            Case progCompOperator.notEqual
+            Case ProgCompOperator.notEqual
                 tmpVKE = (val1 <> val2)
         End Select
 
         ' Mit vorherigem VKE verknüpfen
         If Not cmd.VKEFirst Then
             Select Case cmd.calcBoolOp
-                Case progBoolOperator.and
+                Case ProgBoolOperator.and
                     tmpVKE = tmpVKE And vke
-                Case progBoolOperator.or
+                Case ProgBoolOperator.or
                     tmpVKE = tmpVKE Or vke
             End Select
         End If
@@ -937,17 +958,17 @@ Friend Class ACLProgram
             ' Operator
             Select Case oper
                 Case ">"
-                    progEntry.calcCompareOp = progCompOperator.greater
+                    progEntry.calcCompareOp = ProgCompOperator.greater
                 Case "<"
-                    progEntry.calcCompareOp = progCompOperator.less
+                    progEntry.calcCompareOp = ProgCompOperator.less
                 Case ">="
-                    progEntry.calcCompareOp = progCompOperator.greaterOrEqual
+                    progEntry.calcCompareOp = ProgCompOperator.greaterOrEqual
                 Case "<="
-                    progEntry.calcCompareOp = progCompOperator.lessOrEqual
+                    progEntry.calcCompareOp = ProgCompOperator.lessOrEqual
                 Case "="
-                    progEntry.calcCompareOp = progCompOperator.equal
+                    progEntry.calcCompareOp = ProgCompOperator.equal
                 Case "<>"
-                    progEntry.calcCompareOp = progCompOperator.notEqual
+                    progEntry.calcCompareOp = ProgCompOperator.notEqual
             End Select
 
             ' Zurückspeichern
@@ -961,7 +982,7 @@ Friend Class ACLProgram
 
             ' CALC hinzufügen
             Dim progEntry As New ProgramEntry
-            progEntry.func = progFunc.calculation
+            progEntry.func = ProgFunc.calculation
             progEntry.lineNr = lineNr
 
             ' Prüfen ob Variable oder Wert
@@ -998,17 +1019,17 @@ Friend Class ACLProgram
             ' Operator
             Select Case oper
                 Case "+"
-                    progEntry.calcMathOp = progMathOperator.plus
+                    progEntry.calcMathOp = ProgMathOperator.plus
                 Case "-"
-                    progEntry.calcMathOp = progMathOperator.minus
+                    progEntry.calcMathOp = ProgMathOperator.minus
                 Case "*"
-                    progEntry.calcMathOp = progMathOperator.mult
+                    progEntry.calcMathOp = ProgMathOperator.mult
                 Case "/"
-                    progEntry.calcMathOp = progMathOperator.div
+                    progEntry.calcMathOp = ProgMathOperator.div
                 Case "EXP"
-                    progEntry.calcMathOp = progMathOperator.exp
+                    progEntry.calcMathOp = ProgMathOperator.exp
                 Case "MOD"
-                    progEntry.calcMathOp = progMathOperator.mod
+                    progEntry.calcMathOp = ProgMathOperator.mod
             End Select
 
             _progList.Add(progEntry)
@@ -1040,7 +1061,7 @@ Friend Class ACLProgram
             If tpIndex >= 0 Then
                 ' Move hinzufügen
                 Dim progEntry As New ProgramEntry With {
-                    .func = progFunc.move,
+                    .Func = ProgFunc.move,
                     .lineNr = lineNr,
                     .moveAcc = _acc,
                     .moveSpeed = _speed
@@ -1065,7 +1086,7 @@ Friend Class ACLProgram
         Public Overrides Sub EnterHome(<NotNull> context As ACLParser.HomeContext)
             ' home hinzufügen
             Dim progEntry As New ProgramEntry With {
-                    .func = progFunc.home,
+                    .Func = ProgFunc.home,
                     .lineNr = context.HOME.Symbol.Line
             }
             _progList.Add(progEntry)
@@ -1076,7 +1097,7 @@ Friend Class ACLProgram
         Public Overrides Sub EnterPark(<NotNull> context As ACLParser.ParkContext)
             ' park hinzufügen
             Dim progEntry As New ProgramEntry With {
-                    .func = progFunc.park,
+                    .Func = ProgFunc.park,
                     .lineNr = context.PARK.Symbol.Line
             }
             _progList.Add(progEntry)
@@ -1098,7 +1119,7 @@ Friend Class ACLProgram
             ' Servomove hinzufügen
             Dim thisIndex As Int32 = _progList.Count
             Dim progEntry As New ProgramEntry
-            progEntry.func = progFunc.servoMove
+            progEntry.func = ProgFunc.servoMove
             progEntry.lineNr = lineNr
             progEntry.servoNum = servoNr
             If CType(context.GetChild(0), Tree.ITerminalNode).Symbol.Type = ACLLexer.OPEN Then
@@ -1133,7 +1154,7 @@ Friend Class ACLProgram
             ' Servomove hinzufügen
             Dim thisIndex As Int32 = _progList.Count
             Dim progEntry As New ProgramEntry
-            progEntry.func = progFunc.servoMove
+            progEntry.func = ProgFunc.servoMove
             progEntry.lineNr = lineNr
             progEntry.servoNum = servoNr
             progEntry.servoVal = servoVal
@@ -1181,7 +1202,7 @@ Friend Class ACLProgram
             Dim thisIndex As Int32 = _progList.Count
             ' Bedingter Sprung hinzufügen (Bedingung wird bei "EnterCondition" hinzugefügt)
             Dim progEntry As New ProgramEntry With {
-                .func = progFunc.cjump,
+                .Func = ProgFunc.cjump,
                 .lineNr = context.IF.Symbol.Line,
                 .VKEFirst = True,
                 .jumpTrueTarget = thisIndex + 1, ' Auf nächsten Eintrag, wenn dieser hier hinzugefügt wurde
@@ -1199,12 +1220,12 @@ Friend Class ACLProgram
             ' Bedingter Sprung hinzufügen (Bedingung wird bei "EnterCondition" hinzugefügt)
             Dim thisIndex As Int32 = _progList.Count
             Dim progEntry As New ProgramEntry
-            progEntry.func = progFunc.cjump
+            progEntry.func = ProgFunc.cjump
             progEntry.lineNr = CType(context.GetChild(0), Tree.ITerminalNode).Symbol.Line
             If CType(context.GetChild(0), Tree.ITerminalNode).Symbol.Type = ACLLexer.ANDIF Then
-                progEntry.calcBoolOp = progBoolOperator.and
+                progEntry.calcBoolOp = ProgBoolOperator.and
             Else
-                progEntry.calcBoolOp = progBoolOperator.or
+                progEntry.calcBoolOp = ProgBoolOperator.or
             End If
             progEntry.VKEFirst = False
             progEntry.jumpTrueTarget = thisIndex + 1 ' Auf nächsten Eintrag, wenn dieser hier hinzugefügt wurde
@@ -1214,7 +1235,7 @@ Friend Class ACLProgram
             ' Eintrag vom IF vom Stack holen und durch Condition ersetzen
             Dim progListIfEntryNum = _stack.Pop
             progEntry = _progList(progListIfEntryNum)
-            progEntry.func = progFunc.condition
+            progEntry.func = ProgFunc.condition
             _progList(progListIfEntryNum) = progEntry
 
             _stack.Push(thisIndex) ' Index von diesem IF auf den Stack legen
@@ -1227,7 +1248,7 @@ Friend Class ACLProgram
 
             ' Sprung hinzufügen
             Dim progEntry As New ProgramEntry
-            progEntry.func = progFunc.jump
+            progEntry.func = ProgFunc.jump
             progEntry.lineNr = context.ELSE.Symbol.Line
             progEntry.jumpTarget = -1 ' Wird bei ENDIF gesetzt
             _progList.Add(progEntry)
@@ -1249,14 +1270,14 @@ Friend Class ACLProgram
 
             ' NOOP hinzufügen
             Dim progEntry As New ProgramEntry
-            progEntry.func = progFunc.noop
+            progEntry.func = ProgFunc.noop
             progEntry.lineNr = context.ENDIF.Symbol.Line
             _progList.Add(progEntry)
 
             ' Eintrag vom IF vom Stack holen und bearbeiten
             Dim progListIfOrElseEntryNum = _stack.Pop
             progEntry = _progList(progListIfOrElseEntryNum)
-            If progEntry.func = progFunc.cjump Then
+            If progEntry.func = ProgFunc.cjump Then
                 progEntry.jumpFalseTarget = thisIndex
             Else
                 progEntry.jumpTarget = thisIndex
@@ -1286,13 +1307,13 @@ Friend Class ACLProgram
             ' Bedingter Sprung erstellen (Bedingung: Zählvariable <= Ende)
             Dim thisIndex As Int32 = _progList.Count
             Dim progEntry As New ProgramEntry With {
-                .func = progFunc.cjump,
+                .Func = ProgFunc.cjump,
                 .lineNr = lineNr,
                 .VKEFirst = True,
                 .jumpTrueTarget = thisIndex + 1, ' Auf nächsten Eintrag, wenn dieser hier hinzugefügt wurde
                 .jumpFalseTarget = -1, ' Wird bei ENDFOR gesetzt!
                 .calcVar1 = countVarName,
-                .calcCompareOp = progCompOperator.lessOrEqual,
+                .calcCompareOp = ProgCompOperator.lessOrEqual,
                 .calcVal2 = valTo,
                 .calcVar2 = valVarTo
             }
@@ -1310,15 +1331,15 @@ Friend Class ACLProgram
 
             ' Zählvariable hochzählen
             Dim progEntry As New ProgramEntry With {
-                .func = progFunc.calculation,
+                .Func = ProgFunc.calculation,
                 .lineNr = lineNr,
                 .calcVar1 = countVarName,
                 .calcVal2 = 1,
-                .calcMathOp = progMathOperator.plus
+                .calcMathOp = ProgMathOperator.plus
             }
             _progList.Add(progEntry)
             progEntry = New ProgramEntry With {
-                .func = progFunc.setVarToBuffer,
+                .Func = ProgFunc.setVarToBuffer,
                 .varName = countVarName,
                 .lineNr = lineNr
             }
@@ -1329,14 +1350,14 @@ Friend Class ACLProgram
             Dim progListForEntryNum = _stack.Pop ' For index vom Stack holen
             ' Rücksprung setzen
             progEntry = New ProgramEntry With {
-                .func = progFunc.jump,
+                .Func = ProgFunc.jump,
                 .lineNr = lineNr,
                 .jumpTarget = progListForEntryNum
             }
             _progList.Add(progEntry)
             ' NOOP hinzufügen
             progEntry = New ProgramEntry With {
-                .func = progFunc.noop,
+                .Func = ProgFunc.noop,
                 .lineNr = lineNr
             }
             _progList.Add(progEntry)
@@ -1358,7 +1379,7 @@ Friend Class ACLProgram
             Else
                 ' NOOP hinzufügen
                 Dim progEntry As New ProgramEntry
-                progEntry.func = progFunc.noop
+                progEntry.func = ProgFunc.noop
                 progEntry.lineNr = lineNr
                 _progList.Add(progEntry)
 
@@ -1383,7 +1404,7 @@ Friend Class ACLProgram
 
             ' Sprung hinzufügen
             Dim progEntry As New ProgramEntry With {
-                .func = progFunc.jump,
+                .Func = ProgFunc.jump,
                 .lineNr = lineNr,
                 .jumpTarget = -1
             }
@@ -1421,7 +1442,7 @@ Friend Class ACLProgram
 
             ' Delay hinzufügen
             Dim progEntry As New ProgramEntry With {
-                .func = progFunc.delay,
+                .Func = ProgFunc.delay,
                 .lineNr = lineNr,
                 .delayTimeMS = delay * 10 ' Hundertstel werden angegeben!
             }
@@ -1434,7 +1455,7 @@ Friend Class ACLProgram
             Dim thisIndex As Int32 = _progList.Count
             ' Bedingter Sprung hinzufügen (Bedingung wird bei "EnterCondition" hinzugefügt)
             Dim progEntry As New ProgramEntry With {
-                .func = progFunc.cjump,
+                .Func = ProgFunc.cjump,
                 .lineNr = context.WAIT.Symbol.Line,
                 .VKEFirst = True,
                 .jumpTrueTarget = thisIndex + 1, ' Weiter bei True
@@ -1468,7 +1489,7 @@ Friend Class ACLProgram
                 _variables.Remove(varName)
                 ' DELVAR
                 Dim progEntry As New ProgramEntry
-                progEntry.func = progFunc.delVar
+                progEntry.func = ProgFunc.delVar
                 progEntry.lineNr = lineNr
                 progEntry.varName = varName
                 _progList.Add(progEntry)
@@ -1524,7 +1545,7 @@ Friend Class ACLProgram
 
                 ' defPos erstellen
                 Dim progEntry As New ProgramEntry
-                progEntry.func = progFunc.defPos
+                progEntry.func = ProgFunc.defPos
                 progEntry.lineNr = lineNr
                 progEntry.posIdentifer = identifier
                 _progList.Add(progEntry)
@@ -1545,7 +1566,7 @@ Friend Class ACLProgram
                 _tp.RemoveAt(index)
                 ' delPos erstellen
                 Dim progEntry As New ProgramEntry
-                progEntry.func = progFunc.delPos
+                progEntry.func = ProgFunc.delPos
                 progEntry.lineNr = lineNr
                 progEntry.posIdentifer = identifier
                 _progList.Add(progEntry)
@@ -1568,7 +1589,7 @@ Friend Class ACLProgram
                 _tp(index) = tp
                 ' undefPos erstellen
                 Dim progEntry As New ProgramEntry
-                progEntry.func = progFunc.undefPos
+                progEntry.func = ProgFunc.undefPos
                 progEntry.lineNr = lineNr
                 progEntry.posIdentifer = identifier
                 _progList.Add(progEntry)
@@ -1587,7 +1608,7 @@ Friend Class ACLProgram
             If index >= 0 Then
                 ' recordPos erstellen
                 Dim progEntry As New ProgramEntry
-                progEntry.func = progFunc.recordPos
+                progEntry.func = ProgFunc.recordPos
                 progEntry.lineNr = lineNr
                 progEntry.posIdentifer = identifier
                 progEntry.posType = False
@@ -1607,7 +1628,7 @@ Friend Class ACLProgram
             If index >= 0 Then
                 ' recordPos erstellen
                 Dim progEntry As New ProgramEntry
-                progEntry.func = progFunc.recordPos
+                progEntry.func = ProgFunc.recordPos
                 progEntry.lineNr = lineNr
                 progEntry.posIdentifer = identifier
                 progEntry.posType = True
@@ -1641,7 +1662,7 @@ Friend Class ACLProgram
                     RaiseEvent CompileErrorEvent(lineNr, "Achsennummer muss zwischen 1 und 6 liegen")
                 Else
                     Dim progEntry As New ProgramEntry
-                    progEntry.func = progFunc.changePos
+                    progEntry.func = ProgFunc.changePos
                     progEntry.lineNr = lineNr
                     progEntry.posIdentifer = identifier
                     progEntry.posType = False
@@ -1689,7 +1710,7 @@ Friend Class ACLProgram
                 If coord > 0 Then
                     ' changePos erstellen
                     Dim progEntry As New ProgramEntry
-                    progEntry.func = progFunc.changePos
+                    progEntry.func = ProgFunc.changePos
                     progEntry.lineNr = lineNr
                     progEntry.posIdentifer = identifier
                     progEntry.posType = True
@@ -1731,7 +1752,7 @@ Friend Class ACLProgram
                     RaiseEvent CompileErrorEvent(lineNr, "Achsennummer muss zwischen 1 und 6 liegen")
                 Else
                     Dim progEntry As New ProgramEntry
-                    progEntry.func = progFunc.changePos
+                    progEntry.func = ProgFunc.changePos
                     progEntry.lineNr = lineNr
                     progEntry.posShift = True
                     progEntry.posIdentifer = identifier
@@ -1772,7 +1793,7 @@ Friend Class ACLProgram
                 If coord > 0 Then
                     ' changePos erstellen
                     Dim progEntry As New ProgramEntry
-                    progEntry.func = progFunc.changePos
+                    progEntry.func = ProgFunc.changePos
                     progEntry.lineNr = lineNr
                     progEntry.posShift = True
                     progEntry.posIdentifer = identifier
@@ -1808,36 +1829,31 @@ Friend Class ACLProgram
         ' ********************************************************
         ' User Interface
         ' ********************************************************
-        'PRINT (TODO)
+        'PRINT
         Public Overrides Sub EnterPrint(<NotNull> context As ACLParser.PrintContext)
             Dim lineNr As Integer = context.PRINT.Symbol.Line
             ' PRINT hinzufügen
             Dim progEntry As New ProgramEntry
-            progEntry.func = progFunc.calculation
+            progEntry.func = ProgFunc.print
             progEntry.lineNr = lineNr
-
-            ' Prüfen ob Variable oder Wert
-            Dim val1 As String = context.GetChild(0).GetText()
-            Dim oper As String = context.GetChild(1).GetText()
-            Dim val2 As String = context.GetChild(2).GetText()
-            If IsNumeric(val1) Then
-                Try
-                    progEntry.calcVal1 = CInt(val1)
-                Catch e As OverflowException
-                    RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
-                End Try
-            Else
-                If Not _checkVar(val1) Then
-                    RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{val1}"" wurde nicht definiert")
+            progEntry.printVal = New List(Of PrintVal)
+            For i = 1 To context.ChildCount - 1
+                Dim pv As PrintVal
+                pv.val = context.GetChild(i).GetText
+                ' Prüfen ob Variable oder String
+                If pv.val.StartsWith(""""c) Then
+                    pv.val = pv.val.Substring(1, pv.val.Length - 2) ' "" entfernen
+                    pv.isVar = False
                 Else
-                    progEntry.calcVar1 = val1
+                    If Not _checkVar(pv.val) Then
+                        RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{pv.val}"" wurde nicht definiert")
+                    Else
+                        pv.isVar = True
+                    End If
                 End If
-            End If
-
-
-
-
-
+                progEntry.printVal.Add(pv)
+            Next
+            _progList.Add(progEntry)
 
             MyBase.EnterPrint(context)
         End Sub
@@ -1865,10 +1881,10 @@ Friend Class ACLProgram
                 Return False
             Else
                 ' Variable hinzufügen
-                _variables.Add(name, New Variable(varType.int, lineNr))
+                _variables.Add(name, New Variable(VarType.int, lineNr))
                 ' DEFVAR hinzufügen
                 Dim progEntry As New ProgramEntry
-                progEntry.func = progFunc.defVar
+                progEntry.func = ProgFunc.defVar
                 progEntry.lineNr = lineNr
                 progEntry.varName = name
                 _progList.Add(progEntry)
@@ -1881,13 +1897,13 @@ Friend Class ACLProgram
                 Dim progEntry As New ProgramEntry With {
                     .lineNr = lineNr,
                     .varName = name,
-                    .func = progFunc.setVar,
+                    .Func = ProgFunc.setVar,
                     .varVariable = var,
                     .varValue = val
                 }
                 ' Prüfen ob Berechnung
                 If calculation Then
-                    progEntry.func = progFunc.setVarToBuffer
+                    progEntry.func = ProgFunc.setVarToBuffer
                 End If
                 _progList.Add(progEntry)
             Else
