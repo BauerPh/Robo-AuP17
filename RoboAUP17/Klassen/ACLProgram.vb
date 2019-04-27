@@ -513,7 +513,7 @@ Friend Class ACLProgram
 
                     If tpIndex >= 0 Then
                         If Not _runtimeTeachPoints(tpIndex).initialized Then
-                            _runtimeError(cmd.lineNr, $"Teachpunkt ""{_runtimeTeachPoints(tpIndex).identifier}"" ist definiert wurde aber noch nicht mit einer Position beschrieben")
+                            _runtimeError(cmd.lineNr, $"Position ""{_runtimeTeachPoints(tpIndex).identifier}"" ist definiert wurde aber noch nicht mit einer Position beschrieben")
                             Exit While 'Programm beenden
                         End If
                         Dim tp As TeachPoint = _runtimeTeachPoints(tpIndex).tp
@@ -685,11 +685,7 @@ Friend Class ACLProgram
                     ' -------------------------------------
                     Dim index As Integer = _getPosIndex(cmd.posIdentifer, cmd.lineNr)
                     If index = -1 Then
-                        If IsNumeric(cmd.posIdentifer) Then
-                            _runtimeError(cmd.lineNr, $"Teachpunkt {cmd.posIdentifer} wurde nicht definiert")
-                        Else
-                            _runtimeError(cmd.lineNr, $"Position ""{cmd.posIdentifer}"" wurde nicht definiert")
-                        End If
+                        _runtimeError(cmd.lineNr, $"{If(IsNumeric(cmd.posIdentifer), $"Teachpunkt {cmd.posIdentifer}", $"Position ""{cmd.posIdentifer}""")} wurde nicht definiert")
                         Exit While 'Programm beenden
                     End If
                     ' Wert holen
@@ -705,8 +701,27 @@ Friend Class ACLProgram
                     i += 1
                 Case ProgFunc.copyPos
                     ' -------------------------------------
-                    ' !!! COPY POSITION
+                    ' COPY POSITION
                     ' -------------------------------------
+                    Dim index1 As Integer = _getPosIndex(cmd.posIdentifer, cmd.lineNr)
+                    Dim index2 As Integer = _getPosIndex(cmd.posCopyPos, cmd.lineNr)
+                    If index1 = -1 Then
+                        _runtimeError(cmd.lineNr, $"Position ""{cmd.posIdentifer}"" wurde nicht definiert")
+                        Exit While 'Programm beenden
+                    End If
+                    If index2 = -1 Then
+                        _runtimeError(cmd.lineNr, $"{If(IsNumeric(cmd.posCopyPos), $"Teachpunkt {cmd.posCopyPos}", $"Position ""{cmd.posCopyPos}""")}  wurde nicht definiert")
+                        Exit While 'Programm beenden
+                    End If
+                    ' Position kopieren
+                    Dim tp As RuntimeTeachPoint = _runtimeTeachPoints(index1)
+                    Dim copyTp As RuntimeTeachPoint = _runtimeTeachPoints(index2)
+                    tp.initialized = copyTp.initialized
+                    tp.tp.cartCoords = CType(copyTp.tp.cartCoords.Clone, CartCoords)
+                    tp.tp.jointAngles = CType(copyTp.tp.jointAngles.Clone, JointAngles)
+                    tp.tp.type = copyTp.tp.type
+                    _runtimeTeachPoints(index1) = tp
+
                     i += 1
                 Case ProgFunc.print
                     ' -------------------------------------
@@ -1073,11 +1088,7 @@ Friend Class ACLProgram
                 End If
                 _progList.Add(progEntry)
             Else
-                If tpNr >= 0 Then
-                    RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {tpNr} nicht gefunden")
-                Else
-                    RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt ""{tpIdentifier}"" nicht gefunden")
-                End If
+                RaiseEvent CompileErrorEvent(lineNr, $"{If(tpNr >= 0, $"Teachpunkt {tpNr}", $"Position ""{tpIdentifier}""")} nicht gefunden")
             End If
 
             MyBase.EnterMove(context)
@@ -1672,11 +1683,7 @@ Friend Class ACLProgram
                     _progList.Add(progEntry)
                 End If
             Else
-                If IsNumeric(identifier) Then
-                    RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {identifier} wurde nicht definiert.")
-                Else
-                    RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
-                End If
+                RaiseEvent CompileErrorEvent(lineNr, $"{If(IsNumeric(identifier), $"Teachpunkt {identifier}", $"Position ""{identifier}""")} {identifier} wurde nicht definiert.")
             End If
 
             MyBase.EnterSetpv(context)
@@ -1720,11 +1727,7 @@ Friend Class ACLProgram
                     _progList.Add(progEntry)
                 End If
             Else
-                If IsNumeric(identifier) Then
-                    RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {identifier} wurde nicht definiert.")
-                Else
-                    RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
-                End If
+                RaiseEvent CompileErrorEvent(lineNr, $"{If(IsNumeric(identifier), $"Position ""{identifier}""", $"Teachpunkt {identifier}")} wurde nicht definiert.")
             End If
 
             MyBase.EnterSetpvc(context)
@@ -1763,11 +1766,7 @@ Friend Class ACLProgram
                     _progList.Add(progEntry)
                 End If
             Else
-                If IsNumeric(identifier) Then
-                    RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {identifier} wurde nicht definiert.")
-                Else
-                    RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
-                End If
+                RaiseEvent CompileErrorEvent(lineNr, $"{If(IsNumeric(identifier), $"Teachpunkt {identifier}", $"Position ""{identifier}""")} wurde nicht definiert.")
             End If
 
             MyBase.EnterShift(context)
@@ -1804,24 +1803,38 @@ Friend Class ACLProgram
                     _progList.Add(progEntry)
                 End If
             Else
-                If IsNumeric(identifier) Then
-                    RaiseEvent CompileErrorEvent(lineNr, $"Teachpunkt {identifier} wurde nicht definiert.")
-                Else
-                    RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier}"" wurde nicht definiert.")
-                End If
+                RaiseEvent CompileErrorEvent(lineNr, $"{If(IsNumeric(identifier), $"Teachpunkt {identifier}", $"Position ""{identifier}""")} wurde nicht definiert.")
             End If
 
             MyBase.EnterShiftc(context)
         End Sub
-        'SETP (TODO)
+        'SETP
         Public Overrides Sub EnterSetp(<NotNull> context As ACLParser.SetpContext)
-            RaiseEvent CompileErrorEvent(context.SETP.Symbol.Line, $"SETP noch nicht implementiert")
+            ' SETP IDENTIFIER EQUAL (IDENTIFIER | INTEGER)
+            Dim lineNr As Integer = context.SETP.Symbol.Line
+            Dim identifier1 As String = context.IDENTIFIER(0).GetText
+            Dim identifier2 As String = context.GetChild(3).GetText
+            ' Prüfen ob Positionen existieren
+            Dim index As Integer = _getPosIndex(identifier1, lineNr)
+            If index = -1 Then
+                RaiseEvent CompileErrorEvent(lineNr, $"Position ""{identifier1}"" wurde nicht definiert.")
+            End If
+            index = _getPosIndex(identifier2, lineNr)
+            If index = -1 Then
+                RaiseEvent CompileErrorEvent(lineNr, $"{If(IsNumeric(identifier2), $"Teachpunkt {identifier2}", $"Position ""{identifier2}""")} wurde nicht definiert.")
+            End If
+            ' copyPos erstellen
+            Dim progEntry As New ProgramEntry
+            progEntry.func = ProgFunc.copyPos
+            progEntry.posIdentifer = identifier1
+            progEntry.posCopyPos = identifier2
+            _progList.Add(progEntry)
 
             MyBase.EnterSetp(context)
         End Sub
         'SET (TODO)
         Public Overrides Sub EnterSetpos(<NotNull> context As ACLParser.SetposContext)
-            RaiseEvent CompileErrorEvent(context.SET.Symbol.Line, $"SET für Positionen noch nicht implementiert")
+            RaiseEvent CompileErrorEvent(context.SET.Symbol.Line, $"Set für Positionen noch nicht implementiert")
 
             MyBase.EnterSetpos(context)
         End Sub
@@ -1874,8 +1887,8 @@ Friend Class ACLProgram
         Private Function _defineVar(name As String, lineNr As Integer) As Boolean
             'Prüfen ob es diese Variable schon gibt
             If _variables.ContainsKey(name) Then
-                RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{name}"" wurde schon in Zeile {_variables(name).defLine} definiert")
-                Return False
+                RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{name}"" wurde schon In Zeile {_variables(name).defLine} definiert")
+                    Return False
             ElseIf _tcpVars.Exists(name) Then
                 RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{name}"" wurde bereits als TCP-Variable definiert")
                 Return False

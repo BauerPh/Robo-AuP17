@@ -14,6 +14,7 @@ Module dataStructs
     End Structure
 
     Friend Structure CartCoords
+        Implements ICloneable
         Friend X, Y, Z, Yaw, Pitch, Roll As Double
         Friend Sub New(X As Double, Y As Double, Z As Double, yaw As Double, pitch As Double, roll As Double)
             Me.X = X
@@ -66,6 +67,9 @@ Module dataStructs
                 coords.SetByIndex(i, Math.Round(Items(i), decPlaces))
             Next
             Return coords
+        End Function
+        Friend Function Clone() As Object Implements ICloneable.Clone
+            Return New CartCoords(X, Y, Z, Yaw, Pitch, Roll)
         End Function
 
         Public Shared Operator +(ByVal coords1 As CartCoords, ByVal coords2 As CartCoords) As CartCoords

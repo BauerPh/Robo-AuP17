@@ -13,7 +13,7 @@ Public Class panCodeEditor
         "JAW <%>", "SPEED <%>", "HOME", "PARK", "DELAY <time>", " WAIT <cond>", "DEFP <pos>",
         "DELP <pos>", "UNDEF <pos>", "HERE <pos>", "TEACH <pos>", "SETPVC <pos> <X/Y/Z/yaw/pitch/roll> <val/var>",
         "SETPV <pos> <axis> <val/var>", "SHIFTC <pos> BY <X/Y/Z/yaw/pitch/roll> <val/var>",
-        "SHIFT <pos> BY <axis> <val/var>", "BY", "SETP", "PVAL", "PVALC", "PSTATUS", "DEFINE <var1> <var2> ...",
+        "SHIFT <pos> BY <axis> <val/var>", "BY", "SETP <pos> = <tp/pos>", "PVAL", "PVALC", "PSTATUS", "DEFINE <var1> <var2> ...",
         "GLOBAL <var1> <var2> ...", "DELVAR <var>", "SET <var> = <val/var/calculation>",
         $"IF <cond>{vbCrLf}ANDIF <cond>{vbCrLf}ORIF <cond>{vbCrLf + vbCrLf}ELSE{vbCrLf + vbCrLf}ENDIF",
         $"ANDIF <cond>{vbCrLf}", $"ORIF <cond>{vbCrLf}", $"ELSE{vbCrLf}", "ENDIF",
