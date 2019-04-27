@@ -3,8 +3,8 @@
     ' Definitions
     ' -----------------------------------------------------------------------------
     Private WithEvents _tcpCom As New TCPCommunication("$")
-    Private _variables As New Dictionary(Of String, Integer)
-    Friend ReadOnly Property Items As Dictionary(Of String, Integer)
+    Private _variables As New Dictionary(Of String, Double)
+    Friend ReadOnly Property Items As Dictionary(Of String, Double)
         Get
             Return _variables
         End Get
@@ -13,7 +13,7 @@
     Friend Event Connected()
     Friend Event Disconnected()
     Friend Event ConnectError()
-    Friend Event VariableChanged(ByVal name As String, ByVal val As Integer)
+    Friend Event VariableChanged(ByVal name As String, ByVal val As Double)
 
 
     ' -----------------------------------------------------------------------------
@@ -44,14 +44,14 @@
         _variables.Remove(name)
         Return True
     End Function
-    Friend Function SetVariable(name As String, val As Integer) As Boolean
+    Friend Function SetVariable(name As String, val As Double) As Boolean
         If Not _variables.ContainsKey(name) Then Return False
         _variables(name) = val
         _tcpCom.Send($"{name};{val}$")
         RaiseEvent VariableChanged(name, val)
         Return True
     End Function
-    Friend Function GetVariable(name As String, ByRef val As Integer) As Boolean
+    Friend Function GetVariable(name As String, ByRef val As Double) As Boolean
         If Not _variables.ContainsKey(name) Then Return False
         val = _variables(name)
         Return True
@@ -73,8 +73,8 @@
         If tmpSplit.Length = 2 Then
             Dim name As String = tmpSplit(0)
             If _variables.ContainsKey(name) Then
-                Dim val As Integer
-                If Integer.TryParse(tmpSplit(1), val) Then
+                Dim val As Double
+                If Double.TryParse(tmpSplit(1), val) Then
                     ' Set Variable
                     _variables(name) = val
                     ' Raise Event

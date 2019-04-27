@@ -246,7 +246,7 @@ Friend Class ACLProgram
                 objStreamWriter.WriteLine()
             Next
             'Variablen
-            For Each var As KeyValuePair(Of String, Integer) In TcpVariables.Items
+            For Each var As KeyValuePair(Of String, Double) In TcpVariables.Items
                 objStreamWriter.WriteLine($"<var>;{var.Key}")
             Next
             'Programm
@@ -412,7 +412,7 @@ Friend Class ACLProgram
         _forceStopProgram = False
 
         Dim vke As Boolean = False
-        Dim calcBuffer As Int32
+        Dim calcBuffer As Double
         Dim rtVariables As New Dictionary(Of String, Variable)
         Dim rtTeachpoints As New Dictionary(Of String, TeachPoint)
 
@@ -445,12 +445,12 @@ Friend Class ACLProgram
                     ' CALCULATION
                     ' -------------------------------------
                     'Get val1
-                    Dim val1 As Int32
+                    Dim val1 As Double
                     If Not _getCmdVal(cmd.calcVar1, cmd.lineNr, rtVariables, val1) Then
                         val1 = cmd.calcVal1
                     End If
                     'Get val2
-                    Dim val2 As Int32
+                    Dim val2 As Double
                     If Not _getCmdVal(cmd.calcVar2, cmd.lineNr, rtVariables, val2) Then
                         val2 = cmd.calcVal2
                     End If
@@ -464,7 +464,7 @@ Friend Class ACLProgram
                             Case ProgMathOperator.mult
                                 calcBuffer = val1 * val2
                             Case ProgMathOperator.div
-                                calcBuffer = val1 \ val2
+                                calcBuffer = val1 / val2
                             Case ProgMathOperator.exp
                                 calcBuffer = CInt(val1 ^ val2)
                             Case ProgMathOperator.mod
@@ -566,7 +566,7 @@ Friend Class ACLProgram
                         _runtimeError(cmd.lineNr, $"Variable ""{cmd.varName}"" wurde bereits als TCP-Variable definiert")
                         Exit While 'Programm beenden
                     End If
-                    rtVariables.Add(cmd.varName, New Variable(VarType.int, cmd.lineNr))
+                    rtVariables.Add(cmd.varName, New Variable(cmd.lineNr))
                     i += 1
                 Case ProgFunc.delVar
                     ' -------------------------------------
@@ -587,7 +587,7 @@ Friend Class ACLProgram
                         Exit While 'Programm beenden
                     End If
                     ' Wert holen
-                    Dim val As Integer
+                    Dim val As Double
                     If Not _getCmdVal(cmd.varVariable, cmd.lineNr, rtVariables, val) Then
                         val = cmd.varValue
                     End If
@@ -626,17 +626,17 @@ Friend Class ACLProgram
                     End If
                     Dim tp As RuntimeTeachPoint = _runtimeTeachPoints(index)
                     ' Variable setzen
-                    Dim varVal As Integer = 0
+                    Dim varVal As Double = 0
                     Select Case cmd.varSetVarToPosFunc
                         Case VarToPosFunc.joint
                             If Not tp.tp.type Then
-                                varVal = CInt(Math.Round(tp.tp.jointAngles.Items(cmd.posAxisOrCoord - 1), 0))
+                                varVal = tp.tp.jointAngles.Items(cmd.posAxisOrCoord - 1)
                             Else
                                 _runtimeError(cmd.lineNr, $"Der Teachpunkt (""Kartesisch"") und die ausgeführte Operation sind nicht vom gleichen Typ")
                             End If
                         Case VarToPosFunc.cart
                             If tp.tp.type Then
-                                varVal = CInt(Math.Round(tp.tp.cartCoords.Items(cmd.posAxisOrCoord - 1), 0))
+                                varVal = tp.tp.cartCoords.Items(cmd.posAxisOrCoord - 1)
                             Else
                                 _runtimeError(cmd.lineNr, $"Der Teachpunkt (""Achswinkel"") und die ausgeführte Operation sind nicht vom gleichen Typ")
                             End If
@@ -722,7 +722,7 @@ Friend Class ACLProgram
                         Exit While 'Programm beenden
                     End If
                     ' Wert holen
-                    Dim val As Integer
+                    Dim val As Double
                     If Not _getCmdVal(cmd.varVariable, cmd.lineNr, rtVariables, val) Then
                         val = cmd.varValue
                     End If
@@ -763,12 +763,12 @@ Friend Class ACLProgram
                     Dim txt As String = ""
                     For j = 0 To cmd.printVal.Count - 1
                         Dim pv As PrintVal = cmd.printVal(j)
-                        Dim value As Integer
+                        Dim value As Double
                         If pv.isVar Then
                             If Not _getCmdVal(pv.val, cmd.lineNr, rtVariables, value) Then
                                 _runtimeError(cmd.lineNr, $"Der Wert der Variable konnte nicht ermittelt werden.")
                             Else
-                                txt = txt & value
+                                txt = txt & value.ToString().Replace(",", ".")
                             End If
                         Else
                             txt = txt & pv.val
@@ -791,12 +791,12 @@ Friend Class ACLProgram
     End Sub
     Private Function _checkCondition(cmd As ProgramEntry, ByRef rtVariables As Dictionary(Of String, Variable), ByRef vke As Boolean) As Boolean
         'Get val1
-        Dim val1 As Int32
+        Dim val1 As Double
         If Not _getCmdVal(cmd.calcVar1, cmd.lineNr, rtVariables, val1) Then
             val1 = cmd.calcVal1
         End If
         'Get val2
-        Dim val2 As Int32
+        Dim val2 As Double
         If Not _getCmdVal(cmd.calcVar2, cmd.lineNr, rtVariables, val2) Then
             val2 = cmd.calcVal2
         End If
@@ -829,11 +829,11 @@ Friend Class ACLProgram
         End If
         Return tmpVKE
     End Function
-    Private Function _getCmdVal(var As String, line As Integer, ByRef rtVariables As Dictionary(Of String, Variable), ByRef val As Integer) As Boolean
+    Private Function _getCmdVal(var As String, line As Integer, ByRef rtVariables As Dictionary(Of String, Variable), ByRef val As Double) As Boolean
         If var IsNot Nothing Then
             ' RT Var
             If rtVariables.ContainsKey(var) Then
-                val = rtVariables(var).intVal
+                val = rtVariables(var).val
             Else
                 ' TCP Var
                 If Not TcpVariables.GetVariable(var, val) Then
@@ -848,11 +848,11 @@ Friend Class ACLProgram
     Private Function _checkVar(name As String, ByRef rtvars As Dictionary(Of String, Variable)) As Boolean
         Return rtvars.ContainsKey(name) Or TcpVariables.Exists(name)
     End Function
-    Private Function _setVar(ByVal name As String, ByVal val As Integer, ByVal lineNr As Integer, ByRef vars As Dictionary(Of String, Variable)) As Boolean
+    Private Function _setVar(ByVal name As String, ByVal val As Double, ByVal lineNr As Integer, ByRef vars As Dictionary(Of String, Variable)) As Boolean
         ' Variable setzen
         If vars.ContainsKey(name) Then
             Dim var As Variable = vars(name)
-            var.intVal = val
+            var.val = val
             vars(name) = var
         Else
             ' TCP-Variable
@@ -875,7 +875,7 @@ Friend Class ACLProgram
             Return _runtimeTeachPoints.FindIndex(Function(_tp As RuntimeTeachPoint) _tp.identifier = identifier)
         End If
     End Function
-    Private Function _editPos(ByVal index As Integer, ByRef cmd As ProgramEntry, val As Integer) As Boolean
+    Private Function _editPos(ByVal index As Integer, ByRef cmd As ProgramEntry, val As Double) As Boolean
         Dim tp As RuntimeTeachPoint = _runtimeTeachPoints(index)
         If Not tp.initialized Then
             tp.initialized = True
@@ -974,7 +974,7 @@ Friend Class ACLProgram
             Dim val2 As String = context.GetChild(2).GetText()
             If IsNumeric(val1) Then
                 Try
-                    progEntry.calcVal1 = CInt(val1)
+                    progEntry.calcVal1 = _getDouble(val1)
                 Catch e As OverflowException
                     RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
                 End Try
@@ -987,7 +987,7 @@ Friend Class ACLProgram
             End If
             If IsNumeric(val2) Then
                 Try
-                    progEntry.calcVal2 = CInt(val2)
+                    progEntry.calcVal2 = _getDouble(val2)
                 Catch e As OverflowException
                     RaiseEvent CompileErrorEvent(progEntry.lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
                 End Try
@@ -1039,7 +1039,7 @@ Friend Class ACLProgram
             Dim val2 As String = context.GetChild(2).GetText()
             If IsNumeric(val1) Then
                 Try
-                    progEntry.calcVal1 = CInt(val1)
+                    progEntry.calcVal1 = _getDouble(val1)
                 Catch e As OverflowException
                     RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
                 End Try
@@ -1052,7 +1052,7 @@ Friend Class ACLProgram
             End If
             If IsNumeric(val2) Then
                 Try
-                    progEntry.calcVal2 = CInt(val2)
+                    progEntry.calcVal2 = _getDouble(val2)
                 Catch e As OverflowException
                     RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
                 End Try
@@ -1334,9 +1334,9 @@ Friend Class ACLProgram
         Public Overrides Sub EnterFor(<NotNull> context As ACLParser.ForContext)
             Dim lineNr As Integer = context.FOR.Symbol.Line
             Dim countVarName As String = context.GetChild(1).GetText()
-            Dim valFrom As Integer = 0
+            Dim valFrom As Double = 0
             Dim varFrom As String = Nothing
-            Dim valTo As Integer = 0
+            Dim valTo As Double = 0
             Dim valVarTo As String = Nothing
 
             ' Startwert
@@ -1551,7 +1551,7 @@ Friend Class ACLProgram
         Public Overrides Sub ExitSetvar(<NotNull> context As ACLParser.SetvarContext)
             Dim lineNr As Integer = context.SET.Symbol.Line
             Dim varName As String = context.IDENTIFIER(0).GetText()
-            Dim val As Integer = 0
+            Dim val As Double = 0
             Dim var As String = Nothing
             Dim calculation As Boolean = False
 
@@ -1687,7 +1687,7 @@ Friend Class ACLProgram
         Public Overrides Sub EnterSetpv(<NotNull> context As ACLParser.SetpvContext)
             Dim lineNr As Integer = context.SETPV.Symbol.Line
             Dim identifier As String = context.GetChild(1).GetText()
-            Dim val As Integer = 0
+            Dim val As Double = 0
             Dim var As String = Nothing
             Dim axis As Integer
             Try
@@ -1733,7 +1733,7 @@ Friend Class ACLProgram
         Public Overrides Sub EnterSetpvc(<NotNull> context As ACLParser.SetpvcContext)
             Dim lineNr As Integer = context.SETPVC.Symbol.Line
             Dim identifier As String = context.GetChild(1).GetText()
-            Dim val As Integer = 0
+            Dim val As Double = 0
             Dim var As String = Nothing
             Dim coord As Integer = 0
             Try
@@ -1769,7 +1769,7 @@ Friend Class ACLProgram
         Public Overrides Sub EnterShift(<NotNull> context As ACLParser.ShiftContext)
             Dim lineNr As Integer = context.SHIFT.Symbol.Line
             Dim identifier As String = context.GetChild(1).GetText()
-            Dim val As Integer = 0
+            Dim val As Double = 0
             Dim var As String = Nothing
             Dim axis As Integer
             Try
@@ -1808,7 +1808,7 @@ Friend Class ACLProgram
         Public Overrides Sub EnterShiftc(<NotNull> context As ACLParser.ShiftcContext)
             Dim lineNr As Integer = context.SHIFTC.Symbol.Line
             Dim identifier As String = context.GetChild(1).GetText()
-            Dim val As Integer = 0
+            Dim val As Double = 0
             Dim var As String = Nothing
             Dim coord As Integer = 0
             Try
@@ -1966,7 +1966,7 @@ Friend Class ACLProgram
                 Return False
             Else
                 ' Variable hinzufügen
-                _variables.Add(name, New Variable(VarType.int, lineNr))
+                _variables.Add(name, New Variable(lineNr))
                 ' DEFVAR hinzufügen
                 Dim progEntry As New ProgramEntry
                 progEntry.func = ProgFunc.defVar
@@ -1977,12 +1977,12 @@ Friend Class ACLProgram
             End If
         End Function
 
-        Private Function _setVar(name As String, lineNr As Integer, val As Integer, var As String, calculation As Boolean) As Boolean
+        Private Function _setVar(name As String, lineNr As Integer, val As Double, var As String, calculation As Boolean) As Boolean
             If _checkVar(name) Then
                 Dim progEntry As New ProgramEntry With {
                     .lineNr = lineNr,
                     .varName = name,
-                    .Func = ProgFunc.setVar,
+                    .func = ProgFunc.setVar,
                     .varVariable = var,
                     .varValue = val
                 }
@@ -2015,11 +2015,11 @@ Friend Class ACLProgram
             End If
         End Function
 
-        Private Sub _getVarVal(ByVal text As String, ByVal lineNr As Integer, ByRef val As Integer, ByRef var As String)
+        Private Sub _getVarVal(ByVal text As String, ByVal lineNr As Integer, ByRef val As Double, ByRef var As String)
             If IsNumeric(text) Then
-                ' Integer
+                ' Integer or Double
                 Try
-                    val = CInt(text)
+                    val = _getDouble(text)
                 Catch e As OverflowException
                     RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
                 Finally
@@ -2033,6 +2033,11 @@ Friend Class ACLProgram
                 End If
             End If
         End Sub
+
+        Private Function _getDouble(ByVal text As String) As Double
+            Return CDbl(text.Replace(".", ","))
+        End Function
+
     End Class
 #End Region
 

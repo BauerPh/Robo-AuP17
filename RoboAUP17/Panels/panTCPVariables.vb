@@ -65,7 +65,7 @@
         lblConnectStatus.ForeColor = Color.Red
         frmMain.Log("[TCP] Getrennt!", Logger.LogLevel.INFO)
     End Sub
-    Private Sub _eVariableChanged(name As String, value As Integer)
+    Private Sub _eVariableChanged(name As String, value As Double)
         If InvokeRequired Then
             Invoke(Sub() _eVariableChanged(name, value))
             Return

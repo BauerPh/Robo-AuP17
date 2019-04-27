@@ -328,17 +328,11 @@ Module dataStructs
             }
         End Function
     End Structure
-
-    Friend Enum VarType
-        int = 0
-    End Enum
     Friend Structure Variable
-        Friend type As VarType
-        Friend intVal As Int32
+        Friend val As Double
         Friend defLine As Int32
 
-        Friend Sub New(type As VarType, defLine As Int32)
-            Me.type = type
+        Friend Sub New(defLine As Int32)
             Me.defLine = defLine
         End Sub
     End Structure
@@ -414,8 +408,8 @@ Module dataStructs
         ' Bedingungen und Berechnungen
         Friend calcVar1 As String
         Friend calcVar2 As String
-        Friend calcVal1 As Int32
-        Friend calcVal2 As Int32
+        Friend calcVal1 As Double
+        Friend calcVal2 As Double
         Friend calcCompareOp As ProgCompOperator
         Friend calcBoolOp As ProgBoolOperator
         Friend calcMathOp As ProgMathOperator
@@ -426,7 +420,7 @@ Module dataStructs
         Friend jumpFalseTarget As Int32
         ' Variablen
         Friend varName As String
-        Friend varValue As Int32
+        Friend varValue As Double
         Friend varVariable As String
         Friend varSetVarToPosFunc As VarToPosFunc
         ' Positionen
