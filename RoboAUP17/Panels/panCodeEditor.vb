@@ -15,6 +15,7 @@ Public Class panCodeEditor
         "SETPV <pos> <axis> <val/var>", "SHIFTC <pos> BY <X/Y/Z/yaw/pitch/roll> <val/var>",
         "SHIFT <pos> BY <axis> <val/var>", "BY", "SETP <pos> = <tp/pos>", "PVAL", "PVALC", "PSTATUS", "DEFINE <var1> <var2> ...",
         "GLOBAL <var1> <var2> ...", "DELVAR <var>", "SET <var> = <val/var/calculation>",
+        "SET <var> = PVAL <pos> <axis>", "SET <var> = PVALC <pos> <X/Y/Z/yaw/pitch/roll>", "SET <var> = PSTATUS <pos>",
         $"IF <cond>{vbCrLf}ANDIF <cond>{vbCrLf}ORIF <cond>{vbCrLf + vbCrLf}ELSE{vbCrLf + vbCrLf}ENDIF",
         $"ANDIF <cond>{vbCrLf}", $"ORIF <cond>{vbCrLf}", $"ELSE{vbCrLf}", "ENDIF",
         $"FOR <var> = <val/var> TO <val/var>{vbCrLf + vbCrLf}ENDFOR", "TO", "ENDFOR",

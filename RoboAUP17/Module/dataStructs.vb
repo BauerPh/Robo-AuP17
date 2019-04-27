@@ -388,33 +388,38 @@ Module dataStructs
         exp
         [mod]
     End Enum
+    Friend Enum VarToPosFunc
+        joint
+        cart
+        type
+    End Enum
     Friend Structure PrintVal
         Friend val As String
         Friend isVar As Boolean
     End Structure
     Friend Structure ProgramEntry
-            Friend lineNr As Int32
-            Friend func As ProgFunc
-            ' Axis Control
-            Friend moveTpNr As Int32
-            Friend moveTpIdentifier As String
-            Friend moveSpeed As Double
-            Friend moveAcc As Double
-            ' Servo
-            Friend servoNum As Int32
-            Friend servoVal As Int32
-            Friend servoSpeed As Int32
-            ' Delay
-            Friend delayTimeMS As Int32
-            ' Bedingungen und Berechnungen
-            Friend calcVar1 As String
-            Friend calcVar2 As String
-            Friend calcVal1 As Int32
-            Friend calcVal2 As Int32
-            Friend calcCompareOp As ProgCompOperator
-            Friend calcBoolOp As ProgBoolOperator
-            Friend calcMathOp As ProgMathOperator
-            Friend VKEFirst As Boolean
+        Friend lineNr As Int32
+        Friend func As ProgFunc
+        ' Axis Control
+        Friend moveTpNr As Int32
+        Friend moveTpIdentifier As String
+        Friend moveSpeed As Double
+        Friend moveAcc As Double
+        ' Servo
+        Friend servoNum As Int32
+        Friend servoVal As Int32
+        Friend servoSpeed As Int32
+        ' Delay
+        Friend delayTimeMS As Int32
+        ' Bedingungen und Berechnungen
+        Friend calcVar1 As String
+        Friend calcVar2 As String
+        Friend calcVal1 As Int32
+        Friend calcVal2 As Int32
+        Friend calcCompareOp As ProgCompOperator
+        Friend calcBoolOp As ProgBoolOperator
+        Friend calcMathOp As ProgMathOperator
+        Friend VKEFirst As Boolean
         ' Jumps
         Friend jumpTarget As Int32
         Friend jumpTrueTarget As Int32
@@ -423,11 +428,12 @@ Module dataStructs
         Friend varName As String
         Friend varValue As Int32
         Friend varVariable As String
+        Friend varSetVarToPosFunc As VarToPosFunc
         ' Positionen
         Friend posIdentifer As String
         Friend posNum As Integer
         Friend posType As Boolean
-        Friend posChangeAxisOrCoord As Int32 ' X = 1, Y = 2, Z = 3, yaw = 4, pitch = 5, roll = 6
+        Friend posAxisOrCoord As Int32 ' X = 1, Y = 2, Z = 3, yaw = 4, pitch = 5, roll = 6
         Friend posShift As Boolean
         Friend posCopyPos As String
         ' Print

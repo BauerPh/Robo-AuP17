@@ -611,8 +611,41 @@ Friend Class ACLProgram
                     i += 1
                 Case ProgFunc.setVarToPosition
                     ' -------------------------------------
-                    ' !!! SET VARIABLE TO POSITION
+                    ' SET VARIABLE TO POSITION
                     ' -------------------------------------
+                    ' Variable prüfen
+                    If Not _checkVar(cmd.varName, rtVariables) Then
+                        _runtimeError(cmd.lineNr, $"Variable ""{cmd.varName}"" ist an dieser Stelle nicht definiert")
+                        Exit While 'Programm beenden
+                    End If
+                    ' Position prüfen
+                    Dim index As Integer = _getPosIndex(cmd.posIdentifer, cmd.lineNr)
+                    If index = -1 Then
+                        _runtimeError(cmd.lineNr, $"Position ""{cmd.posIdentifer}"" wurde nicht definiert")
+                        Exit While 'Programm beenden
+                    End If
+                    Dim tp As RuntimeTeachPoint = _runtimeTeachPoints(index)
+                    ' Variable setzen
+                    Dim varVal As Integer = 0
+                    Select Case cmd.varSetVarToPosFunc
+                        Case VarToPosFunc.joint
+                            If Not tp.tp.type Then
+                                varVal = CInt(Math.Round(tp.tp.jointAngles.Items(cmd.posAxisOrCoord - 1), 0))
+                            Else
+                                _runtimeError(cmd.lineNr, $"Der Teachpunkt (""Kartesisch"") und die ausgeführte Operation sind nicht vom gleichen Typ")
+                            End If
+                        Case VarToPosFunc.cart
+                            If tp.tp.type Then
+                                varVal = CInt(Math.Round(tp.tp.cartCoords.Items(cmd.posAxisOrCoord - 1), 0))
+                            Else
+                                _runtimeError(cmd.lineNr, $"Der Teachpunkt (""Achswinkel"") und die ausgeführte Operation sind nicht vom gleichen Typ")
+                            End If
+                        Case VarToPosFunc.type
+                            varVal = If(tp.tp.type, 1, 0)
+                    End Select
+                    If Not _setVar(cmd.varName, varVal, cmd.lineNr, rtVariables) Then
+                        Exit While 'Programm beenden
+                    End If
                     i += 1
                 Case ProgFunc.defPos
                     ' -------------------------------------
@@ -853,7 +886,7 @@ Friend Class ACLProgram
                 Return False
             End If
         End If
-        Dim axis As Integer = cmd.posChangeAxisOrCoord - 1
+        Dim axis As Integer = cmd.posAxisOrCoord - 1
         If cmd.posType Then
             If cmd.posShift Then
                 tp.tp.cartCoords.SetByIndex(axis, tp.tp.cartCoords.Items(axis) + val)
@@ -1076,7 +1109,7 @@ Friend Class ACLProgram
             If tpIndex >= 0 Then
                 ' Move hinzufügen
                 Dim progEntry As New ProgramEntry With {
-                    .Func = ProgFunc.move,
+                    .func = ProgFunc.move,
                     .lineNr = lineNr,
                     .moveAcc = _acc,
                     .moveSpeed = _speed
@@ -1097,7 +1130,7 @@ Friend Class ACLProgram
         Public Overrides Sub EnterHome(<NotNull> context As ACLParser.HomeContext)
             ' home hinzufügen
             Dim progEntry As New ProgramEntry With {
-                    .Func = ProgFunc.home,
+                    .func = ProgFunc.home,
                     .lineNr = context.HOME.Symbol.Line
             }
             _progList.Add(progEntry)
@@ -1108,7 +1141,7 @@ Friend Class ACLProgram
         Public Overrides Sub EnterPark(<NotNull> context As ACLParser.ParkContext)
             ' park hinzufügen
             Dim progEntry As New ProgramEntry With {
-                    .Func = ProgFunc.park,
+                    .func = ProgFunc.park,
                     .lineNr = context.PARK.Symbol.Line
             }
             _progList.Add(progEntry)
@@ -1213,7 +1246,7 @@ Friend Class ACLProgram
             Dim thisIndex As Int32 = _progList.Count
             ' Bedingter Sprung hinzufügen (Bedingung wird bei "EnterCondition" hinzugefügt)
             Dim progEntry As New ProgramEntry With {
-                .Func = ProgFunc.cjump,
+                .func = ProgFunc.cjump,
                 .lineNr = context.IF.Symbol.Line,
                 .VKEFirst = True,
                 .jumpTrueTarget = thisIndex + 1, ' Auf nächsten Eintrag, wenn dieser hier hinzugefügt wurde
@@ -1318,7 +1351,7 @@ Friend Class ACLProgram
             ' Bedingter Sprung erstellen (Bedingung: Zählvariable <= Ende)
             Dim thisIndex As Int32 = _progList.Count
             Dim progEntry As New ProgramEntry With {
-                .Func = ProgFunc.cjump,
+                .func = ProgFunc.cjump,
                 .lineNr = lineNr,
                 .VKEFirst = True,
                 .jumpTrueTarget = thisIndex + 1, ' Auf nächsten Eintrag, wenn dieser hier hinzugefügt wurde
@@ -1342,7 +1375,7 @@ Friend Class ACLProgram
 
             ' Zählvariable hochzählen
             Dim progEntry As New ProgramEntry With {
-                .Func = ProgFunc.calculation,
+                .func = ProgFunc.calculation,
                 .lineNr = lineNr,
                 .calcVar1 = countVarName,
                 .calcVal2 = 1,
@@ -1350,7 +1383,7 @@ Friend Class ACLProgram
             }
             _progList.Add(progEntry)
             progEntry = New ProgramEntry With {
-                .Func = ProgFunc.setVarToBuffer,
+                .func = ProgFunc.setVarToBuffer,
                 .varName = countVarName,
                 .lineNr = lineNr
             }
@@ -1361,14 +1394,14 @@ Friend Class ACLProgram
             Dim progListForEntryNum = _stack.Pop ' For index vom Stack holen
             ' Rücksprung setzen
             progEntry = New ProgramEntry With {
-                .Func = ProgFunc.jump,
+                .func = ProgFunc.jump,
                 .lineNr = lineNr,
                 .jumpTarget = progListForEntryNum
             }
             _progList.Add(progEntry)
             ' NOOP hinzufügen
             progEntry = New ProgramEntry With {
-                .Func = ProgFunc.noop,
+                .func = ProgFunc.noop,
                 .lineNr = lineNr
             }
             _progList.Add(progEntry)
@@ -1415,7 +1448,7 @@ Friend Class ACLProgram
 
             ' Sprung hinzufügen
             Dim progEntry As New ProgramEntry With {
-                .Func = ProgFunc.jump,
+                .func = ProgFunc.jump,
                 .lineNr = lineNr,
                 .jumpTarget = -1
             }
@@ -1453,7 +1486,7 @@ Friend Class ACLProgram
 
             ' Delay hinzufügen
             Dim progEntry As New ProgramEntry With {
-                .Func = ProgFunc.delay,
+                .func = ProgFunc.delay,
                 .lineNr = lineNr,
                 .delayTimeMS = delay * 10 ' Hundertstel werden angegeben!
             }
@@ -1466,7 +1499,7 @@ Friend Class ACLProgram
             Dim thisIndex As Int32 = _progList.Count
             ' Bedingter Sprung hinzufügen (Bedingung wird bei "EnterCondition" hinzugefügt)
             Dim progEntry As New ProgramEntry With {
-                .Func = ProgFunc.cjump,
+                .func = ProgFunc.cjump,
                 .lineNr = context.WAIT.Symbol.Line,
                 .VKEFirst = True,
                 .jumpTrueTarget = thisIndex + 1, ' Weiter bei True
@@ -1679,7 +1712,7 @@ Friend Class ACLProgram
                     progEntry.posType = False
                     progEntry.varValue = val
                     progEntry.varVariable = var
-                    progEntry.posChangeAxisOrCoord = axis
+                    progEntry.posAxisOrCoord = axis
                     _progList.Add(progEntry)
                 End If
             Else
@@ -1723,7 +1756,7 @@ Friend Class ACLProgram
                     progEntry.posType = True
                     progEntry.varValue = val
                     progEntry.varVariable = var
-                    progEntry.posChangeAxisOrCoord = coord
+                    progEntry.posAxisOrCoord = coord
                     _progList.Add(progEntry)
                 End If
             Else
@@ -1762,7 +1795,7 @@ Friend Class ACLProgram
                     progEntry.posType = False
                     progEntry.varValue = val
                     progEntry.varVariable = var
-                    progEntry.posChangeAxisOrCoord = axis
+                    progEntry.posAxisOrCoord = axis
                     _progList.Add(progEntry)
                 End If
             Else
@@ -1799,7 +1832,7 @@ Friend Class ACLProgram
                     progEntry.posType = True
                     progEntry.varValue = val
                     progEntry.varVariable = var
-                    progEntry.posChangeAxisOrCoord = coord
+                    progEntry.posAxisOrCoord = coord
                     _progList.Add(progEntry)
                 End If
             Else
@@ -1810,7 +1843,6 @@ Friend Class ACLProgram
         End Sub
         'SETP
         Public Overrides Sub EnterSetp(<NotNull> context As ACLParser.SetpContext)
-            ' SETP IDENTIFIER EQUAL (IDENTIFIER | INTEGER)
             Dim lineNr As Integer = context.SETP.Symbol.Line
             Dim identifier1 As String = context.IDENTIFIER(0).GetText
             Dim identifier2 As String = context.GetChild(3).GetText
@@ -1832,9 +1864,49 @@ Friend Class ACLProgram
 
             MyBase.EnterSetp(context)
         End Sub
-        'SET (TODO)
+        'SET
         Public Overrides Sub EnterSetpos(<NotNull> context As ACLParser.SetposContext)
-            RaiseEvent CompileErrorEvent(context.SET.Symbol.Line, $"Set für Positionen noch nicht implementiert")
+            Dim lineNr As Integer = context.SET.Symbol.Line
+            ' Variable prüfen
+            Dim varName As String = context.IDENTIFIER(0).GetText
+            If Not _checkVar(varName) Then
+                RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{varName}"" wurde nicht definiert")
+            End If
+            ' Position/Teachpunkt prüfen
+            Dim pos As String = context.GetChild(4).GetText
+            Dim index As Integer = _getPosIndex(pos, lineNr)
+            If index >= 0 Then
+                Dim progEntry As New ProgramEntry
+                progEntry.func = ProgFunc.setVarToPosition
+                progEntry.lineNr = lineNr
+                progEntry.varName = varName
+                If IsNumeric(pos) Then
+                    progEntry.posNum = CInt(pos)
+                Else
+                    progEntry.posIdentifer = pos
+                End If
+                'Function
+                If context.PVAL IsNot Nothing Then
+                    progEntry.varSetVarToPosFunc = VarToPosFunc.joint
+                    Try
+                        progEntry.posAxisOrCoord = CInt(context.GetChild(5).GetText)
+                    Catch e As OverflowException
+                        RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur Werte zwischen {-2 ^ 31} und {2 ^ 31 - 1} möglich (32-Bit Integer)")
+                    End Try
+                ElseIf context.PVALC IsNot Nothing Then
+                    progEntry.varSetVarToPosFunc = VarToPosFunc.cart
+                    Try
+                        progEntry.posAxisOrCoord = CType([Enum].Parse(GetType(enumCoord), context.GetChild(5).GetText(), False), enumCoord)
+                    Catch e As ArgumentException
+                        RaiseEvent CompileErrorEvent(lineNr, $"Es sind nur die Werte: ""X, Y, Z, yaw, pitch, roll"" gültig.")
+                    End Try
+                ElseIf context.PSTATUS IsNot Nothing Then
+                    progEntry.varSetVarToPosFunc = VarToPosFunc.type
+                End If
+                _progList.Add(progEntry)
+            Else
+                RaiseEvent CompileErrorEvent(lineNr, $"{If(IsNumeric(pos), $"Teachpunkt {pos}", $"Position ""{pos}""")} wurde nicht definiert.")
+            End If
 
             MyBase.EnterSetpos(context)
         End Sub
