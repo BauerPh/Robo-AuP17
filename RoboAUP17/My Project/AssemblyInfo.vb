@@ -1,4 +1,5 @@
-﻿Imports System
+﻿Imports System.Resources
+Imports System
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 
@@ -8,10 +9,10 @@ Imports System.Runtime.InteropServices
 
 ' Werte der Assemblyattribute überprüfen
 
-<Assembly: AssemblyTitle("RoboAUP17")>
-<Assembly: AssemblyDescription("")>
+<Assembly: AssemblyTitle("Robo AuP17")>
+<Assembly: AssemblyDescription("Diese Software entstand während dem Abschlussprojekt ""Griff in die Kiste"" von Christian Deppert und mir (Philipp Bauer)." & vbCrLf & "Solltet ihr Fehler entdecken oder Fragen haben, könnt ihr auf der zugehörigen GitHub Seite ein ""Issue"" erstellen." & vbCrLf & vbCrLf & "Auch ""Pull Requests"" werden dort gerne gesehen.")>
 <Assembly: AssemblyCompany("Meisterschule für Handwerker Kaiserslautern")>
-<Assembly: AssemblyProduct("RoboAUP17")>
+<Assembly: AssemblyProduct("Robo AuP17")>
 <Assembly: AssemblyCopyright("Copyright © 2019 by Philipp Bauer")>
 <Assembly: AssemblyTrademark("")>
 
@@ -31,5 +32,6 @@ Imports System.Runtime.InteropServices
 ' übernehmen, indem Sie "*" eingeben:
 ' <Assembly: AssemblyVersion("1.0.*")>
 
-<Assembly: AssemblyVersion("1.0.0.0")>
-<Assembly: AssemblyFileVersion("1.0.0.0")>
+<Assembly: AssemblyVersion("1.1.0.0")>
+<Assembly: AssemblyFileVersion("1.1.0.0")>
+<Assembly: NeutralResourcesLanguage("de-DE")>

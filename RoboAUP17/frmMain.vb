@@ -81,7 +81,9 @@ Public Class frmMain
             Return
         End If
 
-        Me.Text = $"Aup17 Robo v{My.Application.Info.Version.ToString}"
+        With My.Application.Info
+            Me.Text = $"{ .ProductName} v{ .Version.Major}.{ .Version.Minor}.{ .Version.Build}"
+        End With
 
         'Maximiert starten wenn Ansicht so gespeichert wurde
         If My.Settings.StartMaximized Then
@@ -286,6 +288,9 @@ Public Class frmMain
     End Sub
     Private Sub msArduinoFirmware_Click(sender As Object, e As EventArgs) Handles msArduinoFirmware.Click
         Process.Start(_gitHubUrlArduinoFirmware)
+    End Sub
+    Private Sub msShowInfo_Click(sender As Object, e As EventArgs) Handles msShowInfo.Click
+        AboutBox.Show()
     End Sub
 #End Region
 

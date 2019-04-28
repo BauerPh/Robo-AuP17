@@ -6,9 +6,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{279C1903-5D4B-4DD1-8965-AD9CC0E20AB7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>RoboAUP17.My.MyApplication</StartupObject>
-    <RootNamespace>RoboAUP17</RootNamespace>
-    <AssemblyName>RoboAUP17</AssemblyName>
+    <StartupObject>RoboAuP17.My.MyApplication</StartupObject>
+    <RootNamespace>RoboAuP17</RootNamespace>
+    <AssemblyName>Robo AuP17</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -26,8 +26,8 @@
     <MapFileExtensions>false</MapFileExtensions>
     <TargetCulture>de-DE</TargetCulture>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.1.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -40,7 +40,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>RoboAUP17.xml</DocumentationFile>
+    <DocumentationFile>Robo AuP17.xml</DocumentationFile>
     <NoWarn>
     </NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
@@ -53,7 +53,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>RoboAUP17.xml</DocumentationFile>
+    <DocumentationFile>Robo AuP17.xml</DocumentationFile>
     <NoWarn>
     </NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
@@ -137,6 +137,12 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutBox.Designer.vb">
+      <DependentUpon>AboutBox.vb</DependentUpon>
+    </Compile>
+    <Compile Include="AboutBox.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Klassen\ACLSyntaxHighlighting.vb" />
     <Compile Include="Module\Calculations.vb" />
@@ -239,6 +245,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AboutBox.resx">
+      <DependentUpon>AboutBox.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.vb</DependentUpon>
     </EmbeddedResource>
@@ -316,6 +325,7 @@
     <None Include="Resources\icon_not_actuated.png" />
     <None Include="Resources\icon_unknown.png" />
     <None Include="Resources\icons8-help-96.png" />
+    <None Include="Resources\MHK_Logo.tif" />
     <Content Include="RoboParameterDefault.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

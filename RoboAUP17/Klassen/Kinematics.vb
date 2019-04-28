@@ -1,4 +1,4 @@
-﻿Imports RoboAUP17.Matrizen
+﻿Imports RoboAuP17.Matrizen
 Friend Class Kinematics
     Private _DHParameter(5) As DHParameter
     Private _workframe, _toolframe As CartCoords

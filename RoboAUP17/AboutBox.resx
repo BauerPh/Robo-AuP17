@@ -117,29 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ico_actuated" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icon_actuated.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ico_checked" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\icons8-checked-100.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ico_error" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons8-error-96.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ico_estop" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons8-emergency-stop-button-100.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ico_help" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons8-help-96.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ico_not_actuated" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icon_not_actuated.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ico_unknown" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icon_unknown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="MHK_Logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MHK_Logo.tif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="TextBoxDescription.Text" xml:space="preserve">
+    <value>Beschreibung:
+
+(Der Text für die Bezeichnung wird zur Laufzeit durch die Assemblyinformationen der Anwendung ersetzt.
+Passen Sie die Assemblyinformationen der Anwendung im Anwendungsbereich des Projekt-Designers an.)</value>
   </data>
 </root>

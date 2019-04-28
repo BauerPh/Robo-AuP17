@@ -52,6 +52,8 @@ Partial Class frmMain
         Me.msShowLog = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowComLogSerial = New System.Windows.Forms.ToolStripMenuItem()
         Me.msShowProgLog = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExtrasToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msResetSettings = New System.Windows.Forms.ToolStripMenuItem()
         Me.EinstellungenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.msDenavitHartPar = New System.Windows.Forms.ToolStripMenuItem()
         Me.msRoboParameter = New System.Windows.Forms.ToolStripMenuItem()
@@ -81,10 +83,10 @@ Partial Class frmMain
         Me.tsBtnRedo = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
         Me.lblSpeed = New System.Windows.Forms.ToolStripLabel()
-        Me.numSpeed = New RoboAUP17.ToolStripNumericUpDown()
+        Me.numSpeed = New RoboAuP17.ToolStripNumericUpDown()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.lblAcc = New System.Windows.Forms.ToolStripLabel()
-        Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
+        Me.numAcc = New RoboAuP17.ToolStripNumericUpDown()
         Me.ToolStripSeparator11 = New System.Windows.Forms.ToolStripSeparator()
         Me.tsBtnProgCheck = New System.Windows.Forms.ToolStripButton()
         Me.tsBtnProgRun = New System.Windows.Forms.ToolStripButton()
@@ -94,8 +96,6 @@ Partial Class frmMain
         Me.tsSepTCPServerStatus = New System.Windows.Forms.ToolStripSeparator()
         Me.tsLblTCPServerStatusTitle = New System.Windows.Forms.ToolStripLabel()
         Me.tsLblTcpServerStatus = New System.Windows.Forms.ToolStripLabel()
-        Me.ExtrasToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.msResetSettings = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
@@ -294,6 +294,20 @@ Partial Class frmMain
         Me.msShowProgLog.Size = New System.Drawing.Size(169, 22)
         Me.msShowProgLog.Text = "Programm Log"
         '
+        'ExtrasToolStripMenuItem
+        '
+        Me.ExtrasToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msResetSettings})
+        Me.ExtrasToolStripMenuItem.Name = "ExtrasToolStripMenuItem"
+        Me.ExtrasToolStripMenuItem.Size = New System.Drawing.Size(49, 20)
+        Me.ExtrasToolStripMenuItem.Text = "Extras"
+        '
+        'msResetSettings
+        '
+        Me.msResetSettings.Image = CType(resources.GetObject("msResetSettings.Image"), System.Drawing.Image)
+        Me.msResetSettings.Name = "msResetSettings"
+        Me.msResetSettings.Size = New System.Drawing.Size(286, 22)
+        Me.msResetSettings.Text = "Anwendungseinstellungen zurücksetzen"
+        '
         'EinstellungenToolStripMenuItem1
         '
         Me.EinstellungenToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msDenavitHartPar, Me.msRoboParameter, Me.msFrames, Me.ToolStripSeparator5, Me.msTCPServer})
@@ -398,7 +412,6 @@ Partial Class frmMain
         '
         'msShowInfo
         '
-        Me.msShowInfo.Enabled = False
         Me.msShowInfo.Image = CType(resources.GetObject("msShowInfo.Image"), System.Drawing.Image)
         Me.msShowInfo.Name = "msShowInfo"
         Me.msShowInfo.Size = New System.Drawing.Size(200, 22)
@@ -587,20 +600,6 @@ Partial Class frmMain
         Me.tsLblTcpServerStatus.Name = "tsLblTcpServerStatus"
         Me.tsLblTcpServerStatus.Size = New System.Drawing.Size(52, 23)
         Me.tsLblTcpServerStatus.Text = "getrennt"
-        '
-        'ExtrasToolStripMenuItem
-        '
-        Me.ExtrasToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msResetSettings})
-        Me.ExtrasToolStripMenuItem.Name = "ExtrasToolStripMenuItem"
-        Me.ExtrasToolStripMenuItem.Size = New System.Drawing.Size(49, 20)
-        Me.ExtrasToolStripMenuItem.Text = "Extras"
-        '
-        'msResetSettings
-        '
-        Me.msResetSettings.Image = CType(resources.GetObject("msResetSettings.Image"), System.Drawing.Image)
-        Me.msResetSettings.Name = "msResetSettings"
-        Me.msResetSettings.Size = New System.Drawing.Size(286, 22)
-        Me.msResetSettings.Text = "Anwendungseinstellungen zurücksetzen"
         '
         'frmMain
         '
