@@ -94,6 +94,8 @@ Partial Class frmMain
         Me.tsSepTCPServerStatus = New System.Windows.Forms.ToolStripSeparator()
         Me.tsLblTCPServerStatusTitle = New System.Windows.Forms.ToolStripLabel()
         Me.tsLblTcpServerStatus = New System.Windows.Forms.ToolStripLabel()
+        Me.ExtrasToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.msResetSettings = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
@@ -116,7 +118,7 @@ Partial Class frmMain
         '
         'MenuStrip
         '
-        Me.MenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DateiToolStripMenuItem, Me.BearbeitenToolStripMenuItem, Me.AnsichtToolStripMenuItem, Me.EinstellungenToolStripMenuItem1, Me.HilfeToolStripMenuItem})
+        Me.MenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DateiToolStripMenuItem, Me.BearbeitenToolStripMenuItem, Me.AnsichtToolStripMenuItem, Me.ExtrasToolStripMenuItem, Me.EinstellungenToolStripMenuItem1, Me.HilfeToolStripMenuItem})
         Me.MenuStrip.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip.Name = "MenuStrip"
         Me.MenuStrip.Size = New System.Drawing.Size(1367, 24)
@@ -586,6 +588,20 @@ Partial Class frmMain
         Me.tsLblTcpServerStatus.Size = New System.Drawing.Size(52, 23)
         Me.tsLblTcpServerStatus.Text = "getrennt"
         '
+        'ExtrasToolStripMenuItem
+        '
+        Me.ExtrasToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msResetSettings})
+        Me.ExtrasToolStripMenuItem.Name = "ExtrasToolStripMenuItem"
+        Me.ExtrasToolStripMenuItem.Size = New System.Drawing.Size(49, 20)
+        Me.ExtrasToolStripMenuItem.Text = "Extras"
+        '
+        'msResetSettings
+        '
+        Me.msResetSettings.Image = CType(resources.GetObject("msResetSettings.Image"), System.Drawing.Image)
+        Me.msResetSettings.Name = "msResetSettings"
+        Me.msResetSettings.Size = New System.Drawing.Size(286, 22)
+        Me.msResetSettings.Text = "Anwendungseinstellungen zurücksetzen"
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -684,4 +700,6 @@ Partial Class frmMain
     Friend WithEvents tsBtnUndo As ToolStripButton
     Friend WithEvents tsBtnRedo As ToolStripButton
     Friend WithEvents ToolStripSeparator9 As ToolStripSeparator
+    Friend WithEvents ExtrasToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents msResetSettings As ToolStripMenuItem
 End Class

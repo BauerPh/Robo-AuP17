@@ -7,6 +7,12 @@
 
         cbTPMode.SelectedIndex = 0
 
+        numSpeed.Value = CDec(My.Settings.TpSpeed)
+        numAcc.Value = CDec(My.Settings.TpAcc)
+
+        AddHandler numSpeed.ValueChanged, AddressOf numSpeed_ValueChanged
+        AddHandler numAcc.ValueChanged, AddressOf numAcc_ValueChanged
+
         _enableDisableElements()
 
         AddHandler frmMain.RefreshEvent, AddressOf _eRefresh
@@ -62,6 +68,12 @@
         Dim tp As TeachPoint = frmMain.ACLProgram.GetTeachpointByIndex(lbTeachPoints.SelectedIndex)
         tbName.Text = tp.name
         numNr.Value = tp.nr
+    End Sub
+    Private Sub numSpeed_ValueChanged(sender As Object, e As EventArgs)
+        My.Settings.TpSpeed = numSpeed.Value
+    End Sub
+    Private Sub numAcc_ValueChanged(sender As Object, e As EventArgs)
+        My.Settings.TpAcc = numAcc.Value
     End Sub
 
     ' -----------------------------------------------------------------------------

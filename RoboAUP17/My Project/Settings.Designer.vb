@@ -89,6 +89,102 @@ Namespace My
                 Me("LogLvl") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("25")>  _
+        Public Property CtrlSpeed() As Double
+            Get
+                Return CType(Me("CtrlSpeed"),Double)
+            End Get
+            Set
+                Me("CtrlSpeed") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("50")>  _
+        Public Property CtrlAcc() As Double
+            Get
+                Return CType(Me("CtrlAcc"),Double)
+            End Get
+            Set
+                Me("CtrlAcc") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("50")>  _
+        Public Property TpSpeed() As Double
+            Get
+                Return CType(Me("TpSpeed"),Double)
+            End Get
+            Set
+                Me("TpSpeed") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("50")>  _
+        Public Property TpAcc() As Double
+            Get
+                Return CType(Me("TpAcc"),Double)
+            End Get
+            Set
+                Me("TpAcc") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("5")>  _
+        Public Property CtrlJogIntervalJointGrad() As Double
+            Get
+                Return CType(Me("CtrlJogIntervalJointGrad"),Double)
+            End Get
+            Set
+                Me("CtrlJogIntervalJointGrad") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("200")>  _
+        Public Property CtrlJogIntervalJointSteps() As Integer
+            Get
+                Return CType(Me("CtrlJogIntervalJointSteps"),Integer)
+            End Get
+            Set
+                Me("CtrlJogIntervalJointSteps") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("20")>  _
+        Public Property CtrlJogIntervalCartMm() As Double
+            Get
+                Return CType(Me("CtrlJogIntervalCartMm"),Double)
+            End Get
+            Set
+                Me("CtrlJogIntervalCartMm") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("10")>  _
+        Public Property CtrlJogIntervalCartGrad() As Double
+            Get
+                Return CType(Me("CtrlJogIntervalCartGrad"),Double)
+            End Get
+            Set
+                Me("CtrlJogIntervalCartGrad") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

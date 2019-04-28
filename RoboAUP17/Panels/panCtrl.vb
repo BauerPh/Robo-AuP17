@@ -1,16 +1,14 @@
-﻿Friend Class panCtrl
-    ' -----------------------------------------------------------------------------
-    ' TODO
-    ' -----------------------------------------------------------------------------
-    ' Speed, Acc, JogInterval in MySettings speichern
-    ' alten Jog-Interval für jeden Mode speichern und wiederherstellen
-    ' Checkbox für SyncMove
-    ' Home & Parkposition anfahren
+﻿Imports System.ComponentModel
 
-    Private _tcpMode As Boolean = False
+Friend Class panCtrl
+    Private _cartMode As Boolean = False
+    Private _jogSteps As Boolean = False
     Private _moveModeDirect As Boolean = False
     Private _posReceived As Boolean = False
     Private _doMoveAfterServoMove As Boolean = False
+
+    Private _jogIntervalJointGrad, _jogIntervalCartMm, _jogIntervalCartGrad As Double
+    Private _jogIntervalJointSteps As Integer
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
@@ -19,8 +17,24 @@
         cbJogMode.SelectedIndex = 0
         cbMoveMode.SelectedIndex = 0
 
+        _jogIntervalJointGrad = My.Settings.CtrlJogIntervalJointGrad
+        _jogIntervalJointSteps = My.Settings.CtrlJogIntervalJointSteps
+        _jogIntervalCartMm = My.Settings.CtrlJogIntervalCartMm
+        _jogIntervalCartGrad = My.Settings.CtrlJogIntervalCartGrad
+        numJogInterval2.Value = CDec(_jogIntervalCartGrad)
+
+        numSpeed.Value = CDec(My.Settings.CtrlSpeed)
+        numAcc.Value = CDec(My.Settings.CtrlAcc)
+
         _refreshJointTcpMode()
         _hideShowServo()
+
+        ' Erst jetzt EventHandler hinzufügen um unnötiges feuern während der Initialisierung zu verhindern
+        AddHandler numSpeed.ValueChanged, AddressOf numSpeed_ValueChanged
+        AddHandler numAcc.ValueChanged, AddressOf numAcc_ValueChanged
+        AddHandler cbJogMode.SelectedIndexChanged, AddressOf cbJogMode_SelectedIndexChanged
+        AddHandler numJogInterval1.ValueChanged, AddressOf numJogInterval1_ValueChanged
+        AddHandler numJogInterval2.ValueChanged, AddressOf numJogInterval2_ValueChanged
 
         AddHandler frmMain.RoboControl.RoboPositionChanged, AddressOf _eNewPos
         AddHandler frmMain.RoboControl.RoboServoChanged, AddressOf _eNewServo
@@ -168,18 +182,20 @@
     End Sub
 
     Private Sub btnJointMode_Click(sender As Object, e As EventArgs) Handles btnJointMode.Click
-        _tcpMode = False
+        _cartMode = False
         btnMoveStart.Visible = Not _moveModeDirect
         _refreshJointTcpMode()
     End Sub
     Private Sub btnTCPMode_Click(sender As Object, e As EventArgs) Handles btnTCPMode.Click
-        _tcpMode = True
+        _cartMode = True
         btnMoveStart.Visible = True
         _refreshJointTcpMode()
     End Sub
-    Private Sub cbJogMode_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbJogMode.SelectedIndexChanged
-        numJogInterval1.DecimalPlaces = If(cbJogMode.SelectedIndex = 0, 1, 0)
-        numJogInterval1.Maximum = If(cbJogMode.SelectedIndex = 0, 100, 10000)
+    Private Sub cbJogMode_SelectedIndexChanged(sender As Object, e As EventArgs) ' Event Handler wird zur Laufzeit hinzugefügt!
+        _jogSteps = cbJogMode.SelectedIndex = 1
+        numJogInterval1.DecimalPlaces = If(_jogSteps, 0, 1)
+        numJogInterval1.Maximum = If(_jogSteps, 10000, 100)
+        numJogInterval1.Value = If(_jogSteps, _jogIntervalJointSteps, CDec(_jogIntervalJointGrad))
     End Sub
     ' Trackbars
     Private Sub tbCtrl1_Scroll(sender As Object, e As EventArgs) Handles tbCtrl1.Scroll
@@ -212,22 +228,22 @@
 
     ' Num UpDowns
     Private Sub numCtrl1_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl1.ValueChanged
-        If Not _tcpMode Then tbCtrl1.Value = CInt(numCtrl1.Value * 100.0)
+        If Not _cartMode Then tbCtrl1.Value = CInt(numCtrl1.Value * 100.0)
     End Sub
     Private Sub numCtrl2_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl2.ValueChanged
-        If Not _tcpMode Then tbCtrl2.Value = CInt(numCtrl2.Value * 100.0)
+        If Not _cartMode Then tbCtrl2.Value = CInt(numCtrl2.Value * 100.0)
     End Sub
     Private Sub numCtrl3_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl3.ValueChanged
-        If Not _tcpMode Then tbCtrl3.Value = CInt(numCtrl3.Value * 100.0)
+        If Not _cartMode Then tbCtrl3.Value = CInt(numCtrl3.Value * 100.0)
     End Sub
     Private Sub numCtrl4_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl4.ValueChanged
-        If Not _tcpMode Then tbCtrl4.Value = CInt(numCtrl4.Value * 100.0)
+        If Not _cartMode Then tbCtrl4.Value = CInt(numCtrl4.Value * 100.0)
     End Sub
     Private Sub numCtrl5_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl5.ValueChanged
-        If Not _tcpMode Then tbCtrl5.Value = CInt(numCtrl5.Value * 100.0)
+        If Not _cartMode Then tbCtrl5.Value = CInt(numCtrl5.Value * 100.0)
     End Sub
     Private Sub numCtrl6_ValueChanged(sender As Object, e As EventArgs) Handles numCtrl6.ValueChanged
-        If Not _tcpMode Then tbCtrl6.Value = CInt(numCtrl6.Value * 100.0)
+        If Not _cartMode Then tbCtrl6.Value = CInt(numCtrl6.Value * 100.0)
     End Sub
     Private Sub numServ1_ValueChanged(sender As Object, e As EventArgs) Handles numServ1.ValueChanged
         tbServ1.Value = CInt(numServ1.Value * 100.0)
@@ -239,44 +255,73 @@
         tbServ3.Value = CInt(numServ3.Value * 100.0)
     End Sub
 
+    ' Jog Interval (Handler wird zur Laufzeit hinzugefügt!)
+    Private Sub numJogInterval1_ValueChanged(sender As Object, e As EventArgs)
+        If _cartMode Then
+            'mm
+            _jogIntervalCartMm = numJogInterval1.Value
+            My.Settings.CtrlJogIntervalCartMm = _jogIntervalCartMm
+        Else
+            If _jogSteps Then
+                'Steps
+                _jogIntervalJointSteps = CInt(numJogInterval1.Value)
+                My.Settings.CtrlJogIntervalJointSteps = _jogIntervalJointSteps
+            Else
+                'Grad
+                _jogIntervalJointGrad = numJogInterval1.Value
+                My.Settings.CtrlJogIntervalJointGrad = _jogIntervalJointGrad
+            End If
+        End If
+    End Sub
+    Private Sub numJogInterval2_ValueChanged(sender As Object, e As EventArgs)
+        _jogIntervalCartGrad = numJogInterval2.Value
+        My.Settings.CtrlJogIntervalCartGrad = _jogIntervalCartGrad
+    End Sub
+
+    Private Sub numSpeed_ValueChanged(sender As Object, e As EventArgs)
+        My.Settings.CtrlSpeed = numSpeed.Value
+    End Sub
+
+    Private Sub numAcc_ValueChanged(sender As Object, e As EventArgs)
+        My.Settings.CtrlAcc = numAcc.Value
+    End Sub
+
     ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
     Private Sub _refreshJointTcpMode()
-        btnJointMode.Visible = _tcpMode
-        btnTCPMode.Visible = Not _tcpMode
+        btnJointMode.Visible = _cartMode
+        btnTCPMode.Visible = Not _cartMode
 
-        lblCtrl1.Text = If(_tcpMode, "X:", "J1:")
-        lblCtrl2.Text = If(_tcpMode, "Y:", "J2:")
-        lblCtrl3.Text = If(_tcpMode, "Z:", "J3:")
-        lblCtrl4.Text = If(_tcpMode, "yaw:", "J4:")
-        lblCtrl5.Text = If(_tcpMode, "pitch:", "J5:")
-        lblCtrl6.Text = If(_tcpMode, "roll:", "J6:")
-        lblCtrl1Unit.Text = If(_tcpMode, "mm", "°")
-        lblCtrl2Unit.Text = If(_tcpMode, "mm", "°")
-        lblCtrl3Unit.Text = If(_tcpMode, "mm", "°")
+        lblCtrl1.Text = If(_cartMode, "X:", "J1:")
+        lblCtrl2.Text = If(_cartMode, "Y:", "J2:")
+        lblCtrl3.Text = If(_cartMode, "Z:", "J3:")
+        lblCtrl4.Text = If(_cartMode, "yaw:", "J4:")
+        lblCtrl5.Text = If(_cartMode, "pitch:", "J5:")
+        lblCtrl6.Text = If(_cartMode, "roll:", "J6:")
+        lblCtrl1Unit.Text = If(_cartMode, "mm", "°")
+        lblCtrl2Unit.Text = If(_cartMode, "mm", "°")
+        lblCtrl3Unit.Text = If(_cartMode, "mm", "°")
 
-        cbJogMode.Visible = Not _tcpMode
-        lblMove.Visible = Not _tcpMode
-        cbMoveMode.Visible = Not _tcpMode
-        numJogInterval2.Visible = _tcpMode
-        lblUnitDeg.Visible = _tcpMode
-        lblUnitMm.Visible = _tcpMode
+        cbJogMode.Visible = Not _cartMode
+        lblMove.Visible = Not _cartMode
+        cbMoveMode.Visible = Not _cartMode
+        numJogInterval2.Visible = _cartMode
+        lblUnitDeg.Visible = _cartMode
+        lblUnitMm.Visible = _cartMode
 
-        tbCtrl1.Visible = Not _tcpMode
-        tbCtrl2.Visible = Not _tcpMode
-        tbCtrl3.Visible = Not _tcpMode
-        tbCtrl4.Visible = Not _tcpMode
-        tbCtrl5.Visible = Not _tcpMode
-        tbCtrl6.Visible = Not _tcpMode
-        tbServ1.Visible = Not _tcpMode
-        tbServ2.Visible = Not _tcpMode
-        tbServ3.Visible = Not _tcpMode
-        TableLayoutPanel.ColumnStyles(3).Width = If(_tcpMode, 0, 60)
+        tbCtrl1.Visible = Not _cartMode
+        tbCtrl2.Visible = Not _cartMode
+        tbCtrl3.Visible = Not _cartMode
+        tbCtrl4.Visible = Not _cartMode
+        tbCtrl5.Visible = Not _cartMode
+        tbCtrl6.Visible = Not _cartMode
+        tbServ1.Visible = Not _cartMode
+        tbServ2.Visible = Not _cartMode
+        tbServ3.Visible = Not _cartMode
+        TableLayoutPanel.ColumnStyles(3).Width = If(_cartMode, 0, 60)
 
-        ' TODO: alten Jog-Interval für jeden Mode speicher und wiederherstellen
-        ' das gleiche auch mit Geschwindigkeit und Beschleunigung!
-        numJogInterval1.Value = If(_tcpMode, 20, 5)
+        numJogInterval1.Value = If(_cartMode, CDec(_jogIntervalCartMm), If(_jogSteps, _jogIntervalJointSteps, CDec(_jogIntervalJointGrad)))
 
         'Min/Max Werte aktualisieren
         _setMinMaxValues()
@@ -286,7 +331,7 @@
         _enableDisableElements()
     End Sub
     Private Sub _setMinMaxValues()
-        If _tcpMode Then
+        If _cartMode Then
             numCtrl1.Minimum = -1000
             numCtrl1.Maximum = 2000
             numCtrl2.Minimum = -1000
@@ -361,7 +406,7 @@
 
         Dim tmpEnabled As Boolean
         ' Im TCP Mode nur aktiv, wenn alle Achsen referenziert sind!
-        tmpEnabled = SerialConnected And Not RobotBusy And Not ProgramRunning And (frmMain.RoboControl.AllRefOkay Or Not _tcpMode)
+        tmpEnabled = SerialConnected And Not RobotBusy And Not ProgramRunning And (frmMain.RoboControl.AllRefOkay Or Not _cartMode)
 
         btnCtrl1Dec.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(0)
         btnCtrl1Inc.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(0)
@@ -427,7 +472,7 @@
         End If
 
         If _posReceived And Not srv Then ' Nur wenn es welche gibt
-            If _tcpMode Then
+            If _cartMode Then
                 numCtrl1.Value = CDec(frmMain.RoboControl.PosCart.X)
                 numCtrl2.Value = CDec(frmMain.RoboControl.PosCart.Y)
                 numCtrl3.Value = CDec(frmMain.RoboControl.PosCart.Z)
@@ -487,7 +532,7 @@
         End If
 
         _setSpeedAndAcc()
-        If _tcpMode Then
+        If _cartMode Then
             frmMain.RoboControl.DoTCPMov(numCtrl1.Value, numCtrl2.Value, numCtrl3.Value, numCtrl4.Value, numCtrl5.Value, numCtrl6.Value)
         Else
             frmMain.RoboControl.DoJointMov(True, numCtrl1.Value, numCtrl2.Value, numCtrl3.Value, numCtrl4.Value, numCtrl5.Value, numCtrl6.Value)
@@ -497,7 +542,7 @@
         Dim jogInt1 As Double = If(neg, numJogInterval1.Value * -1, numJogInterval1.Value)
         Dim jogInt2 As Double = If(neg, numJogInterval2.Value * -1, numJogInterval2.Value)
         _setSpeedAndAcc()
-        If _tcpMode Then
+        If _cartMode Then
             If nr <= 3 Then
                 'mm
                 frmMain.RoboControl.DoJogCart(nr, jogInt1)
@@ -506,12 +551,12 @@
                 frmMain.RoboControl.DoJogCart(nr, jogInt2)
             End If
         Else
-            If cbJogMode.SelectedIndex = 0 Then
-                ' Degree
-                frmMain.RoboControl.DoJog(nr, jogInt1)
-            Else
+            If _jogSteps Then
                 ' Steps
                 frmMain.RoboControl.DoJog(nr, CInt(jogInt1))
+            Else
+                ' Degree
+                frmMain.RoboControl.DoJog(nr, jogInt1)
             End If
         End If
     End Sub

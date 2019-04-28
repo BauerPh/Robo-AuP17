@@ -235,6 +235,7 @@ Public Class frmMain
     Private Sub msSaveView_Click(sender As Object, e As EventArgs) Handles msSaveView.Click
         dckPanel.SaveAsXml(_viewSettingsFilename)
         My.Settings.StartMaximized = (WindowState = FormWindowState.Maximized)
+        ShowStatusStripHint("Aktuelle Ansicht wurde gespeichert...")
         _logger.Log("[MAIN] aktuelle Ansicht wurde gespeichert...", Logger.LogLevel.INFO)
     End Sub
 
@@ -243,6 +244,18 @@ Public Class frmMain
         My.Settings.StartMaximized = False
         MessageBox.Show("Standardansicht wurde wiederhergestellt. Neustart erforderlich!", "Okay", MessageBoxButtons.OK, MessageBoxIcon.Information)
         _logger.Log("[MAIN] Standardansicht wurde wiederhergestellt. Neustart erforderlich!", Logger.LogLevel.INFO)
+    End Sub
+#End Region
+
+#Region "MenuStrip Extras"
+    Private Sub msResetSettings_Click(sender As Object, e As EventArgs) Handles msResetSettings.Click
+        Dim startMaximizedSave As Boolean = My.Settings.StartMaximized
+        My.Settings.Reset()
+        My.Settings.StartMaximized = startMaximizedSave
+        My.Settings.Save()
+        ShowStatusStripHint("Anwendungseinstellungen wurden zurückgesetzt...")
+        Log("[MAIN] Anwendungseinstellungen wurden zurückgesetzt", Logger.LogLevel.INFO)
+        Show()
     End Sub
 #End Region
 
