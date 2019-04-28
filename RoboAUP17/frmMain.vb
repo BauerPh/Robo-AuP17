@@ -13,8 +13,8 @@ Public Class frmMain
     ' Konstanten
     Private Const _ssHintTimerInterval As Int32 = 4000
     Private Const _viewSettingsFilename As String = "ViewSettings.xml"
-    Private Const _gitHubUrl As String = "https://github.com/BauerPh/RoboAUP17"
-    Private Const _gitHubUrlArduinoFirmware As String = "https://github.com/BauerPh/RoboAUP17_Arduino"
+    Private Const _gitHubUrl As String = "https://github.com/BauerPh/Robo-AuP17"
+    Private Const _gitHubUrlArduinoFirmware As String = "https://github.com/BauerPh/Robo-AuP17_Arduino"
 
     ' DockPanel
     Friend dckPanel As New DockPanel
