@@ -124,6 +124,12 @@
     Private Sub btnServ3Dec_Click(sender As Object, e As EventArgs) Handles btnServ3Dec.Click
         _doJogServo(3, numServ3, -numJogInterval1.Value)
     End Sub
+    Private Sub btnHome_Click(sender As Object, e As EventArgs) Handles btnHome.Click
+        frmMain.RoboControl.DoHome(True)
+    End Sub
+    Private Sub btnPark_Click(sender As Object, e As EventArgs) Handles btnPark.Click
+        frmMain.RoboControl.DoPark(True)
+    End Sub
 
     ' -----------------------------------------------------------------------------
     ' Form Control
@@ -380,6 +386,10 @@
         numCtrl6.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(5) And Not _moveModeDirect
         tbCtrl6.Enabled = tmpEnabled And frmMain.RoboControl.RefOkay(5)
 
+        ' Home und Park Button
+        btnHome.Enabled = tmpEnabled And frmMain.RoboControl.AllRefOkay
+        btnPark.Enabled = tmpEnabled And frmMain.RoboControl.AllRefOkay
+
         ' Start Button (Sichtbar wenn mindestens eine Achse referenziert ist)
         If tmpEnabled Then
             tmpEnabled = False
@@ -561,5 +571,4 @@
             _doMove()
         End If
     End Sub
-
 End Class

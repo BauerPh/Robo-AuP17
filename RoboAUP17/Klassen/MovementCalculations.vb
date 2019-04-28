@@ -55,14 +55,6 @@
 
         'Zeiten berechnen
         t = _calcMaxTimes(_v_min, _v_max, _a_max)
-        'Prüfen ob Zeit = 0
-        'If t.t_ac = 0 Then
-        '    For i = 0 To 5
-        '        _a(i) = 0
-        '        _v(i) = 0
-        '    Next
-        '    Return False
-        'End If
         'Geschwindigkeit und Beschleunigung berechnen
         p = _calcProfile(t, _v_min)
         If p.limit Then ' p.limit wird True wenn max V oder max A überschritten wurden

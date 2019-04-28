@@ -16,16 +16,8 @@ Public Class TCPCommunication
     Private _ip As Net.IPAddress
     Private _port As Integer
     Private _host As String
-    Private _msgEnding As String = vbCrLf
+    Friend Property MessageEndString As String = vbCrLf
 
-    Friend Property MessageEndString As String
-        Get
-            Return _msgEnding
-        End Get
-        Set(value As String)
-            _msgEnding = value
-        End Set
-    End Property
 
     Friend Event ListenerClientConnected()
     Friend Event ListenerClientDisconnected()
@@ -41,7 +33,7 @@ Public Class TCPCommunication
 
     End Sub
     Friend Sub New(endString As String)
-        _msgEnding = endString
+        _MessageEndString = endString
     End Sub
     Friend Function Listen(port As Integer) As Boolean
         If _connected Or _client Then Return False
@@ -180,8 +172,8 @@ Public Class TCPCommunication
                     While Not _networkStreamR.EndOfStream
                         Dim c As Char = ChrW(_networkStreamR.Read)
                         msg &= c
-                        If msg.EndsWith(_msgEnding) Then
-                            RaiseEvent MessageReceived(msg.Substring(0, msg.Length - _msgEnding.Length))
+                        If msg.EndsWith(_MessageEndString) Then
+                            RaiseEvent MessageReceived(msg.Substring(0, msg.Length - _MessageEndString.Length))
                             msg = ""
                         End If
                     End While

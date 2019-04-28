@@ -3,16 +3,16 @@
     ' Definitions
     ' -----------------------------------------------------------------------------
     Private Const cDefaultConfigFile As String = "RoboParameterDefault.xml"
-    Private _configFileLoaded As Boolean = False
-
     Private _actFilename As String
     Private _jointParameter(5) As JointParameter
     Private _servoParameter(2) As ServoParameter
     Private _denavitHartenbergParameter(5) As DHParameter
-    Private _toolframe As CartCoords
-    Private _workframe As CartCoords
-    Private _tcpServerParameter As TCPServerParameter
-    Private _unsavedChanges As Boolean = False
+
+    Public ReadOnly Property ConfigFileLoaded As Boolean = False
+    Public ReadOnly Property UnsavedChanges As Boolean = False
+    Friend ReadOnly Property Toolframe As CartCoords
+    Friend ReadOnly Property Workframe As CartCoords
+    Friend ReadOnly Property TcpServerParameter As TCPServerParameter
 
     ' Properties
     Friend ReadOnly Property JointParameter As JointParameter()
@@ -28,31 +28,6 @@
     Friend ReadOnly Property DenavitHartenbergParameter As DHParameter()
         Get
             Return _denavitHartenbergParameter
-        End Get
-    End Property
-    Friend ReadOnly Property Toolframe As CartCoords
-        Get
-            Return _toolframe
-        End Get
-    End Property
-    Friend ReadOnly Property Workframe As CartCoords
-        Get
-            Return _workframe
-        End Get
-    End Property
-    Friend ReadOnly Property TCPServerParameter As TCPServerParameter
-        Get
-            Return _tcpServerParameter
-        End Get
-    End Property
-    Public ReadOnly Property ConfigFileLoaded As Boolean
-        Get
-            Return _configFileLoaded
-        End Get
-    End Property
-    Public ReadOnly Property UnsavedChanges As Boolean
-        Get
-            Return _unsavedChanges
         End Get
     End Property
 
@@ -75,7 +50,7 @@
     Friend Sub New()
         'Lade letzte geöffnete Datei, wenn vorhanden!
         If _XMLReader(My.Settings.LastConfigFile) Then
-            _configFileLoaded = True
+            _ConfigFileLoaded = True
             _actFilename = My.Settings.LastConfigFile
         Else
             If My.Settings.LastConfigFile.Length > 0 Then
@@ -95,32 +70,32 @@
     ' -----------------------------------------------------------------------------
     Friend Sub SetJointParameter(index As Integer, jointParameter As JointParameter)
         _jointParameter(index) = jointParameter
-        _unsavedChanges = True
+        _UnsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.Joint)
     End Sub
     Friend Sub SetServoParameter(index As Integer, servoParameter As ServoParameter)
         _servoParameter(index) = servoParameter
-        _unsavedChanges = True
+        _UnsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.Servo)
     End Sub
     Friend Sub SetDenavitHartenbergParameter(index As Integer, dhParameter As DHParameter)
         _denavitHartenbergParameter(index) = dhParameter
-        _unsavedChanges = True
+        _UnsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.DenavitHartenbergParameter)
     End Sub
     Friend Sub SetToolframe(toolframe As CartCoords)
-        _toolframe = toolframe
-        _unsavedChanges = True
+        _Toolframe = toolframe
+        _UnsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.Toolframe)
     End Sub
     Friend Sub SetWorkframe(workframe As CartCoords)
-        _workframe = workframe
-        _unsavedChanges = True
+        _Workframe = workframe
+        _UnsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.Workframe)
     End Sub
     Friend Sub SetTCPServerParameter(tcpServerParameter As TCPServerParameter)
-        _tcpServerParameter = tcpServerParameter
-        _unsavedChanges = True
+        _TcpServerParameter = tcpServerParameter
+        _UnsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.TCPServerParameter)
     End Sub
     Friend Function LoadDefaulSettings() As Boolean
@@ -131,8 +106,8 @@
             _actFilename = cDefaultConfigFile
             RaiseEvent ParameterChanged(ParameterChangedParameter.All)
             RaiseEvent Log($"[Parameter] Standardparameter geladen", Logger.LogLevel.ERR)
-            _configFileLoaded = True
-            _unsavedChanges = False
+            _ConfigFileLoaded = True
+            _UnsavedChanges = False
             Return True
         Else
             Return False
@@ -150,8 +125,8 @@
                 _actFilename = openFileDialog.FileName
                 RaiseEvent ParameterChanged(ParameterChangedParameter.All)
                 RaiseEvent Log("[Parameter] Parameterdatei geladen", Logger.LogLevel.INFO)
-                _configFileLoaded = True
-                _unsavedChanges = False
+                _ConfigFileLoaded = True
+                _UnsavedChanges = False
                 Return True
             Catch e As Exception
                 RaiseEvent Log($"[Parameter] Laden fehlgeschlagen, Fehler: {e.Message}", Logger.LogLevel.ERR)
@@ -172,7 +147,7 @@
                 My.Settings.Save()
                 _actFilename = saveFileDialog.FileName
                 RaiseEvent Log("[Parameter] Parameterdatei gespeichert", Logger.LogLevel.INFO)
-                _unsavedChanges = False
+                _UnsavedChanges = False
                 Return True
             Catch e As Exception
                 RaiseEvent Log($"[Parameter] Speichern fehlgeschlagen, Fehler: {e.Message}", Logger.LogLevel.ERR)
@@ -259,26 +234,26 @@
                 Next
                 'Toolframe
                 .WriteStartElement("toolframe")
-                .WriteAttributeString("x", _toolframe.X.ToString)
-                .WriteAttributeString("y", _toolframe.Y.ToString)
-                .WriteAttributeString("z", _toolframe.Z.ToString)
-                .WriteAttributeString("yaw", _toolframe.Yaw.ToString)
-                .WriteAttributeString("pitch", _toolframe.Pitch.ToString)
-                .WriteAttributeString("roll", _toolframe.Roll.ToString)
+                .WriteAttributeString("x", _Toolframe.X.ToString)
+                .WriteAttributeString("y", _Toolframe.Y.ToString)
+                .WriteAttributeString("z", _Toolframe.Z.ToString)
+                .WriteAttributeString("yaw", _Toolframe.Yaw.ToString)
+                .WriteAttributeString("pitch", _Toolframe.Pitch.ToString)
+                .WriteAttributeString("roll", _Toolframe.Roll.ToString)
                 .WriteEndElement()
                 'Workframe
                 .WriteStartElement("workframe")
-                .WriteAttributeString("x", _workframe.X.ToString)
-                .WriteAttributeString("y", _workframe.Y.ToString)
-                .WriteAttributeString("z", _workframe.Z.ToString)
-                .WriteAttributeString("yaw", _workframe.Yaw.ToString)
-                .WriteAttributeString("pitch", _workframe.Pitch.ToString)
-                .WriteAttributeString("roll", _workframe.Roll.ToString)
+                .WriteAttributeString("x", _Workframe.X.ToString)
+                .WriteAttributeString("y", _Workframe.Y.ToString)
+                .WriteAttributeString("z", _Workframe.Z.ToString)
+                .WriteAttributeString("yaw", _Workframe.Yaw.ToString)
+                .WriteAttributeString("pitch", _Workframe.Pitch.ToString)
+                .WriteAttributeString("roll", _Workframe.Roll.ToString)
                 .WriteEndElement()
                 'TCP
                 .WriteStartElement("tcpServerParameter")
-                .WriteAttributeString("listen", _tcpServerParameter.Listen.ToString)
-                .WriteAttributeString("port", _tcpServerParameter.Port.ToString)
+                .WriteAttributeString("listen", _TcpServerParameter.Listen.ToString)
+                .WriteAttributeString("port", _TcpServerParameter.Port.ToString)
                 .WriteEndElement()
                 'Settings
                 .WriteEndElement()
@@ -399,41 +374,41 @@
                                     '********** WORKFRAME **********
                                     Select Case .Name
                                         Case "x"
-                                            _toolframe.X = CDbl(.Value)
+                                            _Toolframe.X = CDbl(.Value)
                                         Case "y"
-                                            _toolframe.Y = CDbl(.Value)
+                                            _Toolframe.Y = CDbl(.Value)
                                         Case "z"
-                                            _toolframe.Z = CDbl(.Value)
+                                            _Toolframe.Z = CDbl(.Value)
                                         Case "yaw"
-                                            _toolframe.Yaw = CDbl(.Value)
+                                            _Toolframe.Yaw = CDbl(.Value)
                                         Case "pitch"
-                                            _toolframe.Pitch = CDbl(.Value)
+                                            _Toolframe.Pitch = CDbl(.Value)
                                         Case "roll"
-                                            _toolframe.Roll = CDbl(.Value)
+                                            _Toolframe.Roll = CDbl(.Value)
                                     End Select
                                 ElseIf setting = 4 Then
                                     '********** TOOLFRAME **********
                                     Select Case .Name
                                         Case "x"
-                                            _workframe.X = CDbl(.Value)
+                                            _Workframe.X = CDbl(.Value)
                                         Case "y"
-                                            _workframe.Y = CDbl(.Value)
+                                            _Workframe.Y = CDbl(.Value)
                                         Case "z"
-                                            _workframe.Z = CDbl(.Value)
+                                            _Workframe.Z = CDbl(.Value)
                                         Case "yaw"
-                                            _workframe.Yaw = CDbl(.Value)
+                                            _Workframe.Yaw = CDbl(.Value)
                                         Case "pitch"
-                                            _workframe.Pitch = CDbl(.Value)
+                                            _Workframe.Pitch = CDbl(.Value)
                                         Case "roll"
-                                            _workframe.Roll = CDbl(.Value)
+                                            _Workframe.Roll = CDbl(.Value)
                                     End Select
                                 ElseIf setting = 5 Then
                                     '********** TCP Server Parameter **********
                                     Select Case .Name
                                         Case "listen"
-                                            _tcpServerParameter.Listen = CBool(.Value)
+                                            _TcpServerParameter.Listen = CBool(.Value)
                                         Case "port"
-                                            _tcpServerParameter.Port = CInt(.Value)
+                                            _TcpServerParameter.Port = CInt(.Value)
                                     End Select
                                 End If
                             End While

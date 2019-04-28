@@ -101,7 +101,7 @@ Public Class frmMain
 
         'Pass RoboControl Object to ACLProgram Object
         _aclProgram.SetRoboControlObject(_roboControl)
-        _aclProgram.Init()
+        _aclProgram.Init(numSpeed.Value, numAcc.Value)
 
         'Welcome Log
         ShowStatusStripHint("Anwendung gestartet...")
@@ -147,11 +147,11 @@ Public Class frmMain
     ' ACL Program
     Private Sub tsBtnProgCheck_Click(sender As Object, e As EventArgs) Handles tsBtnProgCheck.Click
         _dckPanCodeEditor.RemoveMarker()
-        _aclProgram.CompileProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
+        _aclProgram.CompileProgram(_dckPanCodeEditor.sciCodeEditor.Text)
     End Sub
     Private Sub tsBtnProgRun_Click(sender As Object, e As EventArgs) Handles tsBtnProgRun.Click
         _dckPanCodeEditor.RemoveMarker()
-        _aclProgram.RunProgram(_dckPanCodeEditor.sciCodeEditor.Text, numAcc.Value, numSpeed.Value)
+        _aclProgram.RunProgram(_dckPanCodeEditor.sciCodeEditor.Text)
     End Sub
     Private Sub tsBtnProgStop_Click(sender As Object, e As EventArgs) Handles tsBtnProgStop.Click
         tsBtnProgStop.Enabled = False
@@ -170,6 +170,12 @@ Public Class frmMain
                 _updateUndoRedoButtons()
             End If
         End If
+    End Sub
+    Private Sub numSpeed_ValueChanged(sender As Object, e As EventArgs) Handles numSpeed.ValueChanged
+        _aclProgram.MaxSpeed = numSpeed.Value
+    End Sub
+    Private Sub numAcc_ValueChanged(sender As Object, e As EventArgs) Handles numAcc.ValueChanged
+        _aclProgram.MaxAcc = numAcc.Value
     End Sub
 #End Region
 
@@ -577,6 +583,10 @@ Public Class frmMain
     End Sub
 
     ' ACL-Program
+    Private Sub _eProgramUpdated() Handles _aclProgram.ProgramUpdatedEvent
+        numSpeed.Value = CDec(_aclProgram.MaxSpeed)
+        numAcc.Value = CDec(_aclProgram.MaxAcc)
+    End Sub
     Private Sub _eDoJointMove(jointAngles As JointAngles, acc As Double, speed As Double) Handles _aclProgram.DoJointMove
         _roboControl.SetSpeedAndAcc(speed, acc)
         _roboControl.DoJointMov(True, jointAngles)
@@ -621,5 +631,4 @@ Public Class frmMain
         tsLblTcpServerStatus.Text = "getrennt"
         tsLblTcpServerStatus.ForeColor = Color.Red
     End Sub
-
 End Class

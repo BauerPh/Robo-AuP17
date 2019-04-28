@@ -9,7 +9,7 @@
         AddHandler frmMain.ACLProgram.TcpVariables.Disconnected, AddressOf _eDisconnected
         AddHandler frmMain.ACLProgram.TcpVariables.VariableChanged, AddressOf _eVariableChanged
         AddHandler frmMain.RoboControl.RoboParameterChanged, AddressOf _eRoboParameterChanged
-        AddHandler frmMain.ACLProgram.ProgramUpdatedEvent, AddressOf _eNewFileLoaded
+        AddHandler frmMain.ACLProgram.ProgramUpdatedEvent, AddressOf _eProgramUpdated
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -85,7 +85,7 @@
             End If
         End If
     End Sub
-    Private Sub _eNewFileLoaded()
+    Private Sub _eProgramUpdated()
         _refreshDataGridView()
     End Sub
 End Class

@@ -25,15 +25,9 @@ Friend Class ACLProgram
     Private _forceStopProgram As Boolean = False
 
     Private _filename As String = Nothing
-    Private _unsavedChanges As Boolean = False
-    Friend Property UnsavedChanges As Boolean
-        Get
-            Return _unsavedChanges
-        End Get
-        Set(value As Boolean)
-            _unsavedChanges = value
-        End Set
-    End Property
+    Public Property UnsavedChanges As Boolean = False
+    Public Property MaxSpeed As Double
+    Public Property MaxAcc As Double
 
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
     Friend Event DoJointMove(ByVal jointAngles As JointAngles, acc As Double, speed As Double)
@@ -53,10 +47,14 @@ Friend Class ACLProgram
     ' Public
     ' -----------------------------------------------------------------------------
 #Region "Allgemein"
-    Friend Sub Init()
+    Friend Sub Init(Optional maxSpeed As Double = -1, Optional maxAcc As Double = -1)
         TcpVariables.TerminateConnection()
         If _robotControl.Pref.TCPServerParameter.Listen Then
             TcpVariables.Listen(_robotControl.Pref.TCPServerParameter.Port)
+        End If
+        If maxSpeed > 0 And maxAcc > 0 Then
+            _MaxSpeed = maxSpeed
+            _MaxAcc = maxAcc
         End If
     End Sub
     Friend Sub SetRoboControlObject(ByRef roboControl As RobotControl)
@@ -71,7 +69,7 @@ Friend Class ACLProgram
     End Sub
     Friend Sub CheckUnsavedChanges(prog As String)
         If _savedProgram <> prog Then
-            _unsavedChanges = True
+            _UnsavedChanges = True
         End If
     End Sub
 #End Region
@@ -126,7 +124,7 @@ Friend Class ACLProgram
                 Dim selIndex As Int32 = _listBox.SelectedIndex + indexVal
                 _printTeachpointToListBox()
                 _listBox.SelectedIndex = selIndex
-                _unsavedChanges = True
+                _UnsavedChanges = True
             End If
         End If
     End Sub
@@ -143,7 +141,7 @@ Friend Class ACLProgram
             _printTeachpointToListBox()
             If selIndex < 0 And _listBox.Items.Count > 0 Then selIndex = 0
             _listBox.SelectedIndex = selIndex
-            _unsavedChanges = True
+            _UnsavedChanges = True
             RaiseEvent Log($"[ACL] Teachpunkt {tpNr} wurde gelöscht!", Logger.LogLevel.INFO)
         End If
     End Sub
@@ -165,7 +163,7 @@ Friend Class ACLProgram
             _teachPoints.Sort()
             'und ausgeben
             _printTeachpointToListBox()
-            _unsavedChanges = True
+            _UnsavedChanges = True
         End If
     End Sub
 
@@ -176,11 +174,11 @@ Friend Class ACLProgram
 #End Region
 
 #Region "ACL-Programm"
-    Friend Function CompileProgram(input As String, acc As Double, speed As Double) As Boolean
-        Return _compileProgram(input, acc, speed)
+    Friend Function CompileProgram(input As String) As Boolean
+        Return _compileProgram(input)
     End Function
-    Friend Sub RunProgram(input As String, acc As Double, speed As Double)
-        If _compileProgram(input, acc, speed) Then
+    Friend Sub RunProgram(input As String)
+        If _compileProgram(input) Then
             ' Runtime Teachpoints nochmals kopieren
             _runtimeTeachPoints = _teachPoints.Select(Function(item) item.GetRuntimeTeachPoint()).ToList()
             ' Los gehts!
@@ -225,6 +223,8 @@ Friend Class ACLProgram
         End If
 
         Using objStreamWriter As New StreamWriter(tmpFilename)
+            'Max Speed / Acc
+            objStreamWriter.WriteLine($"<maxSpeedAcc>;{_MaxSpeed};{_MaxAcc}")
             'Teachpunkte
             For Each tp As TeachPoint In _teachPoints
                 objStreamWriter.Write($"<tp>;{tp.nr};{tp.name};{tp.type}")
@@ -249,7 +249,7 @@ Friend Class ACLProgram
             objStreamWriter.Close()
         End Using
         _filename = tmpFilename
-        _unsavedChanges = False
+        _UnsavedChanges = False
         _savedProgram = prog
         Return True
     End Function
@@ -272,7 +272,11 @@ Friend Class ACLProgram
                         strLine = objStreamReader.ReadLine
                         If Not strLine Is Nothing Then
                             Dim tmpSplit As String() = strLine.Split(";"c)
-                            If tmpSplit(0) = "<tp>" Then
+                            If tmpSplit(0) = "<maxSpeedAcc>" Then
+                                'maxSpeed maxAcc
+                                _MaxSpeed = CDbl(tmpSplit(1))
+                                _MaxAcc = CDbl(tmpSplit(2))
+                            ElseIf tmpSplit(0) = "<tp>" Then
                                 'TeachPunkt
                                 Dim item As New TeachPoint
                                 item.nr = CInt(tmpSplit(1))
@@ -300,7 +304,7 @@ Friend Class ACLProgram
 
                     _printTeachpointToListBox()
                     _filename = openFileDialog.FileName
-                    _unsavedChanges = False
+                    _UnsavedChanges = False
                     _savedProgram = prog
                     RaiseEvent ProgramUpdatedEvent()
                 Catch ex As Exception
@@ -339,7 +343,7 @@ Friend Class ACLProgram
         End If
         _printTeachpointToListBox()
         _listBox.SelectedIndex = _listBox.Items.Count - 1
-        _unsavedChanges = True
+        _UnsavedChanges = True
         RaiseEvent Log($"[ACL] Teachpunkt {tp.nr} hinzugefügt!", Logger.LogLevel.INFO)
         Return True
     End Function
@@ -354,7 +358,7 @@ Friend Class ACLProgram
 #End Region
 
 #Region "ACL-Programm"
-    Private Function _compileProgram(input As String, acc As Double, speed As Double) As Boolean
+    Private Function _compileProgram(input As String) As Boolean
         RaiseEvent Log("[ACL] erstelle Programm...", Logger.LogLevel.INFO)
         _programSyntaxOkay = True
         ' Erstelle Input Stream
@@ -378,7 +382,7 @@ Friend Class ACLProgram
         If _programSyntaxOkay Then
             ' Teachpoints kopieren (deep copy!)
             _runtimeTeachPoints = _teachPoints.Select(Function(item) item.GetRuntimeTeachPoint()).ToList()
-            Dim aclListener As New _ACLListener(_runtimeTeachPoints, TcpVariables, _progList, acc, speed) ' Eigentlicher Compiler
+            Dim aclListener As New _ACLListener(_runtimeTeachPoints, TcpVariables, _progList, _MaxAcc, _MaxSpeed) ' Eigentlicher Compiler
             AddHandler aclListener.CompileErrorEvent, AddressOf _eCompileError
             _programCompiled = True
             _progList.Clear()
