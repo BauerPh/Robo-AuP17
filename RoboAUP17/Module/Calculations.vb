@@ -1,10 +1,17 @@
 ﻿Module Calculations
     Friend Function AngleToSteps(angle As Double, motGear As Double, mechGear As Double, stepsPerRot As Int32, angleZeroOff As Double) As Int32
-        Return CInt(Math.Truncate(stepsPerRot * motGear * mechGear * (angle + angleZeroOff) / 360.0))
+        Return CInt(Math.Round(stepsPerRot * motGear * mechGear * (angle + angleZeroOff) / 360.0))
     End Function
 
-    Friend Function StepsToAngle(steps As Int32, motGear As Double, mechGear As Double, stepsPerRot As Int32, angleZeroOff As Double) As Double
-        Return Math.Round(CDec(steps) / stepsPerRot * 360.0 / motGear / mechGear - angleZeroOff, 2)
+    Friend Function StepsToAngle(steps As Int32, motGear As Double, mechGear As Double, stepsPerRot As Int32, angleZeroOff As Double, min As Double, max As Double) As Double
+        Dim val As Double = CDec(steps) / stepsPerRot * 360.0 / motGear / mechGear - angleZeroOff
+        If val > max Then
+            Return RoundDown(val, 2)
+        ElseIf val < min Then
+            Return RoundUp(val, 2)
+        Else
+            Return Math.Round(val, 2)
+        End If
     End Function
 
     Friend Function RoundUp(ByVal d As Double, ByVal digits As UInt16) As Double

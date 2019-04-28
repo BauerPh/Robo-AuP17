@@ -125,9 +125,11 @@
         _doJogServo(3, numServ3, -numJogInterval1.Value)
     End Sub
     Private Sub btnHome_Click(sender As Object, e As EventArgs) Handles btnHome.Click
+        _setSpeedAndAcc()
         frmMain.RoboControl.DoHome(True)
     End Sub
     Private Sub btnPark_Click(sender As Object, e As EventArgs) Handles btnPark.Click
+        _setSpeedAndAcc()
         frmMain.RoboControl.DoPark(True)
     End Sub
 

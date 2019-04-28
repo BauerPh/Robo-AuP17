@@ -156,7 +156,8 @@ Friend Class RobotControl
     ' Jog Steps
     Friend Function DoJog(nr As Int32, jogval As Int32) As Boolean
         'Jog steps
-        Dim tmpJogval As Double = StepsToAngle(jogval, _pref.JointParameter(nr - 1).MotGear, _pref.JointParameter(nr - 1).MechGear, _pref.JointParameter(nr - 1).MotStepsPerRot << _pref.JointParameter(nr - 1).MotMode, 0)
+        Dim index As Integer = nr - 1
+        Dim tmpJogval As Double = StepsToAngle(jogval, _pref.JointParameter(index).MotGear, _pref.JointParameter(index).MechGear, _pref.JointParameter(index).MotStepsPerRot << _pref.JointParameter(index).MotMode, 0, _pref.JointParameter(index).MechMinAngle, _pref.JointParameter(index).MechMaxAngle)
         'Datensatz zusammenstellen
         Return DoJog(nr, tmpJogval)
     End Function
@@ -394,7 +395,7 @@ Friend Class RobotControl
 
     Private Function _calcStepsToJointAngle(steps As Int32, nr As Int32) As Double
         Dim tmpNr As Int32 = nr - 1
-        Return StepsToAngle(If(_pref.JointParameter(tmpNr).MotDir = 1, -1, 1) * steps, _pref.JointParameter(tmpNr).MotGear, _pref.JointParameter(tmpNr).MechGear, _pref.JointParameter(tmpNr).MotStepsPerRot << _pref.JointParameter(tmpNr).MotMode, If(_pref.JointParameter(tmpNr).CalDir = 0, _pref.JointParameter(tmpNr).MechMinAngle * -1, _pref.JointParameter(tmpNr).MechMaxAngle * -1))
+        Return StepsToAngle(If(_pref.JointParameter(tmpNr).MotDir = 1, -1, 1) * steps, _pref.JointParameter(tmpNr).MotGear, _pref.JointParameter(tmpNr).MechGear, _pref.JointParameter(tmpNr).MotStepsPerRot << _pref.JointParameter(tmpNr).MotMode, If(_pref.JointParameter(tmpNr).CalDir = 0, _pref.JointParameter(tmpNr).MechMinAngle * -1, _pref.JointParameter(tmpNr).MechMaxAngle * -1), _pref.JointParameter(tmpNr).MechMinAngle, _pref.JointParameter(tmpNr).MechMaxAngle)
     End Function
 
     Private Function _calcSpeedAccToSteps(speedAcc As Double, nr As Int32) As Int32
