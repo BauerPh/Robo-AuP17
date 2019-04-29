@@ -338,12 +338,12 @@ Friend Class panCtrl
             numCtrl2.Maximum = 2000
             numCtrl3.Minimum = -1000
             numCtrl3.Maximum = 2000
-            numCtrl4.Minimum = -360
-            numCtrl4.Maximum = 360
-            numCtrl5.Minimum = -360
-            numCtrl5.Maximum = 360
-            numCtrl6.Minimum = -360
-            numCtrl6.Maximum = 360
+            numCtrl4.Minimum = -180
+            numCtrl4.Maximum = 180
+            numCtrl5.Minimum = -180
+            numCtrl5.Maximum = 180
+            numCtrl6.Minimum = -180
+            numCtrl6.Maximum = 180
         Else
             With frmMain.RoboControl.Pref
                 'Slider min/max

@@ -173,11 +173,14 @@ Friend Class RobotControl
             Case 3
                 cartCoords.Z = cartCoords.Z + jogval
             Case 4
-                cartCoords.Yaw = cartCoords.Yaw + jogval
+                Dim newYaw = cartCoords.Yaw + jogval
+                cartCoords.Yaw = If(newYaw > 180, newYaw - 360, If(newYaw < -180, newYaw + 360, newYaw))
             Case 5
-                cartCoords.Pitch = cartCoords.Pitch + jogval
+                Dim newPitch = cartCoords.Pitch + jogval
+                cartCoords.Pitch = If(newPitch > 180, newPitch - 360, If(newPitch < -180, newPitch + 360, newPitch))
             Case 6
-                cartCoords.Roll = cartCoords.Roll + jogval
+                Dim newRoll = cartCoords.Roll + jogval
+                cartCoords.Roll = If(newRoll > 180, newRoll - 360, If(newRoll < -180, newRoll + 360, newRoll))
             Case Else
                 Return False
         End Select
