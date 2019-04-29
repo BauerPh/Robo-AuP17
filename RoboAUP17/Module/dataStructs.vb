@@ -402,7 +402,8 @@ Module dataStructs
         Friend refAxis As Boolean()
         ' Servo
         Friend servoNum As Int32
-        Friend servoVal As Int32
+        Friend servoVal As Double
+        Friend servoVar As String
         Friend servoSpeed As Int32
         ' Delay
         Friend delayTimeMS As Int32

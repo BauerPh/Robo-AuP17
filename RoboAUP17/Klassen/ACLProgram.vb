@@ -489,7 +489,16 @@ Friend Class ACLProgram
                         _runtimeError(cmd.lineNr, $"Servo {cmd.servoNum} ist nicht aktiviert")
                         Exit While 'Programm beenden
                     End If
-                    RaiseEvent DoServoMove(cmd.servoNum, cmd.servoVal, cmd.servoSpeed)
+                    'Get Servoval
+                    Dim srvVal As Double
+                    If Not _getCmdVal(cmd.servoVar, cmd.lineNr, rtVariables, srvVal) Then
+                        srvVal = cmd.servoVal
+                    End If
+                    If srvVal > 100 Or srvVal < 0 Then
+                        _runtimeError(cmd.lineNr, $"Servowert muss zwischen 0 und 100 liegen")
+                        Exit While 'Programm beenden
+                    End If
+                    RaiseEvent DoServoMove(cmd.servoNum, srvVal, cmd.servoSpeed)
                     i += 1
                 Case ProgFunc.move
                     ' -------------------------------------
@@ -1159,10 +1168,6 @@ Friend Class ACLProgram
             If Not _getAndCheckInt(context.GetChild(1).GetText(), servoNr, 1, 3) Then
                 RaiseEvent CompileErrorEvent(lineNr, $"Servonummer muss zwischen 1 und 3 liegen")
             End If
-            Dim servoVal As Int32
-            If Not _getAndCheckInt(context.GetChild(2).GetText(), servoVal, 0, 100) Then
-                RaiseEvent CompileErrorEvent(lineNr, $"Servonummer muss zwischen 1 und 3 liegen")
-            End If
             Dim servoSpeed As Int32
             If context.GetChild(3) IsNot Nothing Then
                 If Not _getAndCheckInt(context.GetChild(3).GetText(), servoSpeed, 1, 100) Then
@@ -1171,14 +1176,28 @@ Friend Class ACLProgram
             Else
                 servoSpeed = 100
             End If
+
             ' Servomove hinzufügen
             Dim thisIndex As Int32 = _progList.Count
             Dim progEntry As New ProgramEntry
             progEntry.func = ProgFunc.servoMove
             progEntry.lineNr = lineNr
             progEntry.servoNum = servoNr
-            progEntry.servoVal = servoVal
             progEntry.servoSpeed = servoSpeed
+
+            Dim servoVal As String = context.GetChild(2).GetText()
+            If IsNumeric(servoVal) Then
+                progEntry.servoVal = _getDouble(servoVal)
+                If progEntry.servoVal > 100 Or progEntry.servoVal < 0 Then
+                    RaiseEvent CompileErrorEvent(lineNr, $"Servowert muss zwischen 0 und 100 liegen")
+                End If
+            Else
+                If Not _checkVar(servoVal) Then
+                    RaiseEvent CompileErrorEvent(lineNr, $"Variable ""{servoVal}"" wurde nicht definiert")
+                Else
+                    progEntry.servoVar = servoVal
+                End If
+            End If
             _progList.Add(progEntry)
 
             MyBase.EnterJaw(context)
