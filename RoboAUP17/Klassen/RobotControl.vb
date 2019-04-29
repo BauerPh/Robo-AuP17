@@ -212,12 +212,6 @@ Friend Class RobotControl
             RaiseEvent RoboPositionChanged()
             Return False
         End If
-        'Check Limits
-        If Not _checkJointAngleLimits(jointAngles) Then
-            RaiseEvent Log("[Robo Control] Bewegung nicht möglich, Achslimit erreicht", Logger.LogLevel.ERR)
-            RaiseEvent RoboPositionChanged()
-            Return False
-        End If
         Return DoJointMov(True, jointAngles)
     End Function
     Friend Function DoTCPMov(X As Double, Y As Double, Z As Double, yaw As Double, pitch As Double, roll As Double) As Boolean
@@ -226,6 +220,12 @@ Friend Class RobotControl
     End Function
 
     Friend Function DoJointMov(sync As Boolean, jointAngles As JointAngles) As Boolean
+        'Grenzwerte prüfen
+        If Not _checkJointAngleLimits(jointAngles) Then
+            RaiseEvent Log("[Robo Control] Bewegung nicht möglich, Achslimit erreicht", Logger.LogLevel.ERR)
+            RaiseEvent RoboPositionChanged()
+            Return False
+        End If
         'Daten aufbereiten
         Dim tmpVmin(5) As Double
         Dim tmpV(5) As Double
