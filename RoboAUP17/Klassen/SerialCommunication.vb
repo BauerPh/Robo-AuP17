@@ -29,6 +29,18 @@ Friend Class SerialCommunication
     Private listSerialPort As New List(Of String)
     Private _connected As Boolean
 
+    '
+    Public Enum enumRoboError
+        ERR_UNKNOWN_ERROR = 0
+        ERR_UNKNOWN_CMD = 1
+        ERR_PARAMETER_ERR = 2
+        ERR_NO_REF = 3
+        ERR_REF_CANCELED = 4
+        ERR_REF_FAILED_STEP1 = 5
+        ERR_REF_FAILED_STEP2 = 6
+        ERR_REF_FAILED_STEP3 = 7
+    End Enum
+
     'Events
     Friend Event ComPortChange(ByVal ports As List(Of String))
     Friend Event SerialConnected()
@@ -40,7 +52,7 @@ Friend Class SerialCommunication
     Friend Event LSSReceived(ByVal lssState As Boolean())
     Friend Event ESSReceived(ByVal essState As Boolean)
     Friend Event RESReceived()
-    Friend Event ERRReceived(ByVal errnum As Int32)
+    Friend Event ERRReceived(ByVal err As enumRoboError)
 
     ' -----------------------------------------------------------------------------
     ' Constructor
@@ -318,20 +330,23 @@ Friend Class SerialCommunication
         RaiseEvent RESReceived()
     End Sub
     Private Sub _rcvERR()
-        Dim errnum As Int32 = _msgDataRcv.Parset(0)(0)
+        Dim err As enumRoboError
+        Try
+            err = CType([Enum].Parse(GetType(enumRoboError), _msgDataRcv.Parset(0)(0).ToString(), False), enumRoboError)
+        Catch e As ArgumentException
+            err = enumRoboError.ERR_UNKNOWN_ERROR
+        End Try
+
         _movWaitACK = False
         _refWaitACK = False
         _tWaitACK.Stop()
-        If errnum = 1 Then
-            RaiseEvent Log("[Serial] Unbekannter Befehl", Logger.LogLevel.ERR)
-        ElseIf errnum = 2 Then
-            RaiseEvent Log("[Serial] Parameter fehlerhaft", Logger.LogLevel.ERR)
-        ElseIf errnum = 3 Then
-            'Roboter nicht in Referenz
-        ElseIf errnum = 4 Then
-            'Referenzfahrt fehlgeschlagen
-        End If
-        RaiseEvent ERRReceived(errnum)
+        Select Case err
+            Case enumRoboError.ERR_UNKNOWN_CMD
+                RaiseEvent Log("[Serial] Unbekannter Befehl", Logger.LogLevel.ERR)
+            Case enumRoboError.ERR_PARAMETER_ERR
+                RaiseEvent Log("[Serial] Parameter fehlerhaft", Logger.LogLevel.ERR)
+        End Select
+        RaiseEvent ERRReceived(err)
     End Sub
     Private Function _parseMsg(ByRef msg As String, ByRef msgData As ClassMsgData, ByRef functionList As String()) As Boolean
 

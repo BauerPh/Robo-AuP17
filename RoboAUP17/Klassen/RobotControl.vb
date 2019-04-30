@@ -408,7 +408,6 @@ Friend Class RobotControl
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
-    'Public Event ERRReceived(ByVal errnum As Int32)
     'Serial
     Private Sub _eSerialComPortChange(ports As List(Of String)) Handles _com.ComPortChange
         RaiseEvent SerialComPortChanged(ports)
@@ -500,12 +499,21 @@ Friend Class RobotControl
         End If
         RaiseEvent RoboParameterChanged(changedParameter)
     End Sub
-    Private Sub _eERRReceived(errnum As Integer) Handles _com.ERRReceived
-        If errnum = 3 Then
+    Private Sub _eERRReceived(err As Integer) Handles _com.ERRReceived
+        If err = SerialCommunication.enumRoboError.ERR_NO_REF Then
             RaiseEvent Log("[Robo Control] Roboter nicht in Referenz", Logger.LogLevel.ERR)
             RaiseEvent RoboBusy(False, False)
-        ElseIf errnum = 4 Then
-            RaiseEvent Log("[Robo Control] Referenzfahrt fehlgeschlagen", Logger.LogLevel.ERR)
+        ElseIf err >= SerialCommunication.enumRoboError.ERR_REF_CANCELED Then
+            Select Case err
+                Case SerialCommunication.enumRoboError.ERR_REF_CANCELED
+                    RaiseEvent Log("[Robo Control] Referenzfahrt vom Benutzer abgebrochen", Logger.LogLevel.ERR)
+                Case SerialCommunication.enumRoboError.ERR_REF_FAILED_STEP1
+                    RaiseEvent Log("[Robo Control] Referenzfahrt Schritt 1 fehlgeschlagen, Endschalter wurde nicht erreicht", Logger.LogLevel.ERR)
+                Case SerialCommunication.enumRoboError.ERR_REF_FAILED_STEP2
+                    RaiseEvent Log("[Robo Control] Referenzfahrt Schritt 2 fehlgeschlagen, Endschalter wurde nicht verlassen", Logger.LogLevel.ERR)
+                Case SerialCommunication.enumRoboError.ERR_REF_FAILED_STEP3
+                    RaiseEvent Log("[Robo Control] Referenzfahrt Schritt 3 fehlgeschlagen, Endschalter wurde nicht erreicht", Logger.LogLevel.ERR)
+            End Select
             RaiseEvent RoboBusy(False, False)
         End If
         _delayRunning = False
