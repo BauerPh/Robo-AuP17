@@ -8,8 +8,8 @@
     Private _servoParameter(2) As ServoParameter
     Private _denavitHartenbergParameter(5) As DHParameter
 
-    Public ReadOnly Property ConfigFileLoaded As Boolean = False
-    Public ReadOnly Property UnsavedChanges As Boolean = False
+    Friend ReadOnly Property ConfigFileLoaded As Boolean = False
+    Friend ReadOnly Property UnsavedChanges As Boolean = False
     Friend ReadOnly Property Toolframe As CartCoords
     Friend ReadOnly Property Workframe As CartCoords
     Friend ReadOnly Property TcpServerParameter As TCPServerParameter

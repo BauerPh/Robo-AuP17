@@ -15,7 +15,18 @@ Module dataStructs
 
     Friend Structure CartCoords
         Implements ICloneable
-        Friend X, Y, Z, Yaw, Pitch, Roll As Double
+        <Category("Koordinaten")>
+        Public Property X As Double
+        <Category("Koordinaten")>
+        Public Property Y As Double
+        <Category("Koordinaten")>
+        Public Property Z As Double
+        <Category("Koordinaten")>
+        Public Property Yaw As Double
+        <Category("Koordinaten")>
+        Public Property Pitch As Double
+        <Category("Koordinaten")>
+        Public Property Roll As Double
         Friend Sub New(X As Double, Y As Double, Z As Double, yaw As Double, pitch As Double, roll As Double)
             Me.X = X
             Me.Y = Y
