@@ -229,33 +229,33 @@ Partial Class frmMain
         'msShowVars
         '
         Me.msShowVars.Name = "msShowVars"
-        Me.msShowVars.Size = New System.Drawing.Size(169, 22)
-        Me.msShowVars.Text = "Variablen"
+        Me.msShowVars.Size = New System.Drawing.Size(180, 22)
+        Me.msShowVars.Text = "TCP-Variablen"
         '
         'msShowTeachpoints
         '
         Me.msShowTeachpoints.Name = "msShowTeachpoints"
-        Me.msShowTeachpoints.Size = New System.Drawing.Size(169, 22)
+        Me.msShowTeachpoints.Size = New System.Drawing.Size(180, 22)
         Me.msShowTeachpoints.Text = "Teachpunkte"
         '
         'msShowACLEditor
         '
         Me.msShowACLEditor.Name = "msShowACLEditor"
-        Me.msShowACLEditor.Size = New System.Drawing.Size(169, 22)
+        Me.msShowACLEditor.Size = New System.Drawing.Size(180, 22)
         Me.msShowACLEditor.Text = "ACL-Editor"
         '
         'msShowACLToolbox
         '
         Me.msShowACLToolbox.Enabled = False
         Me.msShowACLToolbox.Name = "msShowACLToolbox"
-        Me.msShowACLToolbox.Size = New System.Drawing.Size(169, 22)
+        Me.msShowACLToolbox.Size = New System.Drawing.Size(180, 22)
         Me.msShowACLToolbox.Text = "ACL-Toolbox"
         '
         'RoboterToolStripMenuItem1
         '
         Me.RoboterToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.msShowRoboStatus, Me.msShowRoboReference, Me.msShowRoboCtrl})
         Me.RoboterToolStripMenuItem1.Name = "RoboterToolStripMenuItem1"
-        Me.RoboterToolStripMenuItem1.Size = New System.Drawing.Size(169, 22)
+        Me.RoboterToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
         Me.RoboterToolStripMenuItem1.Text = "Robotersteuerung"
         '
         'msShowRoboStatus
@@ -279,19 +279,19 @@ Partial Class frmMain
         'msShowLog
         '
         Me.msShowLog.Name = "msShowLog"
-        Me.msShowLog.Size = New System.Drawing.Size(169, 22)
+        Me.msShowLog.Size = New System.Drawing.Size(180, 22)
         Me.msShowLog.Text = "Allgemeines Log"
         '
         'msShowComLogSerial
         '
         Me.msShowComLogSerial.Name = "msShowComLogSerial"
-        Me.msShowComLogSerial.Size = New System.Drawing.Size(169, 22)
+        Me.msShowComLogSerial.Size = New System.Drawing.Size(180, 22)
         Me.msShowComLogSerial.Text = "Comlog (Serial)"
         '
         'msShowProgLog
         '
         Me.msShowProgLog.Name = "msShowProgLog"
-        Me.msShowProgLog.Size = New System.Drawing.Size(169, 22)
+        Me.msShowProgLog.Size = New System.Drawing.Size(180, 22)
         Me.msShowProgLog.Text = "Programm Log"
         '
         'ExtrasToolStripMenuItem
