@@ -258,22 +258,27 @@ Module dataStructs
 
     Friend Structure ServoParameter
         <Category("Allgemein"),
-            DisplayName("Angeschlossen")>
+            DisplayName("Angeschlossen"),
+            Description("Soll dieser Servo benutzt werden?")>
         Public Property Available As Boolean
         <Category("Winkel"),
-            DisplayName("Minimaler Winkel")>
+            DisplayName("Minimaler Winkel"),
+            Description("Winkel, bei dem der Greifer komplett geschlossen ist.")>
         Public Property MinAngle As Double
         <Category("Winkel"),
-            DisplayName("Maximaler Winkel")>
+            DisplayName("Maximaler Winkel"),
+            Description("Winkel, bei dem der Greifer komplett geöffnet ist.")>
         Public Property MaxAngle As Double
     End Structure
 
     Friend Structure TCPServerParameter
         <Category("Allgemein"),
-            DisplayName("Aktiv")>
+            DisplayName("Aktiv"),
+            Description("TCP-Server wird beim Start des Programms gestartet. Wird dieser Parameter geändert wird der TCP-Server ebenfalls gestartet bzw. gestoppt.")>
         Public Property Listen As Boolean
         <Category("Allgemein"),
-            DisplayName("Port")>
+            DisplayName("Port"),
+            Description("Der Port für den TCP-Server. Änderung erfordert ein Neustart des Servers, zum Beispiel durch Andern des ""Aktiv""-Parameters.")>
         Public Property Port As Integer
     End Structure
 #End Region

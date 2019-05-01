@@ -36,6 +36,7 @@
                     _refreshPropGrid()
                 End If
             Case selectedSetting.Frames
+                MessageBox.Show($"Die Frames (Toolframe und Workframe) sollten nicht geändert werden! Sie führen momentan noch zu unvorhersehbaren Auswirkungen auf die kinematischen Berechnungen!", "Warnung", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 If _actPropView < PropView.Servo3 Then
                     _setPropView(PropView.Toolframe)
                 Else
