@@ -128,6 +128,8 @@ Public Class panCodeEditor
         _lastHighlightedLineIndex = line - 1
         sciCodeEditor.Lines(_lastHighlightedLineIndex).MarkerAdd(0)
         sciCodeEditor.Lines(_lastHighlightedLineIndex).MarkerAdd(1)
+
+        _scrollLineToView(line)
     End Sub
 
     Private Sub _eErrorLineEvent(line As Int32)
@@ -137,6 +139,20 @@ Public Class panCodeEditor
         End If
 
         sciCodeEditor.Lines(line - 1).MarkerAdd(2)
+        _scrollLineToView(line)
+    End Sub
+
+    Private Sub _scrollLineToView(line As Integer)
+        ' Betroffene Zeile ein Viertel der sichtbaren Zeilen
+        ' vom Bildschirmrand weg scrollen, wenn möglich
+        Dim numberLines As Integer = sciCodeEditor.Lines.Count ' Anzahl Zeilen
+        Dim quarterLines As Integer = sciCodeEditor.LinesOnScreen \ 4 ' Viertel Anzahl anzeigbarer Zeilen
+        Dim scrollLineStart As Integer = If(line - quarterLines <= 0, 0, line - quarterLines - 1)
+        Dim scrollLineEnd As Integer = If(line + quarterLines > numberLines, numberLines - 1, line + quarterLines - 1)
+        Dim scrollStart As Integer = sciCodeEditor.Lines(scrollLineStart).Position
+        Dim scrollEnd As Integer = sciCodeEditor.Lines(scrollLineEnd).Position
+        sciCodeEditor.ScrollRange(scrollStart, scrollEnd)
+        sciCodeEditor.ScrollRange(scrollEnd, scrollEnd)
     End Sub
 
 End Class
