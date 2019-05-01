@@ -23,4 +23,7 @@
         Me.Close()
     End Sub
 
+    Private Sub AboutBox_Deactivate(sender As Object, e As EventArgs) Handles Me.Deactivate
+        Me.Close()
+    End Sub
 End Class
