@@ -25,10 +25,13 @@
             End If
             'Log
             _logBox.ReadOnly = False
-            _logBox.AppendText($"{If(_logBox.Lines.Count > 0, vbCrLf, "")}{Now().ToString("HH:mm:ss.fff")} [ {lvl.ToString().PadRight(7)} ] {msg}")
+            If _logBox.TextLength > 0 Then
+                _logBox.AppendText(vbCrLf)
+            End If
+            _logBox.AppendText($"{Now().ToString("HH:mm:ss.fff")} [ {lvl.ToString().PadRight(7)} ] {msg}")
             _logBox.ReadOnly = True
             ' Scroll Logbox
-            _logBox.GotoPosition(_logBox.Text.Length)
+            _logBox.Lines(_logBox.Lines.Count - 1).Goto()
             _logBox.ScrollCaret()
         End If
     End Sub
