@@ -16,6 +16,7 @@
         _enableDisableElements()
 
         AddHandler frmMain.RefreshEvent, AddressOf _eRefresh
+        AddHandler frmMain.ACLProgram.ProgramUpdatedEvent, AddressOf _eProgramUpdated
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -24,19 +25,18 @@
     Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
         If cbTPMode.SelectedIndex = 0 Then
             If frmMain.ACLProgram.AddTeachPoint(tbName.Text, frmMain.RoboControl.PosCart, CInt(numNr.Value)) Then
-                numNr.Value += 1
-                tbName.Text = ""
+                _resetNameAndNum()
             End If
         Else
             If frmMain.ACLProgram.AddTeachPoint(tbName.Text, frmMain.RoboControl.PosJoint, CInt(numNr.Value)) Then
-                numNr.Value += 1
-                tbName.Text = ""
+                _resetNameAndNum()
             End If
         End If
     End Sub
 
     Private Sub btnRename_Click(sender As Object, e As EventArgs) Handles btnRename.Click
         frmMain.ACLProgram.RenameTeachPoint(lbTeachPoints.SelectedIndex, tbName.Text, CInt(numNr.Value))
+        _resetNameAndNum()
     End Sub
 
     Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
@@ -61,13 +61,16 @@
         Else
             frmMain.RoboControl.DoJointMov(True, tp.jointAngles)
         End If
+        _resetNameAndNum()
     End Sub
     Private Sub lbTeachPoints_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbTeachPoints.SelectedIndexChanged
         _enableDisableElements()
-
+    End Sub
+    Private Sub lbTeachPoints_DoubleClick(sender As Object, e As EventArgs) Handles lbTeachPoints.DoubleClick
         Dim tp As TeachPoint = frmMain.ACLProgram.GetTeachpointByIndex(lbTeachPoints.SelectedIndex)
         tbName.Text = tp.name
         numNr.Value = tp.nr
+        btnRename.Enabled = True
     End Sub
     Private Sub numSpeed_ValueChanged(sender As Object, e As EventArgs)
         My.Settings.TpSpeed = numSpeed.Value
@@ -79,6 +82,11 @@
     ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
+    Private Sub _resetNameAndNum()
+        numNr.Value = frmMain.ACLProgram.GetNextFreeTeachPointNum()
+        tbName.Text = ""
+        btnRename.Enabled = False
+    End Sub
     Private Sub _enableDisableElements()
         If InvokeRequired Then
             Invoke(Sub() _enableDisableElements())
@@ -89,6 +97,8 @@
 
         btnMoveTo.Enabled = tmpEnabled And lbTeachPoints.SelectedIndex > -1
         btnAdd.Enabled = tmpEnabled
+
+        _resetNameAndNum()
     End Sub
 
     ' -----------------------------------------------------------------------------
@@ -96,5 +106,8 @@
     ' -----------------------------------------------------------------------------
     Private Sub _eRefresh()
         _enableDisableElements()
+    End Sub
+    Private Sub _eProgramUpdated()
+        _resetNameAndNum()
     End Sub
 End Class

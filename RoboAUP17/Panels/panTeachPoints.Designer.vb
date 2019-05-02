@@ -28,15 +28,15 @@ Partial Class panTeachPoints
         Me.lbTeachPoints = New System.Windows.Forms.ListBox()
         Me.ToolStrip2 = New System.Windows.Forms.ToolStrip()
         Me.lblSpeed = New System.Windows.Forms.ToolStripLabel()
-        Me.numSpeed = New RoboAUP17.ToolStripNumericUpDown()
+        Me.numSpeed = New RoboAuP17.ToolStripNumericUpDown()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.lblAcc = New System.Windows.Forms.ToolStripLabel()
-        Me.numAcc = New RoboAUP17.ToolStripNumericUpDown()
+        Me.numAcc = New RoboAuP17.ToolStripNumericUpDown()
         Me.btnMoveTo = New System.Windows.Forms.ToolStripButton()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.lblName = New System.Windows.Forms.ToolStripLabel()
         Me.tbName = New System.Windows.Forms.ToolStripTextBox()
-        Me.numNr = New RoboAUP17.ToolStripNumericUpDown()
+        Me.numNr = New RoboAuP17.ToolStripNumericUpDown()
         Me.cbTPMode = New System.Windows.Forms.ToolStripComboBox()
         Me.btnAdd = New System.Windows.Forms.ToolStripButton()
         Me.btnRename = New System.Windows.Forms.ToolStripButton()
@@ -193,6 +193,7 @@ Partial Class panTeachPoints
         'btnRename
         '
         Me.btnRename.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnRename.Enabled = False
         Me.btnRename.Image = CType(resources.GetObject("btnRename.Image"), System.Drawing.Image)
         Me.btnRename.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnRename.Name = "btnRename"

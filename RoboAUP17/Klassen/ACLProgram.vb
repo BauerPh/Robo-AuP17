@@ -120,6 +120,7 @@ Friend Class ACLProgram
                     Dim tp As TeachPoint = _teachPoints(index)
                     tp.nr += indexVal
                     _teachPoints(index) = tp
+                    indexVal = 0 'damit der selbe TP markiert wird
                 End If
                 _teachPoints.Sort()
                 Dim selIndex As Int32 = _listBox.SelectedIndex + indexVal
@@ -170,6 +171,14 @@ Friend Class ACLProgram
 
     Friend Function TeachpointExists(tpNr As Integer) As Boolean
         Return _teachPoints.FindIndex(Function(_tp As TeachPoint) _tp.nr = tpNr) >= 0
+    End Function
+
+    Friend Function GetNextFreeTeachPointNum() As Integer
+        If _teachPoints.Count > 0 Then
+            Return _teachPoints(_teachPoints.Count - 1).nr + 1
+        Else
+            Return 0
+        End If
     End Function
 
 #End Region
