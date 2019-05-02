@@ -1,7 +1,7 @@
 ﻿Imports Antlr4.Runtime
 Imports Antlr4.Runtime.Misc
 Imports ACLLexerParser
-Public Class ACLCompiler
+Friend Class ACLCompiler
     Inherits ACLParserBaseListener
     Private _maxAcc, _maxSpeed, _acc, _speed As Double
     Private _stack As New Stack(Of Integer)
