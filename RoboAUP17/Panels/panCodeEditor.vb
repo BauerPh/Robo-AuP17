@@ -21,7 +21,7 @@ Public Class panCodeEditor
         $"FOR <var> = <val/var> TO <val/var>{vbCrLf + vbCrLf}ENDFOR", "TO", "ENDFOR",
         "LABEL <label>", "GOTO <label>; PRINT <string/var>"
     }
-    Private _ACLLexer As New ACLSyntaxHighlighting(_keywords)
+    Private _ACLSyntaxHighlighting As New ACLSyntaxHighlighting(_keywords)
 
     ' -----------------------------------------------------------------------------
     ' Init Panel
@@ -96,7 +96,7 @@ Public Class panCodeEditor
         Dim startPos As Integer = sciCodeEditor.GetEndStyled()
         Dim endPos As Integer = e.Position
 
-        _ACLLexer.Style(sciCodeEditor, startPos, endPos)
+        _ACLSyntaxHighlighting.Style(sciCodeEditor, startPos, endPos)
     End Sub
 
 
