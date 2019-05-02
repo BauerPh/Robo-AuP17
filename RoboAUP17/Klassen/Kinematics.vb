@@ -1,28 +1,9 @@
 ﻿Imports RoboAuP17.Matrizen
 Friend Class Kinematics
     Private _DHParameter(5) As DHParameter
-    Private _workframe, _toolframe As CartCoords
     Private _initOkay As Boolean = False
-
-#Region "Properties"
     Friend Property Workframe As CartCoords
-        Get
-            Return _workframe
-        End Get
-        Set(value As CartCoords)
-            _workframe = value
-        End Set
-    End Property
-
     Friend Property Toolframe As CartCoords
-        Get
-            Return _toolframe
-        End Get
-        Set(value As CartCoords)
-            _toolframe = value
-        End Set
-    End Property
-#End Region
 
 #Region "Public"
     ' -----------------------------------------------------------------------------
@@ -45,13 +26,13 @@ Friend Class Kinematics
         'Erstmal die Transformationsmatritzen für jede einzelne Achse berechnen
         Dim transForwMatr(7) As Matrix4x4
         'Work Frame
-        transForwMatr(0) = CalcFrameMatrix(_workframe)
+        transForwMatr(0) = _calcFrameMatrix(_workframe)
         'Transformationsmatrizen jeder Achse
         For i As Short = 1 To 6
-            transForwMatr(i) = CalcDHTransMatrix(i, joints.Items(i - 1))
+            transForwMatr(i) = _calcDHTransMatrix(i, joints.Items(i - 1))
         Next
         'Tool Frame
-        transForwMatr(7) = CalcFrameMatrix(_toolframe)
+        transForwMatr(7) = _calcFrameMatrix(_toolframe)
 
         'Matritzen multiplizieren
         Dim tmpMatr As Matrix4x4 = transForwMatr(0)
@@ -67,9 +48,9 @@ Friend Class Kinematics
         erg.Z = tmpMatr.val(3, 2)
         'Ausrichtung
         Dim tmpPitch As Double = Math.Atan2(Math.Sqrt((tmpMatr.val(2, 0) ^ 2) + (tmpMatr.val(2, 1) ^ 2)), tmpMatr.val(2, 2) * -1)
-        erg.Yaw = ToDEG(Math.Atan2(tmpMatr.val(0, 2) / tmpPitch, tmpMatr.val(1, 2) / tmpPitch))
-        erg.Pitch = ToDEG(tmpPitch)
-        erg.Roll = ToDEG(Math.Atan2(tmpMatr.val(2, 0) / tmpPitch, tmpMatr.val(2, 1) / tmpPitch))
+        erg.Yaw = _toDEG(Math.Atan2(tmpMatr.val(0, 2) / tmpPitch, tmpMatr.val(1, 2) / tmpPitch))
+        erg.Pitch = _toDEG(tmpPitch)
+        erg.Roll = _toDEG(Math.Atan2(tmpMatr.val(2, 0) / tmpPitch, tmpMatr.val(2, 1) / tmpPitch))
 
         Return erg
     End Function
@@ -84,7 +65,7 @@ Friend Class Kinematics
         ' Vorberechnungen
         '------------------------------------
         ' Winkel in Bogenmaß umrechnen
-        Dim coordRad As New CartCoords(coords.X, coords.Y, coords.Z, ToRAD(coords.Yaw), ToRAD(coords.Pitch), ToRAD(coords.Roll))
+        Dim coordRad As New CartCoords(coords.X, coords.Y, coords.Z, _toRAD(coords.Yaw), _toRAD(coords.Pitch), _toRAD(coords.Roll))
 
         ' Quadrant von J1 berechnen
         Dim J1Quadrant As Integer
@@ -122,8 +103,8 @@ Friend Class Kinematics
         tcpFrame.val(3, 3) = 1.0
 
         ' Workframe & Toolframe berechnen
-        Dim workframe As Matrix4x4 = CalcFrameMatrix(_workframe)
-        Dim toolframe As Matrix4x4 = CalcFrameMatrix(_toolframe)
+        Dim workframe As Matrix4x4 = _calcFrameMatrix(_workframe)
+        Dim toolframe As Matrix4x4 = _calcFrameMatrix(_toolframe)
 
         ' Toolframe transponieren
         Dim toolframeInv As New Matrix4x4
@@ -152,7 +133,7 @@ Friend Class Kinematics
         ' Toolframe Offset
         sphericalWristCenter *= toolframeInv
         ' R 0-6 Offset (Joint 6 / inverse Denavit-Hartenberg Transformation)
-        sphericalWristCenter *= CalcInvDHTransMatrix(6, 180)
+        sphericalWristCenter *= _calcInvDHTransMatrix(6, 180)
 #End Region
 
 #Region "J1"
@@ -161,11 +142,11 @@ Friend Class Kinematics
         Dim tmpJ1Angle As Double = Math.Atan(sphericalWristCenter.val(3, 1) / sphericalWristCenter.val(3, 0))
         ' Quadrant beachten
         If J1Quadrant = 3 Then
-            erg.J1 = ToDEG(tmpJ1Angle) - 180.0
+            erg.J1 = _toDEG(tmpJ1Angle) - 180.0
         ElseIf J1Quadrant = 4 Then
-            erg.J1 = ToDEG(tmpJ1Angle) + 180.0
+            erg.J1 = _toDEG(tmpJ1Angle) + 180.0
         Else
-            erg.J1 = ToDEG(tmpJ1Angle)
+            erg.J1 = _toDEG(tmpJ1Angle)
         End If
 #End Region
 
@@ -184,19 +165,19 @@ Friend Class Kinematics
         d4 = _DHParameter(3).d
 
         ' J3
-        angC = ToDEG(Math.Acos((d4 ^ 2 + a2a3 ^ 2 - paH ^ 2) / (2 * Math.Abs(d4) * a2a3))) 'Kosinussatz
+        angC = _toDEG(Math.Acos((d4 ^ 2 + a2a3 ^ 2 - paH ^ 2) / (2 * Math.Abs(d4) * a2a3))) 'Kosinussatz
         erg.J3 = 180.0 - angC
 
         ' J2
         If pXminusa1 >= 0 Then
             ' Arm forward Konfiguration
-            angA = ToDEG(Math.Atan(pY / pXminusa1)) 'Tangenz
-            angB = ToDEG(Math.Acos((a2a3 ^ 2 + paH ^ 2 - d4 ^ 2) / (2 * a2a3 * paH))) 'Kosinussatz
+            angA = _toDEG(Math.Atan(pY / pXminusa1)) 'Tangenz
+            angB = _toDEG(Math.Acos((a2a3 ^ 2 + paH ^ 2 - d4 ^ 2) / (2 * a2a3 * paH))) 'Kosinussatz
             erg.J2 = -(angA + angB)
         Else
             ' Arm mid Konfiguration
-            angA = ToDEG(Math.Acos((a2a3 ^ 2 + paH ^ 2 - d4 ^ 2) / (2 * a2a3 * paH))) 'Kosinussatz
-            angB = ToDEG(Math.Atan(pY / -pXminusa1)) 'Tangenz
+            angA = _toDEG(Math.Acos((a2a3 ^ 2 + paH ^ 2 - d4 ^ 2) / (2 * a2a3 * paH))) 'Kosinussatz
+            angB = _toDEG(Math.Atan(pY / -pXminusa1)) 'Tangenz
             angD = 90 - angA - angB
             erg.J2 = angD - 180
         End If
@@ -207,10 +188,10 @@ Friend Class Kinematics
 #Region "Vorwärtstransformation zu J3"
         ' Transformationsmatritzen für J1 bis J3 berechnen
         Dim transForwMatr(3) As Matrix4x4
-        transForwMatr(0) = CalcFrameMatrix(_workframe)
-        transForwMatr(1) = CalcDHTransMatrix(1, erg.J1)
-        transForwMatr(2) = CalcDHTransMatrix(2, erg.J2)
-        transForwMatr(3) = CalcDHTransMatrix(3, erg.J3 - 90)
+        transForwMatr(0) = _calcFrameMatrix(_workframe)
+        transForwMatr(1) = _calcDHTransMatrix(1, erg.J1)
+        transForwMatr(2) = _calcDHTransMatrix(2, erg.J2)
+        transForwMatr(3) = _calcDHTransMatrix(3, erg.J3 - 90)
         ' Vorwärtstransformation bis J3 (R 0-3)
         Dim r03 As Matrix4x4 = transForwMatr(0)
         For i As Int16 = 1 To 3
@@ -240,11 +221,11 @@ Friend Class Kinematics
         ' J5 Winkel berechnen
         '------------------------------------
         Dim tmpJ5Angle As Double
-        tmpJ5Angle = ToDEG(Math.Atan2(Math.Sqrt(1 - sphericalWristOrientation.val(2, 2) ^ 2), sphericalWristOrientation.val(2, 2)))
+        tmpJ5Angle = _toDEG(Math.Atan2(Math.Sqrt(1 - sphericalWristOrientation.val(2, 2) ^ 2), sphericalWristOrientation.val(2, 2)))
         If tmpJ5Angle > 0 Then
             erg.J5 = tmpJ5Angle
         Else
-            erg.J5 = ToDEG(Math.Atan2(-Math.Sqrt(1 - sphericalWristOrientation.val(2, 2) ^ 2), sphericalWristOrientation.val(2, 2)))
+            erg.J5 = _toDEG(Math.Atan2(-Math.Sqrt(1 - sphericalWristOrientation.val(2, 2) ^ 2), sphericalWristOrientation.val(2, 2)))
         End If
 #End Region
 
@@ -252,9 +233,9 @@ Friend Class Kinematics
         ' J4 Winkel berechnen
         '------------------------------------
         If erg.J5 > 0 Then
-            erg.J4 = ToDEG(Math.Atan2(sphericalWristOrientation.val(2, 1), sphericalWristOrientation.val(2, 0)))
+            erg.J4 = _toDEG(Math.Atan2(sphericalWristOrientation.val(2, 1), sphericalWristOrientation.val(2, 0)))
         Else
-            erg.J4 = ToDEG(Math.Atan2(-sphericalWristOrientation.val(2, 1), -sphericalWristOrientation.val(2, 0)))
+            erg.J4 = _toDEG(Math.Atan2(-sphericalWristOrientation.val(2, 1), -sphericalWristOrientation.val(2, 0)))
         End If
 #End Region
 
@@ -263,15 +244,15 @@ Friend Class Kinematics
         '------------------------------------
         If erg.J5 > 0 Then
             If sphericalWristOrientation.val(1, 2) < 0 Then
-                erg.J6 = ToDEG(Math.Atan2(-sphericalWristOrientation.val(1, 2), sphericalWristOrientation.val(0, 2))) - 180
+                erg.J6 = _toDEG(Math.Atan2(-sphericalWristOrientation.val(1, 2), sphericalWristOrientation.val(0, 2))) - 180
             Else
-                erg.J6 = ToDEG(Math.Atan2(-sphericalWristOrientation.val(1, 2), sphericalWristOrientation.val(0, 2))) + 180
+                erg.J6 = _toDEG(Math.Atan2(-sphericalWristOrientation.val(1, 2), sphericalWristOrientation.val(0, 2))) + 180
             End If
         Else
             If sphericalWristOrientation.val(1, 2) < 0 Then
-                erg.J6 = ToDEG(Math.Atan2(sphericalWristOrientation.val(1, 2), -sphericalWristOrientation.val(0, 2))) + 180
+                erg.J6 = _toDEG(Math.Atan2(sphericalWristOrientation.val(1, 2), -sphericalWristOrientation.val(0, 2))) + 180
             Else
-                erg.J6 = ToDEG(Math.Atan2(sphericalWristOrientation.val(1, 2), -sphericalWristOrientation.val(0, 2))) - 180
+                erg.J6 = _toDEG(Math.Atan2(sphericalWristOrientation.val(1, 2), -sphericalWristOrientation.val(0, 2))) - 180
             End If
         End If
 #End Region
@@ -283,12 +264,12 @@ Friend Class Kinematics
     ' -----------------------------------------------------------------------------
     ' Private
     ' -----------------------------------------------------------------------------
-    Private Function CalcDHTransMatrix(joint As Int16, theta As Double) As Matrix4x4 'Theta = Winkel einer Achse
+    Private Function _calcDHTransMatrix(joint As Int16, theta As Double) As Matrix4x4 'Theta = Winkel einer Achse
         Dim dh As DHParameter = _DHParameter(joint - 1)
-        Dim thetaBog As Double = ToRAD(theta)
+        Dim thetaBog As Double = _toRAD(theta)
         Dim erg As New Matrix4x4
 
-        dh.alpha = ToRAD(dh.alpha)
+        dh.alpha = _toRAD(dh.alpha)
 
         erg.val(0, 0) = Math.Cos(thetaBog)
         erg.val(0, 1) = Math.Sin(thetaBog)
@@ -310,12 +291,12 @@ Friend Class Kinematics
         Return erg
     End Function
 
-    Private Function CalcInvDHTransMatrix(joint As Int16, theta As Double) As Matrix4x4 'Theta = Winkel einer Achse
+    Private Function _calcInvDHTransMatrix(joint As Int16, theta As Double) As Matrix4x4 'Theta = Winkel einer Achse
         Dim dh As DHParameter = _DHParameter(joint - 1)
-        Dim thetaBog As Double = ToRAD(theta)
+        Dim thetaBog As Double = _toRAD(theta)
         Dim erg As New Matrix4x4
 
-        dh.alpha = ToRAD(dh.alpha)
+        dh.alpha = _toRAD(dh.alpha)
 
         erg.val(0, 0) = Math.Cos(thetaBog)
         erg.val(0, 1) = -Math.Sin(thetaBog) * Math.Cos(dh.alpha)
@@ -340,11 +321,11 @@ Friend Class Kinematics
         Return erg
     End Function
 
-    Private Function CalcFrameMatrix(frame As CartCoords) As Matrix4x4
+    Private Function _calcFrameMatrix(frame As CartCoords) As Matrix4x4
         Dim Matrix As New Matrix4x4
-        Dim yaw As Double = ToRAD(frame.Yaw)
-        Dim pitch As Double = ToRAD(frame.Pitch)
-        Dim roll As Double = ToRAD(frame.Roll)
+        Dim yaw As Double = _toRAD(frame.Yaw)
+        Dim pitch As Double = _toRAD(frame.Pitch)
+        Dim roll As Double = _toRAD(frame.Roll)
 
         Matrix.val(0, 0) = Math.Cos(roll) * Math.Cos(pitch)
         Matrix.val(0, 1) = Math.Sin(roll) * Math.Cos(pitch)
@@ -366,11 +347,11 @@ Friend Class Kinematics
         Return Matrix
     End Function
 
-    Private Function ToRAD(winkel As Double) As Double
+    Private Function _toRAD(winkel As Double) As Double
         Return winkel * (Math.PI / 180)
     End Function
 
-    Private Function ToDEG(winkel As Double) As Double
+    Private Function _toDEG(winkel As Double) As Double
         Return winkel * (180.0 / Math.PI)
     End Function
 #End Region
