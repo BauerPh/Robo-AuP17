@@ -201,6 +201,7 @@ Friend Class Kinematics
 
 #Region "Spherical Wrist Ausrichtung berechnen"
         ' 3x3 Teil von R 0-3 Matrix transponieren, restliche Felder bleiben 0
+        ' Statt zu transponieren, einfach die Multiplikation umdrehen ????
         Dim r03Trans As New Matrix4x4
         r03Trans.val(0, 0) = r03.val(0, 0)
         r03Trans.val(0, 1) = r03.val(1, 0)
@@ -217,6 +218,9 @@ Friend Class Kinematics
         sphericalWristOrientation = r03Trans * sphericalWristCenter
 #End Region
 
+        '******
+        ' eventuell beide Lösungen für J4-J6 berechnen und dann entscheiden welche passt (Achslimits?)
+        '******
 #Region "J5"
         ' J5 Winkel berechnen
         '------------------------------------
