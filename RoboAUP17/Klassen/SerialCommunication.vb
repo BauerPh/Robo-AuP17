@@ -432,7 +432,7 @@ Friend Class SerialCommunication
         _SerialPort.Write(msg)
         RaiseEvent Log(msg, Logger.LogLevel.COMOUT)
     End Sub
-    Private Sub _SerialPort1_DataReceived(sender As Object, e As SerialDataReceivedEventArgs) Handles _SerialPort.DataReceived
+    Private Sub _SerialPort_DataReceived(sender As Object, e As SerialDataReceivedEventArgs) Handles _SerialPort.DataReceived
         While (_SerialPort.BytesToRead > 0)
             _rcvMsg(_SerialPort.ReadLine)
         End While
