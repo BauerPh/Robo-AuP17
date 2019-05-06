@@ -33,6 +33,9 @@ Partial Class panTCPVariables
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.lblConnectStatusTitle = New System.Windows.Forms.ToolStripLabel()
         Me.lblConnectStatus = New System.Windows.Forms.ToolStripLabel()
+        Me.btnConnect = New System.Windows.Forms.ToolStripButton()
+        Me.sepConnect = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnDisconnect = New System.Windows.Forms.ToolStripButton()
         CType(Me.dataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToolStripContainer.ContentPanel.SuspendLayout()
         Me.ToolStripContainer.TopToolStripPanel.SuspendLayout()
@@ -52,7 +55,7 @@ Partial Class panTCPVariables
         Me.dataGridView.Location = New System.Drawing.Point(0, 0)
         Me.dataGridView.Name = "dataGridView"
         Me.dataGridView.ReadOnly = True
-        Me.dataGridView.Size = New System.Drawing.Size(384, 336)
+        Me.dataGridView.Size = New System.Drawing.Size(445, 336)
         Me.dataGridView.TabIndex = 0
         '
         'ToolStripContainer
@@ -61,11 +64,11 @@ Partial Class panTCPVariables
         'ToolStripContainer.ContentPanel
         '
         Me.ToolStripContainer.ContentPanel.Controls.Add(Me.dataGridView)
-        Me.ToolStripContainer.ContentPanel.Size = New System.Drawing.Size(384, 336)
+        Me.ToolStripContainer.ContentPanel.Size = New System.Drawing.Size(445, 336)
         Me.ToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ToolStripContainer.Location = New System.Drawing.Point(0, 0)
         Me.ToolStripContainer.Name = "ToolStripContainer"
-        Me.ToolStripContainer.Size = New System.Drawing.Size(384, 361)
+        Me.ToolStripContainer.Size = New System.Drawing.Size(445, 361)
         Me.ToolStripContainer.TabIndex = 1
         Me.ToolStripContainer.Text = "ToolStripContainer1"
         '
@@ -77,10 +80,10 @@ Partial Class panTCPVariables
         '
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblName, Me.tbName, Me.btnAdd, Me.btnDelete, Me.ToolStripSeparator1, Me.lblConnectStatusTitle, Me.lblConnectStatus})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblName, Me.tbName, Me.btnAdd, Me.btnDelete, Me.ToolStripSeparator1, Me.btnConnect, Me.btnDisconnect, Me.sepConnect, Me.lblConnectStatusTitle, Me.lblConnectStatus})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(384, 25)
+        Me.ToolStrip1.Size = New System.Drawing.Size(445, 25)
         Me.ToolStrip1.Stretch = True
         Me.ToolStrip1.TabIndex = 0
         '
@@ -121,8 +124,8 @@ Partial Class panTCPVariables
         'lblConnectStatusTitle
         '
         Me.lblConnectStatusTitle.Name = "lblConnectStatusTitle"
-        Me.lblConnectStatusTitle.Size = New System.Drawing.Size(67, 22)
-        Me.lblConnectStatusTitle.Text = "TCP-Client:"
+        Me.lblConnectStatusTitle.Size = New System.Drawing.Size(31, 22)
+        Me.lblConnectStatusTitle.Text = "TCP:"
         '
         'lblConnectStatus
         '
@@ -131,12 +134,36 @@ Partial Class panTCPVariables
         Me.lblConnectStatus.Size = New System.Drawing.Size(94, 22)
         Me.lblConnectStatus.Text = "nicht verbunden"
         '
+        'btnConnect
+        '
+        Me.btnConnect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnConnect.Image = CType(resources.GetObject("btnConnect.Image"), System.Drawing.Image)
+        Me.btnConnect.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnConnect.Name = "btnConnect"
+        Me.btnConnect.Size = New System.Drawing.Size(23, 22)
+        Me.btnConnect.Text = "Verbinden"
+        '
+        'sepConnect
+        '
+        Me.sepConnect.Name = "sepConnect"
+        Me.sepConnect.Size = New System.Drawing.Size(6, 25)
+        '
+        'btnDisconnect
+        '
+        Me.btnDisconnect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnDisconnect.Enabled = False
+        Me.btnDisconnect.Image = CType(resources.GetObject("btnDisconnect.Image"), System.Drawing.Image)
+        Me.btnDisconnect.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnDisconnect.Name = "btnDisconnect"
+        Me.btnDisconnect.Size = New System.Drawing.Size(23, 22)
+        Me.btnDisconnect.Text = "Trennen"
+        '
         'panTCPVariables
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLightLight
-        Me.ClientSize = New System.Drawing.Size(384, 361)
+        Me.ClientSize = New System.Drawing.Size(445, 361)
         Me.Controls.Add(Me.ToolStripContainer)
         Me.DoubleBuffered = True
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
@@ -164,4 +191,7 @@ Partial Class panTCPVariables
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents lblConnectStatus As ToolStripLabel
     Friend WithEvents lblConnectStatusTitle As ToolStripLabel
+    Friend WithEvents btnConnect As ToolStripButton
+    Friend WithEvents sepConnect As ToolStripSeparator
+    Friend WithEvents btnDisconnect As ToolStripButton
 End Class

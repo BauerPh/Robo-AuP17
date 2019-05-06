@@ -35,7 +35,7 @@ Partial Class panSettings
         Me.btnDenHartPar = New System.Windows.Forms.ToolStripButton()
         Me.btnRoboPar = New System.Windows.Forms.ToolStripButton()
         Me.btnFrames = New System.Windows.Forms.ToolStripButton()
-        Me.btnTCPServer = New System.Windows.Forms.ToolStripButton()
+        Me.btnTCPSettings = New System.Windows.Forms.ToolStripButton()
         Me.ToolStrip3 = New System.Windows.Forms.ToolStrip()
         Me.btnJ1 = New System.Windows.Forms.ToolStripButton()
         Me.sepJ2 = New System.Windows.Forms.ToolStripSeparator()
@@ -154,7 +154,7 @@ Partial Class panSettings
         '
         Me.ToolStrip2.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnDenHartPar, Me.btnRoboPar, Me.btnFrames, Me.btnTCPServer})
+        Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnDenHartPar, Me.btnRoboPar, Me.btnFrames, Me.btnTCPSettings})
         Me.ToolStrip2.Location = New System.Drawing.Point(0, 25)
         Me.ToolStrip2.Name = "ToolStrip2"
         Me.ToolStrip2.Size = New System.Drawing.Size(613, 25)
@@ -185,13 +185,13 @@ Partial Class panSettings
         Me.btnFrames.Size = New System.Drawing.Size(65, 22)
         Me.btnFrames.Text = "Frames"
         '
-        'btnTCPServer
+        'btnTCPSettings
         '
-        Me.btnTCPServer.Image = CType(resources.GetObject("btnTCPServer.Image"), System.Drawing.Image)
-        Me.btnTCPServer.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnTCPServer.Name = "btnTCPServer"
-        Me.btnTCPServer.Size = New System.Drawing.Size(85, 22)
-        Me.btnTCPServer.Text = "TCP-Server"
+        Me.btnTCPSettings.Image = CType(resources.GetObject("btnTCPSettings.Image"), System.Drawing.Image)
+        Me.btnTCPSettings.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnTCPSettings.Name = "btnTCPSettings"
+        Me.btnTCPSettings.Size = New System.Drawing.Size(114, 22)
+        Me.btnTCPSettings.Text = "TCP-Verbindung"
         '
         'ToolStrip3
         '
@@ -407,7 +407,7 @@ Partial Class panSettings
     Friend WithEvents btnDenHartPar As ToolStripButton
     Friend WithEvents btnRoboPar As ToolStripButton
     Friend WithEvents btnFrames As ToolStripButton
-    Friend WithEvents btnTCPServer As ToolStripButton
+    Friend WithEvents btnTCPSettings As ToolStripButton
     Friend WithEvents btnToolframe As ToolStripButton
     Friend WithEvents sepFrames As ToolStripSeparator
     Friend WithEvents btnWorkframe As ToolStripButton

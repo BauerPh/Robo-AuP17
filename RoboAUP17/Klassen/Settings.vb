@@ -12,7 +12,7 @@
     Friend ReadOnly Property UnsavedChanges As Boolean = False
     Friend ReadOnly Property Toolframe As CartCoords
     Friend ReadOnly Property Workframe As CartCoords
-    Friend ReadOnly Property TcpServerParameter As TCPServerParameter
+    Friend ReadOnly Property TcpParameter As TCPParameter
 
     ' Properties
     Friend ReadOnly Property JointParameter As JointParameter()
@@ -39,7 +39,7 @@
         DenavitHartenbergParameter
         Toolframe
         Workframe
-        TCPServerParameter
+        TcpParameter
     End Enum
     Friend Event ParameterChanged(ByVal changedParameter As ParameterChangedParameter)
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
@@ -93,10 +93,10 @@
         _UnsavedChanges = True
         RaiseEvent ParameterChanged(ParameterChangedParameter.Workframe)
     End Sub
-    Friend Sub SetTCPServerParameter(tcpServerParameter As TCPServerParameter)
-        _TcpServerParameter = tcpServerParameter
+    Friend Sub SetTcpParameter(tcpServerParameter As TCPParameter)
+        _TcpParameter = tcpServerParameter
         _UnsavedChanges = True
-        RaiseEvent ParameterChanged(ParameterChangedParameter.TCPServerParameter)
+        RaiseEvent ParameterChanged(ParameterChangedParameter.TcpParameter)
     End Sub
     Friend Function LoadDefaulSettings() As Boolean
         If System.IO.File.Exists(cDefaultConfigFile) Then
@@ -251,9 +251,11 @@
                 .WriteAttributeString("roll", _Workframe.Roll.ToString)
                 .WriteEndElement()
                 'TCP
-                .WriteStartElement("tcpServerParameter")
-                .WriteAttributeString("listen", _TcpServerParameter.Listen.ToString)
-                .WriteAttributeString("port", _TcpServerParameter.Port.ToString)
+                .WriteStartElement("tcpParameter")
+                .WriteAttributeString("enabled", _TcpParameter.Enabled.ToString)
+                .WriteAttributeString("mode", _TcpParameter.Mode.ToString)
+                .WriteAttributeString("host", _TcpParameter.Host.ToString)
+                .WriteAttributeString("port", _TcpParameter.Port.ToString)
                 .WriteEndElement()
                 'Settings
                 .WriteEndElement()
@@ -291,7 +293,7 @@
                             setting = 3
                         ElseIf e = "workframe" Then
                             setting = 4
-                        ElseIf e = "tcpServerParameter" Then
+                        ElseIf e = "tcpParameter" Then
                             setting = 5
                         End If
                         If .AttributeCount > 0 Then 'sind überhaupt Attribute vorhanden?
@@ -405,10 +407,14 @@
                                 ElseIf setting = 5 Then
                                     '********** TCP Server Parameter **********
                                     Select Case .Name
-                                        Case "listen"
-                                            _TcpServerParameter.Listen = CBool(.Value)
+                                        Case "enabled"
+                                            _TcpParameter.Enabled = CBool(.Value)
+                                        Case "mode"
+                                            _TcpParameter.Mode = CType([Enum].Parse(GetType(TCPMode), .Value), TCPMode)
+                                        Case "host"
+                                            _TcpParameter.Host = .Value
                                         Case "port"
-                                            _TcpServerParameter.Port = CInt(.Value)
+                                            _TcpParameter.Port = CInt(.Value)
                                     End Select
                                 End If
                             End While

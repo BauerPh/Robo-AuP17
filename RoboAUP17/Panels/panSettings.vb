@@ -17,7 +17,7 @@
         RoboPar = 0
         DenHartPar
         Frames
-        TCPServer
+        TCPSettings
     End Enum
     Friend Sub SetSelectedSetting(setting As selectedSetting)
         _selectedSetting = setting
@@ -42,7 +42,7 @@
                 Else
                     _refreshPropGrid()
                 End If
-            Case selectedSetting.TCPServer
+            Case selectedSetting.TCPSettings
                 _refreshPropGrid()
         End Select
 
@@ -64,8 +64,8 @@
         SetSelectedSetting(selectedSetting.RoboPar)
     End Sub
 
-    Private Sub btnTCPServer_Click(sender As Object, e As EventArgs) Handles btnTCPServer.Click
-        SetSelectedSetting(selectedSetting.TCPServer)
+    Private Sub btnTCPServer_Click(sender As Object, e As EventArgs) Handles btnTCPSettings.Click
+        SetSelectedSetting(selectedSetting.TCPSettings)
     End Sub
     Private Sub propGridRoboPar_PropertyValueChanged(sender As Object, e As EventArgs) Handles propGridRoboPar.PropertyValueChanged
         'Objekte aktualisieren
@@ -84,8 +84,8 @@
                 Else
                     frmMain.RoboControl.Pref.SetWorkframe(CType(propGridRoboPar.SelectedObject, CartCoords))
                 End If
-            Case selectedSetting.TCPServer
-                frmMain.RoboControl.Pref.SetTCPServerParameter(CType(propGridRoboPar.SelectedObject, TCPServerParameter))
+            Case selectedSetting.TCPSettings
+                frmMain.RoboControl.Pref.SetTcpParameter(CType(propGridRoboPar.SelectedObject, TCPParameter))
         End Select
     End Sub
     Private Sub btnJ1_Click(sender As Object, e As EventArgs) Handles btnJ1.Click
@@ -211,13 +211,13 @@
                 Else
                     propGridRoboPar.SelectedObject = frmMain.RoboControl.Pref.Workframe
                 End If
-            Case selectedSetting.TCPServer
-                propGridRoboPar.SelectedObject = frmMain.RoboControl.Pref.TCPServerParameter
+            Case selectedSetting.TCPSettings
+                propGridRoboPar.SelectedObject = frmMain.RoboControl.Pref.TcpParameter
         End Select
     End Sub
     Private Sub _refreshButtons()
         btnRoboPar.Visible = False
-        btnTCPServer.Visible = False
+        btnTCPSettings.Visible = False
         btnDenHartPar.Visible = False
         btnFrames.Visible = False
         btnJ1.Visible = False
@@ -243,7 +243,7 @@
         sepFrames.Visible = False
         Select Case _selectedSetting
             Case selectedSetting.RoboPar
-                btnTCPServer.Visible = True
+                btnTCPSettings.Visible = True
                 btnDenHartPar.Visible = True
                 btnFrames.Visible = True
                 btnJ1.Visible = True
@@ -266,7 +266,7 @@
                 sepServ3.Visible = True
             Case selectedSetting.DenHartPar
                 btnRoboPar.Visible = True
-                btnTCPServer.Visible = True
+                btnTCPSettings.Visible = True
                 btnFrames.Visible = True
                 btnJ1.Visible = True
                 btnJ2.Visible = True
@@ -282,13 +282,13 @@
                 sepJ6.Visible = True
             Case selectedSetting.Frames
                 btnRoboPar.Visible = True
-                btnTCPServer.Visible = True
+                btnTCPSettings.Visible = True
                 btnDenHartPar.Visible = True
                 btnToolframe.Visible = True
                 btnWorkframe.Visible = True
                 ToolStrip3.Visible = True
                 sepFrames.Visible = True
-            Case selectedSetting.TCPServer
+            Case selectedSetting.TCPSettings
                 btnRoboPar.Visible = True
                 btnDenHartPar.Visible = True
                 btnFrames.Visible = True

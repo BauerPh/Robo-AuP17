@@ -40,8 +40,7 @@ Public Class TCPCommunication
         _server = True
         _tcpListener = New TcpListener(Net.IPAddress.Any, port)
         _listen = True
-        _waitForConnection()
-        Return True
+        Return _waitForConnection()
     End Function
     Friend Function Connect(ip As Net.IPAddress, port As Integer) As Boolean
         If _connected Or _server Then Return False
@@ -108,7 +107,9 @@ Public Class TCPCommunication
     End Sub
     ' Trennt alle Verbindungen und gibt Ressourcen wieder frei
     Private Sub _terminate()
+        Dim connectedSave As Boolean = _connected
         _server = False
+        _client = False
         _connected = False
         _listen = False
         _connecting = False
@@ -120,15 +121,24 @@ Public Class TCPCommunication
         If _networkStreamR IsNot Nothing Then _networkStreamR.Close()
         If _networkStreamW IsNot Nothing Then _networkStreamW.Close()
         If _networkStream IsNot Nothing Then _networkStream.Close()
+        If connectedSave Then
+            RaiseEvent Disconnected()
+        End If
     End Sub
 
     ' Startet den Listener und wartet auf eine Verbindung
-    Private Sub _waitForConnection()
+    Private Function _waitForConnection() As Boolean
         If _listen Then
-            _tcpListener.Start()
-            _tcpListener.BeginAcceptTcpClient(AddressOf _connectedCallback, _tcpListener)
+            Try
+                _tcpListener.Start()
+                _tcpListener.BeginAcceptTcpClient(AddressOf _connectedCallback, _tcpListener)
+            Catch e As SocketException
+                Return False
+            End Try
+            Return True
         End If
-    End Sub
+        Return False
+    End Function
 
     ' Stopt den Listener (da Client verbunden) und erstellt die Datenstreams und den Handlethread
     Private Sub _connectedCallback(result As IAsyncResult)
@@ -179,6 +189,7 @@ Public Class TCPCommunication
                     End While
                 Catch e As IO.IOException ' Wird geworfen, wenn auf _networkStreamR zugegriffen wird und gleichzeitig die Verbindung vom Partner getrennt wird
                     msg = ""
+                Catch e As ObjectDisposedException ' überspringen
                 End Try
             End If
         End While
@@ -193,6 +204,8 @@ Public Class TCPCommunication
             ' Verbindung unterbrochen
             Return Not (client.Client.Poll(1, SelectMode.SelectRead) And (client.Available = 0))
         Catch e As SocketException
+            Return False
+        Catch e As ObjectDisposedException
             Return False
         End Try
     End Function

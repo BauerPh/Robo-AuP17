@@ -109,6 +109,9 @@ Public Class frmMain
         ShowStatusStripHint("Anwendung gestartet...")
         _logger.Log("[MAIN] Hi!", Logger.LogLevel.INFO)
 
+        'Update TCP Label
+        _updateTCPStatusLabel()
+
         AddHandler _aclProgram.TcpVariables.Connected, AddressOf _eTCPConnected
         AddHandler _aclProgram.TcpVariables.Disconnected, AddressOf _eTCPDisconnected
         AddHandler _dckPanCodeEditor.sciCodeEditor.TextChanged, AddressOf _eEditorTextChanged
@@ -269,7 +272,7 @@ Public Class frmMain
 
     Private Sub msTCPServer_Click(sender As Object, e As EventArgs) Handles msTCPServer.Click
         _dckPanSettings.Show()
-        _dckPanSettings.SetSelectedSetting(panSettings.selectedSetting.TCPServer)
+        _dckPanSettings.SetSelectedSetting(panSettings.selectedSetting.TCPSettings)
     End Sub
 
     Private Sub msDenavitHartPar_Click(sender As Object, e As EventArgs) Handles msDenavitHartPar.Click
@@ -523,6 +526,20 @@ Public Class frmMain
         msRedo.Enabled = _dckPanCodeEditor.sciCodeEditor.CanRedo
     End Sub
 
+    Private Sub _updateTCPStatusLabel()
+        Dim enabled = _roboControl.Pref.TcpParameter.Enabled Or _roboControl.Pref.TcpParameter.Mode = TCPMode.aktiv
+        If enabled Then
+            tsLblTcpServerStatus.Visible = True
+            tsLblTCPServerStatusTitle.Visible = True
+            tsSepTCPServerStatus.Visible = True
+        Else
+            tsLblTcpServerStatus.Visible = False
+            tsLblTCPServerStatusTitle.Visible = False
+            tsSepTCPServerStatus.Visible = False
+        End If
+        tsLblTCPServerStatusTitle.Text = If(_roboControl.Pref.TcpParameter.Mode = TCPMode.aktiv, "TCP-Client:", "TCP-Server:")
+    End Sub
+
     ' -----------------------------------------------------------------------------
     ' Events
     ' -----------------------------------------------------------------------------
@@ -586,17 +603,9 @@ Public Class frmMain
     End Sub
     Private Sub _eRoboParameterChanged(parameterChanged As Settings.ParameterChangedParameter) Handles _roboControl.RoboParameterChanged
         Dim all As Boolean = parameterChanged = Settings.ParameterChangedParameter.All
-        If parameterChanged = Settings.ParameterChangedParameter.TCPServerParameter Or all Then
-            If _roboControl.Pref.TCPServerParameter.Listen Then
-                tsLblTcpServerStatus.Visible = True
-                tsLblTCPServerStatusTitle.Visible = True
-                tsSepTCPServerStatus.Visible = True
-            Else
-                tsLblTcpServerStatus.Visible = False
-                tsLblTCPServerStatusTitle.Visible = False
-                tsSepTCPServerStatus.Visible = False
-            End If
+        If parameterChanged = Settings.ParameterChangedParameter.TcpParameter Or all Then
             _aclProgram.Init()
+            _updateTCPStatusLabel()
         End If
     End Sub
 
@@ -637,7 +646,7 @@ Public Class frmMain
             Return
         End If
 
-        tsLblTcpServerStatus.Text = "verbunden"
+        tsLblTcpServerStatus.Text = "Verbunden"
         tsLblTcpServerStatus.ForeColor = Color.Green
     End Sub
     Private Sub _eTCPDisconnected()
@@ -646,7 +655,7 @@ Public Class frmMain
             Return
         End If
 
-        tsLblTcpServerStatus.Text = "getrennt"
+        tsLblTcpServerStatus.Text = "Getrennt"
         tsLblTcpServerStatus.ForeColor = Color.Red
     End Sub
 End Class

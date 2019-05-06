@@ -25,9 +25,9 @@ Friend Class ACLProgram
     Private _forceStopProgram As Boolean = False
 
     Private _filename As String = Nothing
-    Public Property UnsavedChanges As Boolean = False
-    Public Property MaxSpeed As Double
-    Public Property MaxAcc As Double
+    Friend Property UnsavedChanges As Boolean = False
+    Friend Property MaxSpeed As Double
+    Friend Property MaxAcc As Double
 
     Friend Event Log(ByVal LogMsg As String, ByVal LogLvl As Logger.LogLevel)
     Friend Event DoJointMove(ByVal jointAngles As JointAngles, acc As Double, speed As Double)
@@ -48,15 +48,46 @@ Friend Class ACLProgram
     ' -----------------------------------------------------------------------------
 #Region "Allgemein"
     Friend Sub Init(Optional maxSpeed As Double = -1, Optional maxAcc As Double = -1)
-        TcpVariables.TerminateConnection()
-        If _robotControl.Pref.TCPServerParameter.Listen Then
-            TcpVariables.Listen(_robotControl.Pref.TCPServerParameter.Port)
+        ' TCP-Server starten
+        Static init As Boolean = False
+        Static lastPort As Int32
+        Static lastMode As TCPMode
+        Static lastEnabled As Boolean
+        ' Verbindung beenden wenn: Server und Server aktiv Status geändert
+        ' oder Port geändert
+        ' oder Mode geändert
+        Dim terminate As Boolean = _robotControl.Pref.TcpParameter.Mode = TCPMode.passiv And _robotControl.Pref.TcpParameter.Enabled <> lastEnabled
+        terminate = terminate Or lastPort <> _robotControl.Pref.TcpParameter.Port Or lastMode <> _robotControl.Pref.TcpParameter.Mode
+        If terminate And init Then
+            TcpVariables.TerminateConnection()
         End If
+        lastMode = _robotControl.Pref.TcpParameter.Mode
+        lastPort = _robotControl.Pref.TcpParameter.Port
+        lastEnabled = _robotControl.Pref.TcpParameter.Enabled
+        If lastMode = TCPMode.passiv And _robotControl.Pref.TcpParameter.Enabled Then
+            If TcpVariables.Listen(lastPort) Then
+                RaiseEvent Log($"[TCP] Server gestartet, Port: {_robotControl.Pref.TcpParameter.Port}", Logger.LogLevel.INFO)
+            Else
+                RaiseEvent Log("[TCP] Client aktiviert oder Server bereits gestartet oder Port auf System bereits geöffnet", Logger.LogLevel.INFO)
+            End If
+        End If
+        init = True
+
+        ' ...
         If maxSpeed > 0 And maxAcc > 0 Then
             _MaxSpeed = maxSpeed
             _MaxAcc = maxAcc
         End If
     End Sub
+    Friend Function ConnectToTCPServer() As Boolean
+        Dim IPAddress As New Net.IPAddress(0)
+        Dim Port As Int32 = _robotControl.Pref.TcpParameter.Port
+        If Net.IPAddress.TryParse(_robotControl.Pref.TcpParameter.Host, IPAddress) Then
+            Return TcpVariables.Connect(IPAddress, Port)
+        Else
+            Return TcpVariables.Connect(_robotControl.Pref.TcpParameter.Host, Port)
+        End If
+    End Function
     Friend Sub SetRoboControlObject(ByRef roboControl As RobotControl)
         _robotControl = roboControl
     End Sub

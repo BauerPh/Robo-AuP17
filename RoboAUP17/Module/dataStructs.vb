@@ -271,15 +271,27 @@ Module dataStructs
         Public Property MaxAngle As Double
     End Structure
 
-    Friend Structure TCPServerParameter
+    Friend Enum TCPMode
+        passiv = 0
+        aktiv = 1
+    End Enum
+    Friend Structure TCPParameter
         <Category("Allgemein"),
-            DisplayName("Aktiv"),
-            Description("TCP-Server wird beim Start des Programms gestartet. Wird dieser Parameter geändert wird der TCP-Server ebenfalls gestartet bzw. gestoppt.")>
-        Public Property Listen As Boolean
+            DisplayName("Modus"),
+            Description("aktiv oder passive Verbindung (Client oder Server)")>
+        Public Property Mode As TCPMode
         <Category("Allgemein"),
             DisplayName("Port"),
-            Description("Der Port für den TCP-Server. Änderung erfordert ein Neustart des Servers, zum Beispiel durch Andern des ""Aktiv""-Parameters.")>
+            Description("Der Port für den TCP-Server.")>
         Public Property Port As Integer
+        <Category("Server"),
+            DisplayName("Aktiviert"),
+            Description("TCP-Server wird beim Start des Programms gestartet. Wird dieser Parameter geändert wird der TCP-Server ebenfalls gestartet bzw. gestoppt.")>
+        Public Property Enabled As Boolean
+        <Category("Client"),
+            DisplayName("Host"),
+            Description("IP-Adresse oder Hostname, bei TCP-Client")>
+        Public Property Host As String
     End Structure
 #End Region
 
