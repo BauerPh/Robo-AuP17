@@ -815,7 +815,7 @@ Friend Class ACLCompiler
                 _progList.Add(progEntry)
             End If
         Else
-            RaiseEvent CompileErrorEvent(lineNr, $"{If(IsNumeric(identifier), $"Teachpunkt ""{identifier}""", $"Position {identifier}")} wurde nicht definiert.")
+            RaiseEvent CompileErrorEvent(lineNr, $"{If(IsNumeric(identifier), $"Teachpunkt {identifier}", $"Position ""{identifier}""")} wurde nicht definiert.")
         End If
 
         MyBase.EnterSetpvc(context)
