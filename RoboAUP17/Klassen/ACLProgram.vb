@@ -495,13 +495,13 @@ Friend Class ACLProgram
                             If Not _robotControl.CheckCartCoords(tp.cartCoords) Then
                                 _runtimeError(cmd.lineNr, $"Koordinaten nicht erreichbar. Entweder ergab die kinematische Berechnung nicht für jede Achse ein Ergebnis oder das Achslimit einer oder mehrerer Achsen wurde überschritten.")
                             Else
-                                RaiseEvent DoCartMove(tp.cartCoords, cmd.moveSpeed, cmd.moveAcc)
+                                RaiseEvent DoCartMove(tp.cartCoords, cmd.moveAcc, cmd.moveSpeed)
                             End If
                         Else
                             If Not _robotControl.CheckJointAngles(tp.jointAngles) Then
                                 _runtimeError(cmd.lineNr, $"Koordinaten nicht erreichbar. Das Achslimit einer oder mehrerer Achsen wurde überschritten.")
                             Else
-                                RaiseEvent DoJointMove(tp.jointAngles, cmd.moveSpeed, cmd.moveAcc)
+                                RaiseEvent DoJointMove(tp.jointAngles, cmd.moveAcc, cmd.moveSpeed)
                             End If
                         End If
                     Else
